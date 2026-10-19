@@ -43,6 +43,7 @@ Later komen erbij: `content/` (lessen als JSON), `pocketbase/` (migraties, hooks
 - Kleuren, fonts, randen, schaduwen en radii staan als design tokens in `web/src/styles/tokens.css` (licht en donker). Componenten gebruiken alleen deze tokens.
 - De fonts Bangers en Atkinson Hyperlegible komen uit de npm-pakketten `@fontsource/bangers` en `@fontsource/atkinson-hyperlegible` (SIL Open Font License). `tools/copy-fonts.mjs` kopieert ze vóór `start`, `build` en `e2e` naar `web/public/fonts/` (niet in git); de app laadt ze van de eigen server, nooit van buiten.
 - Op http://localhost:4200/stijl staat een stijlpagina met alle kleuren, koppen, knoppen, de kaart, de sticker en het plakbriefje, plus een knop voor licht, donker of systeem. De pagina is nergens gelinkt.
+- Ted, de mascotte, staat als sprite in `web/public/assets/ted.svg` (een kopie van `docs/start/assets/ted.svg`, alleen het commentaar bovenin is aangepast zodat de browser het bestand als los bestand accepteert). Hij heeft vier stemmingen: stoer (`cool`), blij (`happy`), nadenkend (`thinking`) en oeps (`oops`). Gebruik `<snf-ted mood="happy">` voor Ted alleen, `<snf-speech-bubble tail="left">` (of `tail="bottom"`) voor een tekstballon en `<snf-ted-says mood="cool">tekst</snf-ted-says>` voor Ted met een ballon. Met `wiggle` wiebelt Ted zachtjes; staat "beweging beperken" aan op het apparaat, dan staat hij stil. Alles staat ook op `/stijl` onder "Ted".
 
 ## Werkwijze
 
