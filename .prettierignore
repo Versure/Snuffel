@@ -1,0 +1,10 @@
+node_modules/
+dist/
+coverage/
+.angular/
+test-results/
+playwright-report/
+web/public/content/
+package-lock.json
+# Design hand-off: kept exactly as delivered.
+docs/start/
