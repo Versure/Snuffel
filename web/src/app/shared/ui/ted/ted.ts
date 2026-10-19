@@ -49,11 +49,14 @@ export const TED_MOODS: Record<TedMood, TedMoodDefinition> = {
   host: {
     '[class.snf-ted--small]': "size() === 'small'",
     '[class.snf-ted--large]': "size() === 'large'",
+    '[class.snf-ted--wiggle]': 'wiggle()',
   },
 })
 export class Ted {
   readonly mood = input<TedMood>('cool');
   readonly size = input<TedSize>('large');
+  /** Gentle wiggle from the reference hero; never runs with reduced motion. */
+  readonly wiggle = input(false);
   /** Hide Ted from assistive technology when text next to him carries the meaning. */
   readonly decorative = input(false);
 

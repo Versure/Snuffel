@@ -103,6 +103,16 @@ describe('Ted', () => {
     expect(host.classList).not.toContain('snf-ted--large');
   });
 
+  it('does not wiggle by default', async () => {
+    const { host } = await render();
+    expect(host.classList).not.toContain('snf-ted--wiggle');
+  });
+
+  it('wiggles with the wiggle input', async () => {
+    const { host } = await render({ wiggle: true });
+    expect(host.classList).toContain('snf-ted--wiggle');
+  });
+
   it('uses the sprite from the own server', async () => {
     const { svg } = await render();
     expect(svg.querySelector('use')?.getAttribute('href')).toBe('/assets/ted.svg#ted');
