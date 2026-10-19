@@ -1,0 +1,13 @@
+:host {
+  display: inline-block;
+  padding: 0.1rem 0.9rem;
+  font-family: var(--snf-font-display);
+  font-size: 1.15rem;
+  letter-spacing: 0.04em;
+  color: var(--snf-color-on-pink);
+  background: var(--snf-color-pink);
+  border: var(--snf-border-width) solid var(--snf-color-ink);
+  border-radius: var(--snf-radius-pill);
+  box-shadow: var(--snf-shadow-sm);
+  transform: rotate(-3deg);
+}
