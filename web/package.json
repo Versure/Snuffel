@@ -4,11 +4,15 @@
   "private": true,
   "scripts": {
     "ng": "ng",
+    "fonts": "node ../tools/copy-fonts.mjs",
+    "prestart": "npm run fonts",
     "start": "ng serve",
+    "prebuild": "npm run fonts",
     "build": "ng build",
     "test": "ng test --watch=false",
     "lint": "ng lint",
     "typecheck": "tsc -p tsconfig.app.json --noEmit && tsc -p tsconfig.spec.json --noEmit && tsc -p e2e/tsconfig.json --noEmit",
+    "pree2e": "npm run fonts",
     "e2e": "playwright test"
   },
   "dependencies": {
@@ -28,6 +32,8 @@
     "@angular/compiler-cli": "^22.2.0",
     "@axe-core/playwright": "^4.14.0",
     "@eslint/js": "^10.0.1",
+    "@fontsource/atkinson-hyperlegible": "^5.3.0",
+    "@fontsource/bangers": "^5.3.0",
     "@playwright/test": "^1.64.1",
     "@types/node": "^24.19.2",
     "angular-eslint": "22.6.0",

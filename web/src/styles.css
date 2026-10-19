@@ -1,5 +1,6 @@
 /* Global style entry point. Components use only the tokens from styles/tokens.css. */
 @import './styles/tokens.css';
+@import './styles/fonts.css';
 
 body {
   margin: 0;
