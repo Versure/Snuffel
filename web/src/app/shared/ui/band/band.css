@@ -1,0 +1,11 @@
+/* Purple band inside a heading: <h1>Aanbeet of <snf-band>vastzitten?</snf-band></h1> */
+:host {
+  display: inline-block;
+  margin-top: 0.12em;
+  padding: 0.05em 0.25em 0;
+  color: var(--snf-color-white);
+  background: var(--snf-color-purple);
+  border-radius: var(--snf-radius-band);
+  box-shadow: var(--snf-shadow-md);
+  transform: rotate(-2deg);
+}
