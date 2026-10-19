@@ -1,6 +1,6 @@
 /*
  * Self-hosted fonts (SIL Open Font License, licences in /fonts/<name>/LICENSE).
- * The woff2 files are copied from @fontsource by angular.json; never load fonts from another host.
+ * The woff2 files are copied from @fontsource by tools/copy-fonts.mjs; never load fonts from another host.
  */
 @font-face {
   font-family: 'Bangers';
