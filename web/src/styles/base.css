@@ -1,0 +1,90 @@
+/* Base styles for the whole app, after les-01-roofvissen.html. Only tokens, no colour values. */
+:root {
+  box-sizing: border-box;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+html {
+  scroll-padding-top: env(safe-area-inset-top, 0px);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
+}
+
+body {
+  margin: 0;
+  background: var(--snf-color-background);
+  color: var(--snf-color-text);
+  font-family: var(--snf-font-body);
+  /* 17.5px at the default browser size, but follows a larger font size set by the user. */
+  font-size: 1.09375rem;
+  line-height: 1.6;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  overflow-x: hidden;
+}
+
+main {
+  max-width: 42rem;
+  margin: 0 auto;
+  padding: 1rem 1rem 3rem;
+}
+
+h1 {
+  font-family: var(--snf-font-display);
+  font-weight: 400;
+  font-size: clamp(2.6rem, 11vw, 3.9rem);
+  line-height: 0.95;
+  letter-spacing: 0.02em;
+  margin: 0.8rem 0 0.4rem;
+  color: var(--snf-color-heading);
+}
+
+h2 {
+  font-family: var(--snf-font-display);
+  font-weight: 400;
+  font-size: 2rem;
+  line-height: 1;
+  letter-spacing: 0.03em;
+  margin: 2.5rem 0 0.9rem;
+  color: var(--snf-color-heading);
+}
+
+p {
+  margin: 0 0 1rem;
+}
+
+a {
+  color: var(--snf-color-link);
+  font-weight: 700;
+}
+
+button {
+  font: inherit;
+}
+
+:focus-visible {
+  outline: var(--snf-focus-ring);
+  outline-offset: var(--snf-focus-ring-offset);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
