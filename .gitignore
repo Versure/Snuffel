@@ -41,3 +41,6 @@ pocketbase/bin/
 .DS_Store
 Thumbs.db
 npm-debug.log
+
+# Playwright MCP browser session output
+.playwright-mcp/
