@@ -1,0 +1,18 @@
+:host {
+  display: block;
+}
+
+:host(.snf-ted--small) {
+  width: 4.5rem;
+}
+
+:host(.snf-ted--large) {
+  width: 100%;
+  max-width: 190px;
+}
+
+svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
