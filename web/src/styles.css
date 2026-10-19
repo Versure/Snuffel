@@ -1,5 +1,4 @@
-/* Global styles. Design tokens and fonts follow in M2. */
-body {
-  margin: 0;
-  font-family: system-ui, sans-serif;
-}
+/* Global style entry point. Components use only the tokens from styles/tokens.css. */
+@import './styles/tokens.css';
+@import './styles/fonts.css';
+@import './styles/base.css';

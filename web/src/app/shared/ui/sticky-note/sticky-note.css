@@ -1,0 +1,27 @@
+:host {
+  position: relative;
+  display: block;
+  margin: 1.5rem 0 1rem;
+  padding: 1.6rem 1.1rem 1rem;
+  color: var(--snf-color-text);
+  background: var(--snf-color-paper);
+  border: var(--snf-border-width) solid var(--snf-color-ink);
+  border-radius: var(--snf-radius-note);
+  box-shadow: var(--snf-shadow-note);
+  transform: rotate(-1.2deg);
+}
+
+/* Decorative tape; an empty pseudo-element stays out of the accessibility tree. */
+:host::before {
+  content: '';
+  position: absolute;
+  top: -14px;
+  left: 50%;
+  width: 110px;
+  height: 26px;
+  margin-left: -55px;
+  background: var(--snf-color-purple);
+  border: 2px solid var(--snf-color-ink);
+  opacity: 0.9;
+  transform: rotate(2deg);
+}

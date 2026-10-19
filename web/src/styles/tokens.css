@@ -1,0 +1,92 @@
+/*
+ * Snuffel design tokens. Values come from docs/start/reference/les-01-roofvissen.html.
+ * The dark theme appears twice (system preference and data-theme="dark"), as in the reference.
+ * Change both blocks together; e2e/tokens.spec.ts catches a mismatch.
+ */
+:root {
+  color-scheme: light;
+
+  --snf-color-yellow: #ffd83d;
+  --snf-color-purple: #5b2bb5;
+  --snf-color-pink: #ff2e7a;
+  --snf-color-ink: #141414;
+  --snf-color-paper: #fff6dc;
+  --snf-color-surface: #fffdf5;
+  --snf-color-text: #141414;
+  --snf-color-text-muted: #4a4458;
+  --snf-color-success: #12804a;
+  --snf-color-success-soft: #d8f5e3;
+  --snf-color-error: #c2183f;
+  --snf-color-error-soft: #ffdbe5;
+  --snf-color-background: var(--snf-color-yellow);
+  --snf-color-panel: #141414;
+  --snf-color-panel-text: #fff6dc;
+  --snf-color-heading: var(--snf-color-ink);
+  --snf-color-link: var(--snf-color-purple);
+  --snf-color-white: #fff;
+  /* Ink on pink: white on pink is 3.55:1 and fails WCAG AA (decision M2, question 1). */
+  --snf-color-on-pink: #141414;
+  /* Fixed colours of the light button; they do not change with the theme. */
+  --snf-color-cream: #fff6dc;
+  --snf-color-black: #141414;
+
+  --snf-font-display: 'Bangers', 'Impact', 'Arial Narrow', sans-serif;
+  --snf-font-body: 'Atkinson Hyperlegible', -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+
+  --snf-border-width: 3px;
+  --snf-shadow-sm: 3px 3px 0 var(--snf-color-ink);
+  --snf-shadow-md: 4px 4px 0 var(--snf-color-ink);
+  --snf-shadow-lg: 5px 5px 0 var(--snf-color-ink);
+  --snf-shadow-note: 5px 6px 0 var(--snf-color-ink);
+
+  --snf-radius-md: 14px;
+  --snf-radius-lg: 16px;
+  --snf-radius-xl: 22px;
+  --snf-radius-pill: 999px;
+  --snf-radius-band: 4px 14px 6px 12px;
+  --snf-radius-note: 4px 4px 22px 4px;
+
+  --snf-tap-min: 44px;
+  --snf-button-min-height: 48px;
+
+  --snf-focus-ring: 3px solid var(--snf-color-pink);
+  --snf-focus-ring-offset: 3px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    color-scheme: dark;
+
+    --snf-color-background: #1d1036;
+    --snf-color-surface: #2a1a4a;
+    --snf-color-paper: #2f2150;
+    --snf-color-text: #fff6dc;
+    --snf-color-text-muted: #cfc3e8;
+    --snf-color-ink: #0b0614;
+    --snf-color-panel: #0b0614;
+    --snf-color-success: #6ee7a8;
+    --snf-color-success-soft: #163b2a;
+    --snf-color-error: #ff7aa3;
+    --snf-color-error-soft: #45162a;
+    --snf-color-heading: var(--snf-color-yellow);
+    --snf-color-link: var(--snf-color-yellow);
+  }
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+
+  --snf-color-background: #1d1036;
+  --snf-color-surface: #2a1a4a;
+  --snf-color-paper: #2f2150;
+  --snf-color-text: #fff6dc;
+  --snf-color-text-muted: #cfc3e8;
+  --snf-color-ink: #0b0614;
+  --snf-color-panel: #0b0614;
+  --snf-color-success: #6ee7a8;
+  --snf-color-success-soft: #163b2a;
+  --snf-color-error: #ff7aa3;
+  --snf-color-error-soft: #45162a;
+  --snf-color-heading: var(--snf-color-yellow);
+  --snf-color-link: var(--snf-color-yellow);
+}

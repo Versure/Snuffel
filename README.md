@@ -30,13 +30,19 @@ De app draait dan op http://localhost:4200. `npm install` zet ook de git-hooks a
 | Map           | Inhoud                                                |
 | ------------- | ----------------------------------------------------- |
 | `web/`        | Angular-app (`src/`), Playwright-tests (`e2e/`)       |
-| `tools/`      | scripts voor checks (privacy, Node-versie)            |
+| `tools/`      | scripts voor checks (privacy, Node-versie) en fonts   |
 | `docs/start/` | handoff uit de ontwerpfase: stijl, Ted, referentieles |
 | `docs/plan/`  | implementatieplan en plan per mijlpaal                |
 | `.claude/`    | agents, skills en hooks voor Claude Code              |
 | `.husky/`     | git-hooks                                             |
 
 Later komen erbij: `content/` (lessen als JSON), `pocketbase/` (migraties, hooks, tests) en `deploy/` (Dockerfile en compose-bestanden).
+
+## Huisstijl
+
+- Kleuren, fonts, randen, schaduwen en radii staan als design tokens in `web/src/styles/tokens.css` (licht en donker). Componenten gebruiken alleen deze tokens.
+- De fonts Bangers en Atkinson Hyperlegible komen uit de npm-pakketten `@fontsource/bangers` en `@fontsource/atkinson-hyperlegible` (SIL Open Font License). `tools/copy-fonts.mjs` kopieert ze vóór `start`, `build` en `e2e` naar `web/public/fonts/` (niet in git); de app laadt ze van de eigen server, nooit van buiten.
+- Op http://localhost:4200/stijl staat een stijlpagina met alle kleuren, koppen, knoppen, de kaart, de sticker en het plakbriefje, plus een knop voor licht, donker of systeem. De pagina is nergens gelinkt.
 
 ## Werkwijze
 

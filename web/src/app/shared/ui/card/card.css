@@ -1,0 +1,10 @@
+:host {
+  display: block;
+  margin: 0 0 1rem;
+  padding: 1rem 1.1rem;
+  background: var(--snf-color-surface);
+  color: var(--snf-color-text);
+  border: var(--snf-border-width) solid var(--snf-color-ink);
+  border-radius: var(--snf-radius-lg);
+  box-shadow: var(--snf-shadow-lg);
+}

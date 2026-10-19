@@ -1,0 +1,60 @@
+<main>
+  <snf-sticker>Stijlgids</snf-sticker>
+  <h1>Snuffel <snf-band>huisstijl</snf-band></h1>
+
+  <div class="themes" role="group" aria-label="Thema">
+    @for (option of themeOptions; track option.value) {
+      <button
+        snf-button
+        variant="light"
+        type="button"
+        [attr.aria-pressed]="theme() === option.value"
+        (click)="selectTheme(option.value)"
+      >
+        {{ option.label }}
+      </button>
+    }
+  </div>
+
+  <h2 id="kleuren">Kleuren</h2>
+  <ul class="swatches">
+    @for (swatch of swatches; track swatch.token) {
+      <li>
+        <span
+          class="swatch"
+          aria-hidden="true"
+          [style.background]="'var(' + swatch.token + ')'"
+        ></span>
+        <span>
+          {{ swatch.label }}<br />
+          <code>{{ swatch.token }}</code>
+        </span>
+      </li>
+    }
+  </ul>
+
+  <h2>Letters</h2>
+  <p>
+    Dit is lopende tekst in Atkinson Hyperlegible. Die is goed te lezen, ook voor kinderen die net
+    leren lezen. <strong>Dit stuk is vet.</strong>
+  </p>
+  <p class="muted">Dit is zachte tekst, bijvoorbeeld voor een bron.</p>
+  <p><a routerLink="." fragment="kleuren">Terug naar de kleuren</a></p>
+
+  <h2>Knoppen</h2>
+  <div class="buttons">
+    <button snf-button type="button">Paars</button>
+    <button snf-button variant="pink" type="button">Roze</button>
+    <button snf-button variant="light" type="button">Licht</button>
+    <button snf-button type="button" disabled>Uit</button>
+  </div>
+
+  <h2>Kaart, sticker en plakbriefje</h2>
+  <snf-card>
+    <p>Dit is een kaart. Hierin staat straks uitleg bij een les.</p>
+    <snf-sticker>Les 1</snf-sticker>
+  </snf-card>
+  <snf-sticky-note>
+    <p>Dit is een plakbriefje met tape. Hier komt straks de checklist.</p>
+  </snf-sticky-note>
+</main>

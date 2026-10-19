@@ -17,6 +17,9 @@ __screenshots__/
 # Generated content (built from content/ by `npm run content:build`)
 web/public/content/
 
+# Self-hosted fonts, copied from @fontsource by tools/copy-fonts.mjs
+web/public/fonts/
+
 # PocketBase local data and binaries
 pocketbase/pb_data/
 pocketbase/bin/
@@ -38,3 +41,6 @@ pocketbase/bin/
 .DS_Store
 Thumbs.db
 npm-debug.log
+
+# Playwright MCP browser session output
+.playwright-mcp/
