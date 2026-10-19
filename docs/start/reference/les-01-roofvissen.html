@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Les 01 — Aanbeet of vastzitten?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bangers&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    color-scheme: light;
+    --geel: #ffd83d; --paars: #5b2bb5; --roze: #ff2e7a; --inkt: #141414;
+    --papier: #fff6dc; --vlak: #fffdf5; --tekst: #141414; --tekst-zacht: #4a4458;
+    --goed: #12804a; --goed-zacht: #d8f5e3; --fout: #c2183f; --fout-zacht: #ffdbe5;
+    --achtergrond: var(--geel); --paneel: #141414; --paneel-tekst: #fff6dc;
+    --kop: "Bangers", "Impact", "Arial Narrow", sans-serif;
+    --tekstfont: "Atkinson Hyperlegible", -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --achtergrond: #1d1036; --vlak: #2a1a4a; --papier: #2f2150; --tekst: #fff6dc; --tekst-zacht: #cfc3e8;
+      --inkt: #0b0614; --paneel: #0b0614; --goed: #6ee7a8; --goed-zacht: #163b2a; --fout: #ff7aa3; --fout-zacht: #45162a;
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --achtergrond: #1d1036; --vlak: #2a1a4a; --papier: #2f2150; --tekst: #fff6dc; --tekst-zacht: #cfc3e8;
+    --inkt: #0b0614; --paneel: #0b0614; --goed: #6ee7a8; --goed-zacht: #163b2a; --fout: #ff7aa3; --fout-zacht: #45162a;
+  }
+  html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+  *, *::before, *::after { box-sizing: inherit; }
+  body { margin: 0; background: var(--achtergrond); color: var(--tekst); font-family: var(--tekstfont);
+    font-size: 17.5px; line-height: 1.6; -webkit-text-size-adjust: 100%; overflow-x: hidden; }
+  main { max-width: 42rem; margin: 0 auto; padding: 1rem 1rem 3rem; }
+  a { color: var(--paars); font-weight: 700; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) a { color: var(--geel); } }
+  :root[data-theme="dark"] a { color: var(--geel); }
+  p { margin: 0 0 1rem; }
+  button { font: inherit; }
+  :focus-visible { outline: 3px solid var(--roze); outline-offset: 3px; }
+
+  /* Kop */
+  .hero { position: relative; padding: 0.5rem 0 1rem; }
+  .les-sticker { display: inline-block; font-family: var(--kop); font-size: 1.15rem; letter-spacing: 0.04em;
+    background: var(--roze); color: #fff; border: 3px solid var(--inkt); border-radius: 999px; padding: 0.1rem 0.9rem;
+    transform: rotate(-3deg); box-shadow: 3px 3px 0 var(--inkt); }
+  h1 { font-family: var(--kop); font-weight: 400; font-size: clamp(2.6rem, 11vw, 3.9rem); line-height: 0.95;
+    letter-spacing: 0.02em; margin: 0.8rem 0 0.4rem; color: var(--inkt); }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) h1 { color: var(--geel); } }
+  :root[data-theme="dark"] h1 { color: var(--geel); }
+  h1 .band { display: inline-block; background: var(--paars); color: #fff; padding: 0.05em 0.25em 0;
+    transform: rotate(-2deg); border-radius: 4px 14px 6px 12px; margin-top: 0.12em; box-shadow: 4px 4px 0 var(--inkt); }
+  .hero-rij { display: flex; align-items: flex-end; gap: 0.5rem; margin-top: 0.75rem; }
+  .hero-rij .mascotte { width: 46%; max-width: 190px; flex: none; }
+  .ballon { position: relative; background: var(--vlak); color: var(--tekst); border: 3px solid var(--inkt);
+    border-radius: 22px; padding: 0.7rem 0.9rem; font-family: var(--kop); font-size: 1.3rem; letter-spacing: 0.03em;
+    line-height: 1.15; box-shadow: 4px 4px 0 var(--inkt); margin-bottom: 4.5rem; }
+  .ballon::after { content: ""; position: absolute; left: -14px; bottom: 16px; width: 22px; height: 22px;
+    background: var(--vlak); border-left: 3px solid var(--inkt); border-bottom: 3px solid var(--inkt); transform: rotate(45deg) skew(10deg, 10deg); }
+  .doel { background: var(--papier); border: 3px solid var(--inkt); border-radius: 14px; padding: 0.75rem 1rem;
+    box-shadow: 4px 4px 0 var(--inkt); margin: 0.5rem 0 0; }
+  .krabbel { position: absolute; pointer-events: none; }
+
+  /* Stappen */
+  .stappen { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.4rem; margin: 1.5rem 0 0.5rem; padding: 0; list-style: none; }
+  .stappen a { display: flex; flex-direction: column; align-items: center; text-decoration: none; color: var(--tekst);
+    font-weight: 700; font-size: 0.8rem; line-height: 1.2; text-align: center; min-height: 44px; }
+  .stappen .nr { width: 2.2rem; height: 2.2rem; border-radius: 50%; display: grid; place-items: center; font-family: var(--kop);
+    font-size: 1.25rem; border: 3px solid var(--inkt); background: var(--vlak); margin-bottom: 0.2rem; color: var(--tekst); }
+  .stappen .klaar .nr { background: var(--paars); color: #fff; }
+
+  /* Secties */
+  h2 { font-family: var(--kop); font-weight: 400; letter-spacing: 0.03em; font-size: 2rem; line-height: 1;
+    margin: 2.5rem 0 0.9rem; color: var(--inkt); }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) h2 { color: var(--geel); } }
+  :root[data-theme="dark"] h2 { color: var(--geel); }
+  h2 .stapnr { display: inline-grid; place-items: center; width: 2.3rem; height: 2.3rem; border-radius: 50%; background: var(--roze);
+    color: #fff; border: 3px solid var(--inkt); font-size: 1.35rem; margin-right: 0.4rem; vertical-align: 0.15em; }
+  .kaart { background: var(--vlak); border: 3px solid var(--inkt); border-radius: 16px; padding: 1rem 1.1rem; margin: 0 0 1rem;
+    box-shadow: 5px 5px 0 var(--inkt); }
+  .signalen { display: grid; gap: 0.9rem; margin: 0 0 1rem; }
+  .signaal { display: grid; grid-template-columns: 3.2rem 1fr; gap: 0.8rem; align-items: start; background: var(--vlak);
+    border: 3px solid var(--inkt); border-radius: 16px; padding: 0.85rem; box-shadow: 4px 4px 0 var(--inkt); }
+  .signaal:nth-child(2) { transform: rotate(0.6deg); }
+  .signaal:nth-child(3) { transform: rotate(-0.5deg); }
+  .signaal svg { width: 3.2rem; height: 3.2rem; }
+  .signaal h3 { font-family: var(--kop); font-weight: 400; font-size: 1.35rem; letter-spacing: 0.03em; margin: 0 0 0.2rem; line-height: 1.1; }
+  .signaal p { margin: 0; }
+  .bron { font-size: 0.85rem; font-weight: 400; color: var(--tekst-zacht); }
+  .regel { background: var(--roze); color: #fff; border: 3px solid var(--inkt); border-radius: 18px; padding: 1rem 1.1rem;
+    box-shadow: 5px 5px 0 var(--inkt); transform: rotate(-1deg); margin: 1.4rem 0; }
+  .regel strong { font-family: var(--kop); font-weight: 400; font-size: 1.9rem; letter-spacing: 0.03em; display: block; line-height: 1; margin-bottom: 0.35rem; }
+  .regel p { margin: 0; }
+
+  /* Voel-spel */
+  .spel { background: var(--paneel); color: var(--paneel-tekst); border: 3px solid var(--inkt); border-radius: 22px;
+    padding: 1rem; box-shadow: 6px 6px 0 var(--paars); }
+  .spel-kop { display: flex; justify-content: space-between; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem; }
+  .spel-kop .titel { font-family: var(--kop); font-size: 1.5rem; letter-spacing: 0.04em; color: var(--geel); }
+  .ronde { font-weight: 700; font-size: 0.95rem; color: var(--paneel-tekst); }
+  .scherm { background: #22183a; border-radius: 14px; border: 2px solid #3d2d66; overflow: hidden; }
+  .scherm svg { display: block; width: 100%; height: auto; }
+  .spel-ballon { display: flex; gap: 0.6rem; align-items: center; margin: 0.8rem 0; min-height: 4rem; }
+  .spel-ballon .mini { width: 4rem; flex: none; }
+  .spel-ballon p { margin: 0; background: #fff6dc; color: #141414; border-radius: 14px; padding: 0.55rem 0.8rem; flex: 1; font-size: 0.98rem; }
+  .keuzes { display: grid; grid-template-columns: 1fr 1fr; gap: 0.55rem; }
+  .keuze { min-height: 52px; border: 3px solid var(--inkt); border-radius: 14px; font-family: var(--kop); font-size: 1.45rem;
+    letter-spacing: 0.04em; cursor: pointer; color: #141414; box-shadow: 3px 3px 0 #000; }
+  .keuze[data-k="vis"] { background: var(--geel); }
+  .keuze[data-k="vast"] { background: #cfc3e8; }
+  .keuze[data-k="plant"] { background: #8fe3a8; }
+  .keuze[data-k="bodem"] { background: #ffb3cd; }
+  .keuze:disabled { opacity: 0.45; cursor: default; }
+  .keuze.gekozen { outline: 3px solid #fff; outline-offset: 2px; opacity: 1; }
+  .spel-knoppen { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-top: 0.8rem; }
+  .vangst { display: flex; gap: 0.25rem; flex-wrap: wrap; margin-top: 0.8rem; min-height: 1.6rem; }
+  .vangst svg { width: 1.9rem; height: 1.2rem; }
+
+  .knop { min-height: 48px; font-family: var(--kop); font-size: 1.3rem; letter-spacing: 0.04em; color: #fff; background: var(--paars);
+    border: 3px solid var(--inkt); border-radius: 14px; padding: 0.35rem 1.1rem; cursor: pointer; box-shadow: 3px 3px 0 var(--inkt); }
+  .knop.roze { background: var(--roze); }
+  .knop.licht { background: #fff6dc; color: #141414; }
+  .knop:active, .keuze:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0 var(--inkt); }
+  .verborgen { display: none !important; }
+
+  /* Quiz */
+  .vraag { margin: 0 0 1.4rem; }
+  .vraag-tekst { font-weight: 700; margin: 0 0 0.6rem; }
+  .opties { display: grid; gap: 0.5rem; }
+  .optie { min-height: 48px; width: 100%; text-align: left; color: var(--tekst); background: var(--vlak);
+    border: 3px solid var(--inkt); border-radius: 14px; padding: 0.6rem 0.9rem; cursor: pointer; box-shadow: 3px 3px 0 var(--inkt); }
+  .optie:disabled { cursor: default; }
+  .optie.goed { background: var(--goed-zacht); border-color: var(--goed); }
+  .optie.fout { background: var(--fout-zacht); border-color: var(--fout); }
+  .uitleg { margin: 0.6rem 0 0; padding: 0.6rem 0.8rem; border-radius: 12px; font-size: 0.97rem; display: none; border: 2px solid var(--inkt); }
+  .uitleg.zichtbaar { display: block; }
+  .uitleg.goed { background: var(--goed-zacht); }
+  .uitleg.fout { background: var(--fout-zacht); }
+  .score-blok { display: none; align-items: center; gap: 0.7rem; }
+  .score-blok.zichtbaar { display: flex; }
+  .score-blok .mini { width: 4.5rem; flex: none; }
+  .score-blok p { margin: 0; font-weight: 700; }
+
+  /* Plakbriefje */
+  .briefje { position: relative; background: var(--papier); border: 3px solid var(--inkt); padding: 1.6rem 1.1rem 1rem;
+    transform: rotate(-1.2deg); box-shadow: 5px 6px 0 var(--inkt); border-radius: 4px 4px 22px 4px; }
+  .briefje::before { content: ""; position: absolute; top: -14px; left: 50%; width: 110px; height: 26px; margin-left: -55px;
+    background: var(--paars); opacity: 0.9; transform: rotate(2deg); border: 2px solid var(--inkt); }
+  .checklist { list-style: none; padding: 0; margin: 0; }
+  .checklist li { display: flex; gap: 0.75rem; align-items: flex-start; min-height: 44px; padding: 0.5rem 0; border-bottom: 2px dashed #c9bfa3; }
+  .checklist li:last-child { border-bottom: 0; }
+  .checklist input { appearance: none; -webkit-appearance: none; width: 1.6rem; height: 1.6rem; margin-top: 0.15rem; flex: none;
+    border: 3px solid var(--inkt); border-radius: 6px; background: var(--vlak); cursor: pointer; display: grid; place-items: center; }
+  .checklist input:checked { background: var(--roze); }
+  .checklist input:checked::after { content: "✓"; color: #fff; font-weight: 700; font-size: 1rem; line-height: 1; }
+  .checklist label { flex: 1; cursor: pointer; }
+
+  footer { margin-top: 3rem; padding-top: 1rem; border-top: 3px solid var(--inkt); font-size: 0.95rem; }
+  footer a { display: inline-block; margin-right: 1rem; min-height: 44px; line-height: 44px; }
+
+  /* Mascotte */
+  .mascotte[data-stemming="blij"] { --m-bril: none; --m-ogen-blij: inline; }
+  .mascotte[data-stemming="oeps"] { --m-bril: none; --m-ogen-denk: inline; --m-mond-blij: none; --m-mond-oeps: inline; }
+  .mascotte[data-stemming="denk"] { --m-bril: none; --m-ogen-denk: inline; --m-mond-blij: none; --m-mond-denk: inline; }
+  @media (prefers-reduced-motion: no-preference) {
+    .hero .mascotte { animation: wiebel 3.2s ease-in-out infinite; transform-origin: 50% 100%; }
+    @keyframes wiebel { 0%, 100% { transform: rotate(-2deg); } 50% { transform: rotate(2deg) translateY(-3px); } }
+  }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="ted" viewBox="-4 -4 168 183">
+<path d="M130.0 142.0 Q135.4 147.1 128.3 151.1 Q133.9 157.6 123.3 159.5 Q126.1 166.8 115.4 166.7 Q114.3 173.2 105.0 172.3 Q101.9 178.9 92.9 175.8 Q87.4 181.5 80.0 177.0 Q72.5 182.0 67.1 175.8 Q57.7 179.6 55.0 172.3 Q46.1 172.9 44.6 166.7 Q36.0 165.6 36.7 159.5 Q26.1 157.6 31.7 151.1 Q23.6 147.2 30.0 142.0 Q22.4 136.7 31.7 132.9 Q28.8 127.2 36.7 124.5 Q34.8 117.7 44.6 117.3 Q44.7 109.8 55.0 111.7 Q58.5 105.7 67.1 108.2 Q72.3 101.2 80.0 107.0 Q87.6 101.3 92.9 108.2 Q101.2 106.1 105.0 111.7 Q113.8 111.2 115.4 117.3 Q125.5 117.6 123.3 124.5 Q134.2 126.3 128.3 132.9 Q136.2 136.8 130.0 142.0 Z" fill="#5f3f33" stroke="#141414" stroke-width="3.5" stroke-linejoin="round"/><path d="M125.0 140.0 Q131.8 144.3 123.7 147.4 Q128.7 152.7 119.8 154.4 Q120.8 159.4 113.7 160.6 Q112.9 165.6 105.6 165.5 Q104.1 171.6 96.0 169.0 Q92.3 174.4 85.4 170.8 Q80.0 175.3 74.6 170.8 Q68.0 173.6 64.0 169.0 Q56.2 171.2 54.4 165.5 Q46.1 166.4 46.3 160.6 Q38.0 160.0 40.2 154.4 Q33.4 152.2 36.3 147.4 Q29.8 144.2 35.0 140.0 Q29.9 135.8 36.3 132.6 Q31.9 127.4 40.2 125.6 Q37.0 119.6 46.3 119.4 Q45.4 113.1 54.4 114.5 Q56.3 108.9 64.0 111.0 Q67.9 106.1 74.6 109.2 Q80.0 105.5 85.4 109.2 Q91.8 106.9 96.0 111.0 Q103.0 109.8 105.6 114.5 Q113.6 113.9 113.7 119.4 Q121.4 120.3 119.8 125.6 Q127.2 127.7 123.7 132.6 Q131.6 135.7 125.0 140.0 Z" fill="#8a6556" stroke="#141414" stroke-width="0" stroke-linejoin="round"/>
+<path d="M105.0 138.0 Q109.0 144.2 103.1 148.3 Q106.3 157.0 97.7 157.1 Q97.8 166.7 89.6 162.9 Q86.5 173.4 80.0 165.0 Q73.5 173.5 70.4 162.9 Q62.9 165.7 62.3 157.1 Q55.1 156.0 56.9 148.3 Q49.5 144.5 55.0 138.0 Q51.6 131.9 56.9 127.7 Q56.0 120.7 62.3 118.9 Q63.0 110.5 70.4 113.1 Q74.3 106.8 80.0 111.0 Q85.9 106.0 89.6 113.1 Q96.4 111.6 97.7 118.9 Q104.8 120.1 103.1 127.7 Q108.2 132.0 105.0 138.0 Z" fill="#e9d8c2" stroke="#141414" stroke-width="0" stroke-linejoin="round"/>
+<path d="M66 128 q-3 6 0 12 M80 123 q0 7 0 13 M94 128 q3 6 0 12 M72 146 q-1 5 2 9 M88 146 q1 5 -2 9" stroke="#c9b093" stroke-width="2" fill="none" stroke-linecap="round"/>
+<path d="M74.0 161.0 Q79.8 164.6 71.7 166.0 Q74.0 171.0 65.5 169.7 Q63.5 175.3 57.0 171.0 Q50.9 174.5 48.5 169.7 Q40.2 170.9 42.3 166.0 Q33.7 164.7 40.0 161.0 Q35.0 157.5 42.3 156.0 Q40.1 151.1 48.5 152.3 Q50.7 147.2 57.0 151.0 Q63.4 146.9 65.5 152.3 Q72.9 151.7 71.7 156.0 Q79.3 157.5 74.0 161.0 Z" fill="#f1e3cf" stroke="#141414" stroke-width="3.5" stroke-linejoin="round"/><path d="M120.0 161.0 Q125.9 164.6 117.7 166.0 Q120.2 171.1 111.5 169.7 Q109.3 174.8 103.0 171.0 Q97.2 173.8 94.5 169.7 Q87.3 170.2 88.3 166.0 Q80.4 164.6 86.0 161.0 Q80.8 157.5 88.3 156.0 Q85.4 150.7 94.5 152.3 Q96.7 147.1 103.0 151.0 Q109.2 147.3 111.5 152.3 Q120.0 151.0 117.7 156.0 Q126.5 157.3 120.0 161.0 Z" fill="#f1e3cf" stroke="#141414" stroke-width="3.5" stroke-linejoin="round"/><path d="M51 159 v6 M57 158 v7 M63 159 v6 M97 159 v6 M103 158 v7 M109 159 v6" stroke="#141414" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+<path d="M52.5 90.1 Q54.6 99.1 48.2 102.1 Q48.2 114.0 42.0 111.5 Q39.6 127.6 34.9 117.2 Q29.5 131.5 28.0 118.0 Q20.6 128.5 22.3 114.0 Q13.2 121.0 18.7 105.7 Q9.1 107.3 17.7 94.5 Q11.9 89.0 19.5 81.9 Q17.0 72.6 23.8 69.9 Q24.6 60.0 30.0 60.5 Q32.8 49.3 37.1 54.8 Q41.7 46.2 44.0 54.0 Q49.5 48.6 49.7 58.0 Q55.2 56.5 53.3 66.3 Q58.3 68.4 54.3 77.5 Q59.4 83.1 52.5 90.1 Z" fill="#5f3f33" stroke="#141414" stroke-width="3.5" stroke-linejoin="round"/><path d="M140.5 81.9 Q147.6 88.9 142.3 94.5 Q150.2 106.8 141.3 105.7 Q148.2 123.3 137.7 114.0 Q141.8 135.2 132.0 118.0 Q131.2 136.2 125.1 117.2 Q120.1 131.1 118.0 111.5 Q111.9 113.6 111.8 102.1 Q104.9 99.4 107.5 90.1 Q100.5 83.1 105.7 77.5 Q100.7 67.5 106.7 66.3 Q103.2 53.9 110.3 58.0 Q110.6 48.9 116.0 54.0 Q118.2 45.4 122.9 54.8 Q127.1 50.4 130.0 60.5 Q135.8 59.1 136.2 69.9 Q142.6 72.9 140.5 81.9 Z" fill="#5f3f33" stroke="#141414" stroke-width="3.5" stroke-linejoin="round"/>
+<path d="M30 74 q5 10 0 20 q-3 8 2 14 M40 78 q4 10 -1 22 M130 74 q-5 10 0 20 q3 8 -2 14 M120 78 q-4 10 1 22" stroke="#7d5646" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+<path d="M126.0 64.0 Q131.4 68.9 125.0 72.7 Q129.2 78.6 122.0 81.1 Q124.1 87.2 117.2 88.7 Q117.4 94.8 110.8 95.2 Q109.2 100.7 103.0 100.4 Q100.9 106.8 94.2 103.9 Q90.6 109.4 84.8 105.8 Q80.0 111.1 75.2 105.8 Q69.5 109.2 65.8 103.9 Q59.0 107.0 57.0 100.4 Q50.4 101.2 49.2 95.2 Q41.6 95.6 42.8 88.7 Q35.4 87.5 38.0 81.1 Q31.8 78.3 35.0 72.7 Q29.3 68.9 34.0 64.0 Q28.3 59.0 35.0 55.3 Q31.1 49.5 38.0 46.9 Q33.6 39.5 42.8 39.3 Q38.8 30.1 49.2 32.8 Q48.3 24.2 57.0 27.6 Q56.9 16.6 65.8 24.1 Q68.2 13.4 75.2 22.2 Q80.0 11.5 84.8 22.2 Q91.4 14.9 94.2 24.1 Q101.8 19.4 103.0 27.6 Q113.1 22.4 110.8 32.8 Q121.2 30.1 117.2 39.3 Q126.1 39.7 122.0 46.9 Q128.6 49.6 125.0 55.3 Q130.3 59.2 126.0 64.0 Z" fill="#5f3f33" stroke="#141414" stroke-width="3.5" stroke-linejoin="round"/><path d="M121.0 66.0 Q124.8 70.2 120.1 73.7 Q122.5 78.5 117.5 81.0 Q119.6 86.7 113.2 87.7 Q113.1 92.9 107.4 93.5 Q106.8 99.2 100.5 98.0 Q98.4 103.2 92.7 101.2 Q89.2 105.2 84.3 102.8 Q80.0 107.0 75.7 102.8 Q70.8 105.2 67.3 101.2 Q61.6 103.3 59.5 98.0 Q53.9 98.5 52.6 93.5 Q46.9 92.9 46.8 87.7 Q40.8 86.4 42.5 81.0 Q36.1 78.9 39.9 73.7 Q35.6 70.2 39.0 66.0 Q35.1 61.7 39.9 58.3 Q35.3 52.9 42.5 51.0 Q37.7 44.0 46.8 44.3 Q44.0 36.8 52.6 38.5 Q51.6 30.8 59.5 34.0 Q59.3 24.0 67.3 30.8 Q70.1 24.1 75.7 29.2 Q80.0 20.0 84.3 29.2 Q90.1 23.2 92.7 30.8 Q99.4 26.7 100.5 34.0 Q107.7 31.5 107.4 38.5 Q115.2 37.4 113.2 44.3 Q122.0 44.1 117.5 51.0 Q123.5 53.2 120.1 58.3 Q125.8 61.7 121.0 66.0 Z" fill="#957264" stroke="#141414" stroke-width="0" stroke-linejoin="round"/>
+<path d="M56 40 q6 4 8 12 M68 32 q4 6 3 14 M80 30 q2 6 0 14 M92 32 q-3 7 -2 14 M104 40 q-6 5 -7 13 M48 52 q6 2 10 8 M112 52 q-6 2 -10 8" stroke="#cbb0a0" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+<path d="M67.0 90.0 Q69.0 94.3 64.4 96.4 Q63.5 101.9 57.9 99.8 Q53.6 102.3 50.5 98.7 Q44.8 98.6 45.7 93.4 Q42.4 90.0 45.7 86.6 Q45.4 81.9 50.5 81.3 Q53.4 76.5 57.9 80.2 Q62.9 79.1 64.4 83.6 Q69.7 85.5 67.0 90.0 Z" fill="#e2d0bc" stroke="#141414" stroke-width="3" stroke-linejoin="round"/><path d="M115.0 90.0 Q117.4 94.4 112.4 96.4 Q111.0 101.1 105.9 99.8 Q101.6 102.3 98.5 98.7 Q92.6 98.7 93.7 93.4 Q90.5 90.0 93.7 86.6 Q93.0 81.6 98.5 81.3 Q101.4 76.6 105.9 80.2 Q110.8 79.3 112.4 83.6 Q117.5 85.5 115.0 90.0 Z" fill="#e2d0bc" stroke="#141414" stroke-width="3" stroke-linejoin="round"/>
+<path d="M104.0 91.0 Q110.7 94.8 102.6 96.8 Q108.6 102.7 98.4 101.9 Q103.0 110.4 92.0 105.7 Q91.9 114.1 84.2 107.7 Q80.0 118.6 75.8 107.7 Q66.8 116.7 68.0 105.7 Q56.8 110.6 61.6 101.9 Q52.5 102.2 57.4 96.8 Q49.5 94.8 56.0 91.0 Q51.3 87.4 57.4 85.2 Q54.9 80.8 61.6 80.1 Q60.1 74.2 68.0 76.3 Q69.4 70.3 75.8 74.3 Q80.0 70.9 84.2 74.3 Q90.5 70.6 92.0 76.3 Q99.2 74.8 98.4 80.1 Q105.4 80.6 102.6 85.2 Q108.6 87.4 104.0 91.0 Z" fill="#e2d0bc" stroke="#141414" stroke-width="3" stroke-linejoin="round"/>
+<path d="M66 96 q-1 6 1 11 M74 99 q0 5 1 9 M86 99 q0 5 -1 9 M94 96 q1 6 -1 11" stroke="#bfa58c" stroke-width="2" fill="none" stroke-linecap="round"/>
+
+      <g style="display:var(--m-bril,inline)">
+        <path d="M44 63 H116" stroke="#141414" stroke-width="4"/>
+        <path d="M47 61 H76 Q76 78 61 78 Q47 78 47 63 Z" fill="#141414"/>
+        <path d="M84 61 H113 Q113 78 99 78 Q84 78 84 63 Z" fill="#141414"/>
+        <path d="M53 65 L59 65 M90 65 L96 65" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/>
+      </g>
+      <g style="display:var(--m-ogen-blij,none)"><path d="M53 67 Q61 57 69 67 M91 67 Q99 57 107 67" stroke="#141414" stroke-width="4" fill="none" stroke-linecap="round"/></g>
+      <g style="display:var(--m-ogen-denk,none)">
+        <circle cx="62" cy="66" r="7" fill="#b89a52" stroke="#141414" stroke-width="2.5"/><circle cx="98" cy="66" r="7" fill="#b89a52" stroke="#141414" stroke-width="2.5"/>
+        <circle cx="62" cy="67" r="3.4" fill="#141414"/><circle cx="98" cy="67" r="3.4" fill="#141414"/>
+        <circle cx="63.6" cy="65" r="1.3" fill="#fff"/><circle cx="99.6" cy="65" r="1.3" fill="#fff"/>
+      </g><path d="M52 56 q6 -6 12 -1 q2 -7 8 -4 M108 56 q-6 -6 -12 -1 q-2 -7 -8 -4" stroke="#6b4a3c" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <ellipse cx="80" cy="84" rx="10.5" ry="8" fill="#6b3b33" stroke="#141414" stroke-width="3"/>
+      <ellipse cx="76.5" cy="81.2" rx="3.2" ry="1.9" fill="#fff" opacity="0.65"/>
+      <g style="display:var(--m-mond-blij,inline)">
+        <path d="M68 95 Q80 106 92 95 Z" fill="#5a2a2a" stroke="#141414" stroke-width="3" stroke-linejoin="round"/>
+        <path d="M75 99 Q73 116 81.5 117 Q90 116 88 99 Z" fill="#ef8ea0" stroke="#141414" stroke-width="2.5" stroke-linejoin="round"/>
+        <path d="M81.5 102 V112" stroke="#c45d74" stroke-width="1.8" stroke-linecap="round"/>
+      </g>
+      <path style="display:var(--m-mond-oeps,none)" d="M72 101 Q80 93 88 101" stroke="#141414" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+      <path style="display:var(--m-mond-denk,none)" d="M72 99 H88" stroke="#141414" stroke-width="3.5" stroke-linecap="round"/></symbol>
+    <symbol id="visje" viewBox="0 0 30 18">
+      <path d="M2 9 Q10 0 20 9 Q10 18 2 9 Z M20 9 L28 3 L28 15 Z" fill="#ffd83d" stroke="#141414" stroke-width="2" stroke-linejoin="round"/>
+      <circle cx="8" cy="8" r="1.5" fill="#141414"/>
+    </symbol>
+  </defs>
+</svg>
+
+<main>
+  <header class="hero">
+    <span class="les-sticker">Roofvissen · les 1</span>
+    <svg class="krabbel" style="right:6px;top:6px;width:44px" viewBox="0 0 40 40" aria-hidden="true"><path d="M22 2 L12 22 H22 L16 38 L32 14 H22 L28 2 Z" fill="#ff2e7a" stroke="#141414" stroke-width="2.5" stroke-linejoin="round"/></svg>
+    <h1>Aanbeet of<br><span class="band">vastzitten?</span></h1>
+    <div class="hero-rij">
+      <svg class="mascotte" data-stemming="cool" viewBox="-4 -4 168 183" role="img" aria-label="Ted, een pluizige bruine pup met zonnebril"><use href="#ted"/></svg>
+      <div class="ballon">Yo! Ik ben Ted. Bij kunstaas is je hand de beetmelder.</div>
+    </div>
+    <p class="doel"><strong>Na deze les</strong> weet je hoe een aanbeet van een roofvis voelt, hoe je die onderscheidt van vastzitten, en wat je dan doet.</p>
+    <ol class="stappen" aria-label="Stappen van deze les">
+      <li id="st1"><a href="#uitleg"><span class="nr">1</span>Uitleg</a></li>
+      <li id="st2"><a href="#spel"><span class="nr">2</span>Voel-spel</a></li>
+      <li id="st3"><a href="#quiz"><span class="nr">3</span>Quiz</a></li>
+      <li id="st4"><a href="#water"><span class="nr">4</span>Aan het water</a></li>
+    </ol>
+  </header>
+
+  <section id="uitleg">
+    <h2><span class="stapnr">1</span>Wachten kost je de vis</h2>
+    <p>Je draait een shad binnen. Ineens wordt het zwaar. Bij karpervissen wacht je tot de beetmelder piept en de vis gaat lopen. Bij kunstaas is er geen dobber en geen beetmelder: je voelt alles via de lijn in je hand en de top van je hengel.</p>
+    <p>En je hebt weinig tijd. Een roofvis grijpt het aas, merkt dat het van rubber of plastic is, en spuugt het binnen een paar tellen weer uit.</p>
+
+    <div class="signalen">
+      <div class="signaal">
+        <svg viewBox="0 0 48 48" aria-hidden="true"><rect x="2" y="2" width="44" height="44" rx="12" fill="#ffd83d" stroke="#141414" stroke-width="3"/><path d="M8 30 H20 L24 12 L28 30 H40" stroke="#141414" stroke-width="3.5" fill="none" stroke-linejoin="round"/></svg>
+        <div><h3>Een tik</h3><p>Een korte, scherpe ruk in de lijn. Vaak baars, maar ook een snoek kan zo pakken. <a class="bron" href="https://www.sportvisserijnederland.nl/files/rvnl_9303.pdf">bron</a></p></div>
+      </div>
+      <div class="signaal">
+        <svg viewBox="0 0 48 48" aria-hidden="true"><rect x="2" y="2" width="44" height="44" rx="12" fill="#ff2e7a" stroke="#141414" stroke-width="3"/><path d="M6 32 H14 L18 16 L22 26 L26 14 L30 26 L34 16 L38 24 H42" stroke="#141414" stroke-width="3.5" fill="none" stroke-linejoin="round"/></svg>
+        <div><h3>Zwaar én levend</h3><p>Het voelt alsof je iets zwaars binnendraait, maar het schudt of trekt terug. Een snoek schudt vaak met zijn kop.</p></div>
+      </div>
+      <div class="signaal">
+        <svg viewBox="0 0 48 48" aria-hidden="true"><rect x="2" y="2" width="44" height="44" rx="12" fill="#cfc3e8" stroke="#141414" stroke-width="3"/><path d="M24 8 V26" stroke="#141414" stroke-width="3.5"/><path d="M16 22 L24 30 L32 22" stroke="#141414" stroke-width="3.5" fill="none" stroke-linejoin="round"/><path d="M10 38 H38" stroke="#141414" stroke-width="3.5" stroke-dasharray="4 4"/></svg>
+        <div><h3>Het aas stopt te vroeg</h3><p>Je laat je shad zakken en telt hoe lang dat duurt. Wordt de lijn eerder slap, of schiet hij opzij? Dan hield iets hem onderweg tegen. Vaak een vis.</p></div>
+      </div>
+    </div>
+
+    <p><strong>En vastzitten?</strong> Dat voelt als dood gewicht: zwaar, maar er komt niets terug. Stop je met draaien, dan blijft de lijn stil. Een plant geeft wat mee en glijdt langzaam, maar schudt niet. Hangt er een groen sliertje aan je aas, dan was het een plant. In een vijver zijn takken en planten vaak de boosdoener. <a class="bron" href="https://www.sportvisserijnederland.nl/files/rvnl_5997.pdf">bron</a></p>
+
+    <div class="regel">
+      <strong>Twijfel? Sla aan!</strong>
+      <p>Aanslaan is kort en stevig de hengel omhoog of opzij halen, zodat de haak vast komt te zitten. Het kost niets. Was het de bodem, dan merk je dat meteen. Was het een vis, dan zit hij nu vast.</p>
+    </div>
+
+    <p>Zit je echt vast? Niet blijven rukken. Loop een stukje opzij en trek vanuit een andere hoek, of laat de lijn even slap hangen.</p>
+    <p><strong>Tip:</strong> gevlochten lijn (een lijn van in elkaar gevlochten draadjes) rekt bijna niet. Daardoor voel je een tik veel beter dan met gewone nylon lijn. <a class="bron" href="https://www.decathlon.be/nl/alle-sporten/roofvissen/snoekkunstaas">bron</a></p>
+  </section>
+
+  <section id="spel">
+    <h2><span class="stapnr">2</span>Voel de lijn</h2>
+    <p>Je ziet hoe hard er aan de lijn getrokken wordt, en de hengeltop buigt mee. Kijk goed: is het een vis, zit je vast, is het een plant of tik je over de bodem?</p>
+    <div class="spel">
+      <div class="spel-kop"><span class="titel">Voel-spel</span><span class="ronde" id="ronde">8 rondes</span></div>
+      <div class="scherm">
+        <svg id="spel-svg" viewBox="0 0 320 200" role="img" aria-label="Hengel en een lijn die laat zien hoe hard er getrokken wordt">
+          <rect x="0" y="150" width="320" height="50" fill="#2b5c8a"/>
+          <path d="M0 150 Q20 144 40 150 T80 150 T120 150 T160 150 T200 150 T240 150 T280 150 T320 150" stroke="#7cc1d8" stroke-width="2" fill="none"/>
+          <text x="10" y="20" fill="#cfc3e8" font-size="11" font-family="Atkinson Hyperlegible, Arial">trek op de lijn</text>
+          <line x1="10" y1="132" x2="200" y2="132" stroke="#3d2d66" stroke-width="1.5" stroke-dasharray="3 4"/>
+          <polyline id="spoor" points="" fill="none" stroke="#ffd83d" stroke-width="3.5" stroke-linejoin="round" stroke-linecap="round"/>
+          <path id="hengel" d="M310 196 Q280 120 236 40" stroke="#ff2e7a" stroke-width="6" fill="none" stroke-linecap="round"/>
+          <line id="lijn" x1="236" y1="40" x2="230" y2="160" stroke="#fff6dc" stroke-width="1.5"/>
+        </svg>
+      </div>
+      <div class="spel-ballon">
+        <svg class="mascotte mini" id="spel-mascotte" data-stemming="cool" viewBox="-4 -4 168 183" aria-hidden="true"><use href="#ted"/></svg>
+        <p id="spel-tekst">Tik op ‘Start’. Kijk naar de gele lijn en de hengeltop, en kies dan wat je voelt.</p>
+      </div>
+      <div class="keuzes" id="keuzes">
+        <button class="keuze" data-k="vis" type="button" disabled>Vis!</button>
+        <button class="keuze" data-k="vast" type="button" disabled>Vast</button>
+        <button class="keuze" data-k="plant" type="button" disabled>Plant</button>
+        <button class="keuze" data-k="bodem" type="button" disabled>Bodem</button>
+      </div>
+      <div class="spel-knoppen">
+        <button class="knop roze" id="start" type="button">Start</button>
+        <button class="knop licht verborgen" id="nogmaals" type="button">Bekijk nog eens</button>
+        <button class="knop verborgen" id="volgende" type="button">Volgende</button>
+      </div>
+      <div class="vangst" id="vangst" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <section id="quiz">
+    <h2><span class="stapnr">3</span>Quiz</h2>
+    <p>Vier situaties aan het water. Je ziet meteen of het klopt en waarom.</p>
+    <div class="kaart" id="oefenen"></div>
+  </section>
+
+  <section id="water">
+    <h2><span class="stapnr">4</span>Aan het water</h2>
+    <p>De volgende keer bij de vijver: leer samen voelen wat er aan je lijn gebeurt. Een spel voor twee.</p>
+    <div class="briefje">
+      <ul class="checklist" id="checklist">
+        <li><input type="checkbox" id="c1"><label for="c1">Mee: jouw VISpas en een JeugdVISpas voor wie op 1 januari 13 of jonger was. Twijfel? Doe de <a href="https://www.sportvisunie.nl/nl/artikelen/vispas-contact-service-vispas-check">VISpas-check</a>.</label></li>
+        <li><input type="checkbox" id="c2"><label for="c2">Op beide hengels een stalen onderlijn, en een lange onthaaktang in de tas. Een snoek heeft scherpe tanden; daar kom je nooit met je vingers bij.</label></li>
+        <li><input type="checkbox" id="c3"><label for="c3">Eerste vijf worpen: laat je shad bewust de bodem raken en door de planten gaan. Vertel elkaar wat je voelt.</label></li>
+        <li><input type="checkbox" id="c4"><label for="c4">Wie iets voelt, roept ‘tik!’ en slaat meteen aan. Tel per persoon. Doel: tien keer aanslaan elk.</label></li>
+        <li><input type="checkbox" id="c5"><label for="c5">Gelukt als je zonder te kijken kunt zeggen: bodem, plant, vast of vis.</label></li>
+      </ul>
+    </div>
+  </section>
+
+  <h2>Verder lezen</h2>
+  <p><a href="https://www.sportvisserijnederland.nl/files/rvnl_5997.pdf">Hét Visblad: streetfishing</a> — over roofvissen met kunstaas in stadswater, dicht bij wat jullie in de vijver doen: licht bepakt, veel plekjes proberen en omgaan met obstakels.</p>
+
+  <h2>Vragen?</h2>
+  <p>Iets onduidelijk? Vraag het in de chat; ik ben je leraar en leg het graag anders uit.</p>
+
+  <footer>
+    <a href="https://claude.ai/code/artifact/2c597637-5758-4943-a1c4-5edcb6066877">Leerdossier</a>
+  </footer>
+</main>
+
+<script>
+  const LES = "roofvissen-les-01";
+
+  /* ---------- Opslag (alleen als de pagina dat mag) ---------- */
+  let dbRef = null;
+  const dbKlaar = (async () => {
+    try {
+      if (!window.claude || !window.claude.use) return;
+      const db = await window.claude.use("db");
+      const user = await window.claude.use("user");
+      if (!db || !user) return;
+      const id = await user.id();
+      if (!id) return;
+      dbRef = db.collection("data/users/" + id);
+    } catch (e) { dbRef = null; }
+  })();
+  async function bewaar(sleutel, data) {
+    try { await dbKlaar; if (!dbRef) return; await dbRef.doc(LES + "-" + sleutel).set(Object.assign({ les: LES, tijd: new Date().toISOString() }, data)); } catch (e) {}
+  }
+  async function lees(sleutel) {
+    try { await dbKlaar; if (!dbRef) return null; const s = await dbRef.doc(LES + "-" + sleutel).get(); return s.exists ? s.data() : null; } catch (e) { return null; }
+  }
+
+  function stemming(el, s) { if (el) el.dataset.stemming = s; }
+  function stapKlaar(n) { const li = document.getElementById("st" + n); if (li) li.classList.add("klaar"); }
+  const geenBeweging = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* ---------- Voel-spel ---------- */
+  const g = (x, m, w) => Math.exp(-((x - m) ** 2) / (2 * w * w));
+  const glad = (a, b, x) => { const t = Math.min(1, Math.max(0, (x - a) / (b - a))); return t * t * (3 - 2 * t); };
+  const SOORTEN = {
+    tik:   { antwoord: "vis",   f: t => 0.22 + 0.015 * Math.sin(t * 40) + 0.62 * g(t, 0.5, 0.012) + 0.32 * g(t, 0.57, 0.01),
+             uitleg: "Eén korte, scherpe tik terwijl het verder rustig blijft: een vis pakte het aas. Meteen aanslaan!" },
+    zwaar: { antwoord: "vis",   f: t => 0.22 + glad(0.32, 0.4, t) * (0.42 + 0.17 * Math.sin(t * 55) * Math.sin(t * 13 + 1) + 0.05 * Math.sin(t * 90)),
+             uitleg: "Zwaar én schokken terug: er leeft iets. Waarschijnlijk een snoek die met zijn kop schudt. Aanslaan!" },
+    vast:  { antwoord: "vast",  f: t => 0.22 + 0.63 * glad(0.32, 0.42, t) + 0.004 * Math.sin(t * 30),
+             uitleg: "Zwaar en daarna helemaal vlak, er komt niets terug: je zit vast. Niet rukken, loop een stukje opzij." },
+    plant: { antwoord: "plant", f: t => 0.22 + 0.42 * glad(0.25, 0.85, t) + 0.02 * Math.sin(t * 9),
+             uitleg: "Langzaam zwaarder en soepel glijdend, zonder schokken: een plant. Draai iets hoger en sneller binnen." },
+    bodem: { antwoord: "bodem", f: t => { let s = 0.28; for (let k = 0; k < 8; k++) s += 0.22 * g(t, 0.08 + k * 0.13, 0.01); return s; },
+             uitleg: "Regelmatige tikjes in hetzelfde ritme: je shad hupt over de bodem. Prima, je vist laag. Dat ritme is je referentie." }
+  };
+  function husselLijst(l) { const k = l.slice(); for (let i = k.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [k[i], k[j]] = [k[j], k[i]]; } return k; }
+  function maakRondes() {
+    const basis = Object.keys(SOORTEN);
+    const extra = husselLijst(basis).slice(0, 3);
+    let r = husselLijst(basis.concat(extra));
+    for (let i = 1; i < r.length; i++) if (r[i] === r[i - 1]) { const j = (i + 1) % r.length; [r[i], r[j]] = [r[j], r[i]]; }
+    return r;
+  }
+
+  const spoor = document.getElementById("spoor"), hengel = document.getElementById("hengel"), lijn = document.getElementById("lijn");
+  const keuzes = [...document.querySelectorAll(".keuze")];
+  const startKnop = document.getElementById("start"), volgendeKnop = document.getElementById("volgende"), nogKnop = document.getElementById("nogmaals");
+  const tekst = document.getElementById("spel-tekst"), spelMascotte = document.getElementById("spel-mascotte");
+  const rondeEl = document.getElementById("ronde"), vangst = document.getElementById("vangst");
+  let rondes = [], ronde = 0, goed = 0, animatie = null, huidige = null;
+
+  function zetHengel(s) {
+    const tipX = 236 + s * 18, tipY = 40 + s * 70;
+    hengel.setAttribute("d", `M310 196 Q${282 - s * 6} ${120 + s * 10} ${tipX} ${tipY}`);
+    lijn.setAttribute("x1", tipX); lijn.setAttribute("y1", tipY);
+  }
+  function tekenTot(f, eind) {
+    const pts = [];
+    for (let i = 0; i <= 120; i++) { const t = (i / 120) * eind; pts.push((10 + t * 190).toFixed(1) + "," + (140 - f(t) * 110).toFixed(1)); }
+    spoor.setAttribute("points", pts.join(" "));
+    zetHengel(f(eind));
+  }
+  function speel(soort, klaar) {
+    cancelAnimationFrame(animatie);
+    const f = SOORTEN[soort].f;
+    if (geenBeweging) { tekenTot(f, 1); klaar(); return; }
+    const duur = 3200; let begin = null;
+    const stap = ts => { if (begin === null) begin = ts; const t = Math.min(1, (ts - begin) / duur); tekenTot(f, Math.max(t, 0.001)); if (t < 1) animatie = requestAnimationFrame(stap); else klaar(); };
+    animatie = requestAnimationFrame(stap);
+  }
+  function startRonde() {
+    huidige = rondes[ronde];
+    rondeEl.textContent = "Ronde " + (ronde + 1) + " van " + rondes.length;
+    keuzes.forEach(k => { k.disabled = true; k.classList.remove("gekozen"); });
+    startKnop.classList.add("verborgen"); volgendeKnop.classList.add("verborgen"); nogKnop.classList.add("verborgen");
+    stemming(spelMascotte, "denk"); tekst.textContent = "Voel mee… wat gebeurt er aan je lijn?";
+    speel(huidige, () => { keuzes.forEach(k => { k.disabled = false; }); nogKnop.classList.remove("verborgen"); tekst.textContent = "Wat was het?"; });
+  }
+  keuzes.forEach(k => k.addEventListener("click", () => {
+    const juist = SOORTEN[huidige].antwoord, isGoed = k.dataset.k === juist;
+    keuzes.forEach(b => { b.disabled = true; });
+    k.classList.add("gekozen");
+    if (isGoed) { goed++; vangst.insertAdjacentHTML("beforeend", '<svg viewBox="0 0 30 18" aria-label="goed"><use href="#visje"/></svg>'); }
+    stemming(spelMascotte, isGoed ? "blij" : "oeps");
+    tekst.textContent = (isGoed ? "Goed gevoeld! " : "Bijna. Het was " + juist + ". ") + SOORTEN[huidige].uitleg;
+    bewaar("spel-r" + (ronde + 1), { soort: huidige, gekozen: k.dataset.k, goed: isGoed });
+    nogKnop.classList.remove("verborgen");
+    ronde++;
+    if (ronde < rondes.length) { volgendeKnop.textContent = "Volgende"; volgendeKnop.classList.remove("verborgen"); }
+    else eindSpel();
+  }));
+  function eindSpel() {
+    rondeEl.textContent = goed + " van " + rondes.length + " goed";
+    stapKlaar(2);
+    const top = goed >= rondes.length - 1;
+    setTimeout(() => {
+      stemming(spelMascotte, top ? "cool" : "blij");
+      tekst.textContent += top ? " Klaar: jij voelt het verschil al! Op naar de quiz." : " Klaar! Speel nog een keer, het ritme van de bodem is de sleutel.";
+    }, 50);
+    volgendeKnop.textContent = "Nog een potje"; volgendeKnop.classList.remove("verborgen");
+    bewaar("spel-eind", { goed: goed, totaal: rondes.length });
+  }
+  startKnop.addEventListener("click", () => { rondes = maakRondes(); ronde = 0; goed = 0; vangst.innerHTML = ""; startRonde(); });
+  volgendeKnop.addEventListener("click", () => {
+    if (ronde >= rondes.length) { rondes = maakRondes(); ronde = 0; goed = 0; vangst.innerHTML = ""; }
+    startRonde();
+  });
+  nogKnop.addEventListener("click", () => {
+    const soort = ronde < rondes.length && !keuzes[0].disabled ? huidige : rondes[ronde - 1] || huidige;
+    const wasOpen = !keuzes[0].disabled;
+    keuzes.forEach(b => { b.disabled = true; });
+    speel(soort, () => { if (wasOpen) keuzes.forEach(b => { b.disabled = false; }); });
+  });
+  tekenTot(t => 0.22, 1);
+
+  /* ---------- Quiz ---------- */
+  const OEFENEN = [
+    { id: "v1", vraag: "Je draait een shad binnen. Ineens wordt het zwaar, en je voelt een paar korte schokken terug. Wat doe je?",
+      opties: ["Direct aanslaan en lijn strak houden", "Wachten tot de vis gaat lopen", "Lijn laten vieren en dan aanslaan", "Stoppen met draaien en even afwachten"],
+      goed: 0, uitleg: "Schokken die terugtrekken betekenen: er leeft iets aan je lijn. Een roofvis spuugt kunstaas snel weer uit, dus wachten zoals bij karper kost je de vis." },
+    { id: "v2", vraag: "Het wordt zwaar, maar er gebeurt verder niets. Als je stopt met draaien, blijft de lijn stil op dezelfde plek. Wat is het waarschijnlijkst?",
+      opties: ["Je zit ergens aan vast", "Een snoek houdt het aas", "Een baars volgt je aas", "Je aas zakt naar beneden"],
+      goed: 0, uitleg: "Dood gewicht zonder beweging terug is vastzitten. Twijfel je toch? Sla dan aan: is het een vis, dan voel je meteen schokken." },
+    { id: "v3", vraag: "Je laat je shad naar de bodem zakken. Normaal duurt dat tot je ‘vijf’ telt. Nu wordt de lijn al bij ‘twee’ slap. Wat betekent dat?",
+      opties: ["Een vis pakte het aas onderweg", "Het water is hier opeens dieper", "Je loodkop is veel te licht", "Je lijn zit in de knoop"],
+      goed: 0, uitleg: "Stopt het aas eerder dan normaal, dan heeft iets het tegengehouden. Vaak is dat een vis die het zakkende aas pakt. Dieper water of een lichtere loodkop maken het zakken juist langer." },
+    { id: "v4", vraag: "Je voelt een tik en slaat aan, maar er zit niets. Aan je shad hangt een groen sliertje. Wat pas je aan?",
+      opties: ["Iets hoger en sneller binnendraaien", "Een zwaardere loodkop eraan zetten", "Langer wachten voordat je aanslaat", "Een grotere shad gaan gebruiken"],
+      goed: 0, uitleg: "Een sliertje betekent dat je door de planten vist; de tik was waarschijnlijk een plant. Hoger vissen houdt je aas schoon. Een zwaardere loodkop trekt hem juist dieper de planten in." }
+  ];
+  function bouwQuiz(houderId, vragen) {
+    const houder = document.getElementById(houderId);
+    let beantwoord = 0, goedTotaal = 0;
+    houder.innerHTML = "";
+    vragen.forEach((v, nr) => {
+      const blok = document.createElement("div"); blok.className = "vraag";
+      const t = document.createElement("p"); t.className = "vraag-tekst"; t.textContent = (nr + 1) + ". " + v.vraag; blok.appendChild(t);
+      const opties = document.createElement("div"); opties.className = "opties";
+      const uitleg = document.createElement("p"); uitleg.className = "uitleg";
+      husselLijst(v.opties.map((tx, i) => ({ tekst: tx, goed: i === v.goed }))).forEach(o => {
+        const knop = document.createElement("button");
+        knop.className = "optie"; knop.type = "button"; knop.textContent = o.tekst;
+        if (o.goed) knop.dataset.goed = "1";
+        knop.addEventListener("click", () => {
+          opties.querySelectorAll("button").forEach(b => { b.disabled = true; });
+          knop.classList.add(o.goed ? "goed" : "fout");
+          if (!o.goed) opties.querySelector('[data-goed="1"]').classList.add("goed");
+          uitleg.textContent = (o.goed ? "Klopt. " : "Niet helemaal. ") + v.uitleg;
+          uitleg.classList.add("zichtbaar", o.goed ? "goed" : "fout");
+          beantwoord++; if (o.goed) goedTotaal++;
+          bewaar(v.id, { vraag: v.id, gegeven: o.tekst, goed: o.goed });
+          if (beantwoord === vragen.length) toonScore();
+        });
+        opties.appendChild(knop);
+      });
+      blok.appendChild(opties); blok.appendChild(uitleg); houder.appendChild(blok);
+    });
+    const score = document.createElement("div"); score.className = "score-blok";
+    score.innerHTML = '<svg class="mascotte mini" viewBox="-4 -4 168 183" aria-hidden="true"><use href="#ted"/></svg><div><p></p></div>';
+    houder.appendChild(score);
+    function toonScore() {
+      const alles = goedTotaal === vragen.length;
+      stemming(score.querySelector(".mascotte"), alles ? "cool" : "blij");
+      score.querySelector("p").textContent = goedTotaal + " van " + vragen.length + " goed. " + (alles ? "Strak! Tijd voor het echte werk aan de waterkant." : "Lees de uitleg bij de rode vraag nog eens, of vraag het in de chat.");
+      const opnieuw = document.createElement("button"); opnieuw.className = "knop licht"; opnieuw.type = "button"; opnieuw.textContent = "Opnieuw";
+      opnieuw.addEventListener("click", () => bouwQuiz(houderId, vragen));
+      score.querySelector("div").appendChild(opnieuw);
+      score.classList.add("zichtbaar");
+      stapKlaar(3);
+    }
+  }
+  bouwQuiz("oefenen", OEFENEN);
+
+  /* ---------- Checklist, onthouden tussen bezoeken ---------- */
+  const vinkjes = [...document.querySelectorAll("#checklist input")];
+  function checklistKlaar() { if (vinkjes.every(v => v.checked)) stapKlaar(4); }
+  vinkjes.forEach(v => v.addEventListener("change", () => {
+    const staat = {}; vinkjes.forEach(x => { staat[x.id] = x.checked; });
+    bewaar("checklist", { staat: staat }); checklistKlaar();
+  }));
+  lees("checklist").then(d => { if (d && d.staat) { vinkjes.forEach(v => { v.checked = !!d.staat[v.id]; }); checklistKlaar(); } });
+
+  /* Uitleg gelezen: stap 1 af zodra het voel-spel in beeld komt */
+  if ("IntersectionObserver" in window) {
+    const io = new IntersectionObserver(e => { if (e[0].isIntersecting) { stapKlaar(1); io.disconnect(); } }, { threshold: 0.2 });
+    io.observe(document.getElementById("spel"));
+  }
+</script>
+</body>
+</html>

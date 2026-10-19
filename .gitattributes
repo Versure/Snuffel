@@ -1,0 +1,8 @@
+# Normalise line endings: the app is built and run in a Linux container.
+* text=auto eol=lf
+
+*.png binary
+*.jpg binary
+*.ico binary
+*.woff binary
+*.woff2 binary

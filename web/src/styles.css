@@ -1,0 +1,5 @@
+/* Global styles. Design tokens and fonts follow in M2. */
+body {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+}

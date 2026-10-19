@@ -1,0 +1,40 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+out-tsc/
+tmp/
+.angular/
+
+# Test output
+coverage/
+test-results/
+playwright-report/
+blob-report/
+__screenshots__/
+
+# Generated content (built from content/ by `npm run content:build`)
+web/public/content/
+
+# PocketBase local data and binaries
+pocketbase/pb_data/
+pocketbase/bin/
+
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Claude Code local settings
+.claude/settings.local.json
+
+# Editors and OS
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+*.sublime-workspace
+.DS_Store
+Thumbs.db
+npm-debug.log
