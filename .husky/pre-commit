@@ -3,4 +3,14 @@ if [ "$branch" = "main" ]; then
   echo "Commit on main refused. Work on a branch: git switch -c feat/<name>" >&2
   exit 1
 fi
+# Only GitHub noreply addresses (and Claude's) may appear in the public history.
+email=$(git var GIT_AUTHOR_IDENT | sed -E 's/.*<([^>]*)>.*/\1/')
+case "$email" in
+  *@users.noreply.github.com | noreply@anthropic.com) ;;
+  *)
+    echo "Commit refused: author e-mail '$email' is not a GitHub noreply address." >&2
+    echo "Run: git config user.name Versure && git config user.email 24564489+Versure@users.noreply.github.com" >&2
+    exit 1
+    ;;
+esac
 npx --no -- lint-staged
