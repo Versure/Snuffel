@@ -20,13 +20,16 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "privacy": "node tools/check-no-external-urls.mjs",
-    "check": "npm run format:check && npm run lint && npm run privacy && npm run typecheck && npm run test && npm run build",
+    "test:tools": "node --test \"tools/**/*.test.mjs\"",
+    "pocketbase:fetch": "node tools/fetch-pocketbase.mjs",
+    "check": "npm run format:check && npm run lint && npm run privacy && npm run test:tools && npm run typecheck && npm run test && npm run build",
     "verify": "npm run check && npm run e2e",
     "prepare": "husky"
   },
   "devDependencies": {
     "@commitlint/cli": "^21.2.4",
     "@commitlint/config-conventional": "^21.2.4",
+    "fflate": "^0.8.3",
     "husky": "^9.1.7",
     "lint-staged": "^17.6.0",
     "prettier": "^3.9.10"
