@@ -1,0 +1,15 @@
+node_modules
+**/node_modules
+**/dist
+.angular
+**/.angular
+.git
+pocketbase/bin
+pocketbase/pb_data
+web/public/fonts
+web/public/content
+test-results
+**/test-results
+playwright-report
+**/playwright-report
+.env*

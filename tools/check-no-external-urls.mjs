@@ -1,10 +1,10 @@
 // Privacy gate: the app may not reference other hosts (fonts, CDNs, analytics).
-// Scans app source files for http(s) URLs. External links belong in lesson content, not in code.
+// Scans app and PocketBase hook/migration sources for http(s) URLs. External links belong in lesson content, not in code.
 import { readdirSync, readFileSync, statSync } from 'node:fs';
 import { join, relative } from 'node:path';
 
-const roots = ['web/src', 'web/public'];
-const extensions = ['.ts', '.html', '.css', '.json', '.svg', '.webmanifest'];
+const roots = ['web/src', 'web/public', 'pocketbase/pb_hooks', 'pocketbase/pb_migrations'];
+const extensions = ['.ts', '.js', '.html', '.css', '.json', '.svg', '.webmanifest'];
 const ignoredDirs = ['content'];
 // XML namespaces are identifiers, not network requests.
 const allowed = [/^http:\/\/www\.w3\.org\//];

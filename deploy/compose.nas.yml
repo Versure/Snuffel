@@ -1,0 +1,11 @@
+services:
+  snuffel:
+    image: ghcr.io/versure/snuffel:latest
+    container_name: snuffel
+    restart: unless-stopped
+    ports:
+      - '8090:8090' # alleen LAN; geen port forwarding op de router
+    volumes:
+      - /volume1/docker/snuffel/pb_data:/pb/pb_data
+    environment:
+      - TZ=Europe/Amsterdam

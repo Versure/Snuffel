@@ -69,6 +69,7 @@ Node-versie staat in `.nvmrc` (Angular 22 vereist ≥ 22.22.3 of ≥ 24.15).
 - Conventional Commits: `feat(lesson): render signal cards`, `fix(auth): …`, `chore: …`, `test: …`, `docs: …`. Klein, één logische stap per commit.
 - Nooit `--no-verify`, `--force`, `git reset --hard` of `gh pr merge`. Jop merget pull requests zelf.
 - Push alleen als `npm run verify` groen is (de pre-push-hook draait het ook).
+- Commit als `Versure <24564489+Versure@users.noreply.github.com>` (of als Claude met `noreply@anthropic.com`); de pre-commit-hook weigert elk ander e-mailadres.
 
 ## Werkwijze
 
