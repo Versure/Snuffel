@@ -1,0 +1,20 @@
+# The real production image, built locally: docker compose -f deploy/compose.dev.yml up --build
+# Then open http://localhost:8090. Wipe the data with `down -v`.
+name: snuffel-dev
+
+services:
+  snuffel:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile
+    platform: linux/amd64
+    image: snuffel:dev
+    ports:
+      - '8090:8090'
+    volumes:
+      - snuffel-dev-data:/pb/pb_data
+    environment:
+      - TZ=Europe/Amsterdam
+
+volumes:
+  snuffel-dev-data:
