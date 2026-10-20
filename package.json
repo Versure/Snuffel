@@ -13,6 +13,7 @@
   "scripts": {
     "start": "npm run start -w web",
     "build": "npm run build -w web",
+    "serve:prod": "npm run build && node tools/serve-pocketbase.mjs",
     "lint": "npm run lint -w web",
     "typecheck": "npm run typecheck -w web",
     "test": "npm run test -w web",
