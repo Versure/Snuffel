@@ -110,6 +110,7 @@ describe('StyleGuide', () => {
     const small = Array.from(element.querySelectorAll('.moods snf-ted.snf-ted--small svg'));
     expect(small).toHaveLength(4);
     for (const svg of small) expect(svg.getAttribute('aria-hidden')).toBe('true');
+    expect(element.querySelector('.moods--small')?.getAttribute('aria-hidden')).toBe('true');
   });
 
   it('shows a speech bubble with each tail and two ted-says', async () => {
