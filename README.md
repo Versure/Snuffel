@@ -106,6 +106,6 @@ Na elke merge naar `main` bouwt GitHub Actions de image en zet hem op `ghcr.io/v
 
 7. **Bijwerken.** Na een merge: Container Manager → Project → `snuffel` → Actie → Bouwen (of Image → `ghcr.io/versure/snuffel` → Bijwerken) en het project opnieuw starten. Nieuwe migraties worden bij de start automatisch toegepast.
 
-8. **Terugzetten.** Zet in de compose van het project `image: ghcr.io/versure/snuffel:sha-<kort>` met de tag van een eerdere versie (zie GitHub → Packages → snuffel) en bouw en start opnieuw. Terug naar de nieuwste: weer `:latest`.
+8. **Terugzetten.** Zet in de compose van het project `image: ghcr.io/versure/snuffel:sha-<kort>` met de tag van een eerdere versie (zie GitHub → Packages → snuffel) en bouw en start opnieuw. Terug naar de nieuwste: weer `:latest`. Let op: PocketBase-migraties lopen alleen vooruit. Heeft de update het datamodel gewijzigd, zet dan ook de back-up van `pb_data` van vóór de update terug.
 
 9. **Problemen.** Blijft de container op "Ongezond" staan of stopt hij meteen, kijk dan bij Container → `snuffel` → Log. Meestal staat er iets als `permission denied` bij `pb_data`: dan mist de map de schrijfrechten uit stap 1.
