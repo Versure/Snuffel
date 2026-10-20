@@ -1,0 +1,37 @@
+:host {
+  display: block;
+}
+
+:host(.snf-ted--small) {
+  width: 4.5rem;
+}
+
+:host(.snf-ted--large) {
+  width: 100%;
+  max-width: 190px;
+}
+
+svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* Keyframes and animation only exist without reduced motion, so `reduce` gives animation-name: none. */
+@media (prefers-reduced-motion: no-preference) {
+  :host(.snf-ted--wiggle) svg {
+    transform-origin: 50% 100%;
+    animation: snf-ted-wiggle 3.2s ease-in-out infinite;
+  }
+
+  @keyframes snf-ted-wiggle {
+    0%,
+    100% {
+      transform: rotate(-2deg);
+    }
+
+    50% {
+      transform: rotate(2deg) translateY(-3px);
+    }
+  }
+}

@@ -1,0 +1,36 @@
+:host {
+  position: relative;
+  display: block;
+  padding: 0.7rem 0.9rem;
+  font-family: var(--snf-font-display);
+  font-size: 1.3rem;
+  letter-spacing: 0.03em;
+  line-height: 1.15;
+  color: var(--snf-color-text);
+  background: var(--snf-color-surface);
+  border: var(--snf-border-width) solid var(--snf-color-ink);
+  border-radius: var(--snf-radius-xl);
+  box-shadow: var(--snf-shadow-md);
+}
+
+:host::after {
+  content: '';
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  background: var(--snf-color-surface);
+  border-bottom: var(--snf-border-width) solid var(--snf-color-ink);
+  border-left: var(--snf-border-width) solid var(--snf-color-ink);
+}
+
+:host(.snf-speech-bubble--left)::after {
+  bottom: 16px;
+  left: -14px;
+  transform: rotate(45deg) skew(10deg, 10deg);
+}
+
+:host(.snf-speech-bubble--bottom)::after {
+  bottom: -14px;
+  left: 24px;
+  transform: rotate(-45deg) skew(10deg, 10deg);
+}

@@ -57,4 +57,32 @@
   <snf-sticky-note>
     <p>Dit is een plakbriefje met tape. Hier komt straks de checklist.</p>
   </snf-sticky-note>
+
+  <h2 id="ted">Ted</h2>
+  <ul class="moods">
+    @for (option of moodOptions; track option.mood) {
+      <li>
+        <snf-ted [mood]="option.mood" />
+        <span>
+          {{ option.label }}<br />
+          <code>{{ option.mood }}</code>
+        </span>
+      </li>
+    }
+  </ul>
+  <ul class="moods moods--small" aria-hidden="true">
+    @for (option of moodOptions; track option.mood) {
+      <li><snf-ted [mood]="option.mood" size="small" [decorative]="true" /></li>
+    }
+  </ul>
+
+  <div class="bubbles">
+    <snf-speech-bubble tail="left">Een ballon met een staart naar links.</snf-speech-bubble>
+    <snf-speech-bubble tail="bottom">Een ballon met een staart naar onder.</snf-speech-bubble>
+  </div>
+
+  <snf-ted-says mood="cool" [wiggle]="true">
+    Yo! Ik ben Ted. Bij kunstaas is je hand de beetmelder.
+  </snf-ted-says>
+  <snf-ted-says mood="thinking" size="small">Voel mee… wat gebeurt er aan je lijn?</snf-ted-says>
 </main>

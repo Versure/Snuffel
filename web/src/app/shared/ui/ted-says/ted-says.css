@@ -1,0 +1,38 @@
+:host {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.ted {
+  flex: none;
+}
+
+/* Tail left: Ted to the left of the bubble (.hero-rij and .spel-ballon in the reference). */
+:host(.snf-ted-says--row) .bubble {
+  flex: 1;
+}
+
+:host(.snf-ted-says--row.snf-ted-says--large) {
+  align-items: flex-end;
+}
+
+:host(.snf-ted-says--row.snf-ted-says--large) .ted {
+  width: 46%;
+  max-width: 190px;
+}
+
+:host(.snf-ted-says--row.snf-ted-says--large) .bubble {
+  margin-bottom: 4.5rem;
+}
+
+:host(.snf-ted-says--row.snf-ted-says--small) {
+  align-items: center;
+  gap: 0.6rem;
+}
+
+/* Tail bottom: bubble on top, Ted below it, aligned left. */
+:host(.snf-ted-says--column) {
+  flex-direction: column-reverse;
+  align-items: flex-start;
+  gap: 1.1rem;
+}

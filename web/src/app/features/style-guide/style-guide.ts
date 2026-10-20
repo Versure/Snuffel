@@ -4,13 +4,21 @@ import { RouterLink } from '@angular/router';
 import { Band } from '../../shared/ui/band/band';
 import { Button } from '../../shared/ui/button/button';
 import { Card } from '../../shared/ui/card/card';
+import { SpeechBubble } from '../../shared/ui/speech-bubble/speech-bubble';
 import { Sticker } from '../../shared/ui/sticker/sticker';
 import { StickyNote } from '../../shared/ui/sticky-note/sticky-note';
+import { Ted, type TedMood } from '../../shared/ui/ted/ted';
+import { TedSays } from '../../shared/ui/ted-says/ted-says';
 
 export type Theme = 'light' | 'dark' | 'system';
 
 interface ThemeOption {
   value: Theme;
+  label: string;
+}
+
+interface MoodOption {
+  mood: TedMood;
   label: string;
 }
 
@@ -22,7 +30,7 @@ interface Swatch {
 /** Shows the house style on /stijl. Not linked anywhere; for Jop to compare with the reference. */
 @Component({
   selector: 'snf-style-guide',
-  imports: [Band, Button, Card, RouterLink, Sticker, StickyNote],
+  imports: [Band, Button, Card, RouterLink, SpeechBubble, Sticker, StickyNote, Ted, TedSays],
   templateUrl: './style-guide.html',
   styleUrl: './style-guide.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -54,6 +62,13 @@ export class StyleGuide {
     { token: '--snf-color-error-soft', label: 'Fout (zacht)' },
     { token: '--snf-color-panel', label: 'Paneel' },
     { token: '--snf-color-panel-text', label: 'Paneeltekst' },
+  ];
+
+  protected readonly moodOptions: readonly MoodOption[] = [
+    { mood: 'cool', label: 'Stoer' },
+    { mood: 'happy', label: 'Blij' },
+    { mood: 'thinking', label: 'Nadenkend' },
+    { mood: 'oops', label: 'Oeps' },
   ];
 
   protected readonly theme = signal<Theme>(this.currentTheme());

@@ -1,6 +1,7 @@
 import { DOCUMENT } from '@angular/common';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
+import { TED_MOODS } from '../../shared/ui/ted/ted';
 import { StyleGuide } from './style-guide';
 
 describe('StyleGuide', () => {
@@ -88,5 +89,42 @@ describe('StyleGuide', () => {
     ]) {
       expect(element.querySelector(selector), selector).not.toBeNull();
     }
+  });
+
+  it('shows Ted in four moods with their own labels', async () => {
+    const { element } = await render();
+    const heading = element.querySelector('h2#ted');
+    expect(heading?.textContent).toBe('Ted');
+
+    const labelled = Array.from(element.querySelectorAll('snf-ted svg[role="img"]'));
+    expect(labelled.map((svg) => svg.getAttribute('aria-label'))).toEqual([
+      TED_MOODS.cool.label,
+      TED_MOODS.happy.label,
+      TED_MOODS.thinking.label,
+      TED_MOODS.oops.label,
+    ]);
+    for (const label of ['Stoer', 'Blij', 'Nadenkend', 'Oeps']) {
+      expect(element.textContent, label).toContain(label);
+    }
+
+    const small = Array.from(element.querySelectorAll('.moods snf-ted.snf-ted--small svg'));
+    expect(small).toHaveLength(4);
+    for (const svg of small) expect(svg.getAttribute('aria-hidden')).toBe('true');
+    expect(element.querySelector('.moods--small')?.getAttribute('aria-hidden')).toBe('true');
+  });
+
+  it('shows a speech bubble with each tail and two ted-says', async () => {
+    const { element } = await render();
+    const bubbles = element.querySelectorAll('.bubbles snf-speech-bubble');
+    expect(bubbles).toHaveLength(2);
+    expect(bubbles[0]?.classList).toContain('snf-speech-bubble--left');
+    expect(bubbles[1]?.classList).toContain('snf-speech-bubble--bottom');
+
+    const says = Array.from(element.querySelectorAll('snf-ted-says'));
+    expect(says).toHaveLength(2);
+    expect(says[0]?.textContent).toContain('Yo! Ik ben Ted.');
+    expect(says[0]?.querySelector('snf-ted')?.classList).toContain('snf-ted--wiggle');
+    expect(says[1]?.textContent).toContain('Voel mee');
+    expect(says[1]?.querySelector('snf-ted')?.classList).toContain('snf-ted--small');
   });
 });
