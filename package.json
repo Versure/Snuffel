@@ -18,6 +18,7 @@
     "typecheck": "npm run typecheck -w web",
     "test": "npm run test -w web",
     "e2e": "npm run e2e -w web",
+    "e2e:container": "npm run e2e:container -w web",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "privacy": "node tools/check-no-external-urls.mjs",
