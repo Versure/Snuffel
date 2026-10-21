@@ -318,3 +318,27 @@ test.describe('accessibility', () => {
     await expectFocusRing(page, logoutButton(page), 'Uitloggen');
   });
 });
+
+test.describe('reduced motion', () => {
+  test('/login and /ouder have no running animation with prefers-reduced-motion: reduce', async ({
+    page,
+  }) => {
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    const running = () =>
+      page.evaluate(() =>
+        document
+          .getAnimations()
+          .filter((animation) => animation.playState === 'running')
+          .map((animation) => animation.id || animation.constructor.name),
+      );
+    await page.goto('/login');
+    await expect(loginButton(page)).toBeVisible();
+    expect(await running(), '/login').toEqual([]);
+
+    await fillLogin(page, 'ouder');
+    await expect(logoutButton(page)).toBeVisible();
+    await page.goto('/ouder');
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Ouderoverzicht');
+    expect(await running(), '/ouder').toEqual([]);
+  });
+});
