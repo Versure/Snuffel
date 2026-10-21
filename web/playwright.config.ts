@@ -27,13 +27,23 @@ export default defineConfig({
       use: { ...devices['Desktop Chrome'] },
     },
     {
+      // Test accounts (pocketbase/seed/dev-accounts.json) for the server projects.
+      name: 'server-setup',
+      testMatch: 'server/seed.setup.ts',
+      use: { baseURL: serverURL },
+    },
+    {
       name: 'server-mobile',
       testMatch: 'server/**/*.spec.ts',
+      testIgnore: 'server/seed.setup.ts',
+      dependencies: ['server-setup'],
       use: { ...devices['Pixel 7'], baseURL: serverURL },
     },
     {
       name: 'server-desktop',
       testMatch: 'server/**/*.spec.ts',
+      testIgnore: 'server/seed.setup.ts',
+      dependencies: ['server-setup'],
       use: { ...devices['Desktop Chrome'], baseURL: serverURL },
     },
   ],
@@ -45,7 +55,7 @@ export default defineConfig({
       timeout: 180_000,
     },
     {
-      command: `npm run build && node ../tools/serve-pocketbase.mjs --port ${serverPort} --data ../pocketbase/pb_data/e2e`,
+      command: `npm run build && node ../tools/serve-pocketbase.mjs --port ${serverPort} --data ../pocketbase/pb_data/e2e --dev-superuser`,
       url: `${serverURL}/api/health`,
       reuseExistingServer: false,
       timeout: 300_000,

@@ -5,6 +5,8 @@ test.describe('static files served by PocketBase', () => {
   test('serves the app on /', async ({ page }) => {
     const response = await page.goto('/');
     expect(response?.status()).toBe(200);
+    // Without a session the app sends you to the login page (M5).
+    await expect(page).toHaveURL(/\/login\?terug=%2F$/);
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Snuffel');
   });
 

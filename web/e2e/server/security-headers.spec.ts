@@ -36,7 +36,7 @@ function violations(page: Page): Promise<Violation[]> {
 }
 
 test.describe('security headers', () => {
-  for (const path of ['/', '/stijl', '/assets/ted.svg']) {
+  for (const path of ['/', '/login', '/stijl', '/assets/ted.svg']) {
     test(`${path} has the CSP and the other security headers`, async ({ request }) => {
       const response = await request.get(path);
       expect(response.status()).toBe(200);
@@ -78,6 +78,40 @@ test.describe('the app under the CSP', () => {
 
     expect(await violations(page)).toEqual([]);
     expect(errors).toEqual([]);
+  });
+
+  test('/login has no CSP violations and no console errors, also when logging in', async ({
+    page,
+  }) => {
+    const errors: string[] = [];
+    page.on('console', (message) => {
+      if (message.type() === 'error') errors.push(message.text());
+    });
+    page.on('pageerror', (error) => errors.push(error.message));
+    await recordViolations(page);
+
+    await page.goto('/login');
+    await expect(page.getByRole('button', { name: 'Inloggen' })).toBeVisible();
+    await page.evaluate(() => document.fonts.ready);
+    expect(await violations(page)).toEqual([]);
+
+    await page.getByLabel('Gebruikersnaam').fill('kind-a');
+    await page.getByLabel('Wachtwoord').fill('snuffel-test');
+    await page.getByRole('button', { name: 'Inloggen' }).click();
+    await expect(page.getByRole('button', { name: 'Uitloggen' })).toBeVisible();
+
+    expect(await violations(page)).toEqual([]);
+    expect(errors).toEqual([]);
+  });
+
+  test('a failed login attempt causes no CSP violations', async ({ page }) => {
+    await recordViolations(page);
+    await page.goto('/login');
+    await page.getByLabel('Gebruikersnaam').fill('kind-a');
+    await page.getByLabel('Wachtwoord').fill('fout-wachtwoord');
+    await page.getByRole('button', { name: 'Inloggen' }).click();
+    await expect(page.getByRole('alert')).toBeVisible();
+    expect(await violations(page)).toEqual([]);
   });
 
   test('applies the global styles and fonts', async ({ page }) => {
