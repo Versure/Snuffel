@@ -2,10 +2,11 @@
 // using pb_hooks and pb_migrations from the repo. Used by the e2e tests and `npm run serve:prod`.
 //
 // Usage: node tools/serve-pocketbase.mjs [--port 8090] [--public dir] [--data dir] [--keep-data]
-//        [--dev-superuser]
+//        [--dev-superuser] [--api-only]
 // An explicit --data below pocketbase/pb_data/ is emptied first, so every run starts clean
 // (unless --keep-data). --dev-superuser first creates the dev superuser from
 // pocketbase/seed/dev-accounts.json with the CLI (local development and e2e only).
+// --api-only serves no app (for `npm start`, where ng serve serves it and proxies /api).
 import { spawn } from 'node:child_process';
 import { existsSync, rmSync } from 'node:fs';
 import { isAbsolute, join, relative, resolve } from 'node:path';
@@ -23,11 +24,12 @@ const { values } = parseArgs({
     data: { type: 'string' },
     'keep-data': { type: 'boolean', default: false },
     'dev-superuser': { type: 'boolean', default: false },
+    'api-only': { type: 'boolean', default: false },
   },
 });
 
 const publicDir = resolve(values.public);
-if (!existsSync(join(publicDir, 'index.html'))) {
+if (!values['api-only'] && !existsSync(join(publicDir, 'index.html'))) {
   console.error(`serve-pocketbase: ${publicDir} has no index.html. Run \`npm run build\` first.`);
   process.exit(1);
 }
@@ -65,7 +67,7 @@ const child = spawn(
   [
     'serve',
     `--http=127.0.0.1:${values.port}`,
-    `--publicDir=${publicDir}`,
+    ...(values['api-only'] ? [] : [`--publicDir=${publicDir}`]),
     ...pocketBaseFlags(dataDir),
   ],
   { stdio: 'inherit' },

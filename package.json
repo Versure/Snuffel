@@ -11,7 +11,7 @@
     "web"
   ],
   "scripts": {
-    "start": "npm run start -w web",
+    "start": "node tools/dev.mjs",
     "build": "npm run build -w web",
     "serve:prod": "npm run build && node tools/serve-pocketbase.mjs",
     "lint": "npm run lint -w web",
