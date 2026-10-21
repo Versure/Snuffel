@@ -4,6 +4,8 @@ const port = 4300;
 // The production build served by the pinned PocketBase binary (tools/serve-pocketbase.mjs).
 const serverPort = 8091;
 const serverURL = `http://127.0.0.1:${serverPort}`;
+// Optional: a preinstalled Chromium, for environments that cannot download Playwright's own build.
+const executablePath = process.env['PLAYWRIGHT_CHROMIUM_PATH'] || undefined;
 
 export default defineConfig({
   testDir: './e2e',
@@ -14,6 +16,7 @@ export default defineConfig({
   use: {
     baseURL: `http://localhost:${port}`,
     trace: 'retain-on-failure',
+    launchOptions: { executablePath },
   },
   projects: [
     {
