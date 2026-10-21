@@ -1,0 +1,56 @@
+:host {
+  display: block;
+}
+
+main {
+  max-width: 28rem;
+}
+
+.ted {
+  margin: 1rem 0 1.25rem;
+}
+
+.ted p {
+  margin: 0;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+label {
+  font-weight: 700;
+}
+
+input {
+  min-height: var(--snf-button-min-height);
+  padding: 0.4rem 0.8rem;
+  font: inherit;
+  color: var(--snf-color-text);
+  background: var(--snf-color-paper);
+  /* Muted text colour: a visible field edge (3:1) on the card in light and dark. */
+  border: var(--snf-border-width) solid var(--snf-color-text-muted);
+  border-radius: var(--snf-radius-md);
+}
+
+input[aria-invalid='true'] {
+  border-color: var(--snf-color-error);
+}
+
+.error {
+  margin: 0;
+  font-weight: 700;
+  color: var(--snf-color-error);
+}
+
+button {
+  align-self: flex-start;
+}
