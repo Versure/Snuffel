@@ -31,6 +31,15 @@ async function recordViolations(page: Page): Promise<void> {
   });
 }
 
+/** The browser's own console message for the 400 of a refused login, and nothing else. */
+function isRefusedLoginMessage(text: string, url: string): boolean {
+  return (
+    text === 'Failed to load resource: the server responded with a status of 400 (Bad Request)' &&
+    URL.canParse(url) &&
+    new URL(url).pathname === '/api/collections/users/auth-with-password'
+  );
+}
+
 function violations(page: Page): Promise<Violation[]> {
   return page.evaluate(() => window.__cspViolations);
 }
@@ -104,14 +113,33 @@ test.describe('the app under the CSP', () => {
     expect(errors).toEqual([]);
   });
 
-  test('a failed login attempt causes no CSP violations', async ({ page }) => {
+  test('a failed login attempt causes no CSP violations and no other console errors', async ({
+    page,
+  }) => {
+    const errors: string[] = [];
+    const expectedNetworkErrors: string[] = [];
+    page.on('console', (message) => {
+      if (message.type() !== 'error') return;
+      // The browser itself logs the 400 of the refused login; that one message is expected.
+      if (isRefusedLoginMessage(message.text(), message.location().url)) {
+        expectedNetworkErrors.push(message.text());
+        return;
+      }
+      errors.push(message.text());
+    });
+    page.on('pageerror', (error) => errors.push(error.message));
     await recordViolations(page);
+
     await page.goto('/login');
     await page.getByLabel('Gebruikersnaam').fill('kind-a');
     await page.getByLabel('Wachtwoord').fill('fout-wachtwoord');
     await page.getByRole('button', { name: 'Inloggen' }).click();
     await expect(page.getByRole('alert')).toBeVisible();
+
     expect(await violations(page)).toEqual([]);
+    expect(errors).toEqual([]);
+    // Exactly that one network message, so the filter cannot silently swallow anything else.
+    await expect.poll(() => expectedNetworkErrors.length).toBe(1);
   });
 
   test('applies the global styles and fonts', async ({ page }) => {
