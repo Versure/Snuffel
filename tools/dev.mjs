@@ -62,6 +62,16 @@ export function devSteps({
   ];
 }
 
+/** Stops a child and everything it started (its process group; on Windows only the child). */
+function stopTree(child) {
+  try {
+    if (process.platform === 'win32') child.kill('SIGTERM');
+    else process.kill(-child.pid, 'SIGTERM');
+  } catch {
+    // Already gone.
+  }
+}
+
 async function main() {
   const options = parseDevArgs(process.argv.slice(2));
 
@@ -71,7 +81,7 @@ async function main() {
     if (stopping) return;
     stopping = true;
     for (const child of running) {
-      if (child.exitCode === null) child.kill('SIGTERM');
+      if (child.exitCode === null) stopTree(child);
     }
     setTimeout(() => process.exit(code), 500).unref();
     process.exitCode = code;
@@ -84,6 +94,8 @@ async function main() {
       cwd: rootDir,
       stdio: 'inherit',
       shell: process.platform === 'win32',
+      // Own process group, so that stopping also reaches grandchildren (npm → ng serve).
+      detached: process.platform !== 'win32',
     });
     if (step.kind === 'once') {
       const code = await new Promise((done) => child.on('exit', (exitCode) => done(exitCode)));
@@ -98,7 +110,7 @@ async function main() {
     child.on('exit', (code) => {
       if (!stopping) {
         console.error(`dev: ${step.name} stopped (exit code ${code}); stopping the rest`);
-        stopAll(code ?? 1);
+        stopAll(code || 1);
       }
     });
     if (step.healthUrl) {
