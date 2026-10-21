@@ -18,6 +18,26 @@ export const defaultSeedFile = join(rootDir, 'pocketbase', 'seed', 'dev-accounts
 
 const roles = ['child', 'parent'];
 
+const localHosts = ['127.0.0.1', 'localhost', '[::1]'];
+
+/**
+ * Throws unless `url` is an http(s) URL on this machine (127.0.0.1, localhost or ::1).
+ * The seed puts known passwords into PocketBase, so it must never reach the NAS.
+ */
+export function assertLocalUrl(url) {
+  let parsed;
+  try {
+    parsed = new URL(url);
+  } catch {
+    throw new Error(`seed: --url "${url}" is not a valid URL`);
+  }
+  if (!['http:', 'https:'].includes(parsed.protocol) || !localHosts.includes(parsed.hostname)) {
+    throw new Error(
+      `seed: refusing to seed "${url}": only 127.0.0.1, localhost or ::1 are allowed (never the NAS)`,
+    );
+  }
+}
+
 function nonEmptyString(value) {
   return typeof value === 'string' && value.trim() !== '';
 }
@@ -88,6 +108,7 @@ async function request(url, path, { method = 'GET', token, body } = {}) {
  * Returns `{ created, updated }` with the usernames.
  */
 export async function seedAccounts(url, superuser, accounts) {
+  assertLocalUrl(url);
   const { token } = await request(url, '/api/collections/_superusers/auth-with-password', {
     method: 'POST',
     body: { identity: superuser.email, password: superuser.password },
@@ -129,6 +150,7 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
     process.exit(1);
   }
   try {
+    assertLocalUrl(values.url);
     const seed = loadSeed(resolve(values.file));
     const { created, updated } = await seedAccounts(values.url, seed.superuser, seed.accounts);
     console.log(

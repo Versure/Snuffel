@@ -6,7 +6,7 @@ import { join } from 'node:path';
 import { after, before, describe, test } from 'node:test';
 import { promisify } from 'node:util';
 import { startPocketBase } from './pocketbase-harness.mjs';
-import { defaultSeedFile, loadSeed, seedAccounts } from './seed-pocketbase.mjs';
+import { assertLocalUrl, defaultSeedFile, loadSeed, seedAccounts } from './seed-pocketbase.mjs';
 
 const execFileAsync = promisify(execFile);
 const seedTool = join(import.meta.dirname, 'seed-pocketbase.mjs');
@@ -150,6 +150,60 @@ describe('loadSeed', () => {
       (error) => {
         assert.equal(error.code, 1);
         assert.match(error.stderr, /cli-broken\.json is not valid JSON/);
+        return true;
+      },
+    );
+  });
+});
+
+describe('assertLocalUrl', () => {
+  test('accepts 127.0.0.1, localhost and ::1', () => {
+    for (const url of [
+      'http://127.0.0.1:8090',
+      'http://localhost:4200',
+      'http://[::1]:8092',
+      'https://localhost',
+    ]) {
+      assert.doesNotThrow(() => assertLocalUrl(url), url);
+    }
+  });
+
+  test('refuses any other host with a clear error', () => {
+    for (const url of [
+      'http://192.168.1.10:8090',
+      'http://nas.local:8090',
+      'http://snuffel.example',
+      'http://127.0.0.2:8090',
+      'http://localhost.example.com',
+      'http://user@evil.example/@127.0.0.1',
+    ]) {
+      assert.throws(
+        () => assertLocalUrl(url),
+        /seed: refusing to seed .*only 127\.0\.0\.1, localhost or ::1/,
+        url,
+      );
+    }
+  });
+
+  test('refuses something that is not an http URL', () => {
+    assert.throws(() => assertLocalUrl('not a url'), /seed: --url "not a url" is not a valid URL/);
+    assert.throws(() => assertLocalUrl(''), /is not a valid URL/);
+    assert.throws(() => assertLocalUrl('file://localhost/etc/passwd'), /refusing to seed/);
+  });
+
+  test('seedAccounts refuses a remote URL before sending anything', async () => {
+    await assert.rejects(
+      seedAccounts('http://192.168.1.10:8090', loadSeed().superuser, loadSeed().accounts),
+      /refusing to seed/,
+    );
+  });
+
+  test('the CLI exits with code 1 for a remote URL', async () => {
+    await assert.rejects(
+      execFileAsync(process.execPath, [seedTool, '--url', 'http://192.168.1.10:8090']),
+      (error) => {
+        assert.equal(error.code, 1);
+        assert.match(error.stderr, /refusing to seed "http:\/\/192\.168\.1\.10:8090"/);
         return true;
       },
     );
