@@ -6,6 +6,8 @@ node_modules
 .git
 pocketbase/bin
 pocketbase/pb_data
+# Dev/test accounts with known passwords: never in the image.
+pocketbase/seed
 web/public/fonts
 web/public/content
 test-results
