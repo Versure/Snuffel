@@ -30,12 +30,15 @@ async function fillLogin(page: Page, username: string, secret = password): Promi
   await loginButton(page).click();
 }
 
-/** Opens `path` without a session, logs in on the login page and waits for the result. */
+/** Opens `path` without a session, logs in on the login page and waits until it has left it. */
 async function loginVia(page: Page, path: string, username: string): Promise<void> {
   await page.goto(path);
   await expect(page).toHaveURL(/\/login/);
   await fillLogin(page, username);
   await expect(logoutButton(page)).toBeVisible();
+  // The top bar shows Uitloggen as soon as the session exists, which can be just before the
+  // navigation away from /login has finished.
+  await expect(page).not.toHaveURL(/\/login/);
 }
 
 function session(page: Page): Promise<string | null> {
