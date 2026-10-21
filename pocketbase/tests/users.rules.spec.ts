@@ -299,6 +299,101 @@ describe('child A, other fields', () => {
   });
 });
 
+// emailVisibility and the e-mail change flow are not covered by updateRule's field checks.
+// This pins down the current behaviour: neither lets a child reach another account or change
+// its own login (the identity is `username`, never `email`).
+describe('child A, e-mail visibility and e-mail change', () => {
+  let trio: Trio;
+  before(async () => {
+    trio = await createTrio();
+    const response = await update(trio.b.record.id, su, { email: 'kind-b@snuffel.test' });
+    assert.equal(response.status, 200, JSON.stringify(response.body));
+    // Changing the e-mail resets the token key, so B logs in again.
+    trio.b.token = await authAs(pb.url, trio.b.record.username, password);
+  });
+
+  test('the parent does not see the e-mail of B while emailVisibility is off', async () => {
+    const response = await api<UserRecord>(pb.url, `${records}/${trio.b.record.id}`, {
+      token: trio.parent.token,
+    });
+    assert.equal(response.status, 200);
+    assert.equal(response.body['emailVisibility'], false);
+    assert.equal(response.body.email, undefined);
+  });
+
+  test('A can turn on emailVisibility of itself (the only effect: the parent sees it)', async () => {
+    const response = await update(trio.a.record.id, trio.a.token, { emailVisibility: true });
+    assert.equal(response.status, 200, JSON.stringify(response.body));
+    const after = await actual(trio.a.record.id);
+    assert.equal(after.body['emailVisibility'], true);
+    assert.equal(after.body.email, '');
+    assert.equal(after.body.role, 'child');
+  });
+
+  test('A cannot change emailVisibility of B', async () => {
+    assertRefused(
+      await update(trio.b.record.id, trio.a.token, { emailVisibility: true }),
+      'emailVisibility of B',
+    );
+    assert.equal((await actual(trio.b.record.id)).body['emailVisibility'], false);
+  });
+
+  test('B turning on emailVisibility only shows the e-mail to the parent, not to A', async () => {
+    const response = await update(trio.b.record.id, trio.b.token, { emailVisibility: true });
+    assert.equal(response.status, 200, JSON.stringify(response.body));
+    const asParent = await api<UserRecord>(pb.url, `${records}/${trio.b.record.id}`, {
+      token: trio.parent.token,
+    });
+    assert.equal(asParent.body.email, 'kind-b@snuffel.test');
+    const asA = await api(pb.url, `${records}/${trio.b.record.id}`, { token: trio.a.token });
+    assert.equal(asA.status, 404);
+  });
+
+  test('request-email-change needs a login', async () => {
+    const response = await api(pb.url, '/api/collections/users/request-email-change', {
+      method: 'POST',
+      body: { newEmail: 'iemand@snuffel.test' },
+    });
+    assert.equal(response.status, 401);
+  });
+
+  test('request-email-change by a child does not change the e-mail by itself', async () => {
+    // PocketBase only changes the address after confirm-email-change with a token that it
+    // mails to the new address. Snuffel configures no SMTP; PocketBase then hands the mail to
+    // the local `sendmail`. Without one (CI, the container) the request fails with 400; with
+    // one (macOS) it gives 204. Either way the address stays the same.
+    const settings = await api<{ smtp: { enabled: boolean } }>(pb.url, '/api/settings', {
+      token: su,
+    });
+    assert.equal(settings.body.smtp.enabled, false);
+    for (const account of [trio.a, trio.b]) {
+      const response = await api(pb.url, '/api/collections/users/request-email-change', {
+        method: 'POST',
+        token: account.token,
+        body: { newEmail: `nieuw-${account.record.username}@snuffel.test` },
+      });
+      assert.ok([204, 400].includes(response.status), JSON.stringify(response));
+    }
+    assert.equal((await actual(trio.a.record.id)).body.email, '');
+    assert.equal((await actual(trio.b.record.id)).body.email, 'kind-b@snuffel.test');
+  });
+
+  test('confirm-email-change without a mailed token is refused', async () => {
+    const response = await api(pb.url, '/api/collections/users/confirm-email-change', {
+      method: 'POST',
+      body: { token: trio.a.token, password },
+    });
+    assertRefused(response, 'confirm-email-change with an auth token');
+    assert.equal((await actual(trio.a.record.id)).body.email, '');
+  });
+
+  test('the e-mail address never works as login identity, also not after these attempts', async () => {
+    const response = await authWithPassword(pb.url, 'kind-b@snuffel.test', password);
+    assertRefused(response, 'login with e-mail');
+    assert.equal(response.body.token, undefined);
+  });
+});
+
 describe('child A, creating and deleting', () => {
   let trio: Trio;
   before(async () => {
