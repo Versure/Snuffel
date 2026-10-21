@@ -138,6 +138,37 @@ describe('Login', () => {
     });
   }
 
+  it('goes to / when the navigation to terug is refused', async () => {
+    await setup('/ouder');
+    vi.mocked(router.navigateByUrl).mockResolvedValueOnce(false);
+    login.mockResolvedValue(kindA);
+    type('Gebruikersnaam', 'kind-a');
+    type('Wachtwoord', 'snuffel-test');
+    await send();
+    expect(vi.mocked(router.navigateByUrl).mock.calls).toEqual([['/ouder'], ['/']]);
+  });
+
+  it('goes to / when the navigation to terug fails, without an unhandled rejection', async () => {
+    await setup('/ouder');
+    vi.mocked(router.navigateByUrl).mockRejectedValueOnce(new Error('chunk failed to load'));
+    login.mockResolvedValue(kindA);
+    type('Gebruikersnaam', 'kind-a');
+    type('Wachtwoord', 'snuffel-test');
+    await send();
+    expect(vi.mocked(router.navigateByUrl).mock.calls).toEqual([['/ouder'], ['/']]);
+  });
+
+  it('tries / only once when / itself fails, without an unhandled rejection', async () => {
+    await setup();
+    vi.mocked(router.navigateByUrl).mockRejectedValue(new Error('chunk failed to load'));
+    login.mockResolvedValue(kindA);
+    type('Gebruikersnaam', 'kind-a');
+    type('Wachtwoord', 'snuffel-test');
+    await send();
+    expect(vi.mocked(router.navigateByUrl).mock.calls).toEqual([['/']]);
+    expect(button().disabled).toBe(false);
+  });
+
   it('a 400 shows Ted oops in an alert, empties and focuses the password', async () => {
     await setup();
     login.mockRejectedValue(new ClientResponseError({ status: 400 }));

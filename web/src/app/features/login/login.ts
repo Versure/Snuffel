@@ -69,7 +69,7 @@ export class Login {
           return undefined;
         }
         const terug = this.route.snapshot.queryParamMap.get('terug');
-        await this.router.navigateByUrl(safeReturnUrl(terug));
+        await this.goTo(safeReturnUrl(terug));
         return undefined;
       },
       onInvalid: () => {
@@ -79,5 +79,20 @@ export class Login {
         first().focusBoundControl();
       },
     });
+  }
+
+  /** Goes to `target`; when that navigation fails or is refused, goes to `/` instead. */
+  private async goTo(target: string): Promise<void> {
+    if ((await this.navigate(target)) || target === '/') return;
+    await this.navigate('/');
+  }
+
+  /** `navigateByUrl` that never rejects: an error counts as a refused navigation. */
+  private async navigate(url: string): Promise<boolean> {
+    try {
+      return await this.router.navigateByUrl(url);
+    } catch {
+      return false;
+    }
   }
 }
