@@ -1,0 +1,11 @@
+:host {
+  display: block;
+}
+
+.ted {
+  margin: 1rem 0;
+}
+
+.ted p {
+  margin: 0;
+}
