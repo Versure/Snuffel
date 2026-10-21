@@ -31,6 +31,17 @@ describe('PocketBase harness', () => {
     assert.ok(token.length > 0);
   });
 
+  test('the migrations from the repo are applied', async () => {
+    const token = await asSuperuser(pb.url, testSuperuser);
+    const response = await api<{ fields: { name: string }[] }>(pb.url, '/api/collections/users', {
+      token,
+    });
+    assert.equal(response.status, 200);
+    // `username` and `role` only exist through pb_migrations/*_setup_users.js.
+    const names = response.body.fields.map((field) => field.name);
+    assert.ok(names.includes('username') && names.includes('role'), names.join(', '));
+  });
+
   test('the hooks from the repo are loaded', async () => {
     // security.pb.js sets the CSP on everything outside /api and /_.
     const response = await fetch(`${pb.url}/`);
