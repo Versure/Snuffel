@@ -240,14 +240,22 @@ function interactionTexts({ kind, config }, base, add) {
         add(`${path}.steps[${p}].title`, part.title);
         add(`${path}.steps[${p}].text`, part.text);
       });
-      exercise.commonMistakes.forEach((mistake, m) =>
-        add(`${path}.commonMistakes[${m}].feedback`, mistake.feedback),
-      );
+      exercise.commonMistakes.forEach((mistake, m) => {
+        add(`${path}.commonMistakes[${m}].answer`, mistake.answer);
+        add(`${path}.commonMistakes[${m}].feedback`, mistake.feedback);
+      });
       add(`${path}.workedSolution`, exercise.workedSolution);
-      if (exercise.answer.type === 'choice') {
-        exercise.answer.options.forEach((option, o) =>
+      const { answer } = exercise;
+      if (answer.type === 'choice') {
+        answer.options.forEach((option, o) =>
           add(`${path}.answer.options[${o}].text`, option.text),
         );
+      }
+      if (answer.type === 'text') {
+        answer.accepted.forEach((text, a) => add(`${path}.answer.accepted[${a}]`, text));
+      }
+      if (answer.type === 'number' && answer.unit !== undefined) {
+        add(`${path}.answer.unit`, answer.unit);
       }
     });
   }

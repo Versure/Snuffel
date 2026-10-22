@@ -5,7 +5,7 @@ import { join } from 'node:path';
 import { describe, test } from 'node:test';
 import { externalReferences, isValidAssetPath } from './rules/assets.mjs';
 import { trackerReason } from './trackers.mjs';
-import { assertClean, assertIssue, fixtureRoot } from './test-helpers.mjs';
+import { assertClean, assertIssue, codes, fixtureRoot } from './test-helpers.mjs';
 
 // In the fixture, steps[0].blocks[4] is a text block and steps[0].blocks[6] the figure.
 const textPath = 'steps[0].blocks[4].text';
@@ -107,6 +107,41 @@ describe('links', () => {
     );
     assert.match(error.message, /glossary/);
     assert.equal(result.errors.length, 1);
+  });
+
+  test('html and links in stepped-exercise answers are checked', (t) => {
+    const fixture = fixtureRoot(t);
+    const exercise = (id, answer, commonMistakes = []) => ({
+      id,
+      prompt: 'Hoeveel is 1/2 + 1/4?',
+      answer,
+      hints: [],
+      steps: [],
+      commonMistakes,
+      workedSolution: '1/2 = 2/4, en 2/4 + 1/4 = 3/4.',
+    });
+    fixture.mutateLesson((lesson) => {
+      lesson.steps[1].interaction = {
+        id: 'breuken',
+        kind: 'stepped-exercise',
+        config: {
+          exercises: [
+            exercise(
+              'som-1',
+              { type: 'number', value: 0.75, tolerance: 0.001, unit: '[taart](http://x.nl/)' },
+              [{ answer: '<i>2/6</i>', feedback: 'Tellers en noemers tel je niet los op.' }],
+            ),
+            exercise('som-2', { type: 'text', accepted: ['3/4', '<b>drie kwart</b>'] }),
+          ],
+        },
+      };
+    });
+    const result = fixture.check();
+    const base = 'steps[1].interaction.config.exercises';
+    assertIssue(result, 'link-not-https', `${base}[0].answer.unit`);
+    assertIssue(result, 'markup-html', `${base}[0].commonMistakes[0].answer`);
+    assertIssue(result, 'markup-html', `${base}[1].answer.accepted[1]`);
+    assert.equal(result.errors.length, 3, codes(result).join('\n'));
   });
 
   test('utm parameter gives link-tracker', (t) => {
