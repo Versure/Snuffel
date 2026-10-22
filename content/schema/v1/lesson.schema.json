@@ -80,12 +80,14 @@
   },
   "$defs": {
     "id": {
+      "title": "ContentId",
       "type": "string",
       "minLength": 1,
       "maxLength": 60,
       "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
     },
     "text": {
+      "title": "ContentText",
       "type": "string",
       "minLength": 1,
       "pattern": "\\S"
@@ -646,12 +648,14 @@
       }
     },
     "unit": {
+      "title": "TraceUnit",
       "description": "A time or height on the 0-1 scale of the trace.",
       "type": "number",
       "minimum": 0,
       "maximum": 1
     },
     "positiveUnit": {
+      "title": "TracePositiveUnit",
       "type": "number",
       "exclusiveMinimum": 0,
       "maximum": 1

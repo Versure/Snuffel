@@ -19,12 +19,14 @@
   },
   "$defs": {
     "id": {
+      "title": "ContentId",
       "type": "string",
       "minLength": 1,
       "maxLength": 60,
       "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
     },
     "hash": {
+      "title": "ContentHash",
       "description": "First 16 hex characters of the sha-256 of the file.",
       "type": "string",
       "pattern": "^[0-9a-f]{16}$"
