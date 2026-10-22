@@ -1,1 +1,4 @@
+@if (auth.isLoggedIn()) {
+  <snf-top-bar [name]="auth.user()?.name ?? ''" (logout)="logout()" />
+}
 <router-outlet />

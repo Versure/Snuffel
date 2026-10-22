@@ -1,0 +1,69 @@
+<main>
+  <h1>Snuffel</h1>
+
+  <snf-ted-says class="ted" [mood]="tedMood()" size="small">
+    @switch (problem()) {
+      @case ('invalid') {
+        <p role="alert">Hmm, dat klopt niet. Kijk je gebruikersnaam en wachtwoord nog eens na.</p>
+      }
+      @case ('unreachable') {
+        <p role="alert">Snuffel is even niet bereikbaar. Probeer het zo nog eens.</p>
+      }
+      @default {
+        <p>Yo! Ik ben Ted. Wie gaat er snuffelen?</p>
+      }
+    }
+  </snf-ted-says>
+
+  <snf-card>
+    <form novalidate (submit)="onSubmit($event)">
+      <div class="field">
+        <label for="login-username">Gebruikersnaam</label>
+        <input
+          id="login-username"
+          type="text"
+          autocomplete="username"
+          autocapitalize="none"
+          autocorrect="off"
+          spellcheck="false"
+          [formField]="loginForm.username"
+          [attr.aria-invalid]="loginForm.username().touched() && loginForm.username().invalid()"
+          [attr.aria-describedby]="
+            loginForm.username().touched() && loginForm.username().invalid()
+              ? 'login-username-error'
+              : null
+          "
+        />
+        @if (loginForm.username().touched() && loginForm.username().invalid()) {
+          <p class="error" id="login-username-error">
+            {{ loginForm.username().errors()[0]?.message }}
+          </p>
+        }
+      </div>
+
+      <div class="field">
+        <label for="login-password">Wachtwoord</label>
+        <input
+          #password
+          id="login-password"
+          type="password"
+          autocomplete="current-password"
+          [formField]="loginForm.password"
+          [attr.aria-invalid]="loginForm.password().touched() && loginForm.password().invalid()"
+          [attr.aria-describedby]="
+            loginForm.password().touched() && loginForm.password().invalid()
+              ? 'login-password-error'
+              : null
+          "
+        />
+        @if (loginForm.password().touched() && loginForm.password().invalid()) {
+          <p class="error" id="login-password-error">
+            {{ loginForm.password().errors()[0]?.message }}
+          </p>
+        }
+      </div>
+
+      <button snf-button type="submit" [disabled]="loginForm().submitting()">Inloggen</button>
+    </form>
+  </snf-card>
+</main>

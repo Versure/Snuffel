@@ -1,3 +1,11 @@
 :host {
   display: block;
 }
+
+.ted {
+  margin: 1rem 0 1.25rem;
+}
+
+.ted p {
+  margin: 0;
+}

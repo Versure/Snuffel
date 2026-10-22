@@ -1,0 +1,8 @@
+{
+  "superuser": { "email": "dev@snuffel.test", "password": "snuffel-dev-admin" },
+  "accounts": [
+    { "username": "kind-a", "name": "Kind A", "role": "child", "password": "snuffel-test" },
+    { "username": "kind-b", "name": "Kind B", "role": "child", "password": "snuffel-test" },
+    { "username": "ouder", "name": "Ouder", "role": "parent", "password": "snuffel-test" }
+  ]
+}

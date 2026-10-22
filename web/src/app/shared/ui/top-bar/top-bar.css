@@ -1,0 +1,27 @@
+:host {
+  display: block;
+  background: var(--snf-color-panel);
+  color: var(--snf-color-panel-text);
+  border-bottom: var(--snf-border-width) solid var(--snf-color-ink);
+}
+
+.bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  max-width: 42rem;
+  margin: 0 auto;
+  padding: 0.5rem 1rem;
+}
+
+.name {
+  overflow: hidden;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+button {
+  flex: none;
+}

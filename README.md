@@ -17,10 +17,21 @@ npm start
 
 De app draait dan op http://localhost:4200. `npm install` zet ook de git-hooks aan.
 
+`npm start` start ook PocketBase op http://127.0.0.1:8092 (de dev-server stuurt `/api` daarheen door) en zet er testaccounts in. Je logt in met een van deze accounts:
+
+| Gebruikersnaam | Naam   | Rol              | Wachtwoord     |
+| -------------- | ------ | ---------------- | -------------- |
+| `kind-a`       | Kind A | kind (`child`)   | `snuffel-test` |
+| `kind-b`       | Kind B | kind (`child`)   | `snuffel-test` |
+| `ouder`        | Ouder  | ouder (`parent`) | `snuffel-test` |
+
+Het beheerscherm van deze lokale PocketBase staat op http://localhost:8092/_/ (inloggen met `dev@snuffel.test` / `snuffel-dev-admin`). De gegevens blijven tussen twee keer `npm start` bewaard in `pocketbase/pb_data/dev`; gooi die map weg om opnieuw te beginnen. Deze accounts en wachtwoorden staan in `pocketbase/seed/dev-accounts.json` en zijn alleen voor lokaal testen: ze komen niet in de image en nooit op de NAS. Ctrl+C stopt PocketBase en de dev-server samen.
+
 | Commando                   | Wat                                                                                                    |
 | -------------------------- | ------------------------------------------------------------------------------------------------------ |
-| `npm start`                | dev-server met herladen                                                                                |
-| `npm run check`            | format, lint, privacycheck, tests van `tools/`, typecheck, unit-tests en build                         |
+| `npm start`                | PocketBase met testaccounts (poort 8092) en de dev-server met herladen (poort 4200)                    |
+| `npm run check`            | format, lint, privacycheck, tests van `tools/`, `test:pb`, typecheck, unit-tests en build              |
+| `npm run test:pb`          | integratietests van de PocketBase-toegangsregels (`pocketbase/tests/`), tegen een echte PocketBase     |
 | `npm run e2e`              | Playwright-tests (mobiel en desktop, plus de productiebuild via PocketBase); zie hieronder             |
 | `npm run e2e:container`    | dezelfde servertests tegen de echte Docker-image op poort 8090; vraagt Docker, hoort niet bij `verify` |
 | `npm run verify`           | `check` + `e2e`                                                                                        |
@@ -28,21 +39,21 @@ De app draait dan op http://localhost:4200. `npm install` zet ook de git-hooks a
 | `npm run pocketbase:fetch` | het vastgepinde PocketBase-programma ophalen naar `pocketbase/bin/` (checksum gecontroleerd)           |
 | `npm run format`           | alles formatteren met Prettier                                                                         |
 
-Voor `npm run e2e` eenmalig `npx playwright install chromium` in `web/`. De eerste keer downloadt `npm run e2e` ook PocketBase (ongeveer 15 MB, van GitHub); daarna staat het in `pocketbase/bin/` en werkt alles zonder internet. De versie en checksums staan in `pocketbase/pocketbase.json`. Zit je achter een proxy, zet dan `NODE_USE_ENV_PROXY=1` (en zo nodig `NODE_EXTRA_CA_CERTS`).
+Voor `npm run e2e` eenmalig `npx playwright install chromium` in `web/`. De eerste keer downloadt `npm run check` (of `npm start`, of `npm run e2e`) ook PocketBase (ongeveer 15 MB, van GitHub); daarna staat het in `pocketbase/bin/` en werkt alles zonder internet. De versie en checksums staan in `pocketbase/pocketbase.json`. Zit je achter een proxy, zet dan `NODE_USE_ENV_PROXY=1` (en zo nodig `NODE_EXTRA_CA_CERTS`).
 
 ## Mappen
 
-| Map           | Inhoud                                                                                    |
-| ------------- | ----------------------------------------------------------------------------------------- |
-| `web/`        | Angular-app (`src/`), Playwright-tests (`e2e/`)                                           |
-| `tools/`      | scripts voor checks (privacy, Node-versie), fonts en PocketBase (ophalen, starten)        |
-| `pocketbase/` | vastgepinde versie (`pocketbase.json`), migraties (`pb_migrations/`), hooks (`pb_hooks/`) |
-| `deploy/`     | `Dockerfile`, `compose.dev.yml` (lokaal) en `compose.nas.yml` (Synology)                  |
-| `.github/`    | workflow `release.yml`: bouwt na elke merge naar `main` de image en zet hem op ghcr.io    |
-| `docs/start/` | handoff uit de ontwerpfase: stijl, Ted, referentieles                                     |
-| `docs/plan/`  | implementatieplan en plan per mijlpaal                                                    |
-| `.claude/`    | agents, skills en hooks voor Claude Code                                                  |
-| `.husky/`     | git-hooks                                                                                 |
+| Map           | Inhoud                                                                                                                                                                          |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `web/`        | Angular-app (`src/`), Playwright-tests (`e2e/`)                                                                                                                                 |
+| `tools/`      | scripts voor checks (privacy, Node-versie), fonts en PocketBase (ophalen, starten)                                                                                              |
+| `pocketbase/` | vastgepinde versie (`pocketbase.json`), migraties (`pb_migrations/`), hooks (`pb_hooks/`), testaccounts voor lokaal (`seed/`), integratietests van de toegangsregels (`tests/`) |
+| `deploy/`     | `Dockerfile`, `compose.dev.yml` (lokaal) en `compose.nas.yml` (Synology)                                                                                                        |
+| `.github/`    | workflow `release.yml`: bouwt na elke merge naar `main` de image en zet hem op ghcr.io                                                                                          |
+| `docs/start/` | handoff uit de ontwerpfase: stijl, Ted, referentieles                                                                                                                           |
+| `docs/plan/`  | implementatieplan en plan per mijlpaal                                                                                                                                          |
+| `.claude/`    | agents, skills en hooks voor Claude Code                                                                                                                                        |
+| `.husky/`     | git-hooks                                                                                                                                                                       |
 
 Later komt erbij: `content/` (lessen als JSON).
 
@@ -74,7 +85,7 @@ Open http://localhost:8090 (en http://localhost:8090/stijl). Stoppen met Ctrl+C.
 
 Elke pagina krijgt een Content-Security-Policy (`pocketbase/pb_hooks/security.pb.js`): de browser weigert zelf alles van een ander domein. Het beheerscherm `/_/` en `/api/` vallen daarbuiten.
 
-`npm run e2e:container` bouwt en start de image op dezelfde manier en test hem (gezond, niet als root, `linux/amd64`, juiste PocketBase-versie, CSP). Moet de build extra instellingen hebben, bijvoorbeeld een proxy, zet dan in `SNUFFEL_COMPOSE_OVERRIDE` het pad naar een extra compose-bestand; dat wordt met `-f` meegegeven.
+`npm run e2e:container` bouwt en start de image op dezelfde manier en test hem (gezond, niet als root, `linux/amd64`, juiste PocketBase-versie, CSP, inloggen). Het maakt daarvoor in het lokale Docker-volume de dev-beheerder en de testaccounts aan; de image zelf bevat ze niet. Moet de build extra instellingen hebben, bijvoorbeeld een proxy, zet dan in `SNUFFEL_COMPOSE_OVERRIDE` het pad naar een extra compose-bestand; dat wordt met `-f` meegegeven.
 
 ## Uitrollen op de NAS
 
@@ -102,10 +113,22 @@ Na elke merge naar `main` bouwt GitHub Actions de image en zet hem op `ghcr.io/v
 
    Log daarna in op `http://<nas>:8090/_/`. Iedereen op de wifi ziet dit inlogscherm, dus kies een sterk wachtwoord. Afschermen kan later met de firewall van DSM of een reverse proxy.
 
-6. **Back-ups.** In `/_/` → Settings → Backups: zet automatische back-ups aan, dagelijks (bijvoorbeeld `0 3 * * *`) en 7 bewaren. Neem daarnaast de map `/volume1/docker/snuffel` mee in Hyper Backup.
+6. **Accounts aanmaken.** Snuffel heeft geen aanmeldpagina: jij maakt de accounts. In `http://<nas>:8090/_/` → Collections → `users` → New record vul je in:
+   - `username`: 3 tot 20 tekens, kleine letters, cijfers en streepjes (bijvoorbeeld `jop` of `kind-1`); hiermee log je in;
+   - `name`: de naam die Ted gebruikt ("Hoi, …!");
+   - `role`: `parent` voor jezelf, `child` voor een kind;
+   - `password` en `passwordConfirm`: minstens 8 tekens. Een e-mailadres is niet nodig.
 
-7. **Bijwerken.** Na een merge: Container Manager → Project → `snuffel` → Actie → Bouwen (of Image → `ghcr.io/versure/snuffel` → Bijwerken) en het project opnieuw starten. Nieuwe migraties worden bij de start automatisch toegepast.
+   Maak eerst je eigen ouderaccount, daarna de kinderen. Log met elk account één keer in op `http://<nas>:8090` om te controleren dat het werkt. Je blijft daarna ingelogd op dat apparaat tot je uitlogt of Snuffel een paar dagen niet opent. Wachtwoord vergeten: zet in `/_/` bij dat record een nieuw wachtwoord. Wil je een apparaat echt buitensluiten, wijzig dan het wachtwoord: uitloggen wist alleen de sessie op dat ene apparaat.
 
-8. **Terugzetten.** Zet in de compose van het project `image: ghcr.io/versure/snuffel:sha-<kort>` met de tag van een eerdere versie (zie GitHub → Packages → snuffel) en bouw en start opnieuw. Terug naar de nieuwste: weer `:latest`. Let op: PocketBase-migraties lopen alleen vooruit. Heeft de update het datamodel gewijzigd, zet dan ook de back-up van `pb_data` van vóór de update terug.
+   Wat een kind mag, staat in de toegangsregels van de collectie (migratie in `pocketbase/pb_migrations/`): een kind ziet alleen zichzelf en kan alleen zijn naam en (met het oude wachtwoord) zijn wachtwoord wijzigen; de ouder ziet en beheert alle accounts.
 
-9. **Problemen.** Blijft de container op "Ongezond" staan of stopt hij meteen, kijk dan bij Container → `snuffel` → Log. Meestal staat er iets als `permission denied` bij `pb_data`: dan mist de map de schrijfrechten uit stap 1.
+7. **Back-ups en beveiliging.** In `/_/` → Settings → Backups: zet automatische back-ups aan, dagelijks (bijvoorbeeld `0 3 * * *`) en 7 bewaren. Neem daarnaast de map `/volume1/docker/snuffel` mee in Hyper Backup. Zet in `/_/` → Settings → Rate limiting de ingebouwde limieten aan; dan kan niemand op de wifi eindeloos wachtwoorden proberen.
+
+   Collecties, velden en toegangsregels wijzig je **nooit** in `/_/` op de NAS, alleen via een migratie in de repo (de volgende update zou het anders terugdraaien of laten botsen). Records aanmaken en wijzigen in `/_/`, zoals accounts, mag wel.
+
+8. **Bijwerken.** Na een merge: Container Manager → Project → `snuffel` → Actie → Bouwen (of Image → `ghcr.io/versure/snuffel` → Bijwerken) en het project opnieuw starten. Nieuwe migraties worden bij de start automatisch toegepast.
+
+9. **Terugzetten.** Zet in de compose van het project `image: ghcr.io/versure/snuffel:sha-<kort>` met de tag van een eerdere versie (zie GitHub → Packages → snuffel) en bouw en start opnieuw. Terug naar de nieuwste: weer `:latest`. Let op: PocketBase-migraties lopen alleen vooruit. Heeft de update het datamodel gewijzigd, zet dan ook de back-up van `pb_data` van vóór de update terug.
+
+10. **Problemen.** Blijft de container op "Ongezond" staan of stopt hij meteen, kijk dan bij Container → `snuffel` → Log. Meestal staat er iets als `permission denied` bij `pb_data`: dan mist de map de schrijfrechten uit stap 1.
