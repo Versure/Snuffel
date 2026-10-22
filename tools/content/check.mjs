@@ -8,7 +8,9 @@ import { fileURLToPath } from 'node:url';
 import { parseArgs } from 'node:util';
 import { loadContent } from './load.mjs';
 import { formatReport, sortIssues } from './report.mjs';
+import { checkAssets } from './rules/assets.mjs';
 import { checkGlossaryReferences, checkSentenceLength, checkTerms } from './rules/language.mjs';
+import { checkLinks } from './rules/links.mjs';
 import { checkQuiz } from './rules/quiz.mjs';
 import { checkSources } from './rules/sources.mjs';
 import { checkStructure } from './rules/structure.mjs';
@@ -26,6 +28,8 @@ export const contentRules = [
   checkTiming,
   checkSentenceLength,
   checkTerms,
+  checkLinks,
+  checkAssets,
 ];
 
 /** Local date as YYYY-MM-DD. */
