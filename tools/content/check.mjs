@@ -8,13 +8,15 @@ import { fileURLToPath } from 'node:url';
 import { parseArgs } from 'node:util';
 import { loadContent } from './load.mjs';
 import { formatReport, sortIssues } from './report.mjs';
+import { checkGlossaryReferences } from './rules/language.mjs';
+import { checkSources } from './rules/sources.mjs';
 import { checkStructure } from './rules/structure.mjs';
 import { validate } from './schema.mjs';
 
 export const repoRoot = resolve(import.meta.dirname, '..', '..');
 
 /** Content rules in order; each takes the context and returns issues. */
-export const contentRules = [checkStructure];
+export const contentRules = [checkStructure, checkSources, checkGlossaryReferences];
 
 /** Local date as YYYY-MM-DD. */
 export function localToday(now = new Date()) {
