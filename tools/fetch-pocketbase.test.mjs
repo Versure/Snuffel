@@ -66,7 +66,10 @@ describe('fetchPocketBase', () => {
     const binary = await fetchPocketBase({ platform, out, config: config(), baseUrl, log: quiet });
     assert.equal(binary, join(out, 'pocketbase'));
     assert.equal(readFileSync(binary, 'utf8'), binaryContent);
-    assert.ok(statSync(binary).mode & 0o100, 'binary is executable');
+    // Windows has no executable bit (chmod only toggles read-only); there the extension decides.
+    if (process.platform !== 'win32') {
+      assert.ok(statSync(binary).mode & 0o100, 'binary is executable');
+    }
     assert.ok(!existsSync(join(out, 'CHANGELOG.md')), 'only the binary is extracted');
   });
 

@@ -22,7 +22,11 @@ Een mijlpaalnummer (bijv. `M7`). Lees eerst:
 
 Status: plan | in uitvoering | klaar voor review | gemerged
 Branch: feat/mNN-<slug>
-Akkoord Jop nodig vóór bouwen: ja/nee (⚑ in het implementatieplan)
+⚑-mijlpaal: ja/nee (beslissingen staan in de PR onder "Beslissingen voor Jop")
+
+## Open vragen voor Jop
+
+(Alleen als er iets te beslissen valt. Per vraag: de keuze, de standaard die we bouwen, en wat terugdraaien kost.)
 
 ## Doel
 
@@ -54,4 +58,4 @@ Genummerde stappen die Jop zelf in de browser of op de NAS doet, met wat hij moe
 - Stappen zijn klein: elke stap levert een groene `npm run check` op en is één commit.
 - Elk punt van de definition of done heeft een automatische test, behalve wat alleen op de NAS kan.
 - Raak niets buiten de scope van de mijlpaal. Iets wat later nodig is, noteer je onder "Risico's en open vragen".
-- Is een keuze moeilijk terug te draaien (datamodel, toegangsregels, schema, stijl) en staat die niet vast in het implementatieplan, zet hem als open vraag bovenaan.
+- Is een keuze moeilijk terug te draaien (datamodel, toegangsregels, schema, stijl) en staat die niet vast in het implementatieplan, zet hem als open vraag bovenaan, **altijd met een concrete standaard** (bij voorkeur de veiligste en best terug te draaien optie). Er wordt niet op Jop gewacht: de implementer bouwt de standaard en Jop beoordeelt de keuzes in de PR.

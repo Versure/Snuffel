@@ -323,15 +323,22 @@ test.describe('accessibility', () => {
 });
 
 test.describe('reduced motion', () => {
-  test('/login and /ouder have no running animation with prefers-reduced-motion: reduce', async ({
+  test('/login and /ouder have no animation longer than 1 ms with prefers-reduced-motion: reduce', async ({
     page,
   }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
+    // base.css shortens every animation and transition to 0.01ms under reduced motion. Because
+    // transition-property defaults to `all`, any style change still starts such a 0.01ms
+    // transition, so check how long each animation lasts instead of whether one is running.
     const running = () =>
       page.evaluate(() =>
         document
           .getAnimations()
-          .filter((animation) => animation.playState === 'running')
+          .filter((animation) => {
+            const timing = animation.effect?.getComputedTiming();
+            const duration = Number(timing?.duration ?? 0) * Number(timing?.iterations ?? 1);
+            return duration > 1;
+          })
           .map((animation) => animation.id || animation.constructor.name),
       );
     await page.goto('/login');
