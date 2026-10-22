@@ -75,4 +75,5 @@ Node-versie staat in `.nvmrc` (Angular 22 vereist ≥ 22.22.3 of ≥ 24.15).
 
 - Een mijlpaal loopt via skill `mijlpaal-uitvoeren`, met de agents `planner`, `implementer`, `tester` en `reviewer`.
 - Werk vanuit het mijlpaalplan. Wijk je af, schrijf het in het plan onder "Afwijkingen" en noem het in de PR.
-- Twijfel over een keuze die later moeilijk terug te draaien is (datamodel, toegangsregels, schema, stijl): vraag Jop.
+- Een mijlpaal loopt autonoom tot de pull request; Jop wordt pas bij de PR ingehaakt.
+- Een keuze die later moeilijk terug te draaien is (datamodel, toegangsregels, schema, stijl): kies de veiligste, best terug te draaien standaard, leg hem vast in het plan onder "Open vragen voor Jop" en zet hem in de PR onder "Beslissingen voor Jop". Buiten een mijlpaal: vraag Jop.
