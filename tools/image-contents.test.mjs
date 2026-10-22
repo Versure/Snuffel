@@ -71,3 +71,15 @@ test('.dockerignore keeps generated content out of the build context', () => {
     dockerignore.join(', '),
   );
 });
+
+test('.dockerignore and .gitignore keep content:build staging directories out', () => {
+  assert.ok(
+    dockerignore.some((line) => line.replace(/\/$/, '') === 'web/public/.content-*'),
+    dockerignore.join(', '),
+  );
+  const gitignore = readFileSync(join(rootDir, '.gitignore'), 'utf8').split('\n');
+  assert.ok(
+    gitignore.some((line) => line.replace(/\/$/, '') === 'web/public/.content-*'),
+    gitignore.join(', '),
+  );
+});

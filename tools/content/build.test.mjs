@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
+import { mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
 import { join, relative, sep } from 'node:path';
 import { describe, test } from 'node:test';
 import { buildContent, buildScript, contentHash, parseBuildArgs } from './build.mjs';
@@ -145,6 +145,24 @@ describe('content:build', () => {
     assert.deepEqual(
       readdirSync(join(fixture.root, 'out')).filter((name) => name.startsWith('.')),
       [],
+    );
+  });
+
+  test('staging directories left by an aborted build are removed', (t) => {
+    const fixture = fixtureRoot(t);
+    const parent = join(fixture.root, 'out');
+    for (const name of ['.content-new-abc123', '.content-new-abc123-old', '.content-new-x']) {
+      mkdirSync(join(parent, name, 'proefcursus'), { recursive: true });
+      writeFileSync(join(parent, name, 'manifest.json'), '{}');
+    }
+    mkdirSync(join(parent, '.andere-map'), { recursive: true });
+    const { result } = build(fixture, { fixtures: true });
+    assert.equal(result.ok, true);
+    assert.deepEqual(
+      readdirSync(parent)
+        .filter((name) => name.startsWith('.'))
+        .sort(),
+      ['.andere-map'],
     );
   });
 

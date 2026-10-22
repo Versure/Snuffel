@@ -5,7 +5,9 @@ import { join, relative } from 'node:path';
 
 const roots = ['web/src', 'web/public', 'pocketbase/pb_hooks', 'pocketbase/pb_migrations'];
 const extensions = ['.ts', '.js', '.html', '.css', '.json', '.svg', '.webmanifest'];
+// Generated content (lesson sources may link out) and its staging dirs from content:build.
 const ignoredDirs = ['content'];
+const ignoredDirPrefixes = ['.content-'];
 // XML namespaces are identifiers, not network requests.
 const allowed = [/^http:\/\/www\.w3\.org\//];
 const urlPattern = /https?:\/\/[^\s'"`)<>]+/g;
@@ -14,7 +16,10 @@ function* walk(dir) {
   for (const entry of readdirSync(dir)) {
     const path = join(dir, entry);
     if (statSync(path).isDirectory()) {
-      if (!ignoredDirs.includes(entry)) yield* walk(path);
+      const ignored =
+        ignoredDirs.includes(entry) ||
+        ignoredDirPrefixes.some((prefix) => entry.startsWith(prefix));
+      if (!ignored) yield* walk(path);
     } else if (extensions.some((ext) => path.endsWith(ext))) {
       yield path;
     }

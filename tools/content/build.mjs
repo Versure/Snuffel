@@ -15,6 +15,7 @@ import {
   existsSync,
   mkdirSync,
   mkdtempSync,
+  readdirSync,
   renameSync,
   rmSync,
   writeFileSync,
@@ -102,6 +103,19 @@ export function buildFiles(courses) {
 }
 
 /**
+ * Removes staging directories (`.<out>-new-*` and their `-old` twin) that an aborted build left
+ * next to the output directory, so they never end up in the app build. Returns the removed names.
+ */
+export function removeStaleStaging(outDir) {
+  const parent = dirname(outDir);
+  if (!existsSync(parent)) return [];
+  const prefix = `.${basename(outDir)}-new-`;
+  const stale = readdirSync(parent).filter((name) => name.startsWith(prefix));
+  for (const name of stale) rmSync(join(parent, name), { recursive: true, force: true });
+  return stale.sort();
+}
+
+/**
  * Checks and builds. Returns `{ ok: true, manifest }`, or `{ ok: false, errors, warnings }`
  * (the previous output stays as it was).
  */
@@ -117,6 +131,7 @@ export function buildContent({
 
   const { files, manifest } = buildFiles(result.courses);
   const outDir = resolve(out);
+  removeStaleStaging(outDir);
   mkdirSync(dirname(outDir), { recursive: true });
   const staging = mkdtempSync(join(dirname(outDir), `.${basename(outDir)}-new-`));
   try {
