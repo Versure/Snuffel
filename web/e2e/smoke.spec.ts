@@ -12,6 +12,9 @@ test.describe('placeholder page', () => {
 
   test('has no accessibility violations', async ({ page }) => {
     await page.goto('/');
+    // Scan the login page only once the redirect has finished and it has rendered.
+    await expect(page).toHaveURL(/\/login\?terug=%2F$/);
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Snuffel');
     const results = await new AxeBuilder({ page }).analyze();
     expect(results.violations).toEqual([]);
   });
