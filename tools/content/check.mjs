@@ -1,7 +1,8 @@
 // `npm run content:check`: validates all content against the schemas and the content rules
 // (docs/plan/implementatieplan.md 2.4) and prints every problem in Dutch with file and JSON path.
 //
-// Usage: node tools/content/check.mjs [--no-fixtures]
+// Usage: node tools/content/check.mjs [--base <ref>] [--no-fixtures]
+// --base: the ref to compare published ids and versions with (default main, else origin/main).
 // Exit code 0 without errors, 1 with errors.
 import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -13,6 +14,7 @@ import { checkGlossaryReferences, checkSentenceLength, checkTerms } from './rule
 import { checkLinks } from './rules/links.mjs';
 import { checkQuiz } from './rules/quiz.mjs';
 import { checkSources } from './rules/sources.mjs';
+import { compareWithBase, resolveBase } from './rules/stability.mjs';
 import { checkStructure } from './rules/structure.mjs';
 import { checkTiming } from './rules/timing.mjs';
 import { validate } from './schema.mjs';
@@ -46,6 +48,9 @@ function withFile(file, issues) {
  * Loads and validates content. Courses with a parse or schema error (in course.json or one of
  * its lesson files) are left out of the content rules: fix the schema errors first.
  *
+ * With `stability` (default), content/courses is also compared with `base` (default main, else
+ * origin/main; see rules/stability.mjs). Without such a ref this part is skipped with a warning.
+ *
  * Returns `{ errors, warnings, courses, terms }`; `courses` are the fully valid courses with
  * `lessons: [{ entry, index, file, data }]` (published lessons only).
  */
@@ -54,6 +59,8 @@ export function checkContent({
   fixtures = true,
   today = localToday(),
   rules = contentRules,
+  stability = true,
+  base,
 } = {}) {
   const loaded = loadContent(root, { fixtures });
   const errors = [...loaded.issues];
@@ -67,6 +74,7 @@ export function checkContent({
   }
 
   const courses = [];
+  let invalidPublishedContent = false;
   for (const course of loaded.courses) {
     let valid = course.data !== undefined;
     if (course.data !== undefined) {
@@ -83,7 +91,10 @@ export function checkContent({
       errors.push(...lessonErrors);
       if (lessonErrors.length > 0) valid = false;
     }
-    if (!valid) continue;
+    if (!valid) {
+      if (course.relDir.startsWith('content/courses/')) invalidPublishedContent = true;
+      continue;
+    }
     const lessons = [];
     course.data.lessons.forEach((entry, index) => {
       if (entry.status !== 'published') return;
@@ -96,6 +107,26 @@ export function checkContent({
   const context = { root, courses, terms, today };
   for (const rule of rules) errors.push(...rule(context));
 
+  if (stability) {
+    const { ref, explicit } = resolveBase(root, base);
+    if (invalidPublishedContent) {
+      warnings.push(
+        'id-stabiliteit niet gecontroleerd: los eerst de schemafouten in content/courses op',
+      );
+    } else if (!ref && explicit) {
+      errors.push({
+        code: 'base-not-found',
+        file: 'content/courses',
+        path: '',
+        message: `basis "${explicit}" voor de vergelijking van id's bestaat niet in git`,
+      });
+    } else if (!ref) {
+      warnings.push('id-stabiliteit niet gecontroleerd: geen main gevonden (ook geen origin/main)');
+    } else {
+      errors.push(...compareWithBase({ root, courses, ref }));
+    }
+  }
+
   return { errors: sortIssues(errors), warnings, courses, terms };
 }
 
@@ -104,11 +135,16 @@ export function parseCheckArgs(argv) {
     args: argv,
     options: {
       fixtures: { type: 'boolean', default: true },
+      base: { type: 'string' },
       root: { type: 'string' },
     },
     allowNegative: true,
   });
-  return { fixtures: values.fixtures, root: values.root ? resolve(values.root) : repoRoot };
+  return {
+    fixtures: values.fixtures,
+    base: values.base,
+    root: values.root ? resolve(values.root) : repoRoot,
+  };
 }
 
 function main() {

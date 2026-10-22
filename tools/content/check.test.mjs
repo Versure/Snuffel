@@ -274,7 +274,8 @@ describe('helpers', () => {
   });
 
   test('parseCheckArgs reads --no-fixtures and --root', () => {
-    assert.deepEqual(parseCheckArgs([]), { fixtures: true, root: repoRoot });
+    assert.deepEqual(parseCheckArgs([]), { fixtures: true, base: undefined, root: repoRoot });
+    assert.equal(parseCheckArgs(['--base', 'origin/main']).base, 'origin/main');
     assert.equal(parseCheckArgs(['--no-fixtures']).fixtures, false);
   });
 });
