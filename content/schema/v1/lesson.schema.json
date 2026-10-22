@@ -1,0 +1,1053 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:snuffel:content:v1:lesson",
+  "title": "Lesson",
+  "description": "A lesson: lessons/<nn>-<slug>.json in a course directory.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "id",
+    "version",
+    "title",
+    "sticker",
+    "objective",
+    "concept",
+    "estimatedMinutes",
+    "glossary",
+    "ted",
+    "steps",
+    "furtherReading",
+    "faq"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "id": {
+      "$ref": "#/$defs/id"
+    },
+    "version": {
+      "description": "Raise by one on every change after publication; stored as content_version with progress.",
+      "type": "integer",
+      "minimum": 1
+    },
+    "title": {
+      "$ref": "#/$defs/text"
+    },
+    "sticker": {
+      "$ref": "#/$defs/text"
+    },
+    "objective": {
+      "$ref": "#/$defs/text"
+    },
+    "concept": {
+      "$ref": "#/$defs/text"
+    },
+    "estimatedMinutes": {
+      "type": "integer",
+      "minimum": 8,
+      "maximum": 12
+    },
+    "glossary": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/glossaryEntry"
+      }
+    },
+    "ted": {
+      "$ref": "#/$defs/lessonTed"
+    },
+    "steps": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/step"
+      }
+    },
+    "furtherReading": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/furtherReading"
+      }
+    },
+    "faq": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/faqEntry"
+      }
+    }
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 60,
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+    },
+    "text": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "\\S"
+    },
+    "sourceRefs": {
+      "description": "Ids from sources in course.json. Empty only for text without a factual claim.",
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/id"
+      }
+    },
+    "mood": {
+      "title": "TedMood",
+      "type": "string",
+      "enum": ["cool", "happy", "thinking", "oops"]
+    },
+    "glossaryEntry": {
+      "title": "GlossaryEntry",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["term", "definition"],
+      "properties": {
+        "term": {
+          "$ref": "#/$defs/text"
+        },
+        "definition": {
+          "$ref": "#/$defs/text"
+        }
+      }
+    },
+    "lessonTed": {
+      "title": "LessonTed",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["intro", "correct", "incorrect", "finished"],
+      "properties": {
+        "intro": {
+          "$ref": "#/$defs/tedLine"
+        },
+        "correct": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/text"
+          }
+        },
+        "incorrect": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/text"
+          }
+        },
+        "finished": {
+          "$ref": "#/$defs/text"
+        }
+      }
+    },
+    "tedLine": {
+      "title": "TedLine",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mood", "text"],
+      "properties": {
+        "mood": {
+          "$ref": "#/$defs/mood"
+        },
+        "text": {
+          "$ref": "#/$defs/text"
+        }
+      }
+    },
+    "furtherReading": {
+      "title": "FurtherReading",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["sourceRef", "why"],
+      "properties": {
+        "sourceRef": {
+          "$ref": "#/$defs/id"
+        },
+        "why": {
+          "$ref": "#/$defs/text"
+        }
+      }
+    },
+    "faqEntry": {
+      "title": "FaqEntry",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["q", "a"],
+      "properties": {
+        "q": {
+          "$ref": "#/$defs/text"
+        },
+        "a": {
+          "$ref": "#/$defs/text"
+        }
+      }
+    },
+    "step": {
+      "title": "LessonStep",
+      "type": "object",
+      "discriminator": {
+        "propertyName": "type"
+      },
+      "oneOf": [
+        {
+          "$ref": "#/$defs/explainStep"
+        },
+        {
+          "$ref": "#/$defs/interactionStep"
+        },
+        {
+          "$ref": "#/$defs/quizStep"
+        },
+        {
+          "$ref": "#/$defs/practiceStep"
+        }
+      ]
+    },
+    "explainStep": {
+      "title": "ExplainStep",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "type", "title", "blocks"],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "type": {
+          "const": "explain"
+        },
+        "title": {
+          "$ref": "#/$defs/text"
+        },
+        "blocks": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/block"
+          }
+        }
+      }
+    },
+    "interactionStep": {
+      "title": "InteractionStep",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "type", "title", "intro", "interaction", "sourceRefs"],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "type": {
+          "const": "interaction"
+        },
+        "title": {
+          "$ref": "#/$defs/text"
+        },
+        "intro": {
+          "$ref": "#/$defs/text"
+        },
+        "interaction": {
+          "$ref": "#/$defs/interaction"
+        },
+        "sourceRefs": {
+          "$ref": "#/$defs/sourceRefs"
+        }
+      }
+    },
+    "quizStep": {
+      "title": "QuizStep",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "type", "title", "questions"],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "type": {
+          "const": "quiz"
+        },
+        "title": {
+          "$ref": "#/$defs/text"
+        },
+        "intro": {
+          "$ref": "#/$defs/text"
+        },
+        "questions": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/question"
+          }
+        }
+      }
+    },
+    "question": {
+      "title": "QuizQuestion",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "prompt", "options", "correctOptionId", "hints", "sourceRefs"],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "prompt": {
+          "$ref": "#/$defs/text"
+        },
+        "options": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/option"
+          }
+        },
+        "correctOptionId": {
+          "$ref": "#/$defs/id"
+        },
+        "hints": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/text"
+          }
+        },
+        "sourceRefs": {
+          "$ref": "#/$defs/sourceRefs"
+        }
+      }
+    },
+    "option": {
+      "title": "QuizOption",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "text", "feedback"],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "text": {
+          "$ref": "#/$defs/text"
+        },
+        "feedback": {
+          "$ref": "#/$defs/text"
+        }
+      }
+    },
+    "practiceStep": {
+      "title": "PracticeStep",
+      "description": "A checklist; its id is the checklist_id in checklist_states.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "type", "practiceKind", "title", "intro", "items", "successCriterion"],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "type": {
+          "const": "practice"
+        },
+        "practiceKind": {
+          "type": "string",
+          "enum": ["at-the-water", "do-it-yourself"]
+        },
+        "title": {
+          "$ref": "#/$defs/text"
+        },
+        "intro": {
+          "$ref": "#/$defs/text"
+        },
+        "items": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/practiceItem"
+          }
+        },
+        "successCriterion": {
+          "$ref": "#/$defs/text"
+        }
+      }
+    },
+    "practiceItem": {
+      "title": "PracticeItem",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "text", "sourceRefs"],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "text": {
+          "$ref": "#/$defs/text"
+        },
+        "links": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/link"
+          }
+        },
+        "sourceRefs": {
+          "$ref": "#/$defs/sourceRefs"
+        }
+      }
+    },
+    "link": {
+      "title": "Link",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["label", "url"],
+      "properties": {
+        "label": {
+          "$ref": "#/$defs/text"
+        },
+        "url": {
+          "type": "string",
+          "pattern": "^https://\\S+$"
+        }
+      }
+    },
+    "block": {
+      "title": "Block",
+      "type": "object",
+      "discriminator": {
+        "propertyName": "type"
+      },
+      "oneOf": [
+        {
+          "$ref": "#/$defs/textBlock"
+        },
+        {
+          "$ref": "#/$defs/exampleBlock"
+        },
+        {
+          "$ref": "#/$defs/signalCardsBlock"
+        },
+        {
+          "$ref": "#/$defs/ruleBlock"
+        },
+        {
+          "$ref": "#/$defs/tipBlock"
+        },
+        {
+          "$ref": "#/$defs/figureBlock"
+        },
+        {
+          "$ref": "#/$defs/tedSaysBlock"
+        }
+      ]
+    },
+    "textBlock": {
+      "title": "TextBlock",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "text", "sourceRefs"],
+      "properties": {
+        "type": {
+          "const": "text"
+        },
+        "text": {
+          "$ref": "#/$defs/text"
+        },
+        "sourceRefs": {
+          "$ref": "#/$defs/sourceRefs"
+        }
+      }
+    },
+    "exampleBlock": {
+      "title": "ExampleBlock",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "text", "sourceRefs"],
+      "properties": {
+        "type": {
+          "const": "example"
+        },
+        "text": {
+          "$ref": "#/$defs/text"
+        },
+        "sourceRefs": {
+          "$ref": "#/$defs/sourceRefs"
+        }
+      }
+    },
+    "signalCardsBlock": {
+      "title": "SignalCardsBlock",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "cards"],
+      "properties": {
+        "type": {
+          "const": "signal-cards"
+        },
+        "cards": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/signalCard"
+          }
+        }
+      }
+    },
+    "signalCard": {
+      "title": "SignalCard",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["icon", "title", "text", "sourceRefs"],
+      "properties": {
+        "icon": {
+          "description": "Name of an icon from the app's fixed icon set (kebab-case).",
+          "$ref": "#/$defs/id"
+        },
+        "title": {
+          "$ref": "#/$defs/text"
+        },
+        "text": {
+          "$ref": "#/$defs/text"
+        },
+        "sourceRefs": {
+          "$ref": "#/$defs/sourceRefs"
+        }
+      }
+    },
+    "ruleBlock": {
+      "title": "RuleBlock",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "title", "text", "sourceRefs"],
+      "properties": {
+        "type": {
+          "const": "rule"
+        },
+        "title": {
+          "$ref": "#/$defs/text"
+        },
+        "text": {
+          "$ref": "#/$defs/text"
+        },
+        "sourceRefs": {
+          "$ref": "#/$defs/sourceRefs"
+        }
+      }
+    },
+    "tipBlock": {
+      "title": "TipBlock",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "text", "sourceRefs"],
+      "properties": {
+        "type": {
+          "const": "tip"
+        },
+        "title": {
+          "$ref": "#/$defs/text"
+        },
+        "text": {
+          "$ref": "#/$defs/text"
+        },
+        "sourceRefs": {
+          "$ref": "#/$defs/sourceRefs"
+        }
+      }
+    },
+    "figureBlock": {
+      "title": "FigureBlock",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "src", "alt", "sourceRefs"],
+      "properties": {
+        "type": {
+          "const": "figure"
+        },
+        "src": {
+          "description": "Path of an svg in the course's assets directory, for example assets/hengeltop.svg.",
+          "type": "string",
+          "minLength": 1
+        },
+        "alt": {
+          "$ref": "#/$defs/text"
+        },
+        "caption": {
+          "$ref": "#/$defs/text"
+        },
+        "sourceRefs": {
+          "$ref": "#/$defs/sourceRefs"
+        }
+      }
+    },
+    "tedSaysBlock": {
+      "title": "TedSaysBlock",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "mood", "text", "sourceRefs"],
+      "properties": {
+        "type": {
+          "const": "ted-says"
+        },
+        "mood": {
+          "$ref": "#/$defs/mood"
+        },
+        "text": {
+          "$ref": "#/$defs/text"
+        },
+        "sourceRefs": {
+          "$ref": "#/$defs/sourceRefs"
+        }
+      }
+    },
+    "interaction": {
+      "title": "Interaction",
+      "description": "Its id is the interaction_id in interaction_results.",
+      "type": "object",
+      "discriminator": {
+        "propertyName": "kind"
+      },
+      "oneOf": [
+        {
+          "$ref": "#/$defs/traceGameInteraction"
+        },
+        {
+          "$ref": "#/$defs/steppedExerciseInteraction"
+        }
+      ]
+    },
+    "traceGameInteraction": {
+      "title": "TraceGameInteraction",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "config"],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "kind": {
+          "const": "trace-game"
+        },
+        "config": {
+          "$ref": "#/$defs/traceGameConfig"
+        }
+      }
+    },
+    "steppedExerciseInteraction": {
+      "title": "SteppedExerciseInteraction",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "config"],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "kind": {
+          "const": "stepped-exercise"
+        },
+        "config": {
+          "$ref": "#/$defs/steppedExerciseConfig"
+        }
+      }
+    },
+    "unit": {
+      "description": "A time or height on the 0-1 scale of the trace.",
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "positiveUnit": {
+      "type": "number",
+      "exclusiveMinimum": 0,
+      "maximum": 1
+    },
+    "traceGameConfig": {
+      "title": "TraceGameConfig",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["choices", "patterns", "rounds", "durationMs"],
+      "properties": {
+        "choices": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 6,
+          "items": {
+            "$ref": "#/$defs/traceChoice"
+          }
+        },
+        "patterns": {
+          "type": "array",
+          "minItems": 2,
+          "items": {
+            "$ref": "#/$defs/tracePattern"
+          }
+        },
+        "rounds": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 12
+        },
+        "durationMs": {
+          "type": "integer",
+          "minimum": 1000,
+          "maximum": 10000
+        }
+      }
+    },
+    "traceChoice": {
+      "title": "TraceChoice",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "label", "color"],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "label": {
+          "$ref": "#/$defs/text"
+        },
+        "color": {
+          "description": "Name of a colour token, never a colour value.",
+          "type": "string",
+          "enum": ["yellow", "pink", "purple", "blue", "green", "orange"]
+        }
+      }
+    },
+    "tracePattern": {
+      "title": "TracePattern",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "answer", "shape", "explanation"],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "answer": {
+          "description": "Id of one of the choices.",
+          "$ref": "#/$defs/id"
+        },
+        "shape": {
+          "description": "Building blocks; the line is the sum of all blocks at time t (0-1).",
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/shapePart"
+          }
+        },
+        "explanation": {
+          "$ref": "#/$defs/text"
+        }
+      }
+    },
+    "shapePart": {
+      "title": "ShapePart",
+      "type": "object",
+      "discriminator": {
+        "propertyName": "type"
+      },
+      "oneOf": [
+        {
+          "$ref": "#/$defs/shapeBase"
+        },
+        {
+          "$ref": "#/$defs/shapePulse"
+        },
+        {
+          "$ref": "#/$defs/shapePulses"
+        },
+        {
+          "$ref": "#/$defs/shapeRamp"
+        },
+        {
+          "$ref": "#/$defs/shapeWobble"
+        }
+      ]
+    },
+    "shapeBase": {
+      "title": "ShapeBase",
+      "description": "Constant level.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "level"],
+      "properties": {
+        "type": {
+          "const": "base"
+        },
+        "level": {
+          "$ref": "#/$defs/unit"
+        }
+      }
+    },
+    "shapePulse": {
+      "title": "ShapePulse",
+      "description": "One peak at time at.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "at", "width", "height"],
+      "properties": {
+        "type": {
+          "const": "pulse"
+        },
+        "at": {
+          "$ref": "#/$defs/unit"
+        },
+        "width": {
+          "$ref": "#/$defs/positiveUnit"
+        },
+        "height": {
+          "$ref": "#/$defs/unit"
+        }
+      }
+    },
+    "shapePulses": {
+      "title": "ShapePulses",
+      "description": "count peaks, interval apart, from start.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "start", "interval", "count", "width", "height"],
+      "properties": {
+        "type": {
+          "const": "pulses"
+        },
+        "start": {
+          "$ref": "#/$defs/unit"
+        },
+        "interval": {
+          "$ref": "#/$defs/positiveUnit"
+        },
+        "count": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 50
+        },
+        "width": {
+          "$ref": "#/$defs/positiveUnit"
+        },
+        "height": {
+          "$ref": "#/$defs/unit"
+        }
+      }
+    },
+    "shapeRamp": {
+      "title": "ShapeRamp",
+      "description": "Smooth rise of height between from and to.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "from", "to", "height"],
+      "properties": {
+        "type": {
+          "const": "ramp"
+        },
+        "from": {
+          "$ref": "#/$defs/unit"
+        },
+        "to": {
+          "$ref": "#/$defs/unit"
+        },
+        "height": {
+          "$ref": "#/$defs/unit"
+        }
+      }
+    },
+    "shapeWobble": {
+      "title": "ShapeWobble",
+      "description": "Trembling with an amplitude and a frequency (waves over the whole trace), optionally only between from and to.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "amplitude", "frequency"],
+      "properties": {
+        "type": {
+          "const": "wobble"
+        },
+        "amplitude": {
+          "$ref": "#/$defs/unit"
+        },
+        "frequency": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "maximum": 100
+        },
+        "from": {
+          "$ref": "#/$defs/unit"
+        },
+        "to": {
+          "$ref": "#/$defs/unit"
+        }
+      }
+    },
+    "steppedExerciseConfig": {
+      "title": "SteppedExerciseConfig",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["exercises"],
+      "properties": {
+        "exercises": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/exercise"
+          }
+        }
+      }
+    },
+    "exercise": {
+      "title": "Exercise",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "prompt", "answer", "hints", "steps", "commonMistakes", "workedSolution"],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "prompt": {
+          "$ref": "#/$defs/text"
+        },
+        "answer": {
+          "$ref": "#/$defs/exerciseAnswer"
+        },
+        "hints": {
+          "description": "Increasingly concrete hints, shown one at a time.",
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/text"
+          }
+        },
+        "steps": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/exerciseStep"
+          }
+        },
+        "commonMistakes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/commonMistake"
+          }
+        },
+        "workedSolution": {
+          "description": "Shown only after an own attempt and all hints.",
+          "$ref": "#/$defs/text"
+        }
+      }
+    },
+    "exerciseAnswer": {
+      "title": "ExerciseAnswer",
+      "type": "object",
+      "discriminator": {
+        "propertyName": "type"
+      },
+      "oneOf": [
+        {
+          "$ref": "#/$defs/numberAnswer"
+        },
+        {
+          "$ref": "#/$defs/textAnswer"
+        },
+        {
+          "$ref": "#/$defs/choiceAnswer"
+        }
+      ]
+    },
+    "numberAnswer": {
+      "title": "NumberAnswer",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "value", "tolerance"],
+      "properties": {
+        "type": {
+          "const": "number"
+        },
+        "value": {
+          "type": "number"
+        },
+        "tolerance": {
+          "type": "number",
+          "minimum": 0
+        },
+        "unit": {
+          "$ref": "#/$defs/text"
+        }
+      }
+    },
+    "textAnswer": {
+      "title": "TextAnswer",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "accepted"],
+      "properties": {
+        "type": {
+          "const": "text"
+        },
+        "accepted": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/text"
+          }
+        }
+      }
+    },
+    "choiceAnswer": {
+      "title": "ChoiceAnswer",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "options", "correctOptionId"],
+      "properties": {
+        "type": {
+          "const": "choice"
+        },
+        "options": {
+          "type": "array",
+          "minItems": 2,
+          "items": {
+            "$ref": "#/$defs/choiceOption"
+          }
+        },
+        "correctOptionId": {
+          "$ref": "#/$defs/id"
+        }
+      }
+    },
+    "choiceOption": {
+      "title": "ChoiceOption",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "text"],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "text": {
+          "$ref": "#/$defs/text"
+        }
+      }
+    },
+    "exerciseStep": {
+      "title": "ExerciseStep",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "title", "text"],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "title": {
+          "$ref": "#/$defs/text"
+        },
+        "text": {
+          "$ref": "#/$defs/text"
+        }
+      }
+    },
+    "commonMistake": {
+      "title": "CommonMistake",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["answer", "feedback"],
+      "properties": {
+        "answer": {
+          "description": "A wrong answer as a child would type or choose it.",
+          "$ref": "#/$defs/text"
+        },
+        "feedback": {
+          "$ref": "#/$defs/text"
+        }
+      }
+    }
+  }
+}

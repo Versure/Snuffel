@@ -1,0 +1,125 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:snuffel:content:v1:manifest",
+  "title": "ContentManifest",
+  "description": "web/public/content/manifest.json, written by npm run content:build. Paths are relative to /content/.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "courses"],
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "courses": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/manifestCourse"
+      }
+    }
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 60,
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+    },
+    "hash": {
+      "description": "First 16 hex characters of the sha-256 of the file.",
+      "type": "string",
+      "pattern": "^[0-9a-f]{16}$"
+    },
+    "manifestCourse": {
+      "title": "ManifestCourse",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "title", "kind", "file", "hash", "lessons"],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "kind": {
+          "type": "string",
+          "enum": ["course", "practice"]
+        },
+        "file": {
+          "type": "string",
+          "pattern": "^[a-z0-9-]+/course\\.json$"
+        },
+        "hash": {
+          "$ref": "#/$defs/hash"
+        },
+        "lessons": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/manifestLesson"
+          }
+        }
+      }
+    },
+    "manifestLesson": {
+      "title": "ManifestLesson",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "title", "status"],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "status": {
+          "type": "string",
+          "enum": ["planned", "published"]
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "estimatedMinutes": {
+          "type": "integer",
+          "minimum": 8,
+          "maximum": 12
+        },
+        "file": {
+          "type": "string",
+          "pattern": "^[a-z0-9-]+/lessons/[a-z0-9-]+\\.json$"
+        },
+        "hash": {
+          "$ref": "#/$defs/hash"
+        }
+      },
+      "if": {
+        "properties": {
+          "status": {
+            "const": "published"
+          }
+        },
+        "required": ["status"]
+      },
+      "then": {
+        "properties": {
+          "version": true,
+          "estimatedMinutes": true,
+          "file": true,
+          "hash": true
+        },
+        "required": ["version", "estimatedMinutes", "file", "hash"]
+      },
+      "else": {
+        "properties": {
+          "version": false,
+          "estimatedMinutes": false,
+          "file": false,
+          "hash": false
+        }
+      }
+    }
+  }
+}

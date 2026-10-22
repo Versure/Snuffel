@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:snuffel:content:v1:terms",
+  "title": "Terms",
+  "description": "content/terms.json: subject terms that must be in the glossary of a lesson that uses them.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "terms"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "terms": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/term" }
+    }
+  },
+  "$defs": {
+    "term": {
+      "title": "Term",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["term"],
+      "properties": {
+        "term": { "type": "string", "minLength": 1, "pattern": "\\S" },
+        "forms": {
+          "description": "Other forms that also count, for example inflections.",
+          "type": "array",
+          "items": { "type": "string", "minLength": 1, "pattern": "\\S" }
+        }
+      }
+    }
+  }
+}
