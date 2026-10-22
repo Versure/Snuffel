@@ -333,7 +333,7 @@ Elke mijlpaal: eigen branch `feat/mNN-<slug>`, één pull request, door Jop geme
 - `npm run e2e` groen;
 - PR-beschrijving met wat er veranderd is en de handmatige check.
 
-⚑ = Jop keurt eerst het mijlpaalplan goed voordat er gebouwd wordt (beslissingen die later duur zijn om terug te draaien).
+⚑ = mijlpaal met beslissingen die later duur zijn om terug te draaien. De planner kiest per beslissing een standaard, er wordt meteen gebouwd, en de PR zet de keuzes bovenaan onder "Beslissingen voor Jop". Jop beoordeelt ze bij de PR; zolang er niet gemerged is, kost een andere keuze alleen een extra commit.
 
 | #     | Mijlpaal                                                                                                                                                                                                                                                | Extra definition of done                                                                                  | Handmatige check voor Jop                                                                            |
 | ----- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
@@ -381,10 +381,10 @@ Elke mijlpaal: eigen branch `feat/mNN-<slug>`, één pull request, door Jop geme
 
 - **`mijlpaal-uitvoeren`** (`/mijlpaal-uitvoeren M7`)
   1. Controleer: `main` schoon en bijgewerkt; maak `feat/mNN-<slug>`.
-  2. `planner` maakt het plan. Bij ⚑: stop en vraag Jop om akkoord.
+  2. `planner` maakt het plan, met een standaard voor elke open vraag. Geen stop, ook niet bij ⚑.
   3. `implementer` bouwt per stap, commit per stap.
   4. `tester` vult tests aan en draait `npm run verify` (= check + e2e).
-  5. `reviewer` beoordeelt; blokkerende punten gaan terug naar de `implementer`. Na twee rondes nog blokkerend: stop en vraag Jop.
+  5. `reviewer` beoordeelt; blokkerende punten gaan terug naar de `implementer`. Na twee rondes nog blokkerend: toch een PR, maar als draft met de resterende punten bovenaan.
   6. Alles groen → `git push -u origin` → `gh pr create` met beschrijving, afgevinkte definition of done en de handmatige check. **Stop: review door Jop.**
   7. Na merge door Jop (`/mijlpaal-uitvoeren afronden`): `main` bijwerken, branch opruimen, status in dit plan bijwerken.
 - **`pb-collectie-toevoegen`**: migratie met velden, indexen en regels; TypeScript-type; methoden in de juiste service; integratietests voor kind A/kind B/ouder; README-tabel bijwerken.
@@ -408,9 +408,8 @@ Elke mijlpaal: eigen branch `feat/mNN-<slug>`, één pull request, door Jop geme
 **Vaste reviewmomenten voor Jop**
 
 1. Dit plan (nu).
-2. Mijlpaalplan bij ⚑-mijlpalen (M2, M5, M6).
-3. Elke pull request: lezen, handmatige check, zelf mergen. Claude merget nooit.
-4. Tussendoor alleen als een agent vastloopt of moet afwijken van het plan.
+2. Elke pull request: lezen, "Beslissingen voor Jop" (bij ⚑) beoordelen, handmatige check, zelf mergen. Claude merget nooit.
+3. Tussendoor alleen als `verify` niet groen te krijgen is, de vorige mijlpaal niet gemerged is, of er een gat in toegangsregels of privacy zit dat niet binnen de mijlpaal te dichten is. Een mijlpaal loopt verder autonoom tot de PR.
 
 GitHub Actions draait geen checks (keuze van Jop); `release.yml` bouwt alleen de image. Omdat de pre-push-hook `verify` draait, komt er niets op GitHub dat lokaal rood was.
 
