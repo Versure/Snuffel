@@ -403,7 +403,7 @@ Elke mijlpaal: eigen branch `feat/mNN-<slug>`, één pull request, door Jop geme
 
 - `PreToolUse` op Bash: `.claude/hooks/guard-git.mjs` blokkeert `git push` naar `main`, `--force`, `--no-verify`, `git commit` op `main` en `git reset --hard`.
 - `PostToolUse` op Edit/Write: Prettier op het gewijzigde bestand.
-- Permissies: `npm run *`, `git status/diff/log/add/commit/switch`, `gh pr create/view` toegestaan; `git push` vraagt bevestiging behalve via de mijlpaal-skill na groene checks; lezen van `.env` geweigerd.
+- Permissies: `npm run *`, `npm install`/`npm ci`, `node tools/*`, `git status/diff/log/add/commit/switch`, `git push` naar `feat/*` en `content/*` (de pre-push-hook draait `verify`) en het aanmaken en lezen van een PR toegestaan; andere pushes en losse `docker`-commando's vragen bevestiging; mergen, force-push, `git reset --hard` en lezen van `.env` geweigerd.
 
 **Vaste reviewmomenten voor Jop**
 
