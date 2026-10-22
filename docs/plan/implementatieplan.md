@@ -170,6 +170,7 @@ Sleutels zijn Engels, teksten Nederlands. Id's zijn kebab-case en **veranderen n
   "lessons": [
     {
       "id": "aanbeet-of-vastzitten",
+      "title": "Aanbeet of vastzitten?",
       "file": "lessons/01-aanbeet-of-vastzitten.json",
       "status": "published"
     }
@@ -189,9 +190,9 @@ Sleutels zijn Engels, teksten Nederlands. Id's zijn kebab-case en **veranderen n
 }
 ```
 
-`kind` is `course` (leertraject) of `practice` (huiswerk-oefenles per schoolonderwerp; dan ook `subject`, `schoolLevel`, `method`, `chapter`). `reliability`: `high` (overheid, vakbond, onderwijsinstelling, wetenschap), `medium` (gerenommeerde media, encyclopedie, fabrikant over eigen product), `low` (winkel, blog, forum). Een bewering mag nooit alleen op een `low`-bron steunen.
+`kind` is `course` (leertraject) of `practice` (huiswerk-oefenles per schoolonderwerp; dan ook `subject`, `schoolLevel`, `method`, `chapter`). Een les in `lessons` heeft `id`, `title` en `status`: `planned` (komt nog; alleen id en titel, geen bestand) of `published` (af; `file` verplicht). Er is geen `draft`: een les die niet af is, staat op een `content/…`-branch. In de uitvoer van `content:build` (`web/public/content/`) heet een lesbestand naar het les-id (`<cursus-id>/lessons/<les-id>.json`), niet naar het volgnummer, zodat een adres niet verandert als de volgorde wijzigt. `reliability`: `high` (overheid, vakbond, onderwijsinstelling, wetenschap), `medium` (gerenommeerde media, encyclopedie, fabrikant over eigen product), `low` (winkel, blog, forum). Een bewering mag nooit alleen op een `low`-bron steunen.
 
-**Les** (ingekort; het volledige schema komt in M6)
+**Les** (ingekort en niet volledig geldig, bijv. ontbreken `sourceRefs` bij het voorbeeldblok; het volledige schema staat sinds M6 in `content/schema/v1/lesson.schema.json`)
 
 ```json
 {
@@ -301,7 +302,9 @@ Sleutels zijn Engels, teksten Nederlands. Id's zijn kebab-case en **veranderen n
 
 - **Bloktypen**: `text` (beperkte opmaak: vet, cursief, link, `[[term]]` naar de woordenlijst), `example`, `signal-cards`, `rule`, `tip`, `figure` (svg uit `assets/` + verplichte `alt`), `ted-says`.
 - **Staptypen**: `explain`, `interaction`, `quiz`, `practice` (`practiceKind`: `at-the-water` \| `do-it-yourself`).
-- **Bronnen**: elke bewering in een blok, kaart, optie-feedback of quizvraag heeft `sourceRefs` naar `course.sources`. Een lege lijst mag alleen bij tekst zonder feitelijke bewering, en de reviewer controleert dat.
+- **Bronnen**: `sourceRefs` is verplicht op elk blok (bij `signal-cards` op elke kaart), elke quizvraag (geldt voor vraag, opties en feedback samen), elk checklist-item en elke interactiestap, en verwijst naar `course.sources`. Een lege lijst mag alleen bij tekst zonder feitelijke bewering, en de reviewer controleert dat.
+- **Vaktermen**: één lijst voor alle cursussen in `content/terms.json` (`term` en optioneel `forms`). Staat een term of vorm in de tekst van een les, dan hoort hij in de `glossary` van die les.
+- Het volledige formaat, alle checks en hun foutcodes staan in `content/schema/v1/catalogus.md` (M6).
 - De "Vragen? Vraag het in de chat"-sectie en de footer met het leerdossier uit de referentieles vervallen; daarvoor komt de statische `faq`.
 
 ### 2.3 Interacties (vaste catalogus)
