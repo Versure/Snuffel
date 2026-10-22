@@ -1,4 +1,7 @@
 import assert from 'node:assert/strict';
+import { mkdirSync, renameSync, symlinkSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import { describe, test } from 'node:test';
 import { externalReferences, isValidAssetPath } from './rules/assets.mjs';
 import { trackerReason } from './trackers.mjs';
@@ -189,6 +192,35 @@ describe('figures', () => {
       lesson.steps[0].blocks[6].src = 'assets/hengeltop.png';
     });
     assertIssue(fixture.check(), 'asset-path-invalid', `${figurePath}.src`);
+  });
+
+  test('a symlinked figure gives asset-path-invalid', (t) => {
+    const fixture = fixtureRoot(t);
+    const outside = join(fixture.root, 'elders.svg');
+    writeFileSync(outside, '<svg xmlns="http://www.w3.org/2000/svg"/>\n');
+    fixture.remove('assets/hengeltop.svg');
+    symlinkSync(outside, fixture.path('assets/hengeltop.svg'));
+    const error = assertIssue(fixture.check(), 'asset-path-invalid', `${figurePath}.src`);
+    assert.match(error.message, /symlink/);
+  });
+
+  test('a symlinked assets directory gives asset-path-invalid', (t) => {
+    const fixture = fixtureRoot(t);
+    const outside = join(fixture.root, 'elders');
+    mkdirSync(outside);
+    renameSync(fixture.path('assets/hengeltop.svg'), join(outside, 'hengeltop.svg'));
+    renameSync(fixture.path('assets'), join(fixture.root, 'assets-oud'));
+    symlinkSync(outside, fixture.path('assets'));
+    assertIssue(fixture.check(), 'asset-path-invalid', `${figurePath}.src`);
+  });
+
+  test('a dangling symlink gives asset-path-invalid, not asset-missing', (t) => {
+    const fixture = fixtureRoot(t);
+    fixture.remove('assets/hengeltop.svg');
+    symlinkSync(join(tmpdir(), 'bestaat-niet-snuffel.svg'), fixture.path('assets/hengeltop.svg'));
+    const result = fixture.check();
+    assertIssue(result, 'asset-path-invalid', `${figurePath}.src`);
+    assert.equal(result.errors.length, 1);
   });
 
   test('svg with an external reference gives asset-external-ref', (t) => {

@@ -226,7 +226,7 @@ Elke stap heeft `id`, `type` en `title`. Een les van een leertraject (`kind: cou
 | `ted-says`     | `mood`, `text`, `sourceRefs`                        | `{ "type": "ted-says", "mood": "thinking", "text": "Let op je hengeltop.", "sourceRefs": [] }`                    |
 
 - `icon` is de naam van een icoon uit de vaste set van de app (kebab-case); de set komt met de lesweergave (M7).
-- `figure.src` wijst naar een `.svg` in de map `assets/` van de cursus, zonder `..`. `alt` beschrijft wat je ziet en is nooit leeg. De svg laadt niets van buiten (alleen de XML-namespaces van w3.org mogen erin staan) en gebruikt `currentColor` in plaats van vaste kleuren.
+- `figure.src` wijst naar een `.svg` in de map `assets/` van de cursus, zonder `..` en zonder symlink. `alt` beschrijft wat je ziet en is nooit leeg. De svg laadt niets van buiten (alleen de XML-namespaces van w3.org mogen erin staan) en gebruikt `currentColor` in plaats van vaste kleuren.
 
 ## Opmaak in tekst
 
@@ -391,7 +391,7 @@ Zijn er schemafouten in een cursus, dan worden eerst alleen die gemeld; de ander
 | `link-tracker`                | een link naar een tracker of linkverkorter, of met een trackingparameter                         |
 | `markup-html`                 | HTML in tekst                                                                                    |
 | `course-term-not-allowed`     | een `[[term]]` in `course.json` (een cursus heeft geen `glossary`)                               |
-| `asset-path-invalid`          | `figure.src` is geen `.svg` onder `assets/`, of bevat `..`                                       |
+| `asset-path-invalid`          | `figure.src` is geen `.svg` onder `assets/`, bevat `..`, of is (of ligt in) een symlink          |
 | `asset-missing`               | de afbeelding bestaat niet                                                                       |
 | `asset-external-ref`          | de svg verwijst naar een andere site                                                             |
 | `figure-alt-missing`          | `alt` is leeg of alleen spaties                                                                  |

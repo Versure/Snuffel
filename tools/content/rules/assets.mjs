@@ -1,6 +1,6 @@
 // Figures: an svg in the course's assets directory that exists and loads nothing from elsewhere.
 // (A non-empty alt text is enforced by the schema, reported as figure-alt-missing.)
-import { existsSync, readFileSync, statSync } from 'node:fs';
+import { existsSync, lstatSync, readFileSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 
 // XML namespaces are identifiers, not requests (same rule as npm run privacy).
@@ -13,6 +13,24 @@ export function isValidAssetPath(src) {
   if (!src.startsWith('assets/') || !src.endsWith('.svg')) return false;
   if (src.includes('\\') || src.includes('//')) return false;
   return src.split('/').every((segment) => segment !== '..' && segment !== '.' && segment !== '');
+}
+
+/**
+ * True when `src` (a valid asset path) or one of its directories below the course directory is a
+ * symbolic link. A link could point outside the course, so it is refused.
+ */
+export function hasSymlink(courseDir, src) {
+  const segments = src.split('/');
+  for (let i = 1; i <= segments.length; i++) {
+    let stats;
+    try {
+      stats = lstatSync(join(courseDir, ...segments.slice(0, i)));
+    } catch {
+      return false; // does not exist: asset-missing reports it
+    }
+    if (stats.isSymbolicLink()) return true;
+  }
+  return false;
 }
 
 /** The figures of a lesson: `[{ src, path }]` (path is the JSON path of src). */
@@ -47,6 +65,13 @@ export function checkAssets({ courses }) {
           issue(
             'asset-path-invalid',
             `"${src}" moet een .svg in de map assets/ van de cursus zijn (zonder ..)`,
+          );
+          continue;
+        }
+        if (hasSymlink(course.dir, src)) {
+          issue(
+            'asset-path-invalid',
+            `"${src}" is een snelkoppeling (symlink); zet het echte bestand in de map assets/`,
           );
           continue;
         }
