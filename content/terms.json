@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "terms": [
+    { "term": "aanbeet", "forms": ["aanbeten"] },
+    {
+      "term": "aanslaan",
+      "forms": ["sla aan", "slaat aan", "sloeg aan", "sloegen aan", "aangeslagen", "aanslaat"]
+    },
+    { "term": "beetmelder", "forms": ["beetmelders"] },
+    { "term": "gevlochten lijn", "forms": ["gevlochten lijnen"] },
+    { "term": "kunstaas" },
+    { "term": "loodkop", "forms": ["loodkoppen"] },
+    { "term": "onderlijn", "forms": ["onderlijnen"] },
+    { "term": "onthaken", "forms": ["onthaak", "onthaakt", "onthaakte", "onthaakten"] },
+    { "term": "onthaaktang", "forms": ["onthaaktangen"] },
+    { "term": "shad", "forms": ["shads"] },
+    { "term": "VISpas", "forms": ["VISpassen"] }
+  ]
+}
