@@ -1,5 +1,6 @@
-// Links: only https, no trackers or tracking parameters, and no HTML in text.
-import { inlineLinks } from '../text.mjs';
+// Links: only https, no trackers or tracking parameters, and no HTML in text. Also: no [[term]]
+// in course.json (a course has no glossary to explain it).
+import { inlineLinks, inlineTerms } from '../text.mjs';
 import { trackerReason } from '../trackers.mjs';
 import { lessonTexts } from '../walk.mjs';
 
@@ -73,6 +74,15 @@ export function checkLinks({ courses }) {
     );
     for (const { path, text } of courseTexts(course.data)) {
       if (HTML.test(text)) issues.push(htmlIssue(course.file, path));
+      for (const url of inlineLinks(text)) issues.push(...checkUrl(url, course.file, path));
+      for (const { term } of inlineTerms(text)) {
+        issues.push({
+          code: 'course-term-not-allowed',
+          file: course.file,
+          path,
+          message: `[[${term}]] mag niet in course.json: een cursus heeft geen glossary; schrijf de term als gewone tekst`,
+        });
+      }
     }
     for (const lesson of course.lessons) {
       for (const { path, text } of lessonTexts(lesson.data)) {

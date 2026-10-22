@@ -55,6 +55,57 @@ describe('links', () => {
     assertClean(fixture.check());
   });
 
+  test('javascript link in course goal gives link-not-https', (t) => {
+    const fixture = fixtureRoot(t);
+    fixture.mutateCourse((course) => {
+      course.goal += ' [Klik hier](javascript:alert(1))';
+    });
+    assertIssue(fixture.check(), 'link-not-https', 'goal', fixture.courseFile);
+  });
+
+  test('http link in a course source note and lesson title gives link-not-https', (t) => {
+    const fixture = fixtureRoot(t);
+    fixture.mutateCourse((course) => {
+      course.sources[0].note = 'Zie ook [deze pagina](http://www.sportvisunie.nl/).';
+      course.ted.greeting += ' [Hoi](/leren)';
+    });
+    const result = fixture.check();
+    assertIssue(result, 'link-not-https', 'sources[0].note', fixture.courseFile);
+    assertIssue(result, 'link-not-https', 'ted.greeting', fixture.courseFile);
+  });
+
+  test('url shortener in course audience gives link-tracker', (t) => {
+    const fixture = fixtureRoot(t);
+    fixture.mutateCourse((course) => {
+      course.audience += ' [info](https://bit.ly/abc123)';
+    });
+    assertIssue(fixture.check(), 'link-tracker', 'audience', fixture.courseFile);
+  });
+
+  test('a https link in course.json text is fine', (t) => {
+    const fixture = fixtureRoot(t);
+    fixture.mutateCourse((course) => {
+      course.goal += ' [VISpas](https://www.sportvisunie.nl/)';
+    });
+    assertClean(fixture.check());
+  });
+
+  test('a [[term]] in course.json gives course-term-not-allowed', (t) => {
+    const fixture = fixtureRoot(t);
+    fixture.mutateCourse((course) => {
+      course.lessons[0].title = 'Wanneer [[aanslaan]]?';
+    });
+    const result = fixture.check();
+    const error = assertIssue(
+      result,
+      'course-term-not-allowed',
+      'lessons[0].title',
+      fixture.courseFile,
+    );
+    assert.match(error.message, /glossary/);
+    assert.equal(result.errors.length, 1);
+  });
+
   test('utm parameter gives link-tracker', (t) => {
     const fixture = fixtureRoot(t);
     fixture.mutateCourse((course) => {

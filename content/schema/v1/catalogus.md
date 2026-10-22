@@ -243,6 +243,7 @@ In alle tekstvelden mag een kleine subset van Markdown, alleen binnen een regel:
 - Geen HTML, koppen, lijsten of afbeeldingen in tekst.
 - Een losse `*` (zoals in `3 * 4`) blijft gewoon tekst, net als `**` zonder sluiting.
 - Elke `[[term]]` moet in de `glossary` van dezelfde les staan.
+- In `course.json` mag geen `[[term]]` staan: een cursus heeft geen `glossary` (`course-term-not-allowed`). Schrijf de term daar als gewone tekst. Links in `course.json` (bijvoorbeeld in `goal` of `sources[].note`) worden net zo gecontroleerd als in een les.
 - Alle gevallen staan in `inline-markup.cases.json`; de tools en de app worden daartegen getest.
 
 ## Interacties
@@ -389,6 +390,7 @@ Zijn er schemafouten in een cursus, dan worden eerst alleen die gemeld; de ander
 | `link-not-https`              | een link die niet met `https://` begint (ook `http:`, `javascript:`, `data:` en relatieve links) |
 | `link-tracker`                | een link naar een tracker of linkverkorter, of met een trackingparameter                         |
 | `markup-html`                 | HTML in tekst                                                                                    |
+| `course-term-not-allowed`     | een `[[term]]` in `course.json` (een cursus heeft geen `glossary`)                               |
 | `asset-path-invalid`          | `figure.src` is geen `.svg` onder `assets/`, of bevat `..`                                       |
 | `asset-missing`               | de afbeelding bestaat niet                                                                       |
 | `asset-external-ref`          | de svg verwijst naar een andere site                                                             |
