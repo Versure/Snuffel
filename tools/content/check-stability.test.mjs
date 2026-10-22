@@ -1,5 +1,7 @@
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
+import { cpSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { describe, test } from 'node:test';
 import { checkScript } from './check.mjs';
 import { canonical, resolveBase } from './rules/stability.mjs';
@@ -147,6 +149,62 @@ describe('id stability against main', () => {
     git(fixture.root, 'rm', '--quiet', '-r', 'content/courses/proefcursus');
     const error = assertIssue(fixture.check(), 'id-removed', 'id', fixture.courseFile);
     assert.match(error.message, /cursus "proefcursus"/);
+  });
+
+  test('renamed interaction id gives id-removed', (t) => {
+    const fixture = publishedRepo(t);
+    fixture.mutateLesson((lesson) => {
+      lesson.version = 2;
+      lesson.steps[1].interaction.id = 'voel-spel-nieuw';
+    });
+    const error = assertIssue(
+      fixture.check(),
+      'id-removed',
+      'steps[1].interaction.id',
+      fixture.lessonFile,
+    );
+    assert.match(error.message, /voel-spel/);
+  });
+
+  test('renamed checklist item id gives id-removed', (t) => {
+    const fixture = publishedRepo(t);
+    fixture.mutateLesson((lesson) => {
+      lesson.version = 2;
+      lesson.steps[3].items[1].id = 'staal-en-tang-nieuw';
+    });
+    assertIssue(fixture.check(), 'id-removed', 'steps[3].items[1].id', fixture.lessonFile);
+  });
+
+  test('a lesson moved to another course gives id-moved', (t) => {
+    const fixture = publishedRepo(t);
+    const otherDir = fixture.copyCourseTo('andere-cursus');
+    const otherFile = join(otherDir, 'course.json');
+    const other = JSON.parse(readFileSync(otherFile, 'utf8'));
+    other.id = 'andere-cursus';
+    other.lessons = other.lessons.filter((entry) => entry.id === 'proefles');
+    writeFileSync(otherFile, `${JSON.stringify(other, null, 2)}\n`);
+    fixture.remove('lessons/01-proefles.json');
+    fixture.mutateCourse((course) => {
+      course.lessons = course.lessons.filter((entry) => entry.id !== 'proefles');
+    });
+    const error = assertIssue(
+      fixture.check(),
+      'id-moved',
+      'lessons[0].id',
+      'content/courses/andere-cursus/course.json',
+    );
+    assert.match(error.message, /les "proefles"/);
+  });
+
+  test('a fixture course with the same id does not replace a published course', (t) => {
+    const fixture = publishedRepo(t);
+    const { root } = fixture;
+    // The published course disappears from content/courses; a copy lives on as a fixture.
+    const shadow = join(root, 'content', 'fixtures', 'courses', 'proefcursus');
+    mkdirSync(join(root, 'content', 'fixtures', 'courses'), { recursive: true });
+    cpSync(fixture.courseDir, shadow, { recursive: true });
+    git(root, 'rm', '--quiet', '-r', 'content/courses/proefcursus');
+    assertIssue(fixture.check(), 'id-removed', 'id');
   });
 
   test('lesson back to planned gives lesson-unpublished', (t) => {

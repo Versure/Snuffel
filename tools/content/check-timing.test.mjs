@@ -70,3 +70,80 @@ describe('reading time', () => {
     assertNoIssue(result, 'duration-out-of-range');
   });
 });
+
+describe('reading time: the boundaries', () => {
+  /**
+   * Shrinks every reading text to one word, then adds filler words to the objective until the
+   * computed time is exactly `target` minutes. Other checks may report; only timing is asserted.
+   */
+  function tuneMinutes(fixture, target) {
+    const shrink = (value, key) => {
+      if (Array.isArray(value)) return value.map((item) => shrink(item));
+      if (value && typeof value === 'object') {
+        return Object.fromEntries(Object.entries(value).map(([k, v]) => [k, shrink(v, k)]));
+      }
+      return [
+        'title',
+        'text',
+        'objective',
+        'intro',
+        'prompt',
+        'caption',
+        'successCriterion',
+      ].includes(key)
+        ? 'Kort.'
+        : value;
+    };
+    fixture.mutateLesson((lesson) => {
+      const changed = shrink(lesson);
+      changed.ted = lesson.ted;
+      changed.ted.intro.text = 'Kort.';
+      for (let extra = 0; extra < 3000; extra += 1) {
+        changed.objective = `Kort. ${'vis '.repeat(extra).trim()}`;
+        if (computeMinutes(changed).minutes === target) return changed;
+      }
+      throw new Error(`cannot reach ${target} minutes`);
+    });
+    assert.equal(computeMinutes(fixture.readLesson()).minutes, target);
+  }
+
+  const setEstimate = (fixture, estimate) =>
+    fixture.mutateLesson((lesson) => {
+      lesson.estimatedMinutes = estimate;
+    });
+
+  test('exactly 8.0 and 12.0 minutes are fine, 7.9 and 12.1 are not', (t) => {
+    for (const [target, fine] of [
+      [8.0, true],
+      [12.0, true],
+      [7.9, false],
+      [12.1, false],
+    ]) {
+      const fixture = fixtureRoot(t);
+      tuneMinutes(fixture, target);
+      setEstimate(fixture, Math.round(target) < 8 ? 8 : Math.round(target));
+      const result = fixture.check();
+      if (fine) assertNoIssue(result, 'duration-out-of-range');
+      else assertIssue(result, 'duration-out-of-range', 'estimatedMinutes');
+    }
+  });
+
+  test('a difference of exactly 2 minutes is fine, 2.1 gives duration-mismatch', (t) => {
+    const fine = fixtureRoot(t);
+    tuneMinutes(fine, 10.0);
+    setEstimate(fine, 12);
+    assertNoIssue(fine.check(), 'duration-mismatch');
+    setEstimate(fine, 8);
+    assertNoIssue(fine.check(), 'duration-mismatch');
+
+    const off = fixtureRoot(t);
+    tuneMinutes(off, 9.9);
+    setEstimate(off, 12);
+    assertIssue(off.check(), 'duration-mismatch', 'estimatedMinutes');
+
+    const offLow = fixtureRoot(t);
+    tuneMinutes(offLow, 10.1);
+    setEstimate(offLow, 8);
+    assertIssue(offLow.check(), 'duration-mismatch', 'estimatedMinutes');
+  });
+});

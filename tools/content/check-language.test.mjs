@@ -44,6 +44,45 @@ describe('sentence length', () => {
   });
 });
 
+describe('sentence length: the boundary', () => {
+  const words = (count) =>
+    `${Array.from({ length: count }, (_, i) => `woord${'abcdefghij'[i % 10]}`).join(' ')}.`;
+
+  /** Every counted text becomes one sentence of `count` words; `first` overrides the objective. */
+  function withSentences(fixture, count, first = count) {
+    fixture.mutateLesson((lesson) => {
+      const visit = (value, key) => {
+        if (Array.isArray(value)) return value.map((item) => visit(item));
+        if (value && typeof value === 'object') {
+          return Object.fromEntries(Object.entries(value).map(([k, v]) => [k, visit(v, k)]));
+        }
+        return ['title', 'text', 'intro', 'prompt', 'caption', 'successCriterion'].includes(key)
+          ? words(count)
+          : value;
+      };
+      const changed = visit(lesson);
+      changed.ted = lesson.ted;
+      changed.ted.intro.text = words(count);
+      changed.objective = words(first);
+      return changed;
+    });
+  }
+
+  test('an average of exactly 15 words is fine', (t) => {
+    const fixture = fixtureRoot(t);
+    withSentences(fixture, 15);
+    assert.equal(sentenceStats(fixture.readLesson()).average, 15);
+    assertNoIssue(fixture.check(), 'sentence-length');
+  });
+
+  test('an average just above 15 words gives sentence-length', (t) => {
+    const fixture = fixtureRoot(t);
+    withSentences(fixture, 15, 16);
+    assert.ok(sentenceStats(fixture.readLesson()).average > 15);
+    assertIssue(fixture.check(), 'sentence-length', '');
+  });
+});
+
 describe('subject terms', () => {
   function withoutGlossaryTerm(fixture, term) {
     fixture.mutateLesson((lesson) => {

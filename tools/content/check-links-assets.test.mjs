@@ -77,6 +77,9 @@ describe('links', () => {
     assert.match(reason('https://www.google-analytics.com/collect'), /google-analytics\.com/);
     assert.match(reason('https://stats.g.doubleclick.net/x'), /doubleclick\.net/);
     assert.match(reason('https://t.co/abc'), /t\.co/);
+    assert.match(reason('https://www.googletagmanager.com/gtm.js'), /googletagmanager\.com/);
+    assert.match(reason('https://bit.ly/abc'), /bit\.ly/);
+    assert.match(reason('https://tinyurl.com/abc'), /tinyurl\.com/);
     assert.match(reason('https://www.facebook.com/tr?id=1'), /facebook\.com\/tr/);
     assert.match(reason('https://example.org/?fbclid=1'), /fbclid/);
     assert.match(reason('https://example.org/?gclid=1'), /gclid/);

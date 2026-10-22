@@ -237,6 +237,41 @@ describe('content:check on a broken fixture', () => {
     );
   });
 
+  test('a stepped-exercise choice answer that is not an option gives interaction-answer-unknown', (t) => {
+    const fixture = fixtureRoot(t);
+    fixture.mutateLesson((lesson) => {
+      lesson.steps[1].interaction = {
+        id: 'breuken',
+        kind: 'stepped-exercise',
+        config: {
+          exercises: [
+            {
+              id: 'som-1',
+              prompt: 'Welke is groter?',
+              answer: {
+                type: 'choice',
+                options: [
+                  { id: 'half', text: '1/2' },
+                  { id: 'derde', text: '1/3' },
+                ],
+                correctOptionId: 'kwart',
+              },
+              hints: [],
+              steps: [],
+              commonMistakes: [],
+              workedSolution: 'Een half is groter.',
+            },
+          ],
+        },
+      };
+    });
+    assertIssue(
+      fixture.check(),
+      'interaction-answer-unknown',
+      'steps[1].interaction.config.exercises[0].answer.correctOptionId',
+    );
+  });
+
   test('the CLI counts errors in Dutch', async (t) => {
     const fixture = fixtureRoot(t);
     fixture.mutateLesson((lesson) => {

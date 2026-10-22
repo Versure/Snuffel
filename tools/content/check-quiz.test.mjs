@@ -184,4 +184,26 @@ describe('quiz: number of quiz steps', () => {
     assertNoIssue(result, 'quiz-step-count');
     assertNoIssue(result, 'schema');
   });
+
+  test('practice lesson with two quiz steps gives quiz-step-count', (t) => {
+    const fixture = fixtureRoot(t);
+    fixture.mutateCourse((course) => {
+      Object.assign(course, {
+        kind: 'practice',
+        subject: 'Natuur',
+        schoolLevel: 'Groep 6',
+        method: 'Naut',
+        chapter: 'Thema 2',
+      });
+    });
+    fixture.mutateLesson((lesson) => {
+      const copy = structuredClone(quiz(lesson));
+      copy.id = 'quiz-twee';
+      copy.questions.forEach((question) => {
+        question.id = `${question.id}-twee`;
+      });
+      lesson.steps.push(copy);
+    });
+    assertIssue(fixture.check(), 'quiz-step-count', 'steps');
+  });
 });
