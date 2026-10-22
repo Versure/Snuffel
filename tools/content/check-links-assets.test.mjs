@@ -1,9 +1,10 @@
 import assert from 'node:assert/strict';
-import { mkdirSync, renameSync, symlinkSync, writeFileSync } from 'node:fs';
+import { mkdirSync, readFileSync, renameSync, symlinkSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { describe, test } from 'node:test';
 import { externalReferences, isValidAssetPath } from './rules/assets.mjs';
+import { courseTexts } from './rules/links.mjs';
 import { trackerReason } from './trackers.mjs';
 import { assertClean, assertIssue, codes, fixtureRoot } from './test-helpers.mjs';
 
@@ -75,6 +76,47 @@ describe('links', () => {
     const result = fixture.check();
     assertIssue(result, 'link-not-https', 'sources[0].note', fixture.courseFile);
     assertIssue(result, 'link-not-https', 'ted.greeting', fixture.courseFile);
+  });
+
+  test('javascript link and html in a source publisher are reported', (t) => {
+    const fixture = fixtureRoot(t);
+    fixture.mutateCourse((course) => {
+      course.sources[0].publisher = '[SVNL](javascript:alert(1))';
+      course.sources[1].publisher = '<b>SVNL</b>';
+    });
+    const result = fixture.check();
+    assertIssue(result, 'link-not-https', 'sources[0].publisher', fixture.courseFile);
+    assertIssue(result, 'markup-html', 'sources[1].publisher', fixture.courseFile);
+  });
+
+  test('every text field in course.schema.json is checked', () => {
+    const schema = JSON.parse(
+      readFileSync(new URL('../../content/schema/v1/course.schema.json', import.meta.url), 'utf8'),
+    );
+    const schemaFields = new Set();
+    const walk = (node) => {
+      if (!node || typeof node !== 'object') return;
+      for (const [name, value] of Object.entries(node.properties ?? {})) {
+        if (value?.$ref === '#/$defs/text') schemaFields.add(name);
+      }
+      for (const value of Object.values(node)) walk(value);
+    };
+    walk(schema);
+    const course = {
+      title: 't',
+      audience: 't',
+      goal: 't',
+      successCriterion: 't',
+      subject: 't',
+      schoolLevel: 't',
+      method: 't',
+      chapter: 't',
+      ted: { greeting: 't' },
+      lessons: [{ title: 't' }],
+      sources: [{ title: 't', publisher: 't', note: 't' }],
+    };
+    const checked = new Set(courseTexts(course).map(({ path }) => path.split('.').pop()));
+    assert.deepEqual([...schemaFields].sort(), [...checked].sort());
   });
 
   test('url shortener in course audience gives link-tracker', (t) => {

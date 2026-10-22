@@ -31,7 +31,8 @@ export function checkUrl(raw, file, path) {
   return [];
 }
 
-function courseTexts(course) {
+/** Every text field of course.json, with its JSON path. */
+export function courseTexts(course) {
   const fields = [
     'title',
     'audience',
@@ -51,6 +52,7 @@ function courseTexts(course) {
   );
   course.sources.forEach((source, index) => {
     texts.push({ path: `sources[${index}].title`, text: source.title });
+    texts.push({ path: `sources[${index}].publisher`, text: source.publisher });
     if (source.note !== undefined)
       texts.push({ path: `sources[${index}].note`, text: source.note });
   });
