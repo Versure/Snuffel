@@ -25,9 +25,20 @@
       "Bash(gh pr create *)",
       "Bash(gh pr view*)",
       "Bash(gh pr list*)",
-      "Bash(gh pr diff*)"
+      "Bash(gh pr diff*)",
+      "Bash(npm install*)",
+      "Bash(npm ci*)",
+      "Bash(node tools/*)",
+      "Bash(node --test *)",
+      "Bash(npx tsc *)",
+      "Bash(git rev-parse*)",
+      "Bash(gh pr edit *)",
+      "Bash(gh pr checks*)",
+      "mcp__github__create_pull_request",
+      "mcp__github__pull_request_read",
+      "mcp__github__update_pull_request"
     ],
-    "ask": ["Bash(npm install*)", "Bash(git push*)", "Bash(docker *)"],
+    "ask": ["Bash(docker *)"],
     "deny": [
       "Read(./.env)",
       "Read(./.env.*)",
