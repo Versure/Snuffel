@@ -226,7 +226,7 @@ Elke stap heeft `id`, `type` en `title`. Een les van een leertraject (`kind: cou
 | `ted-says`     | `mood`, `text`, `sourceRefs`                        | `{ "type": "ted-says", "mood": "thinking", "text": "Let op je hengeltop.", "sourceRefs": [] }`                    |
 
 - `icon` is de naam van een icoon uit de vaste set van de app (kebab-case); de set komt met de lesweergave (M7).
-- `figure.src` wijst naar een `.svg` in de map `assets/` van de cursus, zonder `..` en zonder symlink. `alt` beschrijft wat je ziet en is nooit leeg. De svg laadt niets van buiten (alleen de XML-namespaces van w3.org mogen erin staan) en gebruikt `currentColor` in plaats van vaste kleuren.
+- `figure.src` wijst naar een `.svg` in de map `assets/` van de cursus (of een submap), met alleen kleine letters, cijfers en streepjes in de namen (bijv. `assets/vissen/snoek.svg`), zonder `..` en zonder symlink. `alt` beschrijft wat je ziet en is nooit leeg. De svg laadt niets van buiten (alleen de XML-namespaces van w3.org mogen erin staan) en gebruikt `currentColor` in plaats van vaste kleuren.
 
 ## Opmaak in tekst
 

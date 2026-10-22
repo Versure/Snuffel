@@ -11,6 +11,7 @@ const ID_PATTERN = '^[a-z0-9]+(-[a-z0-9]+)*$';
 const TEXT_PATTERN = '\\S';
 const HTTPS_PATTERN = '^https://\\S+$';
 const DATE_PATTERN = '^\\d{4}-\\d{2}-\\d{2}$';
+const ASSET_PATTERN = '^assets/[a-z0-9-]+(/[a-z0-9-]+)*\\.svg$';
 
 export function loadSchema(kind) {
   return JSON.parse(readFileSync(join(schemaDir, `${kind}.schema.json`), 'utf8'));
@@ -114,6 +115,13 @@ function translate(error, data) {
           code: 'link-not-https',
           path: pointerToPath(instancePath),
           message: `link ${show(value)} moet beginnen met https:// (en geen spaties bevatten)`,
+        };
+      }
+      if (params.pattern === ASSET_PATTERN) {
+        return {
+          code: 'asset-path-invalid',
+          path: pointerToPath(instancePath),
+          message: `${show(value)} moet een .svg in de map assets/ van de cursus zijn: kleine letters, cijfers en streepjes, zonder ..`,
         };
       }
       if (params.pattern === DATE_PATTERN) {

@@ -564,7 +564,7 @@
         "src": {
           "description": "Path of an svg in the course's assets directory, for example assets/hengeltop.svg.",
           "type": "string",
-          "minLength": 1
+          "pattern": "^assets/[a-z0-9-]+(/[a-z0-9-]+)*\\.svg$"
         },
         "alt": {
           "$ref": "#/$defs/text"

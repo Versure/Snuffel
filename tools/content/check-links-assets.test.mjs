@@ -194,6 +194,20 @@ describe('figures', () => {
     assertIssue(fixture.check(), 'asset-path-invalid', `${figurePath}.src`);
   });
 
+  test('figure path with capitals, spaces or dots gives asset-path-invalid from the schema', (t) => {
+    const fixture = fixtureRoot(t);
+    for (const src of ['assets/Hengeltop.svg', 'assets/hengel top.svg', 'assets/hengel.top.svg']) {
+      fixture.writeFile(src, '<svg xmlns="http://www.w3.org/2000/svg"/>\n');
+      fixture.mutateLesson((lesson) => {
+        lesson.steps[0].blocks[6].src = src;
+      });
+      const result = fixture.check();
+      const error = assertIssue(result, 'asset-path-invalid', `${figurePath}.src`);
+      assert.match(error.message, /kleine letters/, src);
+      assert.equal(result.errors.length, 1, src);
+    }
+  });
+
   test('a symlinked figure gives asset-path-invalid', (t) => {
     const fixture = fixtureRoot(t);
     const outside = join(fixture.root, 'elders.svg');
