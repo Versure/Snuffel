@@ -8,15 +8,25 @@ import { fileURLToPath } from 'node:url';
 import { parseArgs } from 'node:util';
 import { loadContent } from './load.mjs';
 import { formatReport, sortIssues } from './report.mjs';
-import { checkGlossaryReferences } from './rules/language.mjs';
+import { checkGlossaryReferences, checkSentenceLength, checkTerms } from './rules/language.mjs';
+import { checkQuiz } from './rules/quiz.mjs';
 import { checkSources } from './rules/sources.mjs';
 import { checkStructure } from './rules/structure.mjs';
+import { checkTiming } from './rules/timing.mjs';
 import { validate } from './schema.mjs';
 
 export const repoRoot = resolve(import.meta.dirname, '..', '..');
 
 /** Content rules in order; each takes the context and returns issues. */
-export const contentRules = [checkStructure, checkSources, checkGlossaryReferences];
+export const contentRules = [
+  checkStructure,
+  checkSources,
+  checkGlossaryReferences,
+  checkQuiz,
+  checkTiming,
+  checkSentenceLength,
+  checkTerms,
+];
 
 /** Local date as YYYY-MM-DD. */
 export function localToday(now = new Date()) {
