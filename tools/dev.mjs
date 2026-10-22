@@ -1,5 +1,6 @@
-// `npm start`: PocketBase with the dev superuser and the test accounts, then `ng serve`
-// (which proxies /api to PocketBase, see web/proxy.conf.json). Ctrl+C stops both.
+// `npm start`: PocketBase with the dev superuser and the test accounts, the content (with the
+// fixtures), then `ng serve` (which proxies /api to PocketBase, see web/proxy.conf.json).
+// Ctrl+C stops everything.
 //
 // Usage: node tools/dev.mjs [<extra ng serve arguments>]
 // PocketBase always runs on 127.0.0.1:8092, the target of the proxy in web/proxy.conf.json.
@@ -20,7 +21,8 @@ export function parseDevArgs(argv) {
 
 /**
  * The steps of `npm start`, in order: PocketBase (stays running), the seed (runs once,
- * after PocketBase is healthy), then the Angular dev server (stays running).
+ * after PocketBase is healthy), the content build with fixtures (runs once), then the Angular
+ * dev server (stays running).
  */
 export function devSteps({
   pocketBasePort = defaultPocketBasePort,
@@ -52,6 +54,12 @@ export function devSteps({
       kind: 'once',
       command: node,
       args: [join(rootDir, 'tools', 'seed-pocketbase.mjs'), '--url', url],
+    },
+    {
+      name: 'content',
+      kind: 'once',
+      command: node,
+      args: [join(rootDir, 'tools', 'content', 'build.mjs'), '--fixtures'],
     },
     {
       name: 'web',

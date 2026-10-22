@@ -1,0 +1,174 @@
+import assert from 'node:assert/strict';
+import { readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
+import { join, relative, sep } from 'node:path';
+import { describe, test } from 'node:test';
+import { buildContent, buildScript, contentHash, parseBuildArgs } from './build.mjs';
+import { repoRoot } from './check.mjs';
+import { validate } from './schema.mjs';
+import { fixtureLessonName, fixtureRoot, fixtureToday, runTool } from './test-helpers.mjs';
+
+function listFiles(dir) {
+  const result = [];
+  const walk = (current) => {
+    for (const entry of readdirSync(current)) {
+      const path = join(current, entry);
+      if (statSync(path).isDirectory()) walk(path);
+      else result.push(relative(dir, path).split(sep).join('/'));
+    }
+  };
+  walk(dir);
+  return result.sort();
+}
+
+function readTree(dir) {
+  return Object.fromEntries(listFiles(dir).map((file) => [file, readFileSync(join(dir, file))]));
+}
+
+function build(fixture, options = {}) {
+  const out = join(fixture.root, 'out', 'content');
+  return {
+    out,
+    result: buildContent({ root: fixture.root, out, today: fixtureToday, ...options }),
+  };
+}
+
+describe('content:build', () => {
+  test('without --fixtures the manifest has no proefcursus', (t) => {
+    const fixture = fixtureRoot(t);
+    const { out, result } = build(fixture);
+    assert.equal(result.ok, true);
+    const manifest = JSON.parse(readFileSync(join(out, 'manifest.json'), 'utf8'));
+    assert.deepEqual(manifest, { schemaVersion: 1, courses: [] });
+    assert.deepEqual(listFiles(out), ['manifest.json']);
+  });
+
+  test('with --fixtures the lesson and asset are written', (t) => {
+    const fixture = fixtureRoot(t);
+    const { out, result } = build(fixture, { fixtures: true });
+    assert.equal(result.ok, true);
+    assert.deepEqual(listFiles(out), [
+      'manifest.json',
+      'proefcursus/assets/hengeltop.svg',
+      'proefcursus/course.json',
+      'proefcursus/lessons/proefles.json',
+    ]);
+    const manifest = JSON.parse(readFileSync(join(out, 'manifest.json'), 'utf8'));
+    const [course] = manifest.courses;
+    assert.equal(course.id, 'proefcursus');
+    assert.equal(course.file, 'proefcursus/course.json');
+    assert.deepEqual(
+      course.lessons.map(({ id, status, file }) => [id, status, file]),
+      [
+        ['proefles', 'published', 'proefcursus/lessons/proefles.json'],
+        ['proefles-later', 'planned', undefined],
+      ],
+    );
+    assert.equal(course.lessons[0].version, 1);
+    assert.equal(course.lessons[0].estimatedMinutes, fixture.readLesson().estimatedMinutes);
+    const lesson = JSON.parse(readFileSync(join(out, 'proefcursus/lessons/proefles.json'), 'utf8'));
+    assert.deepEqual(lesson, fixture.readLesson());
+    const builtCourse = JSON.parse(readFileSync(join(out, 'proefcursus/course.json'), 'utf8'));
+    assert.equal(builtCourse.lessons[0].file, 'lessons/proefles.json');
+    assert.equal(builtCourse.lessons[1].file, undefined);
+    assert.deepEqual(
+      readFileSync(join(out, 'proefcursus/assets/hengeltop.svg')),
+      readFileSync(fixture.path('assets/hengeltop.svg')),
+    );
+  });
+
+  test('manifest matches manifest.schema.json', (t) => {
+    const fixture = fixtureRoot(t);
+    const { out } = build(fixture, { fixtures: true });
+    const manifest = JSON.parse(readFileSync(join(out, 'manifest.json'), 'utf8'));
+    assert.deepEqual(validate('manifest', manifest), []);
+  });
+
+  test('hashes match the bytes', (t) => {
+    const fixture = fixtureRoot(t);
+    const { out } = build(fixture, { fixtures: true });
+    const manifest = JSON.parse(readFileSync(join(out, 'manifest.json'), 'utf8'));
+    const entries = manifest.courses.flatMap((course) => [
+      course,
+      ...course.lessons.filter((lesson) => lesson.file),
+    ]);
+    assert.equal(entries.length, 2);
+    for (const { file, hash } of entries) {
+      assert.match(hash, /^[0-9a-f]{16}$/);
+      assert.equal(contentHash(readFileSync(join(out, file))), hash, file);
+    }
+  });
+
+  test('two builds are identical', (t) => {
+    const fixture = fixtureRoot(t);
+    const { out } = build(fixture, { fixtures: true });
+    const first = readTree(out);
+    build(fixture, { fixtures: true });
+    assert.deepEqual(readTree(out), first);
+    // And into another directory.
+    const second = join(fixture.root, 'out', 'second');
+    buildContent({ root: fixture.root, out: second, fixtures: true, today: fixtureToday });
+    assert.deepEqual(readTree(second), first);
+  });
+
+  test('a content error keeps the previous output', async (t) => {
+    const fixture = fixtureRoot(t);
+    const { out } = build(fixture, { fixtures: true });
+    const before = readTree(out);
+    fixture.mutateLesson((lesson) => {
+      delete lesson.objective;
+    });
+    const { result } = build(fixture, { fixtures: true });
+    assert.equal(result.ok, false);
+    assert.ok(result.errors.some((error) => error.code === 'schema'));
+    assert.deepEqual(readTree(out), before);
+
+    const { code, stderr } = await runTool(buildScript, [
+      '--root',
+      fixture.root,
+      '--out',
+      out,
+      '--fixtures',
+    ]);
+    assert.equal(code, 1);
+    assert.match(stderr, /content:build: 1 fout/);
+    assert.match(stderr, /objective: verplicht veld "objective" ontbreekt/);
+    assert.match(stderr, /de vorige uitvoer blijft staan/);
+    assert.deepEqual(readTree(out), before);
+  });
+
+  test('a stale file from an earlier build disappears', (t) => {
+    const fixture = fixtureRoot(t);
+    const { out } = build(fixture, { fixtures: true });
+    writeFileSync(join(out, 'oud.json'), '{}');
+    build(fixture, { fixtures: true });
+    assert.ok(!listFiles(out).includes('oud.json'));
+    assert.deepEqual(
+      readdirSync(join(fixture.root, 'out')).filter((name) => name.startsWith('.')),
+      [],
+    );
+  });
+
+  test('only assets that a lesson refers to are copied', (t) => {
+    const fixture = fixtureRoot(t);
+    fixture.writeFile('assets/ongebruikt.svg', '<svg xmlns="http://www.w3.org/2000/svg"/>\n');
+    const { out } = build(fixture, { fixtures: true });
+    assert.deepEqual(
+      listFiles(out).filter((file) => file.includes('/assets/')),
+      ['proefcursus/assets/hengeltop.svg'],
+    );
+  });
+
+  test('the lesson file is named by its id, not by its number', (t) => {
+    const fixture = fixtureRoot(t);
+    assert.equal(fixtureLessonName, 'lessons/01-proefles.json');
+    const { result } = build(fixture, { fixtures: true });
+    assert.ok(result.files.includes('proefcursus/lessons/proefles.json'));
+  });
+
+  test('parseBuildArgs: no fixtures and web/public/content by default', () => {
+    const options = parseBuildArgs([]);
+    assert.equal(options.fixtures, false);
+    assert.equal(options.out, join(repoRoot, 'web', 'public', 'content'));
+    assert.equal(parseBuildArgs(['--fixtures']).fixtures, true);
+  });
+});

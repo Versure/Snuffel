@@ -1,4 +1,5 @@
-// Guards that the dev seed (test accounts with known passwords) never ends up in the image.
+// Guards that the dev seed (test accounts with known passwords) and the content fixtures (the
+// test lesson) never end up in the image.
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
@@ -46,6 +47,27 @@ test('the runtime stage only takes migrations and hooks from the repo', () => {
 test('.dockerignore keeps pocketbase/seed out of the build context', () => {
   assert.ok(
     dockerignore.some((line) => line.replace(/\/$/, '') === 'pocketbase/seed'),
+    dockerignore.join(', '),
+  );
+});
+
+test('the Dockerfile builds content before the app, without fixtures', () => {
+  const runs = dockerfile
+    .replace(/\\\n/g, ' ')
+    .split('\n')
+    .map((line) => line.trim())
+    .filter((line) => /^RUN\s/i.test(line));
+  const content = runs.findIndex((line) => /npm run content:build/.test(line));
+  const app = runs.findIndex((line) => /npm run build\b/.test(line));
+  assert.ok(content >= 0, 'content:build is missing');
+  assert.ok(app > content, 'content:build must run before npm run build');
+  assert.doesNotMatch(dockerfile, /--fixtures/);
+  assert.doesNotMatch(dockerfile, /content\/fixtures/);
+});
+
+test('.dockerignore keeps generated content out of the build context', () => {
+  assert.ok(
+    dockerignore.some((line) => line.replace(/\/$/, '') === 'web/public/content'),
     dockerignore.join(', '),
   );
 });

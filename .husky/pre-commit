@@ -14,3 +14,7 @@ case "$email" in
     ;;
 esac
 npx --no -- lint-staged
+# Content changes must pass the content checks (schema, sources, quiz, ids against main, ...).
+if git diff --cached --name-only | grep -q '^content/'; then
+  npm run --silent content:check
+fi
