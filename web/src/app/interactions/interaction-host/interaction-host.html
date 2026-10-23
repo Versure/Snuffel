@@ -9,13 +9,13 @@
     <snf-interaction-placeholder [interaction]="step().interaction" />
   }
   @case ('loading') {
-    <div class="panel loading">
+    <div class="panel loading" [class.light]="light()">
       <p class="message">Even laden…</p>
     </div>
   }
   @case ('error') {
-    <div class="panel failed">
-      <snf-ted-says mood="oops" size="small">Dit spel kan ik nu niet laden.</snf-ted-says>
+    <div class="panel failed" [class.light]="light()">
+      <snf-ted-says mood="oops" size="small">{{ loadError() }}</snf-ted-says>
       <button snf-button type="button" variant="light" (click)="retryLoad()">Opnieuw</button>
     </div>
   }

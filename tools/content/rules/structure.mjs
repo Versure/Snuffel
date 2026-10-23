@@ -1,4 +1,5 @@
 // Structure: lesson files match course.json, and ids are unique where they must be.
+import { checkAnswer, parseNumber } from '../answer.mjs';
 import { interactionConfigIds, lessonIds } from '../walk.mjs';
 
 function issue(code, file, path, message) {
@@ -140,20 +141,60 @@ function checkLessonIds({ file, data }, issues) {
     }
     if (kind === 'stepped-exercise') {
       config.exercises.forEach((exercise, e) => {
-        const { answer } = exercise;
-        if (answer.type !== 'choice') return;
-        const options = answer.options.map((option) => option.id);
-        if (!options.includes(answer.correctOptionId)) {
-          issues.push(
-            issue(
-              'interaction-answer-unknown',
-              file,
-              `${base}.exercises[${e}].answer.correctOptionId`,
-              `juiste optie "${answer.correctOptionId}" is geen van de opties (${options.join(', ')})`,
-            ),
-          );
-        }
+        checkExercise(exercise, `${base}.exercises[${e}]`, file, issues);
       });
+    }
+  });
+}
+
+/** The answer and the common mistakes of one exercise (see tools/content/answer.mjs). */
+function checkExercise(exercise, path, file, issues) {
+  const { answer, commonMistakes } = exercise;
+  const options = answer.type === 'choice' ? answer.options.map((option) => option.id) : [];
+  if (answer.type === 'choice' && !options.includes(answer.correctOptionId)) {
+    issues.push(
+      issue(
+        'interaction-answer-unknown',
+        file,
+        `${path}.answer.correctOptionId`,
+        `juiste optie "${answer.correctOptionId}" is geen van de opties (${options.join(', ')})`,
+      ),
+    );
+  }
+  commonMistakes.forEach((mistake, m) => {
+    const at = `${path}.commonMistakes[${m}].answer`;
+    // Compared as in answer.mjs: spaces around the id do not count.
+    if (answer.type === 'choice' && !options.includes(mistake.answer.trim())) {
+      issues.push(
+        issue(
+          'interaction-answer-unknown',
+          file,
+          at,
+          `fout antwoord "${mistake.answer}" is geen id van een optie (${options.join(', ')})`,
+        ),
+      );
+      return;
+    }
+    if (answer.type === 'number' && parseNumber(mistake.answer, answer.unit) === null) {
+      issues.push(
+        issue(
+          'exercise-mistake-unreadable',
+          file,
+          at,
+          `fout antwoord "${mistake.answer}" is geen getal, dus de app herkent het nooit`,
+        ),
+      );
+      return;
+    }
+    if (checkAnswer(answer, mistake.answer, []).outcome === 'correct') {
+      issues.push(
+        issue(
+          'exercise-mistake-accepted',
+          file,
+          at,
+          `fout antwoord "${mistake.answer}" telt als goed antwoord; haal het weg of pas het antwoord aan`,
+        ),
+      );
     }
   });
 }

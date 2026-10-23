@@ -49,3 +49,44 @@ export async function openLesson(
 export function normalize(text: string): string {
   return text.replace(/\s+/g, ' ').trim();
 }
+
+// The practice fixture course with the stepped exercise (breuken optellen).
+const exerciseDir = resolve(
+  __dirname,
+  '..',
+  '..',
+  '..',
+  'content',
+  'fixtures',
+  'courses',
+  'proefhuiswerk',
+);
+
+export const exerciseCourse = JSON.parse(
+  readFileSync(resolve(exerciseDir, 'course.json'), 'utf8'),
+) as Course;
+export const exerciseLesson = JSON.parse(
+  readFileSync(resolve(exerciseDir, 'lessons', '01-proefles-breuken.json'), 'utf8'),
+) as Lesson;
+
+export const exerciseLessonPath = '/leren/proefhuiswerk/proefles-breuken';
+
+/** Like `openLesson`, for the exercise lesson: a new child, optionally at an anchor. */
+export async function openExerciseLesson(
+  page: Page,
+  { hash = '' }: { hash?: string } = {},
+): Promise<TestAccount> {
+  const account = await loginAsNewChild(page, `${exerciseLessonPath}${hash}`);
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Proefles: breuken optellen');
+  return account;
+}
+
+/**
+ * Waits until the lesson page has followed the anchor (`#stap-<id>`). It does that once the page
+ * is stable (lazy parts loaded, progress restored) and then moves the focus to the step heading;
+ * a test that starts typing before that would have its focus taken away.
+ */
+export async function waitForStepAnchor(page: Page, hash: string): Promise<void> {
+  if (!hash.startsWith('#stap-')) return;
+  await expect(page.locator(`${hash}-titel`)).toBeFocused();
+}

@@ -120,7 +120,7 @@ export type TraceUnit2 = number;
 export type ExerciseAnswer = NumberAnswer | TextAnswer | ChoiceAnswer;
 
 /**
- * A wrong answer as a child would type or choose it.
+ * A wrong answer as a child would type it; for a choice answer the id of an option.
  */
 export type ContentText1 = string;
 
@@ -358,6 +358,7 @@ export interface SteppedExerciseInteraction {
 export interface SteppedExerciseConfig {
   /**
    * @minItems 1
+   * @maxItems 10
    */
   exercises: Exercise[];
 }
@@ -375,6 +376,9 @@ export interface Exercise {
   workedSolution: ContentText2;
 }
 
+/**
+ * Correct when the number of the child is at most tolerance from value. The child may type a decimal with a comma or a point, a fraction (3/4) or a mixed number (1 1/4).
+ */
 export interface NumberAnswer {
   type: 'number';
   value: number;

@@ -183,7 +183,9 @@ describe('links', () => {
     assertIssue(result, 'link-not-https', `${base}[0].answer.unit`);
     assertIssue(result, 'markup-html', `${base}[0].commonMistakes[0].answer`);
     assertIssue(result, 'markup-html', `${base}[1].answer.accepted[1]`);
-    assert.equal(result.errors.length, 3, codes(result).join('\n'));
+    // The html also makes the number mistake unreadable (M10).
+    assertIssue(result, 'exercise-mistake-unreadable', `${base}[0].commonMistakes[0].answer`);
+    assert.equal(result.errors.length, 4, codes(result).join('\n'));
   });
 
   test('utm parameter gives link-tracker', (t) => {

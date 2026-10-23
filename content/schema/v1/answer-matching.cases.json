@@ -1,0 +1,277 @@
+{
+  "description": "How the answer of a child to a stepped-exercise is read and compared (format v1). numbers: what parseNumber reads (value null: unreadable). texts: what normalizeText makes of a text. answers: the outcome of checkAnswer for an answer, its commonMistakes and the input of the child (for a choice the id of the chosen option). tools/content/answer.mjs and web/src/app/interactions/stepped-exercise/answer.ts are both tested against these cases.",
+  "numbers": [
+    { "name": "whole number", "input": "3", "value": 3 },
+    { "name": "decimal comma", "input": "0,75", "value": 0.75 },
+    { "name": "decimal point", "input": "0.75", "value": 0.75 },
+    { "name": "spaces around", "input": "  0,75 ", "value": 0.75 },
+    { "name": "minus", "input": "-2", "value": -2 },
+    { "name": "minus sign", "input": "−2,5", "value": -2.5 },
+    { "name": "fraction", "input": "3/4", "value": 0.75 },
+    { "name": "fraction with spaces", "input": "3 / 4", "value": 0.75 },
+    { "name": "mixed number", "input": "1 1/4", "value": 1.25 },
+    { "name": "negative fraction", "input": "-1/2", "value": -0.5 },
+    { "name": "negative mixed number", "input": "−1 1/2", "value": -1.5 },
+    { "name": "no thousands separator", "input": "1.000", "value": 1 },
+    { "name": "computer rounding", "input": "0.30000000000000004", "value": 0.30000000000000004 },
+    { "name": "unit after the number", "input": "0,75 liter", "unit": "liter", "value": 0.75 },
+    { "name": "unit without a space", "input": "0,75liter", "unit": "liter", "value": 0.75 },
+    { "name": "unit in capitals", "input": "0,75 Liter", "unit": "liter", "value": 0.75 },
+    { "name": "unit with markup", "input": "3 meter", "unit": "**meter**", "value": 3 },
+    { "name": "number without its unit", "input": "0,75", "unit": "liter", "value": 0.75 },
+    { "name": "another unit", "input": "0,75 ml", "unit": "liter", "value": null },
+    { "name": "a unit where there is none", "input": "0,75 liter", "value": null },
+    { "name": "only the unit", "input": "liter", "unit": "liter", "value": null },
+    { "name": "divided by zero", "input": "3/0", "value": null },
+    { "name": "two decimal separators", "input": "1.2.3", "value": null },
+    { "name": "comma and point", "input": "1,2.3", "value": null },
+    { "name": "letters", "input": "abc", "value": null },
+    { "name": "number with letters", "input": "3a", "value": null },
+    { "name": "empty", "input": "", "value": null },
+    { "name": "only spaces", "input": "   ", "value": null },
+    { "name": "decimal in a fraction", "input": "1,5/3", "value": null },
+    { "name": "two fractions", "input": "1/2/3", "value": null },
+    { "name": "separator without digits", "input": ",", "value": null }
+  ],
+  "texts": [
+    { "name": "capitals and spaces", "input": "  Vijf  Zesde. ", "normalized": "vijf zesde" },
+    { "name": "spaces around a slash", "input": "5 / 6", "normalized": "5/6" },
+    { "name": "curly apostrophe", "input": "zo’n", "normalized": "zo'n" },
+    { "name": "curly quotes", "input": "“ja”", "normalized": "\"ja\"" },
+    { "name": "left curly apostrophe", "input": "‘s morgens", "normalized": "'s morgens" },
+    { "name": "final full stop", "input": "Amsterdam.", "normalized": "amsterdam" },
+    { "name": "only one final full stop", "input": "enz..", "normalized": "enz." },
+    { "name": "accents count", "input": "Café", "normalized": "café" },
+    { "name": "markup", "input": "**drie** [[vijfde]]", "normalized": "drie vijfde" },
+    { "name": "markup typed by the child", "input": "*3/5*", "normalized": "3/5" },
+    { "name": "tab and newline", "input": "drie\t\nvijfde", "normalized": "drie vijfde" },
+    { "name": "empty", "input": "  ", "normalized": "" }
+  ],
+  "answers": [
+    {
+      "name": "number within the tolerance",
+      "answer": { "type": "number", "value": 0.75, "tolerance": 0.01, "unit": "liter" },
+      "commonMistakes": [],
+      "input": "0,76 liter",
+      "outcome": "correct"
+    },
+    {
+      "name": "number exactly on the edge of the tolerance",
+      "answer": { "type": "number", "value": 0.75, "tolerance": 0.01 },
+      "commonMistakes": [],
+      "input": "0,74",
+      "outcome": "correct"
+    },
+    {
+      "name": "number just outside the tolerance",
+      "answer": { "type": "number", "value": 0.75, "tolerance": 0.01 },
+      "commonMistakes": [],
+      "input": "0,7601",
+      "outcome": "wrong"
+    },
+    {
+      "name": "fraction as a number",
+      "answer": { "type": "number", "value": 0.75, "tolerance": 0 },
+      "commonMistakes": [],
+      "input": "3/4",
+      "outcome": "correct"
+    },
+    {
+      "name": "tolerance 0 with a rounding error of the computer",
+      "answer": { "type": "number", "value": 0.3, "tolerance": 0 },
+      "commonMistakes": [],
+      "input": "0.30000000000000004",
+      "outcome": "correct"
+    },
+    {
+      "name": "tolerance 0 and a real difference",
+      "answer": { "type": "number", "value": 0.3, "tolerance": 0 },
+      "commonMistakes": [],
+      "input": "0,3001",
+      "outcome": "wrong"
+    },
+    {
+      "name": "unit in capitals",
+      "answer": { "type": "number", "value": 0.75, "tolerance": 0.01, "unit": "liter" },
+      "commonMistakes": [],
+      "input": "0.75 LITER",
+      "outcome": "correct"
+    },
+    {
+      "name": "another unit",
+      "answer": { "type": "number", "value": 0.75, "tolerance": 0.01, "unit": "liter" },
+      "commonMistakes": [],
+      "input": "750 ml",
+      "outcome": "unreadable"
+    },
+    {
+      "name": "empty number",
+      "answer": { "type": "number", "value": 0.75, "tolerance": 0.01 },
+      "commonMistakes": [{ "answer": "0,5", "feedback": "Je vergat de room." }],
+      "input": "  ",
+      "outcome": "empty"
+    },
+    {
+      "name": "letters for a number",
+      "answer": { "type": "number", "value": 0.75, "tolerance": 0.01 },
+      "commonMistakes": [],
+      "input": "abc",
+      "outcome": "unreadable"
+    },
+    {
+      "name": "number mistake",
+      "answer": { "type": "number", "value": 0.75, "tolerance": 0.01, "unit": "liter" },
+      "commonMistakes": [
+        { "answer": "0,5", "feedback": "Je vergat de room." },
+        { "answer": "2/6", "feedback": "Tellers en noemers tel je niet los op." }
+      ],
+      "input": "1/3",
+      "outcome": "mistake",
+      "feedback": "Tellers en noemers tel je niet los op."
+    },
+    {
+      "name": "number mistake within the tolerance",
+      "answer": { "type": "number", "value": 0.75, "tolerance": 0.01, "unit": "liter" },
+      "commonMistakes": [{ "answer": "0,5", "feedback": "Je vergat de room." }],
+      "input": "0,505 liter",
+      "outcome": "mistake",
+      "feedback": "Je vergat de room."
+    },
+    {
+      "name": "number mistake with tolerance 0 is not matched by an approximation",
+      "answer": { "type": "number", "value": 0.75, "tolerance": 0 },
+      "commonMistakes": [{ "answer": "2/6", "feedback": "Tellers en noemers tel je niet los op." }],
+      "input": "0,3333",
+      "outcome": "wrong"
+    },
+    {
+      "name": "correct wins over a mistake",
+      "answer": { "type": "number", "value": 0.75, "tolerance": 0.1 },
+      "commonMistakes": [{ "answer": "0,7", "feedback": "Bijna." }],
+      "input": "0,7",
+      "outcome": "correct"
+    },
+    {
+      "name": "accepted text",
+      "answer": { "type": "text", "accepted": ["5/6", "vijf zesde"] },
+      "commonMistakes": [],
+      "input": "  Vijf zesde. ",
+      "outcome": "correct"
+    },
+    {
+      "name": "accepted text with spaces around the slash",
+      "answer": { "type": "text", "accepted": ["5/6", "vijf zesde"] },
+      "commonMistakes": [],
+      "input": "5 / 6",
+      "outcome": "correct"
+    },
+    {
+      "name": "accepted text with markup",
+      "answer": { "type": "text", "accepted": ["**drie** [[vijfde]]"] },
+      "commonMistakes": [],
+      "input": "drie vijfde",
+      "outcome": "correct"
+    },
+    {
+      "name": "markup typed by the child is ignored too",
+      "answer": { "type": "text", "accepted": ["3/5"] },
+      "commonMistakes": [],
+      "input": "*3/5*",
+      "outcome": "correct"
+    },
+    {
+      "name": "accents count",
+      "answer": { "type": "text", "accepted": ["café"] },
+      "commonMistakes": [],
+      "input": "cafe",
+      "outcome": "wrong"
+    },
+    {
+      "name": "curly apostrophe in text",
+      "answer": { "type": "text", "accepted": ["zo'n"] },
+      "commonMistakes": [],
+      "input": "Zo’n",
+      "outcome": "correct"
+    },
+    {
+      "name": "text mistake",
+      "answer": { "type": "text", "accepted": ["3/5", "drie vijfde"] },
+      "commonMistakes": [{ "answer": "3/10", "feedback": "Je telde de noemers ook op." }],
+      "input": "3 / 10",
+      "outcome": "mistake",
+      "feedback": "Je telde de noemers ook op."
+    },
+    {
+      "name": "a text is never unreadable",
+      "answer": { "type": "text", "accepted": ["3/5"] },
+      "commonMistakes": [],
+      "input": "abc",
+      "outcome": "wrong"
+    },
+    {
+      "name": "empty text",
+      "answer": { "type": "text", "accepted": ["3/5"] },
+      "commonMistakes": [],
+      "input": " . ",
+      "outcome": "empty"
+    },
+    {
+      "name": "choice of the correct option",
+      "answer": {
+        "type": "choice",
+        "options": [
+          { "id": "half-kwart", "text": "1/2 + 1/4" },
+          { "id": "drie-vierde", "text": "3/4 + 3/4" }
+        ],
+        "correctOptionId": "half-kwart"
+      },
+      "commonMistakes": [{ "answer": "drie-vierde", "feedback": "Dat is twee keer 3/4." }],
+      "input": "half-kwart",
+      "outcome": "correct"
+    },
+    {
+      "name": "choice mistake by option id",
+      "answer": {
+        "type": "choice",
+        "options": [
+          { "id": "half-kwart", "text": "1/2 + 1/4" },
+          { "id": "drie-vierde", "text": "3/4 + 3/4" }
+        ],
+        "correctOptionId": "half-kwart"
+      },
+      "commonMistakes": [{ "answer": "drie-vierde", "feedback": "Dat is twee keer 3/4." }],
+      "input": "drie-vierde",
+      "outcome": "mistake",
+      "feedback": "Dat is twee keer 3/4."
+    },
+    {
+      "name": "choice mistake by option text is not matched",
+      "answer": {
+        "type": "choice",
+        "options": [
+          { "id": "half-kwart", "text": "1/2 + 1/4" },
+          { "id": "drie-vierde", "text": "3/4 + 3/4" },
+          { "id": "een-half", "text": "1/2" }
+        ],
+        "correctOptionId": "half-kwart"
+      },
+      "commonMistakes": [{ "answer": "3/4 + 3/4", "feedback": "Dat is twee keer 3/4." }],
+      "input": "drie-vierde",
+      "outcome": "wrong"
+    },
+    {
+      "name": "no choice",
+      "answer": {
+        "type": "choice",
+        "options": [
+          { "id": "half-kwart", "text": "1/2 + 1/4" },
+          { "id": "drie-vierde", "text": "3/4 + 3/4" }
+        ],
+        "correctOptionId": "half-kwart"
+      },
+      "commonMistakes": [],
+      "input": "",
+      "outcome": "empty"
+    }
+  ]
+}

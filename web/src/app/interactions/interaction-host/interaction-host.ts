@@ -13,13 +13,19 @@ import {
   ViewContainerRef,
   type ComponentRef,
 } from '@angular/core';
-import type { InteractionStep, LessonTed } from '../../core/content/content.types';
+import type { Interaction, InteractionStep, LessonTed } from '../../core/content/content.types';
 import { LessonProgress } from '../../shared/lesson-progress/lesson-progress';
 import { Button } from '../../shared/ui/button/button';
 import { TedSays } from '../../shared/ui/ted-says/ted-says';
 import type { InteractionResult } from '../interaction';
 import { InteractionPlaceholder } from '../interaction-placeholder/interaction-placeholder';
 import { INTERACTION_REGISTRY } from '../registry';
+
+/** What the host says per kind of interaction when its component cannot be loaded. */
+const LOAD_ERRORS: Record<Interaction['kind'], string> = {
+  'trace-game': 'Dit spel kan ik nu niet laden.',
+  'stepped-exercise': 'Deze oefening kan ik nu niet laden.',
+};
 
 /**
  * The interaction of a lesson step: loads the component of its kind through the registry (a
@@ -64,6 +70,10 @@ export class InteractionHost {
         return 'loading';
     }
   });
+
+  protected readonly loadError = computed(() => LOAD_ERRORS[this.step().interaction.kind]);
+  /** A stepped exercise is a light card, a game a dark panel (also while loading). */
+  protected readonly light = computed(() => this.step().interaction.kind === 'stepped-exercise');
 
   protected readonly unavailable = computed(() => this.progress?.state() === 'unavailable');
   protected readonly error = computed(() => this.progress?.saveError(this.step().id) ?? null);
