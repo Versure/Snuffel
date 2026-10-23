@@ -247,17 +247,34 @@ describe('LessonProgress', () => {
     expect(progress.doneSteps()).toEqual(['spel']);
   });
 
-  it('recordInteraction does nothing when progress is not ready', async () => {
+  it('recordInteraction stores nothing while loading and says the score is not saved', async () => {
     const load = deferred<LessonProgressSnapshot>();
     fake.loadLesson.mockReturnValueOnce(load.promise);
     const loading = progress.load(lesson, 'proefcursus');
     await progress.recordInteraction('spel', game, finished);
     expect(fake.saveInteractionResult).not.toHaveBeenCalled();
-    load.reject(new ProgressError('unavailable', 'test'));
+    expect(fake.setStepStatus).not.toHaveBeenCalled();
+    expect(progress.saveError('spel')).toBe(RESULT_NOT_SAVED);
+
+    // The message stays after the load; the game was not stored and the step is not done.
+    load.resolve(snapshot());
     await loading;
+    await flush();
+    expect(progress.state()).toBe('ready');
+    expect(progress.saveError('spel')).toBe(RESULT_NOT_SAVED);
+    expect(progress.latestResult('voel-spel')).toBeNull();
+    expect(fake.saveInteractionResult).not.toHaveBeenCalled();
+    expect(fake.setStepStatus).not.toHaveBeenCalled();
+    expect(progress.doneSteps()).toEqual([]);
+  });
+
+  it('recordInteraction does nothing when progress is unavailable', async () => {
+    fake.loadLesson.mockRejectedValueOnce(new ProgressError('unavailable', 'test'));
+    await progress.load(lesson, 'proefcursus');
     expect(progress.state()).toBe('unavailable');
     await progress.recordInteraction('spel', game, finished);
     expect(fake.saveInteractionResult).not.toHaveBeenCalled();
+    expect(fake.setStepStatus).not.toHaveBeenCalled();
     expect(progress.saveError('spel')).toBeNull();
   });
 

@@ -247,13 +247,19 @@ export class LessonProgress {
 
   /**
    * Stores a finished game as a new interaction result, and then marks the step completed. A
-   * failed save keeps the score on the page (the game holds it) and sets the save error.
+   * failed save keeps the score on the page (the game holds it) and sets the save error. A game
+   * finished while the progress is still loading is not stored either, and says so; when the
+   * progress is unavailable the page already says that it cannot be saved.
    */
   async recordInteraction(
     stepId: string,
     interaction: Interaction,
     result: InteractionResult,
   ): Promise<void> {
+    if (this.currentState() === 'loading') {
+      this.setError(stepId, RESULT_NOT_SAVED);
+      return;
+    }
     if (this.currentState() !== 'ready' || !this.target) return;
     const target = this.target;
     this.clearError(stepId);
