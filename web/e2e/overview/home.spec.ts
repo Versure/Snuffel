@@ -7,6 +7,7 @@ import {
   openAs,
   startedBreuken,
   startedProefles,
+  wholeBreuken,
   wholeProefles,
 } from './pages';
 
@@ -58,7 +59,7 @@ test.describe('the start page', () => {
 
   test('each of two children sees only its own progress on the start page', async ({ page }) => {
     const childA = await childWithProgress(wholeProefles);
-    const childB = await childWithProgress(startedBreuken);
+    const childB = await childWithProgress([...wholeBreuken, ...startedProefles]);
 
     await openAs(page, childA.username, '/');
     await expectCard(page, 'Proefcursus', '1 van 2 lessen klaar', 1);
@@ -67,9 +68,9 @@ test.describe('the start page', () => {
 
     await logout(page);
     await openAs(page, childB.username, '/');
+    // B sees its own progress, and none of A's. A started lesson is not a completed one.
     await expectCard(page, 'Proefcursus', '0 van 2 lessen klaar', 0);
-    // A started lesson is not a completed one.
-    await expectCard(page, 'Proefhuiswerk', '0 van 1 lessen klaar', 0);
+    await expectCard(page, 'Proefhuiswerk', 'Alle lessen klaar!', 1);
   });
 
   test("after logging out and in as another child the start page shows only that child's progress", async ({

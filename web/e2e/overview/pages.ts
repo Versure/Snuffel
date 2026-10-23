@@ -29,6 +29,16 @@ export const startedBreuken: readonly StepRecord[] = [
   },
 ];
 
+/** Every step of `proefles-breuken` completed: all of Proefhuiswerk is done. */
+export const wholeBreuken: readonly StepRecord[] = (
+  ['uitleg', 'oefenen', 'quiz', 'zelf-doen'] as const
+).map((stepId) => ({
+  courseId: 'proefhuiswerk',
+  lessonId: 'proefles-breuken',
+  stepId,
+  status: 'completed',
+}));
+
 /** A new child with the given progress, stored through the REST API as that child. */
 export async function childWithProgress(records: readonly StepRecord[]): Promise<TestAccount> {
   const baseURL = currentBaseURL();
