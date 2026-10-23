@@ -88,6 +88,23 @@ describe('QuizQuestion', () => {
     expect(element.querySelector('.hint-button')).toBeNull();
   });
 
+  it('after the last hint the focus moves from the closing hint button to that hint', async () => {
+    await render();
+    button('Hint')?.focus();
+    button('Hint')?.click();
+    await fixture.whenStable();
+    // Another hint is left: the button stays and the focus is not moved.
+    const next = button('Nog een hint');
+    expect(next).toBeDefined();
+    next?.focus();
+    next?.click();
+    await fixture.whenStable();
+    const hints = element.querySelectorAll<HTMLElement>('.hint');
+    expect(element.querySelector('.hint-button')).toBeNull();
+    expect(hints[1].getAttribute('tabindex')).toBe('-1');
+    expect(document.activeElement).toBe(hints[1]);
+  });
+
   it('a question without hints has no hint button', async () => {
     TestBed.configureTestingModule({ providers: [{ provide: RANDOM, useValue: () => 0 }] });
     const other = TestBed.createComponent(QuizQuestion);

@@ -97,6 +97,15 @@
   border-radius: var(--snf-radius-md);
 }
 
+.hint:focus {
+  outline: none;
+}
+
+.hint:focus-visible {
+  outline: var(--snf-focus-ring);
+  outline-offset: var(--snf-focus-ring-offset);
+}
+
 .hint-button {
   margin-top: 0.7rem;
 }

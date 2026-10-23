@@ -10,6 +10,7 @@ import {
   linkedSignal,
   output,
   viewChild,
+  viewChildren,
 } from '@angular/core';
 import type {
   LessonTed,
@@ -59,6 +60,7 @@ export class QuizQuestion {
   readonly answered = output<QuizAnswer>();
 
   private readonly feedback = viewChild<ElementRef<HTMLElement>>('feedback');
+  private readonly hintItems = viewChildren<ElementRef<HTMLElement>>('hint');
 
   protected readonly promptId = `snf-quiz-vraag-${nextId++}`;
 
@@ -95,6 +97,11 @@ export class QuizQuestion {
 
   protected showHint(): void {
     this.hintsShown.update((count) => Math.min(count + 1, this.question().hints.length));
+    if (this.canAskHint()) return;
+    // The hint button closes after the last hint; the focus goes to that hint instead of the page.
+    afterNextRender(() => this.hintItems().at(-1)?.nativeElement.focus(), {
+      injector: this.injector,
+    });
   }
 
   protected choose(option: QuizOption): void {

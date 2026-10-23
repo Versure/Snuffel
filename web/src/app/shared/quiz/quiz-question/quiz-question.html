@@ -32,7 +32,9 @@
 @if (hints().length) {
   <ul class="hints">
     @for (hint of hints(); track $index) {
-      <li class="hint"><strong>Hint:</strong>{{ ' ' }}<snf-inline-text [text]="hint" /></li>
+      <li #hint class="hint" tabindex="-1">
+        <strong>Hint:</strong>{{ ' ' }}<snf-inline-text [text]="hint" />
+      </li>
     }
   </ul>
 }
