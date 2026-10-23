@@ -4,11 +4,12 @@ import type {
   PracticeStep,
   QuizQuestion,
   QuizStep,
+  SteppedExerciseConfig,
   TraceGameConfig,
 } from '../../src/app/core/content/content.types';
 import { plainText } from '../../src/app/shared/inline-text/inline-markup';
 import { expect } from '../fixtures';
-import { fixtureLesson, normalize } from './fixture';
+import { exerciseLesson, fixtureLesson, normalize } from './fixture';
 
 // Shared steps of the progress, quiz and checklist tests.
 
@@ -207,4 +208,93 @@ export async function playWholeGame(page: Page, wrong: readonly number[] = []): 
     else await chooseRight(page);
   }
   await expect(block.getByRole('button', { name: 'Nog een potje', exact: true })).toBeVisible();
+}
+
+// The stepped exercise (breuken optellen) of the practice fixture.
+
+export const exerciseStep = exerciseLesson.steps.find(
+  (step): step is InteractionStep =>
+    step.type === 'interaction' && step.interaction.kind === 'stepped-exercise',
+)!;
+export const exercises = (exerciseStep.interaction.config as SteppedExerciseConfig).exercises;
+
+/** The right answer of every exercise of the fixture, as a child types it or the option id. */
+export const rightAnswers: Record<string, string> = {
+  'gelijke-noemers': '3/5',
+  'ongelijke-noemers': '5/6',
+  recept: '0,75',
+  'kies-de-som': 'half-en-kwart',
+};
+
+/** The exercise block (`snf-stepped-exercise`) in the lesson. */
+export function exerciseBlock(page: Page): Locator {
+  return section(page, exerciseStep.id).locator('snf-stepped-exercise');
+}
+
+/** The card of one exercise, by its id. */
+export function exerciseCard(page: Page, id: string): Locator {
+  return exerciseBlock(page).locator(`[data-exercise="${id}"]`);
+}
+
+/** What Ted says in the exercise, whitespace collapsed. */
+export async function exerciseTedText(page: Page): Promise<string> {
+  return normalize(await exerciseBlock(page).locator('.say').innerText());
+}
+
+/** Types an answer in the input and taps Controleer. */
+export async function answerExercise(page: Page, text: string): Promise<void> {
+  const block = exerciseBlock(page);
+  await block.locator('input.input').fill(text);
+  await block.getByRole('button', { name: 'Controleer', exact: true }).click();
+}
+
+/** Taps "Hint" / "Nog een hint" until every hint of the exercise is shown. */
+export async function askAllHints(page: Page, id: string): Promise<void> {
+  const exercise = exercises.find((candidate) => candidate.id === id)!;
+  const card = exerciseCard(page, id);
+  for (let shown = 0; shown < exercise.hints.length; shown += 1) {
+    await card
+      .getByRole('button', { name: shown === 0 ? 'Hint' : 'Nog een hint', exact: true })
+      .click();
+    await expect(card.locator('.hint')).toHaveCount(shown + 1);
+  }
+}
+
+/** Answers the exercise on screen right (typed, or the right option) and waits for it to close. */
+export async function solveExercise(page: Page, id: string): Promise<void> {
+  const card = exerciseCard(page, id);
+  if (exercises.find((candidate) => candidate.id === id)!.answer.type === 'choice') {
+    await card.locator(`button.option[data-option="${rightAnswers[id]}"]`).click();
+  } else {
+    await answerExercise(page, rightAnswers[id]);
+  }
+  await expect(card.getByRole('button', { name: /^(Volgende opgave|Klaar)$/ })).toBeVisible();
+}
+
+/** Taps Volgende opgave (or Klaar) and waits for the heading of the next card or the end. */
+export async function nextExercise(page: Page): Promise<void> {
+  await exerciseBlock(page)
+    .getByRole('button', { name: /^(Volgende opgave|Klaar)$/ })
+    .click();
+}
+
+/** Solves the exercises before `id` (right, on their own) so that `id` is on screen. */
+export async function goToExercise(page: Page, id: string): Promise<void> {
+  for (const exercise of exercises) {
+    if (exercise.id === id) break;
+    await solveExercise(page, exercise.id);
+    await nextExercise(page);
+  }
+  await expect(exerciseCard(page, id)).toBeVisible();
+}
+
+/** Solves every exercise from the current one on and taps Klaar: the end screen. */
+export async function finishSeries(page: Page): Promise<void> {
+  const block = exerciseBlock(page);
+  for (const exercise of exercises) {
+    if (!(await exerciseCard(page, exercise.id).isVisible())) continue;
+    await solveExercise(page, exercise.id);
+    await nextExercise(page);
+  }
+  await expect(block.getByRole('heading', { name: 'Klaar!' })).toBeVisible();
 }

@@ -49,3 +49,34 @@ export async function openLesson(
 export function normalize(text: string): string {
   return text.replace(/\s+/g, ' ').trim();
 }
+
+// The practice fixture course with the stepped exercise (breuken optellen).
+const exerciseDir = resolve(
+  __dirname,
+  '..',
+  '..',
+  '..',
+  'content',
+  'fixtures',
+  'courses',
+  'proefhuiswerk',
+);
+
+export const exerciseCourse = JSON.parse(
+  readFileSync(resolve(exerciseDir, 'course.json'), 'utf8'),
+) as Course;
+export const exerciseLesson = JSON.parse(
+  readFileSync(resolve(exerciseDir, 'lessons', '01-proefles-breuken.json'), 'utf8'),
+) as Lesson;
+
+export const exerciseLessonPath = '/leren/proefhuiswerk/proefles-breuken';
+
+/** Like `openLesson`, for the exercise lesson: a new child, optionally at an anchor. */
+export async function openExerciseLesson(
+  page: Page,
+  { hash = '' }: { hash?: string } = {},
+): Promise<TestAccount> {
+  const account = await loginAsNewChild(page, `${exerciseLessonPath}${hash}`);
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Proefles: breuken optellen');
+  return account;
+}
