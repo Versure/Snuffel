@@ -19,7 +19,7 @@ content/
 
 - De mapnaam van een cursus is het cursus-id.
 - Elk bestand begint met `"schemaVersion": 1`.
-- `npm run content:build` zet alles klaar in `web/public/content/` (niet in git): `manifest.json`, `<cursus-id>/course.json`, `<cursus-id>/lessons/<les-id>.json` en de gebruikte afbeeldingen. In de uitvoer heet een lesbestand naar het les-id, niet naar het nummer, zodat een adres nooit verandert als de volgorde wijzigt.
+- `npm run content:build` zet alles klaar in `web/public/content/` (niet in git): `manifest.json`, `<cursus-id>/course.json`, `<cursus-id>/lessons/<les-id>.json` en de gebruikte afbeeldingen. In de uitvoer heet een lesbestand naar het les-id, niet naar het nummer, zodat een adres nooit verandert als de volgorde wijzigt. Het manifest noemt per cursus elke gebruikte afbeelding met de hash van de bytes (`assets`), zodat de app een gewijzigde svg nooit uit de cache van de browser haalt.
 - Fixtures gaan alleen mee met `npm run content:build:fixtures` (dat doen `npm start` en `npm run e2e`). De image voor de NAS wordt zonder fixtures gebouwd: een kind ziet de proefles nooit.
 
 ## Id's

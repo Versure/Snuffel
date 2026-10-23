@@ -31,6 +31,7 @@ const manifest: ContentManifest = {
         },
         { id: 'proefles-later', title: 'Later', status: 'planned' },
       ],
+      assets: [],
     },
     {
       id: 'tweede',
@@ -49,6 +50,7 @@ const manifest: ContentManifest = {
           hash: '2222222222222222',
         },
       ],
+      assets: [],
     },
   ],
 };

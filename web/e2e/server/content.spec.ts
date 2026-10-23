@@ -34,6 +34,22 @@ test.describe('content served by PocketBase', () => {
     }
   });
 
+  test('serves every manifest asset with a matching hash', async ({ request }) => {
+    const manifest = (await (
+      await request.get('/content/manifest.json')
+    ).json()) as ContentManifest;
+    for (const course of manifest.courses) {
+      expect(Array.isArray(course.assets), course.id).toBe(true);
+      for (const { path, hash } of course.assets) {
+        const url = `/content/${course.id}/${path}?v=${hash}`;
+        const response = await request.get(url);
+        expect(response.status(), url).toBe(200);
+        expect(response.headers()['content-type'], url).toContain('image/svg+xml');
+        expect(hashOf(await response.body()), url).toBe(hash);
+      }
+    }
+  });
+
   test('loads content without CSP violations', async ({ page }) => {
     const errors: string[] = [];
     page.on('console', (message) => {

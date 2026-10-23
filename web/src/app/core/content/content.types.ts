@@ -490,6 +490,10 @@ export interface ManifestCourse {
   file: string;
   hash: ContentHash;
   lessons: ManifestLesson[];
+  /**
+   * Every asset a published lesson of the course uses, sorted by path. Empty if there are none.
+   */
+  assets: ManifestAsset[];
 }
 
 export interface ManifestLesson {
@@ -500,6 +504,14 @@ export interface ManifestLesson {
   estimatedMinutes?: number;
   file?: string;
   hash?: ContentHash;
+}
+
+export interface ManifestAsset {
+  /**
+   * Path relative to the course directory, the same as figure.src in the lesson.
+   */
+  path: string;
+  hash: ContentHash;
 }
 
 /**

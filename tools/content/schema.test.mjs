@@ -238,6 +238,7 @@ describe('schemas', () => {
             },
             { id: 'later', title: 'Later', status: 'planned' },
           ],
+          assets: [{ path: 'assets/top.svg', hash: '00112233445566aa' }],
         },
       ],
     };
@@ -245,6 +246,16 @@ describe('schemas', () => {
     const planned = clone(manifest);
     planned.courses[0].lessons[1].hash = '0123456789abcdef';
     assertError(validate('manifest', planned), 'courses[0].lessons[1].hash');
+    const withoutAssets = clone(manifest);
+    delete withoutAssets.courses[0].assets;
+    assertError(validate('manifest', withoutAssets), 'courses[0].assets');
+    const outsideAssets = clone(manifest);
+    outsideAssets.courses[0].assets[0].path = '../geheim.svg';
+    assertError(
+      validate('manifest', outsideAssets),
+      'courses[0].assets[0].path',
+      'asset-path-invalid',
+    );
     assert.deepEqual(
       validate('terms', { schemaVersion: 1, terms: [{ term: 'aanslaan', forms: ['slaat aan'] }] }),
       [],

@@ -1,5 +1,6 @@
 // `npm run content:build`: checks the content and writes it for the app to web/public/content/:
-//   manifest.json                              courses and lessons with file and hash
+//   manifest.json                              courses and lessons with file and hash, and per
+//                                              course the hash of every asset
 //   <course-id>/course.json                    lessons[].file rewritten to lessons/<lesson-id>.json
 //   <course-id>/lessons/<lesson-id>.json       one file per published lesson, named by its id
 //   <course-id>/assets/…                       only the assets a lesson refers to
@@ -11,11 +12,11 @@
 // Usage: node tools/content/build.mjs [--fixtures] [--out <dir>]
 import { createHash } from 'node:crypto';
 import {
-  copyFileSync,
   existsSync,
   mkdirSync,
   mkdtempSync,
   readdirSync,
+  readFileSync,
   renameSync,
   rmSync,
   writeFileSync,
@@ -73,9 +74,10 @@ export function buildFiles(courses) {
         hash,
       });
     }
-    for (const src of [...assets].sort()) {
-      files.set(`${id}/${src}`, { copyFrom: join(course.dir, ...src.split('/')) });
-    }
+    const assetList = [...assets].sort().map((src) => ({
+      path: src,
+      hash: write(`${id}/${src}`, readFileSync(join(course.dir, ...src.split('/')))),
+    }));
     const courseData = {
       ...course.data,
       lessons: course.data.lessons.map((entry) =>
@@ -91,6 +93,7 @@ export function buildFiles(courses) {
       file: courseFile,
       hash: courseHash,
       lessons,
+      assets: assetList,
     });
   }
   const manifest = { schemaVersion: 1, courses: manifestCourses };
@@ -138,8 +141,7 @@ export function buildContent({
     for (const [path, content] of files) {
       const target = join(staging, ...path.split('/'));
       mkdirSync(dirname(target), { recursive: true });
-      if (Buffer.isBuffer(content)) writeFileSync(target, content);
-      else copyFileSync(content.copyFrom, target);
+      writeFileSync(target, content);
     }
     // Swap in one go: the old output only disappears once the new one is complete.
     const previous = `${staging}-old`;
