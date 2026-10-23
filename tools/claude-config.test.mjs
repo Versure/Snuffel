@@ -220,6 +220,13 @@ describe('content agents', () => {
     );
   });
 
+  test('snuffel-leren handles dragged photos that content-reviewer cannot see', () => {
+    const text = readFileSync(skillFile('snuffel-leren'), 'utf8');
+    for (const needle of ["Gesleepte foto's", "de reviewer de foto's niet gezien heeft"]) {
+      assert.ok(text.includes(needle), `snuffel-leren does not mention ${needle}`);
+    }
+  });
+
   test('snuffel-leren names its agents, the catalogue, content:check and the content branch', () => {
     const text = readFileSync(skillFile('snuffel-leren'), 'utf8');
     for (const needle of [

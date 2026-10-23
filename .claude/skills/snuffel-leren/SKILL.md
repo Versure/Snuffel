@@ -34,6 +34,8 @@ Kies daarna `kind`: `course` (leertraject) of `practice` (huiswerk-oefenles; dan
 
 Gaat de wens over huiswerk (`kind: practice`), vraag dan in hetzelfde intakebericht om **foto's van de pagina's** uit het werkboek: het pad naar de bestanden of een map, bij voorkeur onder `huiswerk-fotos/` in de repo (die map staat in `.gitignore`); slepen in het gesprek mag ook. Dat telt als één van de zes vragen. Zeg er in dat bericht bij: "Maak de foto zonder naam, klas, cijfers of ander persoonlijks erop (afdekken of bijsnijden); de foto's blijven buiten git en de image, maar Claude stuurt ze wel naar Anthropic om ze te lezen." Heeft Jop geen foto's, dan werkt de huiswerkmodus zoals hieronder zonder foto's.
 
+**Gesleepte foto's:** de agents krijgen alleen paden, dus een foto die alleen in het gesprek staat, kan `content-reviewer` niet zien. Sleept Jop foto's in het gesprek, vraag hem dan ze ook in `huiswerk-fotos/` te zetten en geef de agents die paden. Lukt dat niet, ga dan door met de foto's uit het gesprek en meld in je verslag en in de PR (sectie "Review door content-reviewer") dat de reviewer de foto's niet gezien heeft en de les dus niet tegen het boek kon controleren.
+
 Lees elke foto met `Read` (een map: eerst `Glob` op de afbeeldingen erin). Haal eruit:
 
 - vak, niveau, methode en hoofdstuk; vraag alleen wat er niet op staat (in hetzelfde bericht of, als de foto's pas na de intake komen, in één vervolgbericht; samen nooit meer dan zes vragen);
