@@ -181,4 +181,18 @@ describe('content agents', () => {
       assert.ok(!tools.includes(tool), `content-reviewer must not have ${tool}`);
     }
   });
+
+  test('snuffel-leren names its agents, the catalogue, content:check and the content branch', () => {
+    const text = readFileSync(skillFile('snuffel-leren'), 'utf8');
+    for (const needle of [
+      '`source-researcher`',
+      '`content-reviewer`',
+      'content/schema/v1/catalogus.md',
+      'npm run content:check',
+      'content/<cursus-id>-<les-id>',
+      '--voorbeeld',
+    ]) {
+      assert.ok(text.includes(needle), `snuffel-leren does not mention ${needle}`);
+    }
+  });
 });
