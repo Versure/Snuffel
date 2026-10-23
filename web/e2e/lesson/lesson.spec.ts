@@ -322,27 +322,39 @@ test.describe('the fixture lesson', () => {
     );
   });
 
-  test('the quiz shows every question and option but no answers', async ({ page }) => {
+  test('the quiz shows every question with its options as buttons and no feedback or hints before answering', async ({
+    page,
+  }) => {
     const section = step(page, 'quiz');
-    await expect(section).toContainText('Deze quiz kun je binnenkort echt maken.');
     const questions = section.locator('ol.questions > li');
     await expect(questions).toHaveCount(quiz.questions.length);
     for (const [index, question] of quiz.questions.entries()) {
-      await expect(questions.nth(index).locator('.prompt')).toHaveText(plainText(question.prompt));
-      await expect(questions.nth(index).locator('li.option .option-text')).toHaveText(
-        question.options.map((option) => plainText(option.text)),
+      await expect(questions.nth(index).locator('.prompt')).toHaveText(
+        `${index + 1}. ${plainText(question.prompt)}`,
       );
-      await expect(questions.nth(index).locator('li.option .letter')).toHaveText(
-        question.options.map((_, optionIndex) => `${String.fromCharCode(65 + optionIndex)}.`),
-      );
+      const group = questions.nth(index).getByRole('group', { name: plainText(question.prompt) });
+      const buttons = group.getByRole('button');
+      await expect(buttons).toHaveCount(question.options.length);
+      // Every option is there (the order is shuffled, see quiz.spec.ts).
+      const shown = (await buttons.allInnerTexts()).map(normalize).sort();
+      expect(shown).toEqual(question.options.map((option) => plainText(option.text)).sort());
+      for (const button of await buttons.all()) await expect(button).toBeEnabled();
     }
-    await expect(section.locator('button, input, [role="button"], [role="radio"]')).toHaveCount(0);
-    // No feedback and no hints anywhere on the page, not even hidden.
+    await expect(section.getByRole('button', { name: 'Hint', exact: true })).toHaveCount(
+      quiz.questions.filter((question) => question.hints.length > 0).length,
+    );
+    // No feedback, no hints and no sign of the right option anywhere on the page, not even hidden.
     const all = normalize((await page.locator('main').textContent()) ?? '');
     for (const question of quiz.questions) {
       for (const option of question.options) expect(all).not.toContain(plainText(option.feedback));
       for (const hint of question.hints) expect(all).not.toContain(plainText(hint));
     }
+    for (const line of [...lesson.ted.correct, ...lesson.ted.incorrect]) {
+      expect(all).not.toContain(plainText(line));
+    }
+    expect(all).not.toContain('Goed antwoord');
+    expect(all).not.toContain('Jouw antwoord');
+    await expect(section.locator('.option.right, .option.wrong, .feedback, .score')).toHaveCount(0);
   });
 
   test('the game shows a placeholder', async ({ page }) => {
@@ -357,7 +369,7 @@ test.describe('the fixture lesson', () => {
     await expect(section.locator('button')).toHaveCount(0);
   });
 
-  test('the practice step shows its items, links and success criterion without checkboxes', async ({
+  test('the practice step shows its items as a checklist with links and the success criterion', async ({
     page,
   }) => {
     const section = step(page, 'zelf-doen');
@@ -365,6 +377,10 @@ test.describe('the fixture lesson', () => {
     const items = section.locator('ul.items > li');
     await expect(items).toHaveCount(practice.items.length);
     for (const [index, item] of practice.items.entries()) {
+      const checkbox = section.getByRole('checkbox', { name: plainText(item.text) });
+      await expect(checkbox).toBeVisible();
+      await expect(checkbox).not.toBeChecked();
+      await expect(checkbox).toBeEnabled();
       await expect(items.nth(index)).toContainText(plainText(item.text));
       for (const link of item.links ?? []) {
         await expect(items.nth(index).getByRole('link', { name: link.label })).toHaveAttribute(
@@ -373,10 +389,11 @@ test.describe('the fixture lesson', () => {
         );
       }
     }
+    await expect(section.getByRole('checkbox')).toHaveCount(practice.items.length);
     await expect(section.locator('.success strong')).toHaveText(
       plainText(practice.successCriterion),
     );
-    await expect(section.locator('input, [role="checkbox"]')).toHaveCount(0);
+    await expect(section.locator('.success input')).toHaveCount(0);
   });
 });
 

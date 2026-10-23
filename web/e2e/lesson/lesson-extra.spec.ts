@@ -129,8 +129,16 @@ test.describe('lesson page extras', () => {
         await page.evaluate(() => {
           const element = document.activeElement as HTMLElement;
           const box = element.getBoundingClientRect();
+          // A checkbox has no text of its own: its name is the text of its label.
+          const labels = element instanceof HTMLInputElement ? [...(element.labels ?? [])] : [];
+          const labelText = labels.map((label) => label.textContent ?? '').join(' ');
           return {
-            name: (element.textContent ?? element.getAttribute('aria-label') ?? '').trim(),
+            name: (
+              labelText ||
+              element.textContent ||
+              element.getAttribute('aria-label') ||
+              ''
+            ).trim(),
             visible: box.width > 0 && box.height > 0,
           };
         }),

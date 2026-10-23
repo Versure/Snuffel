@@ -3,7 +3,7 @@ import type { APIRequestContext, Page } from '@playwright/test';
 import type { ContentManifest, Lesson } from '../../src/app/core/content/content.types';
 import { plainText } from '../../src/app/shared/inline-text/inline-markup';
 import { expect, test } from '../fixtures';
-import { loginAs } from '../support/login';
+import { loginAsNewChild } from '../support/accounts';
 
 // Every published lesson in the served manifest (the e2e build has the fixtures, so this covers
 // the proefles and every lesson that snuffel-leren makes, also the sample lesson).
@@ -55,7 +55,7 @@ test.describe('all published lessons', () => {
     let first = true;
     for (const published of lessons) {
       if (first) {
-        await loginAs(page, 'kind-a', published.path);
+        await loginAsNewChild(page, published.path);
         first = false;
       } else {
         await page.goto(published.path);
@@ -76,7 +76,7 @@ test.describe('all published lessons', () => {
     let first = true;
     for (const published of lessons) {
       if (first) {
-        await loginAs(page, 'kind-a', published.path);
+        await loginAsNewChild(page, published.path);
         first = false;
       } else {
         await page.goto(published.path);
