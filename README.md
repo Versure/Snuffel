@@ -98,7 +98,7 @@ Start Claude Code in de repo (op `main`, werkmap schoon) en typ `/snuffel-leren 
 
 Lokaal lezen: `git switch content/<cursus-id>-<les-id>`, `npm start` (een draaiende dev-server eerst stoppen), log in als `kind-a` en open http://localhost:4200/leren/<cursus-id>/<les-id>. Tot M8 is de quiz een voorbeeld zonder knoppen; het voel-spel komt in M9, huiswerkoefeningen in M10.
 
-Met `/snuffel-leren <wens> --voorbeeld` maakt de skill een voorbeeldles als fixture in `content/fixtures/courses/`, zonder branch of PR. Je leest hem lokaal op http://localhost:4200/leren/<cursus-id>/<les-id>; in de image voor de NAS zit hij nooit. Id's die met `voorbeeld-` beginnen zijn gereserveerd voor zulke voorbeelden.
+Met `/snuffel-leren <wens> --voorbeeld` maakt de skill een voorbeeldles als fixture in `content/fixtures/courses/`, zonder branch of PR. Je leest hem lokaal op http://localhost:4200/leren/<cursus-id>/<les-id>; in de image voor de NAS zit hij nooit. Id's die met `voorbeeld-` beginnen zijn gereserveerd voor zulke voorbeelden. De voorbeeldmodus commit niets en laat dus ongecommitte bestanden achter in `content/fixtures/courses/<cursus-id>/`. Draai hem daarom op een eigen branch vanaf een schone `main` (bijvoorbeeld `git switch -c sample/<cursus-id>`), niet op `main` of op een `content/…`-branch. Weghalen: verwijder de map `content/fixtures/courses/<cursus-id>/`, of gebruik `git clean -fd content/fixtures/courses/<cursus-id>/` (eerst `git clean -nd …` om te zien wat er weggaat); daarna kun je terug naar `main` en de branch verwijderen.
 
 ## Huisstijl
 

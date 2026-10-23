@@ -138,11 +138,11 @@ Voor een voorbeeld dat nooit echte inhoud wordt:
 - schrijf naar `content/fixtures/courses/<cursus-id>/` in plaats van `content/courses/`; fixtures gaan nooit mee in de image;
 - alle id's (cursus, les) beginnen met `voorbeeld-`;
 - wijzig `content/terms.json` **niet**; vaktermen staan alleen in de `glossary` van de les;
-- geen eigen branch, geen commit, geen push en geen PR: de les blijft in de werkmap van de branch waarop je draait;
+- geen `content/…`-branch, geen commit, geen push en geen PR: de les blijft als **ongecommitte bestanden** in `content/fixtures/courses/<cursus-id>/` in de werkmap van de branch waarop je draait. Draai daarom op een eigen branch, niet op `main` of een `content/…`-branch: sta je op `main`, maak dan eerst `git switch -c sample/<cursus-id>` (werkmap schoon, zie "Vooraf");
 - geen vragen aan Jop: de intake-antwoorden staan in de wens; het leerpad komt in het verslag in plaats van een stop;
 - alle andere stappen (bronnen, les maken, `npm run content:check`, review) gelden gewoon.
 
-Geef aan het eind een verslag terug: de wens, de intake, de bronnen (geopend ja/nee), het leerpad, de uitvoer van `npm run content:check` en het volledige rapport van `content-reviewer` per ronde.
+Geef aan het eind een verslag terug, met daarin hoe Jop de voorbeeldles weer weghaalt (de map `content/fixtures/courses/<cursus-id>/` verwijderen, of `git clean -fd content/fixtures/courses/<cursus-id>/`): de wens, de intake, de bronnen (geopend ja/nee), het leerpad, de uitvoer van `npm run content:check` en het volledige rapport van `content-reviewer` per ronde.
 
 ## Grenzen
 
