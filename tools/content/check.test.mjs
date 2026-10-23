@@ -272,6 +272,96 @@ describe('content:check on a broken fixture', () => {
     );
   });
 
+  /** Puts one stepped-exercise with `answer` and `commonMistakes` in the fixture lesson. */
+  function exerciseFixture(t, answer, commonMistakes) {
+    const fixture = fixtureRoot(t);
+    fixture.mutateLesson((lesson) => {
+      lesson.steps[1].interaction = {
+        id: 'breuken',
+        kind: 'stepped-exercise',
+        config: {
+          exercises: [
+            {
+              id: 'som-1',
+              prompt: 'Hoeveel is 1/2 + 1/4?',
+              answer,
+              hints: [],
+              steps: [],
+              commonMistakes,
+              workedSolution: '1/2 is 2/4, en 2/4 + 1/4 = 3/4.',
+            },
+          ],
+        },
+      };
+    });
+    return fixture;
+  }
+
+  const mistakePath = (m) => `steps[1].interaction.config.exercises[0].commonMistakes[${m}].answer`;
+  const choiceAnswer = {
+    type: 'choice',
+    options: [
+      { id: 'drie-kwart', text: '3/4' },
+      { id: 'twee-zesde', text: '2/6' },
+    ],
+    correctOptionId: 'drie-kwart',
+  };
+  const codesOf = (result) => result.errors.map((error) => error.code);
+
+  test('a choice mistake that is not an option gives interaction-answer-unknown', (t) => {
+    const fixture = exerciseFixture(t, choiceAnswer, [
+      { answer: 'twee-zesde', feedback: 'Tel de noemers niet op.' },
+      { answer: '2/6', feedback: 'Tel de noemers niet op.' },
+    ]);
+    const result = fixture.check();
+    assertIssue(result, 'interaction-answer-unknown', mistakePath(1));
+    assert.deepEqual(codesOf(result), ['interaction-answer-unknown']);
+  });
+
+  test('a number mistake that is no number gives exercise-mistake-unreadable', (t) => {
+    const fixture = exerciseFixture(
+      t,
+      { type: 'number', value: 0.75, tolerance: 0.01, unit: 'liter' },
+      [
+        { answer: '0,5 liter', feedback: 'Je vergat de room.' },
+        { answer: 'een half', feedback: 'Je vergat de room.' },
+      ],
+    );
+    const result = fixture.check();
+    assertIssue(result, 'exercise-mistake-unreadable', mistakePath(1));
+    assert.deepEqual(codesOf(result), ['exercise-mistake-unreadable']);
+  });
+
+  test('a mistake that equals the answer within the tolerance gives exercise-mistake-accepted', (t) => {
+    const fixture = exerciseFixture(t, { type: 'number', value: 0.75, tolerance: 0.01 }, [
+      { answer: '0,5', feedback: 'Je vergat de room.' },
+      { answer: '0,76', feedback: 'Bijna.' },
+    ]);
+    const result = fixture.check();
+    assertIssue(result, 'exercise-mistake-accepted', mistakePath(1));
+    assert.deepEqual(codesOf(result), ['exercise-mistake-accepted']);
+  });
+
+  test('a text mistake that is an accepted form after normalizing gives exercise-mistake-accepted', (t) => {
+    const fixture = exerciseFixture(t, { type: 'text', accepted: ['3/4', 'drie kwart'] }, [
+      { answer: '2/6', feedback: 'Tel de noemers niet op.' },
+      { answer: 'Drie  kwart.', feedback: 'Nee.' },
+    ]);
+    const result = fixture.check();
+    assertIssue(result, 'exercise-mistake-accepted', mistakePath(1));
+    assert.deepEqual(codesOf(result), ['exercise-mistake-accepted']);
+  });
+
+  test('a choice mistake that is the correct option gives exercise-mistake-accepted', (t) => {
+    const fixture = exerciseFixture(t, choiceAnswer, [
+      { answer: 'twee-zesde', feedback: 'Tel de noemers niet op.' },
+      { answer: 'drie-kwart', feedback: 'Nee.' },
+    ]);
+    const result = fixture.check();
+    assertIssue(result, 'exercise-mistake-accepted', mistakePath(1));
+    assert.deepEqual(codesOf(result), ['exercise-mistake-accepted']);
+  });
+
   test('the CLI counts errors in Dutch', async (t) => {
     const fixture = fixtureRoot(t);
     fixture.mutateLesson((lesson) => {

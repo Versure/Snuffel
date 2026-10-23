@@ -450,7 +450,9 @@ Zijn er schemafouten in een cursus, dan worden eerst alleen die gemeld; de ander
 | `lesson-id-mismatch`          | het id in het lesbestand is anders dan in `course.json`                                          |
 | `lesson-file-orphan`          | een lesbestand dat niet als `published` les in `course.json` staat                               |
 | `id-duplicate`                | een id komt dubbel voor (zie "Id's"), met beide plekken                                          |
-| `interaction-answer-unknown`  | een antwoord in een interactie verwijst naar een keuze of optie die niet bestaat                 |
+| `interaction-answer-unknown`  | een antwoord in een interactie (ook een fout antwoord bij `choice`) is geen keuze of optie       |
+| `exercise-mistake-unreadable` | een fout antwoord bij een `number`-opgave is geen getal: de app herkent het nooit                |
+| `exercise-mistake-accepted`   | een fout antwoord telt als goed (binnen `tolerance`, in `accepted` of de juiste optie)           |
 | `source-ref-missing`          | een `sourceRef` (ook in `furtherReading`) staat niet in `sources`                                |
 | `source-only-low`             | een niet-lege `sourceRefs` met alleen `low`-bronnen                                              |
 | `source-date-invalid`         | `accessedOn` is geen bestaande datum (bijv. `2026-02-30`)                                        |
