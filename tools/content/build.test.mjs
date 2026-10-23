@@ -111,6 +111,27 @@ describe('content:build', () => {
     );
   });
 
+  test('the manifest lists the step ids of every published lesson in lesson order', (t) => {
+    const fixture = fixtureRoot(t);
+    const { out } = build(fixture, { fixtures: true });
+    const manifest = JSON.parse(readFileSync(join(out, 'manifest.json'), 'utf8'));
+    const [published] = manifest.courses[0].lessons;
+    assert.deepEqual(
+      published.stepIds,
+      fixture.readLesson().steps.map((step) => step.id),
+    );
+    assert.deepEqual(published.stepIds, ['uitleg', 'spel', 'quiz', 'zelf-doen']);
+  });
+
+  test('a planned lesson has no step ids in the manifest', (t) => {
+    const fixture = fixtureRoot(t);
+    const { out } = build(fixture, { fixtures: true });
+    const manifest = JSON.parse(readFileSync(join(out, 'manifest.json'), 'utf8'));
+    const planned = manifest.courses[0].lessons.find((lesson) => lesson.status === 'planned');
+    assert.ok(planned);
+    assert.equal('stepIds' in planned, false);
+  });
+
   test('manifest matches manifest.schema.json', (t) => {
     const fixture = fixtureRoot(t);
     const { out } = build(fixture, { fixtures: true });

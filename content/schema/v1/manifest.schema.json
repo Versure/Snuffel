@@ -119,6 +119,15 @@
         },
         "hash": {
           "$ref": "#/$defs/hash"
+        },
+        "stepIds": {
+          "description": "The ids of the steps of a published lesson, in lesson order.",
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/id"
+          }
         }
       },
       "if": {
@@ -134,16 +143,18 @@
           "version": true,
           "estimatedMinutes": true,
           "file": true,
-          "hash": true
+          "hash": true,
+          "stepIds": true
         },
-        "required": ["version", "estimatedMinutes", "file", "hash"]
+        "required": ["version", "estimatedMinutes", "file", "hash", "stepIds"]
       },
       "else": {
         "properties": {
           "version": false,
           "estimatedMinutes": false,
           "file": false,
-          "hash": false
+          "hash": false,
+          "stepIds": false
         }
       }
     }

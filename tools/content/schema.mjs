@@ -162,6 +162,12 @@ function translate(error, data) {
         path: pointerToPath(instancePath),
         message: `mag hoogstens ${params.limit} ${params.limit === 1 ? 'item' : 'items'} hebben`,
       };
+    case 'uniqueItems':
+      return {
+        code: 'schema',
+        path: pointerToPath(instancePath),
+        message: `item ${Math.min(params.i, params.j) + 1} en ${Math.max(params.i, params.j) + 1} zijn gelijk; elk item mag er maar één keer in staan`,
+      };
     case 'minimum':
     case 'exclusiveMinimum':
     case 'maximum':

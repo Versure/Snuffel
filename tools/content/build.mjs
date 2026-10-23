@@ -1,5 +1,6 @@
 // `npm run content:build`: checks the content and writes it for the app to web/public/content/:
-//   manifest.json                              courses and lessons with file and hash, and per
+//   manifest.json                              courses and lessons with file and hash, the step
+//                                              ids (stepIds) of every published lesson, and per
 //                                              course the hash of every asset
 //   <course-id>/course.json                    lessons[].file rewritten to lessons/<lesson-id>.json
 //   <course-id>/lessons/<lesson-id>.json       one file per published lesson, named by its id
@@ -72,6 +73,7 @@ export function buildFiles(courses) {
         estimatedMinutes: lesson.data.estimatedMinutes,
         file,
         hash,
+        stepIds: lesson.data.steps.map((step) => step.id),
       });
     }
     const assetList = [...assets].sort().map((src) => ({
