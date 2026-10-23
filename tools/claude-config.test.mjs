@@ -173,4 +173,12 @@ describe('content agents', () => {
       ['WebFetch', 'WebSearch'],
     );
   });
+
+  test('content-reviewer can only read and open sources', () => {
+    assertToolsWithin('content-reviewer', ['Read', 'Glob', 'Grep', 'WebFetch'], ['WebFetch']);
+    const { tools } = agent('content-reviewer');
+    for (const tool of ['Write', 'Edit', 'Bash', 'WebSearch']) {
+      assert.ok(!tools.includes(tool), `content-reviewer must not have ${tool}`);
+    }
+  });
 });
