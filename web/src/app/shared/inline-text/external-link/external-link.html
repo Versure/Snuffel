@@ -1,0 +1,7 @@
+@if (isHttps()) {
+  <a [href]="url()" target="_blank" rel="noopener noreferrer" [attr.aria-label]="ariaLabel()"
+    >{{ label() }}<span class="snf-visually-hidden"> (opent in een nieuw tabblad)</span></a
+  >
+} @else {
+  <span>{{ label() }}</span>
+}

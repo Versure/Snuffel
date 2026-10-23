@@ -1,0 +1,105 @@
+import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { TestBed } from '@angular/core/testing';
+import markupCases from '../../../../../../content/schema/v1/inline-markup.cases.json';
+import { LessonContext } from '../../lesson-context/lesson-context';
+import { InlineText } from './inline-text';
+
+interface MarkupCase {
+  readonly name: string;
+  readonly input: string;
+}
+const cases = (markupCases as { cases: readonly MarkupCase[] }).cases;
+const caseInput = (name: string): string => {
+  const found = cases.find((markupCase) => markupCase.name === name);
+  if (!found) throw new Error(`no case ${name}`);
+  return found.input;
+};
+
+@Component({
+  imports: [InlineText],
+  template: `<p><snf-inline-text [text]="text()" [terms]="terms()" /></p>`,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+class Host {
+  readonly text = signal('');
+  readonly terms = signal(true);
+}
+
+describe('InlineText', () => {
+  async function render(text: string, { terms = true, context = true } = {}) {
+    TestBed.resetTestingModule();
+    TestBed.configureTestingModule({ providers: context ? [LessonContext] : [] });
+    if (context) {
+      TestBed.inject(LessonContext).glossary.set([
+        { term: 'aanslaan', definition: 'de haak vastzetten' },
+        { term: 'shad', definition: 'rubber visje' },
+      ]);
+    }
+    const fixture = TestBed.createComponent(Host);
+    fixture.componentInstance.text.set(text);
+    fixture.componentInstance.terms.set(terms);
+    await fixture.whenStable();
+    return (fixture.nativeElement as HTMLElement).querySelector('p') as HTMLElement;
+  }
+
+  it('renders plain text as it is', async () => {
+    const p = await render('Een gewone zin.');
+    expect(p.textContent).toBe('Een gewone zin.');
+  });
+
+  it('renders bold and italic as strong and em', async () => {
+    const p = await render(caseInput('italic inside bold'));
+    const strong = p.querySelector('strong');
+    expect(strong?.textContent).toBe('echt heel belangrijk');
+    expect(strong?.querySelector('em')?.textContent).toBe('heel');
+    expect(p.textContent).toBe('echt heel belangrijk');
+
+    const italic = await render(caseInput('italic'));
+    expect(italic.querySelector('em')?.textContent).toBe('vast');
+    expect(italic.textContent).toBe('Dan zit hij vast.');
+  });
+
+  it('renders an https link with target and rel', async () => {
+    const p = await render(caseInput('link'));
+    const link = p.querySelector('a');
+    expect(link?.getAttribute('href')).toMatch(/^https:\/\/www\.sportvisunie\.nl\//);
+    expect(link?.getAttribute('target')).toBe('_blank');
+    expect(link?.getAttribute('rel')).toBe('noopener noreferrer');
+    expect(link?.textContent).toContain('VISpas-check');
+    expect(p.textContent).toBe('Doe de VISpas-check (opent in een nieuw tabblad).');
+  });
+
+  it('renders a non-https link as plain text', async () => {
+    const p = await render(caseInput('link').replace('https', 'http'));
+    expect(p.querySelector('a')).toBeNull();
+    expect(p.textContent).toBe('Doe de VISpas-check.');
+  });
+
+  it('renders a known term as a button', async () => {
+    const p = await render(caseInput('term with a shown form'));
+    const button = p.querySelector('button');
+    expect(button).not.toBeNull();
+    expect(button?.getAttribute('aria-expanded')).toBe('false');
+  });
+
+  it('renders an unknown term as plain text', async () => {
+    const p = await render('Een [[loodkop]] zinkt.');
+    expect(p.querySelector('button')).toBeNull();
+    expect(p.textContent).toBe('Een loodkop zinkt.');
+    const withoutContext = await render('Een [[shad]].', { context: false });
+    expect(withoutContext.querySelector('button')).toBeNull();
+    expect(withoutContext.textContent).toBe('Een shad.');
+  });
+
+  it('renders terms as text when terms is false', async () => {
+    const p = await render('Je moet [[aanslaan|slaat aan]] en **[[shad]]**.', { terms: false });
+    expect(p.querySelector('button')).toBeNull();
+    expect(p.textContent).toBe('Je moet slaat aan en shad.');
+  });
+
+  it('never uses innerHTML', async () => {
+    const p = await render(caseInput('html stays plain text'));
+    expect(p.querySelector('b')).toBeNull();
+    expect(p.textContent).toBe('Dit is <b>vet</b>.');
+  });
+});

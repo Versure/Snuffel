@@ -1,0 +1,12 @@
+/*
+ * The link sits in running text. Padding with an equal negative margin makes the tap area at
+ * least 44 × 44 px without moving the line (vertical padding on an inline box does not change
+ * the line height). Plan M7, question 10.
+ */
+a {
+  padding: max(0px, calc((var(--snf-tap-min) - 1em) / 2)) 0.6em;
+  margin: 0 -0.6em;
+  border-radius: var(--snf-radius-md);
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
