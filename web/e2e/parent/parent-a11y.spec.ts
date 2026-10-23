@@ -1,5 +1,5 @@
 import AxeBuilder from '@axe-core/playwright';
-import type { Page } from '@playwright/test';
+import type { Locator, Page } from '@playwright/test';
 import { expect, test } from '../fixtures';
 import { createChild, currentBaseURL, uniqueName } from '../support/accounts';
 import { tabTo } from '../overview/pages';
@@ -41,6 +41,19 @@ async function smallTargets(page: Page) {
       })
       .filter((size) => size.width < 44 || size.height < 44),
   );
+}
+
+/**
+ * Gives a child card the focus the way a keyboard user gets it. The e2e database holds hundreds
+ * of test children, so Tab-ing there from the top would take hundreds of presses: focus the card,
+ * then move away and back with Tab and Shift+Tab, which makes the focus ring show.
+ */
+async function focusByKeyboard(target: Locator): Promise<void> {
+  const page = target.page();
+  await target.focus();
+  await page.keyboard.press('Tab');
+  await page.keyboard.press('Shift+Tab');
+  await expect(target).toBeFocused();
 }
 
 const ring = (page: Page) =>
@@ -105,7 +118,7 @@ test.describe('parent accessibility', () => {
   }) => {
     const child = await childWithLesson();
     await openAsParent(page, '/ouder');
-    await tabTo(page, childCard(page, child.name).getByRole('link'), 400);
+    await focusByKeyboard(childCard(page, child.name).getByRole('link'));
     expect(await ring(page)).toEqual({ style: 'solid', width: '3px' });
     await page.keyboard.press('Enter');
     await expect(page).toHaveURL(new RegExp(`/ouder/${child.id}$`));
@@ -118,7 +131,7 @@ test.describe('parent accessibility', () => {
   test('the parent overview can be used with the keyboard', async ({ page }) => {
     const child = await childWithLesson();
     await openAsParent(page, '/ouder');
-    await tabTo(page, childCard(page, child.name).getByRole('link'), 400);
+    await focusByKeyboard(childCard(page, child.name).getByRole('link'));
     await page.keyboard.press('Enter');
     await expect(page).toHaveURL(new RegExp(`/ouder/${child.id}$`));
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(child.name);
