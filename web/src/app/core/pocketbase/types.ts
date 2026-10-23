@@ -9,3 +9,41 @@ export interface UserRecord {
   name: string;
   role: UserRole;
 }
+
+/** The status of a step in `lesson_progress`. */
+export type StepStatus = 'started' | 'completed';
+
+/** Fields every progress record has (see the *_create_* migrations). */
+export interface ProgressRecordBase {
+  id: string;
+  user: string;
+  created: string;
+  updated: string;
+}
+
+/** A `lesson_progress` record: one per user, lesson and step. */
+export interface LessonProgressRecord extends ProgressRecordBase {
+  course_id: string;
+  lesson_id: string;
+  step_id: string;
+  status: StepStatus;
+  content_version: number;
+}
+
+/** A `quiz_attempts` record: one per answer, never changed. */
+export interface QuizAttemptRecord extends ProgressRecordBase {
+  lesson_id: string;
+  question_id: string;
+  option_id: string;
+  correct: boolean;
+  hints_used: number;
+  content_version: number;
+}
+
+/** A `checklist_states` record: one per user, lesson and checklist (practice step). */
+export interface ChecklistStateRecord extends ProgressRecordBase {
+  lesson_id: string;
+  checklist_id: string;
+  /** Ids of the ticked items, in item order; PocketBase gives null for an empty json field. */
+  checked: string[] | null;
+}
