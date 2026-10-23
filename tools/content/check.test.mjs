@@ -18,12 +18,37 @@ describe('content:check on the repository', () => {
     assertClean(result);
     assert.deepEqual(
       result.courses.map((course) => course.data.id),
-      ['proefcursus'],
+      ['proefcursus', 'proefhuiswerk'],
     );
   });
 
+  test('the practice fixture has a stepped exercise with every answer type', () => {
+    const course = checkContent({ today: fixtureToday }).courses.find(
+      (candidate) => candidate.data.id === 'proefhuiswerk',
+    );
+    assert.equal(course.data.kind, 'practice');
+    assert.deepEqual(
+      course.data.lessons.map(({ id, status }) => [id, status]),
+      [['proefles-breuken', 'published']],
+    );
+    const lesson = course.lessons[0].data;
+    assert.match(lesson.title, /^Proefles:/);
+    const interaction = lesson.steps.find((step) => step.type === 'interaction').interaction;
+    assert.equal(interaction.kind, 'stepped-exercise');
+    const { exercises } = interaction.config;
+    assert.deepEqual(
+      exercises.map((exercise) => exercise.answer.type),
+      ['text', 'text', 'number', 'choice'],
+    );
+    assert.ok(exercises.every((exercise) => exercise.commonMistakes.length > 0));
+    assert.ok(exercises.some((exercise) => exercise.steps.length === 0));
+    assert.ok(exercises.some((exercise) => exercise.answer.unit !== undefined));
+  });
+
   test('the fixture uses every block and step type', () => {
-    const [course] = checkContent({ today: fixtureToday }).courses;
+    const course = checkContent({ today: fixtureToday }).courses.find(
+      (candidate) => candidate.data.id === 'proefcursus',
+    );
     const lesson = course.lessons[0].data;
     const stepTypes = new Set(lesson.steps.map((step) => step.type));
     assert.deepEqual([...stepTypes].sort(), ['explain', 'interaction', 'practice', 'quiz']);

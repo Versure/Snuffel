@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "id": "proefhuiswerk",
+  "title": "Proefhuiswerk",
+  "audience": "Testdata voor de app en de checks, geen echte oefening",
+  "goal": "Een oefencursus met elke soort opgave van een huiswerk-oefening laten zien",
+  "successCriterion": "De proefles laadt, de opgaven werken en elke check slaagt",
+  "kind": "practice",
+  "subject": "Rekenen",
+  "schoolLevel": "groep 7-8",
+  "method": "Proefmethode (testdata)",
+  "chapter": "Hoofdstuk 0: breuken (testdata)",
+  "ted": { "greeting": "Dit is proefhuiswerk. Hier test ik de oefeningen uit!" },
+  "lessons": [
+    {
+      "id": "proefles-breuken",
+      "title": "Proefles: breuken optellen",
+      "status": "published",
+      "file": "lessons/01-proefles-breuken.json"
+    }
+  ],
+  "sources": [
+    {
+      "id": "wikipedia-breuk",
+      "title": "Breuk (wiskunde)",
+      "url": "https://nl.wikipedia.org/wiki/Breuk_(wiskunde)",
+      "publisher": "Wikipedia",
+      "type": "encyclopedia",
+      "reliability": "medium",
+      "accessedOn": "2026-10-22",
+      "note": "Testdata; nalopen"
+    }
+  ]
+}

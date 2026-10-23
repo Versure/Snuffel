@@ -1,0 +1,313 @@
+{
+  "schemaVersion": 1,
+  "id": "proefles-breuken",
+  "version": 1,
+  "title": "Proefles: breuken optellen",
+  "sticker": "Proefhuiswerk · breuken",
+  "objective": "Na deze les kun je twee breuken bij elkaar optellen. Je maakt eerst de noemers gelijk. Daarna tel je de tellers op.",
+  "concept": "breuken optellen",
+  "estimatedMinutes": 9,
+  "glossary": [
+    {
+      "term": "teller",
+      "definition": "het getal boven de streep van een breuk: hoeveel stukken je hebt"
+    },
+    {
+      "term": "noemer",
+      "definition": "het getal onder de streep van een breuk: in hoeveel gelijke stukken het geheel is verdeeld"
+    }
+  ],
+  "ted": {
+    "intro": {
+      "mood": "cool",
+      "text": "Hoi! Ik ben Ted. Breuken optellen is net pizza delen. Ik laat je zien hoe het werkt."
+    },
+    "correct": ["Goed gedaan!", "Klopt!", "Precies!"],
+    "incorrect": ["Bijna.", "Nog niet, kijk nog eens."],
+    "finished": "Knap gewerkt. Morgen weet je het nog."
+  },
+  "steps": [
+    {
+      "id": "uitleg",
+      "type": "explain",
+      "title": "Stukjes pizza bij elkaar",
+      "blocks": [
+        {
+          "type": "example",
+          "text": "Je snijdt een pizza in vijf gelijke stukken. Jij eet één stuk. Je zus eet twee stukken. Samen eten jullie drie van de vijf stukken. Dat schrijf je als 3/5. De pizza is nog steeds in vijf stukken verdeeld. Er zijn alleen meer stukken op.",
+          "sourceRefs": ["wikipedia-breuk"]
+        },
+        {
+          "type": "text",
+          "text": "Een breuk heeft twee getallen. Het getal onder de streep is de [[noemer]]. Die zegt in hoeveel gelijke stukken het geheel is verdeeld. Het getal boven de streep is de [[teller]]. Die zegt hoeveel stukken je hebt. Bij 3/5 is 5 de noemer en 3 de teller.",
+          "sourceRefs": ["wikipedia-breuk"]
+        },
+        {
+          "type": "rule",
+          "title": "Eerst de noemers gelijk, dan de tellers optellen",
+          "text": "Je mag alleen stukken van dezelfde grootte bij elkaar tellen. Zijn de noemers gelijk? Tel dan de tellers op. De noemer blijft hetzelfde. Zijn de noemers niet gelijk? Maak ze dan eerst gelijk.",
+          "sourceRefs": ["wikipedia-breuk"]
+        },
+        {
+          "type": "example",
+          "text": "Hoeveel is 1/2 + 1/4? Een halve pizza is even groot als twee kwart pizza. Dus 1/2 is hetzelfde als 2/4. Nu zijn de noemers gelijk. Tel de tellers op: 2 + 1 = 3. Het antwoord is 3/4.",
+          "sourceRefs": ["wikipedia-breuk"]
+        },
+        {
+          "type": "text",
+          "text": "Hoe maak je de noemers gelijk? Zoek een getal waar beide noemers in passen. Bij 2 en 3 is dat 6. Vermenigvuldig dan de teller en de noemer met hetzelfde getal. Zo blijft de breuk even groot. 1/2 wordt 3/6, want je doet allebei keer 3. En 1/3 wordt 2/6, want je doet allebei keer 2.",
+          "sourceRefs": ["wikipedia-breuk"]
+        },
+        {
+          "type": "tip",
+          "title": "Tip",
+          "text": "Tel nooit de noemers bij elkaar op. Twee halve pizza's zijn samen één hele pizza, geen 2/4. Kijk aan het eind of je antwoord klopt. Is het groter dan elk van de breuken? Dan zit je goed.",
+          "sourceRefs": []
+        },
+        {
+          "type": "text",
+          "text": "Een breuk kun je ook als kommagetal schrijven. Een half is 0,5. Een kwart is 0,25. Drie kwart is 0,75. Dat zie je ook op een maatbeker in de keuken. Daar staat vaak 0,5 liter in plaats van 1/2 liter.",
+          "sourceRefs": ["wikipedia-breuk"]
+        },
+        {
+          "type": "ted-says",
+          "mood": "thinking",
+          "text": "Lukt het niet meteen? Vraag een hint of open een tussenstap. Zo leer je het stap voor stap.",
+          "sourceRefs": []
+        }
+      ]
+    },
+    {
+      "id": "oefenen",
+      "type": "interaction",
+      "title": "Oefenen",
+      "intro": "Vier opgaven. Typ je antwoord en tik op Controleer. Kom je er niet uit? Vraag dan een hint of open een tussenstap. De uitwerking kun je pas zien als je het zelf geprobeerd hebt.",
+      "interaction": {
+        "id": "breuken",
+        "kind": "stepped-exercise",
+        "config": {
+          "exercises": [
+            {
+              "id": "gelijke-noemers",
+              "prompt": "Hoeveel is 1/5 + 2/5?",
+              "answer": { "type": "text", "accepted": ["3/5", "drie vijfde"] },
+              "hints": [
+                "Kijk naar de noemers. Zijn ze gelijk?",
+                "De noemers zijn gelijk. Tel alleen de tellers op."
+              ],
+              "steps": [
+                {
+                  "id": "noemer-blijft",
+                  "title": "Wat doe je met de noemer?",
+                  "text": "De noemer zegt in hoeveel stukken de pizza is verdeeld. Dat verandert niet als je stukken bij elkaar legt."
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "answer": "3/10",
+                  "feedback": "Je telde de noemers ook op. Dat mag niet: de pizza blijft in vijf stukken verdeeld."
+                }
+              ],
+              "workedSolution": "De noemers zijn gelijk: allebei 5. Tel de tellers op: 1 + 2 = 3. De noemer blijft 5. Het antwoord is 3/5."
+            },
+            {
+              "id": "ongelijke-noemers",
+              "prompt": "Hoeveel is 1/2 + 1/3? Let op: de [[noemer|noemers]] zijn niet gelijk.",
+              "answer": { "type": "text", "accepted": ["5/6", "vijf zesde"] },
+              "hints": [
+                "Zoek een getal waar 2 en 3 allebei in passen.",
+                "Dat getal is 6. Maak van beide breuken zesden.",
+                "1/2 is hetzelfde als 3/6, en 1/3 is hetzelfde als 2/6."
+              ],
+              "steps": [
+                {
+                  "id": "gelijke-noemer-zoeken",
+                  "title": "Stap 1: zoek een gelijke noemer",
+                  "text": "2 en 3 passen allebei in 6. Je rekent dus in zesden."
+                },
+                {
+                  "id": "breuken-omzetten",
+                  "title": "Stap 2: zet de breuken om",
+                  "text": "Vermenigvuldig de teller en de noemer met hetzelfde getal, zodat de noemer 6 wordt."
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "answer": "2/5",
+                  "feedback": "Je telde de tellers en de noemers los op. Maak eerst de noemers gelijk."
+                },
+                {
+                  "answer": "2/6",
+                  "feedback": "Je maakte de noemers gelijk, maar de tellers niet. 1/2 is 3/6, niet 1/6."
+                }
+              ],
+              "workedSolution": "Maak de noemers gelijk: 1/2 = 3/6 en 1/3 = 2/6. Tel de tellers op: 3 + 2 = 5. Het antwoord is 5/6."
+            },
+            {
+              "id": "recept",
+              "prompt": "Voor een saus doe je 1/2 liter melk en 1/4 liter room in een pan. Hoeveel liter is dat samen? Schrijf het als kommagetal.",
+              "answer": { "type": "number", "value": 0.75, "tolerance": 0.01, "unit": "liter" },
+              "hints": [
+                "Maak eerst van 1/2 liter een aantal kwarten.",
+                "1/2 liter is 2/4 liter. Hoeveel kwarten heb je samen?"
+              ],
+              "steps": [
+                {
+                  "id": "kwart-als-kommagetal",
+                  "title": "Een kwart als kommagetal",
+                  "text": "Een kwart is 0,25. Tel zo vaak 0,25 op als je kwarten hebt."
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "answer": "0,5",
+                  "feedback": "Je vergat de room. Tel de melk en de room allebei mee."
+                },
+                {
+                  "answer": "2/6",
+                  "feedback": "Je telde de tellers en de noemers los op. Maak eerst de noemers gelijk."
+                }
+              ],
+              "workedSolution": "1/2 liter is 2/4 liter. Samen is dat 2/4 + 1/4 = 3/4 liter. Drie kwart is 0,75. Het is dus 0,75 liter."
+            },
+            {
+              "id": "kies-de-som",
+              "prompt": "Welke som is samen 3/4?",
+              "answer": {
+                "type": "choice",
+                "options": [
+                  { "id": "half-en-kwart", "text": "1/2 + 1/4" },
+                  { "id": "los-opgeteld", "text": "1/1 + 2/3" },
+                  { "id": "twee-kwart", "text": "1/4 + 1/4" }
+                ],
+                "correctOptionId": "half-en-kwart"
+              },
+              "hints": ["Reken elke som uit in kwarten, of kijk of hij groter is dan een hele."],
+              "steps": [],
+              "commonMistakes": [
+                {
+                  "answer": "los-opgeteld",
+                  "feedback": "Tel je de tellers en de noemers los op, dan krijg je 3/4. Maar 1/1 is al een hele pizza."
+                }
+              ],
+              "workedSolution": "1/2 + 1/4 = 2/4 + 1/4 = 3/4. De som 1/4 + 1/4 is 2/4, en 1/1 + 2/3 is meer dan een hele."
+            }
+          ]
+        }
+      },
+      "sourceRefs": ["wikipedia-breuk"]
+    },
+    {
+      "id": "quiz",
+      "type": "quiz",
+      "title": "Quiz",
+      "intro": "Drie korte vragen. Je ziet meteen of het klopt en waarom.",
+      "questions": [
+        {
+          "id": "welke-noemer",
+          "prompt": "Bij de breuk 2/7: welk getal is de noemer?",
+          "options": [
+            {
+              "id": "zeven",
+              "text": "Het getal 7",
+              "feedback": "Klopt. De noemer staat onder de streep."
+            },
+            {
+              "id": "twee",
+              "text": "Het getal 2",
+              "feedback": "Dat is de teller. Die staat boven de streep."
+            },
+            {
+              "id": "negen",
+              "text": "Het getal 9",
+              "feedback": "9 is 2 + 7. Dat staat niet in de breuk."
+            }
+          ],
+          "correctOptionId": "zeven",
+          "hints": ["Welk getal staat onder de streep?"],
+          "sourceRefs": ["wikipedia-breuk"]
+        },
+        {
+          "id": "eerst-doen",
+          "prompt": "Je wilt 1/3 + 1/6 uitrekenen. Wat doe je eerst?",
+          "options": [
+            {
+              "id": "noemers-gelijk",
+              "text": "De noemers gelijk maken",
+              "feedback": "Klopt. Pas daarna tel je de tellers op."
+            },
+            {
+              "id": "tellers-op",
+              "text": "Meteen de tellers optellen",
+              "feedback": "Dan tel je stukken van verschillende grootte bij elkaar."
+            },
+            {
+              "id": "noemers-op",
+              "text": "De noemers bij elkaar tellen",
+              "feedback": "De noemers tel je nooit bij elkaar op."
+            }
+          ],
+          "correctOptionId": "noemers-gelijk",
+          "hints": ["Zijn de stukken even groot?"],
+          "sourceRefs": ["wikipedia-breuk"]
+        },
+        {
+          "id": "half-als-kommagetal",
+          "prompt": "Hoe schrijf je een halve liter als kommagetal?",
+          "options": [
+            {
+              "id": "nul-komma-vijf",
+              "text": "0,5 liter",
+              "feedback": "Klopt. Een half is vijf tiende, dus 0,5."
+            },
+            {
+              "id": "nul-komma-twee",
+              "text": "0,2 liter",
+              "feedback": "Dan lees je 1/2 als 0,2. Een half is de helft van 1."
+            },
+            {
+              "id": "een-komma-twee",
+              "text": "1,2 liter",
+              "feedback": "Dat is meer dan een hele liter."
+            }
+          ],
+          "correctOptionId": "nul-komma-vijf",
+          "hints": ["Wat is de helft van 1?"],
+          "sourceRefs": ["wikipedia-breuk"]
+        }
+      ]
+    },
+    {
+      "id": "zelf-doen",
+      "type": "practice",
+      "practiceKind": "do-it-yourself",
+      "title": "Zelf doen",
+      "intro": "Oefen met echte dingen uit de keuken. Zo zie je wat een breuk is.",
+      "items": [
+        {
+          "id": "maatbeker",
+          "text": "Pak een maatbeker. Giet er 1/2 liter water in en daarna nog 1/4 liter. Lees af hoeveel het samen is.",
+          "sourceRefs": []
+        },
+        {
+          "id": "pizza-tekenen",
+          "text": "Teken een pizza in acht stukken. Kleur 3/8 rood en 2/8 geel. Hoeveel is samen gekleurd?",
+          "sourceRefs": []
+        }
+      ],
+      "successCriterion": "Gelukt als je kunt uitleggen waarom je de noemers niet bij elkaar optelt."
+    }
+  ],
+  "furtherReading": [
+    {
+      "sourceRef": "wikipedia-breuk",
+      "why": "Meer over breuken, voor wie wil weten hoe het verder gaat."
+    }
+  ],
+  "faq": [
+    {
+      "q": "Waarom heet dit een proefles?",
+      "a": "Deze les test alleen of de oefeningen werken. Een echte oefenles komt later."
+    }
+  ]
+}
