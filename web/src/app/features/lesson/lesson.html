@@ -22,7 +22,11 @@
           <snf-inline-text [text]="data.ted.intro.text" />
         </snf-ted-says>
         <p class="objective"><snf-inline-text [text]="data.objective" /></p>
-        <snf-step-nav [steps]="navItems()" (navigate)="goToStep($event)" />
+        <snf-step-nav
+          [steps]="navItems()"
+          [done]="progress.doneSteps()"
+          (navigate)="goToStep($event)"
+        />
       </header>
 
       @for (step of data.steps; track step.id; let index = $index) {

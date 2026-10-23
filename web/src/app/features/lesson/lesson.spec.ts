@@ -1,11 +1,20 @@
+import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { Title } from '@angular/platform-browser';
 import { provideRouter } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
 import courseJson from '../../../../../content/fixtures/courses/proefcursus/course.json';
 import lessonJson from '../../../../../content/fixtures/courses/proefcursus/lessons/01-proefles.json';
+import { AuthService } from '../../core/auth/auth.service';
 import { ContentError, type ContentErrorReason } from '../../core/content/content-error';
 import { ContentService } from '../../core/content/content.service';
+import type { UserRecord } from '../../core/pocketbase/types';
+import { ProgressError } from '../../core/progress/progress-error';
+import {
+  ProgressService,
+  type LessonProgressSnapshot,
+  type StepProgress,
+} from '../../core/progress/progress.service';
 import { LessonContext } from '../../shared/lesson-context/lesson-context';
 import type {
   ContentManifest,
@@ -50,6 +59,8 @@ describe('Lesson', () => {
   let loadLesson: ReturnType<
     typeof vi.fn<(courseId: string, lessonId: string) => Promise<LessonData>>
   >;
+  let loadProgress: ReturnType<typeof vi.fn<ProgressService['loadLesson']>>;
+  let user: ReturnType<typeof signal<UserRecord | null>>;
 
   beforeEach(() => {
     failure = null;
@@ -69,10 +80,25 @@ describe('Lesson', () => {
       loadLesson,
       assetUrls: async () => new Map([['assets/hengeltop.svg', assetUrl]]),
     };
+    loadProgress = vi.fn<ProgressService['loadLesson']>(
+      async (): Promise<LessonProgressSnapshot> => ({
+        steps: new Map(),
+        checklists: new Map(),
+        attempts: [],
+      }),
+    );
+    user = signal<UserRecord | null>({
+      id: 'a1',
+      username: 'kind-a',
+      name: 'Kind A',
+      role: 'child',
+    });
     TestBed.configureTestingModule({
       providers: [
         provideRouter([{ path: 'leren/:courseId/:lessonId', component: Lesson }]),
         { provide: ContentService, useValue: fake },
+        { provide: ProgressService, useValue: { loadLesson: loadProgress } },
+        { provide: AuthService, useValue: { user } },
       ],
     });
   });
@@ -235,5 +261,56 @@ describe('Lesson', () => {
     expect(context.glossary()).toEqual(other.glossary);
     const element = harness.routeNativeElement as HTMLElement;
     expect(textOf(element.querySelector('h1'))).toBe('Andere les');
+  });
+  it('loads the progress for the logged-in user', async () => {
+    const { harness } = await open();
+    expect(loadProgress).toHaveBeenCalledTimes(1);
+    expect(loadProgress).toHaveBeenCalledWith('a1', 'proefles');
+
+    // Another user loads again; a renewed session of the same user does not.
+    user.set({ id: 'a1', username: 'kind-a', name: 'Kind A', role: 'child' });
+    await harness.fixture.whenStable();
+    expect(loadProgress).toHaveBeenCalledTimes(1);
+    user.set({ id: 'b1', username: 'kind-b', name: 'Kind B', role: 'child' });
+    await harness.fixture.whenStable();
+    expect(loadProgress).toHaveBeenCalledTimes(2);
+    expect(loadProgress).toHaveBeenLastCalledWith('b1', 'proefles');
+  });
+
+  it('fills the step navigation with completed steps', async () => {
+    loadProgress.mockResolvedValue({
+      steps: new Map<string, StepProgress>([
+        ['uitleg', { id: 'p1', status: 'completed' }],
+        ['quiz', { id: 'p2', status: 'started' }],
+      ]),
+      checklists: new Map(),
+      attempts: [],
+    });
+    const { element } = await open();
+    const items = [...element.querySelectorAll('snf-step-nav li')];
+    expect(items.map((item) => item.classList.contains('done'))).toEqual([
+      true,
+      false,
+      false,
+      false,
+    ]);
+    expect(textOf(items[0].querySelector('.snf-visually-hidden'))).toBe('Stap 1: Uitleg (klaar)');
+  });
+
+  it('the lesson stays readable when progress cannot be loaded', async () => {
+    loadProgress.mockRejectedValue(new ProgressError('unavailable', 'test'));
+    const { element } = await open();
+    expect(textOf(element.querySelector('h1'))).toBe('Proefles: aanbeet of vastzitten?');
+    expect(element.querySelectorAll('snf-block')).toHaveLength(8);
+    expect(textOf(element.querySelector('snf-quiz .unavailable snf-speech-bubble'))).toBe(
+      'Je voortgang kan ik nu niet ophalen.',
+    );
+    const options = [...element.querySelectorAll<HTMLButtonElement>('snf-quiz button.option')];
+    expect(options.length).toBe(16);
+    expect(options.every((option) => option.disabled)).toBe(true);
+    const boxes = [...element.querySelectorAll<HTMLInputElement>('snf-checklist input')];
+    expect(boxes.length).toBe(4);
+    expect(boxes.every((box) => box.disabled)).toBe(true);
+    expect(element.querySelectorAll('snf-step-nav li.done')).toHaveLength(0);
   });
 });

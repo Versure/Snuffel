@@ -32,3 +32,9 @@ h2:focus-visible {
 .intro {
   margin: 0 0 1rem;
 }
+
+/* One pixel high, so an IntersectionObserver always sees it; it takes no space. */
+.end-marker {
+  height: 1px;
+  margin-top: -1px;
+}
