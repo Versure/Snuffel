@@ -455,7 +455,7 @@ Voorbeeld (uit `content/fixtures/courses/proefhuiswerk/`, ingekort):
       },
       {
         "id": "recept",
-        "prompt": "Voor een saus doe je 1/2 liter melk en 1/4 liter room in een pan. Hoeveel liter is dat samen? Schrijf het als kommagetal.",
+        "prompt": "Voor een saus doe je 1/2 liter melk en 1/4 liter room in een pan. Hoeveel liter is dat samen? Een kommagetal of een breuk mag allebei.",
         "answer": { "type": "number", "value": 0.75, "tolerance": 0.01, "unit": "liter" },
         "hints": ["Maak eerst van 1/2 liter een aantal kwarten."],
         "steps": [],
