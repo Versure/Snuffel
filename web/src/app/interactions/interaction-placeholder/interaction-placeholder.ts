@@ -10,9 +10,9 @@ const MESSAGES: Record<Interaction['kind'], string> = {
 
 /**
  * A dark panel in the style of the game from the reference, standing in for an interaction that
- * has no component yet. The configuration is not shown. From M9 on, the registry falls back to
- * this: snf-interaction shows it for every kind without a component (`stepped-exercise` until
- * M10).
+ * has no component. The configuration is not shown. snf-interaction falls back to this for
+ * every kind without a component in the registry; since M10 every kind has one, so this only
+ * stays as a fallback for a new kind whose component is not there yet.
  */
 @Component({
   selector: 'snf-interaction-placeholder',

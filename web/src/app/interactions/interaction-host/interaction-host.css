@@ -26,6 +26,14 @@
   box-shadow: var(--snf-shadow-panel);
 }
 
+/* The light card of a stepped exercise (as snf-card). */
+.panel.light {
+  color: var(--snf-color-text);
+  background: var(--snf-color-surface);
+  border-radius: var(--snf-radius-lg);
+  box-shadow: var(--snf-shadow-lg);
+}
+
 .message {
   margin: 0;
   font-family: var(--snf-font-display);

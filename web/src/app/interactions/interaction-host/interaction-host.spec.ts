@@ -153,7 +153,10 @@ describe('InteractionHost', () => {
   });
 
   it('falls back to the placeholder for a kind without a component', async () => {
-    const { element } = await render(exerciseStep);
+    // A registry without stepped-exercise: since M10 the real one has every kind.
+    const { element } = await render(exerciseStep, {
+      registry: { 'trace-game': async () => FakeGame },
+    });
     expect(element.querySelector('snf-interaction-placeholder')?.textContent).toContain(
       'Deze oefening komt binnenkort.',
     );
@@ -184,6 +187,50 @@ describe('InteractionHost', () => {
     expect(load).toHaveBeenCalledTimes(2);
     expect(element.textContent).not.toContain('Dit spel kan ik nu niet laden.');
     expect(element.querySelector('snf-fake-game')).not.toBeNull();
+  });
+
+  it('says Deze oefening kan ik nu niet laden when a stepped exercise cannot be loaded', async () => {
+    const load = vi
+      .fn<() => Promise<Type<unknown>>>()
+      .mockRejectedValueOnce(new Error('offline'))
+      .mockResolvedValueOnce(FakeGame);
+    const { fixture, element } = await render(exerciseStep, {
+      registry: { 'stepped-exercise': load },
+    });
+    const panel = element.querySelector('.panel.failed');
+    expect(panel?.textContent).toContain('Deze oefening kan ik nu niet laden.');
+    expect(element.textContent).not.toContain('Dit spel kan ik nu niet laden.');
+    // A light card, not the dark game panel.
+    expect(panel?.classList.contains('light')).toBe(true);
+    expect(buttonWith(element, 'Opnieuw')).toBeDefined();
+    buttonWith(element, 'Opnieuw')?.click();
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    await fixture.whenStable();
+    expect(load).toHaveBeenCalledTimes(2);
+    expect(element.querySelector('.panel')).toBeNull();
+    expect(element.querySelector('snf-fake-game')).not.toBeNull();
+  });
+
+  it('a game that cannot be loaded keeps the dark panel', async () => {
+    const load = vi.fn<() => Promise<Type<unknown>>>().mockRejectedValue(new Error('offline'));
+    const { element } = await render(traceStep, { registry: { 'trace-game': load } });
+    expect(element.querySelector('.panel.failed')?.classList.contains('light')).toBe(false);
+  });
+
+  it('completed of a stepped exercise records the result through LessonProgress', async () => {
+    const progress = fakeProgress();
+    const { fixture } = await render(exerciseStep, {
+      progress,
+      registry: { 'stepped-exercise': async () => FakeGame },
+    });
+    await click(fixture, 'snf-fake-game .answer');
+    expect(progress.value.markStep).toHaveBeenCalledWith('spel', 'started');
+    await click(fixture, 'snf-fake-game .finish');
+    expect(progress.value.recordInteraction).toHaveBeenCalledWith(
+      'spel',
+      exerciseStep.interaction,
+      result,
+    );
   });
 
   it('answered marks the step started', async () => {
