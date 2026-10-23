@@ -27,8 +27,10 @@
     "pocketbase:fetch": "node tools/fetch-pocketbase.mjs",
     "content:check": "node tools/content/check.mjs",
     "content:build": "node tools/content/build.mjs",
+    "content:build:fixtures": "node tools/content/build.mjs --fixtures",
     "content:types": "node tools/content/types.mjs",
-    "check": "npm run format:check && npm run lint && npm run privacy && npm run test:tools && npm run test:pb && npm run content:types -- --check && npm run content:check && npm run typecheck && npm run test && npm run build",
+    "content:types:check": "node tools/content/types.mjs --check",
+    "check": "npm run format:check && npm run lint && npm run privacy && npm run test:tools && npm run test:pb && npm run content:types:check && npm run content:check && npm run typecheck && npm run test && npm run build",
     "verify": "npm run check && npm run e2e",
     "prepare": "husky"
   },

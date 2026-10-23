@@ -27,20 +27,20 @@ De app draait dan op http://localhost:4200. `npm install` zet ook de git-hooks a
 
 Het beheerscherm van deze lokale PocketBase staat op http://localhost:8092/_/ (inloggen met `dev@snuffel.test` / `snuffel-dev-admin`). De gegevens blijven tussen twee keer `npm start` bewaard in `pocketbase/pb_data/dev`; gooi die map weg om opnieuw te beginnen. Deze accounts en wachtwoorden staan in `pocketbase/seed/dev-accounts.json` en zijn alleen voor lokaal testen: ze komen niet in de image en nooit op de NAS. Ctrl+C stopt PocketBase en de dev-server samen.
 
-| Commando                   | Wat                                                                                                                                    |
-| -------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
-| `npm start`                | PocketBase met testaccounts (poort 8092), de inhoud met de proefles en de dev-server met herladen (poort 4200)                         |
-| `npm run check`            | format, lint, privacycheck, tests van `tools/`, `test:pb`, `content:types -- --check`, `content:check`, typecheck, unit-tests en build |
-| `npm run test:pb`          | integratietests van de PocketBase-toegangsregels (`pocketbase/tests/`), tegen een echte PocketBase                                     |
-| `npm run e2e`              | Playwright-tests (mobiel en desktop, plus de productiebuild via PocketBase); zie hieronder                                             |
-| `npm run e2e:container`    | dezelfde servertests tegen de echte Docker-image op poort 8090; vraagt Docker, hoort niet bij `verify`                                 |
-| `npm run verify`           | `check` + `e2e`                                                                                                                        |
-| `npm run serve:prod`       | productiebuild bekijken zoals op de NAS, geserveerd door PocketBase op http://localhost:8090                                           |
-| `npm run content:check`    | alle inhoud controleren (schema, bronnen, quiz, leestijd, taal, links, afbeeldingen, id's tegen `main`)                                |
-| `npm run content:build`    | inhoud klaarzetten voor de app in `web/public/content/`; met `-- --fixtures` ook de proefles                                           |
-| `npm run content:types`    | TypeScript-types van de app opnieuw maken uit de schema's (na een schemawijziging)                                                     |
-| `npm run pocketbase:fetch` | het vastgepinde PocketBase-programma ophalen naar `pocketbase/bin/` (checksum gecontroleerd)                                           |
-| `npm run format`           | alles formatteren met Prettier                                                                                                         |
+| Commando                   | Wat                                                                                                                               |
+| -------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| `npm start`                | PocketBase met testaccounts (poort 8092), de inhoud met de proefles en de dev-server met herladen (poort 4200)                    |
+| `npm run check`            | format, lint, privacycheck, tests van `tools/`, `test:pb`, `content:types:check`, `content:check`, typecheck, unit-tests en build |
+| `npm run test:pb`          | integratietests van de PocketBase-toegangsregels (`pocketbase/tests/`), tegen een echte PocketBase                                |
+| `npm run e2e`              | Playwright-tests (mobiel en desktop, plus de productiebuild via PocketBase); zie hieronder                                        |
+| `npm run e2e:container`    | dezelfde servertests tegen de echte Docker-image op poort 8090; vraagt Docker, hoort niet bij `verify`                            |
+| `npm run verify`           | `check` + `e2e`                                                                                                                   |
+| `npm run serve:prod`       | productiebuild bekijken zoals op de NAS, geserveerd door PocketBase op http://localhost:8090                                      |
+| `npm run content:check`    | alle inhoud controleren (schema, bronnen, quiz, leestijd, taal, links, afbeeldingen, id's tegen `main`)                           |
+| `npm run content:build`    | inhoud klaarzetten voor de app in `web/public/content/`; `npm run content:build:fixtures` zet ook de proefles klaar               |
+| `npm run content:types`    | TypeScript-types van de app opnieuw maken uit de schema's (na een schemawijziging)                                                |
+| `npm run pocketbase:fetch` | het vastgepinde PocketBase-programma ophalen naar `pocketbase/bin/` (checksum gecontroleerd)                                      |
+| `npm run format`           | alles formatteren met Prettier                                                                                                    |
 
 Voor `npm run e2e` eenmalig `npx playwright install chromium` in `web/`. De eerste keer downloadt `npm run check` (of `npm start`, of `npm run e2e`) ook PocketBase (ongeveer 15 MB, van GitHub); daarna staat het in `pocketbase/bin/` en werkt alles zonder internet. De versie en checksums staan in `pocketbase/pocketbase.json`. Zit je achter een proxy, zet dan `NODE_USE_ENV_PROXY=1` (en zo nodig `NODE_EXTRA_CA_CERTS`).
 
@@ -75,7 +75,7 @@ Lessen staan als JSON in `content/courses/<cursus-id>/`: een `course.json` met d
 
 - Een gepubliceerde les houdt zijn id's: de check vergelijkt met `main` en weigert verdwenen of verplaatste id's en een wijziging zonder hogere `version`.
 - De proefles (`content/fixtures/courses/proefcursus`) is testdata met elk onderdeel van het formaat. Je ziet hem alleen lokaal (`npm start`) en in de e2e-tests; de image voor de NAS wordt zonder fixtures gebouwd.
-- `npm start` bouwt de inhoud één keer bij het starten. Wijzig je een les terwijl de dev-server draait, draai dan `npm run content:build -- --fixtures` opnieuw.
+- `npm start` bouwt de inhoud één keer bij het starten. Wijzig je een les terwijl de dev-server draait, draai dan `npm run content:build:fixtures` opnieuw.
 
 ## Huisstijl
 
