@@ -11,3 +11,39 @@ export const PARENT_TEXT = {
   notActive: 'Nog niet actief',
   lessonsCompleted: (count: number) => (count === 1 ? '1 les klaar' : `${count} lessen klaar`),
 } as const;
+
+/** Every text of the page of one child and its lessons. */
+export const CHILD_TEXT = {
+  back: 'Naar het ouderoverzicht',
+  loading: 'Even snuffelen…',
+  notFoundHeading: 'Kind niet gevonden',
+  notFound: 'Dit kind kan ik niet vinden.',
+  unavailableHeading: 'Laden lukt niet',
+  unavailable: 'Het overzicht van dit kind kan ik nu niet laden.',
+  progressUnavailable: 'De voortgang van dit kind kan ik nu niet ophalen.',
+  lessonUnavailable: 'De details van deze les kan ik nu niet laden.',
+  retry: PARENT_TEXT.retry,
+  courses: 'Leertrajecten',
+  practice: 'Huiswerk oefenen',
+  lastActivity: PARENT_TEXT.lastActivity,
+  notActive: PARENT_TEXT.notActive,
+  pageTitle: (name: string) => `${name} · Ouderoverzicht · Snuffel`,
+  notFoundTitle: 'Kind niet gevonden · Ouderoverzicht · Snuffel',
+  defaultTitle: 'Ouderoverzicht · Snuffel',
+  details: (title: string) => `Details van ${title}`,
+  quizScore: (correct: number, questions: number) => `${correct} van ${questions} goed`,
+  quizPartly: (answered: number, questions: number, correct: number) =>
+    `${answered} van ${questions} beantwoord, ${correct} goed`,
+  quizNotDone: 'nog niet gemaakt',
+  quizAnswers: (answers: number, hints: number) =>
+    `${answers} ${answers === 1 ? 'antwoord' : 'antwoorden'}, ${hints} ${hints === 1 ? 'hint' : 'hints'}`,
+  checklist: (checked: number, total: number) => `${checked} van ${total} afgevinkt`,
+  gameScore: (score: number, total: number) => `${score} van ${total} goed`,
+  exerciseScore: (score: number, total: number) => `${score} van ${total} zelf goed`,
+  gamePlays: (plays: number) => `${plays} keer gespeeld`,
+  exercisePlays: (plays: number) => `${plays} keer gemaakt`,
+  gameNotPlayed: 'nog niet gespeeld',
+  exerciseNotDone: 'nog niet gemaakt',
+  exerciseHelp: (hints: number, solutions: number, exercises: number) =>
+    `${hints} ${hints === 1 ? 'hint' : 'hints'}, uitwerking bekeken bij ${solutions} van ${exercises} opgaven`,
+} as const;

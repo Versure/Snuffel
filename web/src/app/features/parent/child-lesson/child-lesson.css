@@ -1,0 +1,54 @@
+:host {
+  display: grid;
+  justify-items: start;
+  gap: 0.4rem;
+  padding: 0.75rem 1rem;
+  background: var(--snf-color-surface);
+  border: var(--snf-border-width) solid var(--snf-color-ink);
+  border-radius: var(--snf-radius-lg);
+  box-shadow: var(--snf-shadow-md);
+}
+
+.title {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.last-activity {
+  margin: 0;
+  color: var(--snf-color-text-muted);
+}
+
+.details {
+  display: grid;
+  gap: 0.35rem;
+  margin: 0;
+  color: var(--snf-color-text-muted);
+}
+
+.detail dt {
+  display: inline;
+  font-weight: 700;
+}
+
+.detail dd {
+  display: inline;
+  margin: 0;
+}
+
+/* The first line follows the title; every next line starts on its own row. */
+.detail dd + dd {
+  display: block;
+}
+
+.content-error {
+  display: grid;
+  justify-items: start;
+  gap: 0.4rem;
+}
+
+.content-error p {
+  margin: 0;
+}

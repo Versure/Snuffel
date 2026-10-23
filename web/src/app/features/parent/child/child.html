@@ -1,0 +1,66 @@
+@let current = state();
+<main [attr.aria-busy]="current.kind === 'loading' ? 'true' : null">
+  <a class="back" routerLink="/ouder">{{ text.back }}</a>
+  @switch (current.kind) {
+    @case ('loading') {
+      <snf-ted-says class="state-ted" mood="thinking" size="small">{{ text.loading }}</snf-ted-says>
+    }
+    @case ('loaded') {
+      <h1>{{ name() }}</h1>
+      @if (lastActivity(); as last) {
+        <p class="last-activity">{{ last }}</p>
+      }
+
+      @if (progressState().kind === 'unavailable') {
+        <div class="progress-error">
+          <snf-ted-says mood="oops" size="small">{{ text.progressUnavailable }}</snf-ted-says>
+          <button snf-button type="button" (click)="retryProgress()">{{ text.retry }}</button>
+        </div>
+      }
+
+      @for (section of sections(); track section.id) {
+        <section class="section" [attr.aria-labelledby]="'section-' + section.id">
+          <h2 [id]="'section-' + section.id">{{ section.heading }}</h2>
+          @for (course of section.courses; track course.id) {
+            <section class="course" [attr.aria-labelledby]="'course-' + course.id">
+              <h3 class="course-title" [id]="'course-' + course.id">{{ courseTitle(course) }}</h3>
+              @if (progressOf(course); as summary) {
+                <snf-progress-bar
+                  class="bar"
+                  [value]="summary.completed"
+                  [max]="summary.total"
+                  [label]="barLabel(summary)"
+                  [name]="barName(course)"
+                />
+              }
+              <!-- role="list": Safari drops the list semantics of a list without bullets. -->
+              <ol class="lessons" role="list">
+                @for (lesson of course.lessons; track lesson.id) {
+                  <li>
+                    <snf-child-lesson
+                      [lesson]="lesson"
+                      [content]="contentOf(lesson.id)"
+                      [progress]="recordsOf(lesson.id)"
+                      [now]="now"
+                      (retry)="retryLesson(course.id, lesson.id)"
+                    />
+                  </li>
+                }
+              </ol>
+            </section>
+          }
+        </section>
+      }
+    }
+    @case ('not-found') {
+      <h1>{{ text.notFoundHeading }}</h1>
+      <snf-ted-says class="state-ted" mood="oops" size="small">{{ text.notFound }}</snf-ted-says>
+      <a snf-button variant="light" routerLink="/ouder">{{ text.back }}</a>
+    }
+    @case ('unavailable') {
+      <h1>{{ text.unavailableHeading }}</h1>
+      <snf-ted-says class="state-ted" mood="oops" size="small">{{ text.unavailable }}</snf-ted-says>
+      <button snf-button type="button" (click)="retry()">{{ text.retry }}</button>
+    }
+  }
+</main>

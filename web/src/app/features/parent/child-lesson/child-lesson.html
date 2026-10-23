@@ -1,0 +1,30 @@
+<h4 class="title" [id]="headingId()">{{ title() }}</h4>
+@if (summary(); as current) {
+  <snf-lesson-status [status]="current.status" [done]="current.done" [total]="current.total" />
+}
+@if (lastActivity(); as last) {
+  <p class="last-activity">{{ last }}</p>
+}
+@if (details(); as list) {
+  @if (list.length > 0) {
+    <dl class="details" [attr.aria-label]="text.details(title())">
+      @for (detail of list; track detail.stepId) {
+        <div class="detail">
+          <dt>{{ detail.title }}:</dt>
+          @for (line of detail.lines; track $index) {
+            {{ ' ' }}
+            <dd>{{ line }}</dd>
+          }
+        </div>
+      }
+    </dl>
+  }
+}
+@if (contentUnavailable()) {
+  <div class="content-error">
+    <p>{{ text.lessonUnavailable }}</p>
+    <button snf-button type="button" variant="light" (click)="retry.emit()">
+      {{ text.retry }}
+    </button>
+  </div>
+}
