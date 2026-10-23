@@ -147,6 +147,59 @@ describe('ProgressService', () => {
     expect(snapshot.results.map((item) => item.id)).toEqual(['r1']);
   });
 
+  it('loadStepStatuses filters on the user with parameters', async () => {
+    await service.loadStepStatuses('kind"a');
+    const expectedFilter = client.filter('user = {:userId}', { userId: 'kind"a' });
+    expect(expectedFilter).toContain('\\"');
+    expect(collections['lesson_progress'].getFullList).toHaveBeenCalledWith(
+      expect.objectContaining({ filter: expectedFilter, requestKey: null }),
+    );
+  });
+
+  it('loadStepStatuses also filters on the course when given', async () => {
+    await service.loadStepStatuses('kind-a', 'proef"cursus');
+    const expectedFilter = client.filter('user = {:userId} && course_id = {:courseId}', {
+      userId: 'kind-a',
+      courseId: 'proef"cursus',
+    });
+    expect(expectedFilter).toContain('\\"');
+    expect(collections['lesson_progress'].getFullList).toHaveBeenCalledWith(
+      expect.objectContaining({ filter: expectedFilter, requestKey: null }),
+    );
+  });
+
+  it('loadStepStatuses asks only lesson_id, step_id and status', async () => {
+    await service.loadStepStatuses('kind-a');
+    expect(collections['lesson_progress'].getFullList).toHaveBeenCalledWith(
+      expect.objectContaining({ fields: 'lesson_id,step_id,status' }),
+    );
+    for (const name of ['quiz_attempts', 'checklist_states', 'interaction_results']) {
+      expect(collections[name].getFullList).not.toHaveBeenCalled();
+    }
+  });
+
+  it('loadStepStatuses groups the statuses by lesson and step', async () => {
+    collections['lesson_progress'].getFullList.mockResolvedValue([
+      { lesson_id: 'proefles', step_id: 'uitleg', status: 'completed' },
+      { lesson_id: 'proefles', step_id: 'quiz', status: 'started' },
+      { lesson_id: 'proefles-breuken', step_id: 'oefenen', status: 'started' },
+    ]);
+    const statuses = await service.loadStepStatuses('kind-a');
+    expect([...statuses.keys()]).toEqual(['proefles', 'proefles-breuken']);
+    expect([...(statuses.get('proefles') ?? [])]).toEqual([
+      ['uitleg', 'completed'],
+      ['quiz', 'started'],
+    ]);
+    expect([...(statuses.get('proefles-breuken') ?? [])]).toEqual([['oefenen', 'started']]);
+  });
+
+  it('a network error while loading step statuses becomes ProgressError unavailable', async () => {
+    collections['lesson_progress'].getFullList.mockRejectedValue(error(0));
+    const load = service.loadStepStatuses('kind-a');
+    await expect(load).rejects.toBeInstanceOf(ProgressError);
+    await expect(load).rejects.toMatchObject({ reason: 'unavailable' });
+  });
+
   it('loadLesson also loads the interaction results newest first', async () => {
     collections['interaction_results'].getFullList.mockResolvedValue([
       result('oud', '2026-01-01 10:00:00.000Z'),
