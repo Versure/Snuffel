@@ -1,8 +1,12 @@
 import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { AuthService } from '../../core/auth/auth.service';
-import type { Lesson } from '../../core/content/content.types';
-import type { QuizAttemptRecord, UserRecord } from '../../core/pocketbase/types';
+import type { Interaction, Lesson } from '../../core/content/content.types';
+import type {
+  InteractionResultRecord,
+  QuizAttemptRecord,
+  UserRecord,
+} from '../../core/pocketbase/types';
 import { ProgressError } from '../../core/progress/progress-error';
 import {
   ProgressService,
@@ -10,7 +14,12 @@ import {
   type LessonProgressSnapshot,
   type StepProgress,
 } from '../../core/progress/progress.service';
-import { ANSWER_NOT_SAVED, LessonProgress, TICK_NOT_SAVED } from './lesson-progress';
+import {
+  ANSWER_NOT_SAVED,
+  LessonProgress,
+  RESULT_NOT_SAVED,
+  TICK_NOT_SAVED,
+} from './lesson-progress';
 
 const lesson = { id: 'proefles', version: 2 } as Lesson;
 const items = ['vispas', 'staal-en-tang', 'bodem-voelen'];
@@ -37,8 +46,27 @@ function attempt(
   };
 }
 
+function interactionResult(id: string, version: number, score = 6): InteractionResultRecord {
+  return {
+    id,
+    user: 'a1',
+    created: '',
+    updated: '',
+    lesson_id: 'proefles',
+    interaction_id: 'voel-spel',
+    kind: 'trace-game',
+    score,
+    total: 8,
+    detail: { rounds: [] },
+    content_version: version,
+  };
+}
+
+const game = { id: 'voel-spel', kind: 'trace-game' } as Interaction;
+const finished = { score: 7, total: 8, detail: { rounds: [] } };
+
 function snapshot(fields: Partial<LessonProgressSnapshot> = {}): LessonProgressSnapshot {
-  return { steps: new Map(), checklists: new Map(), attempts: [], ...fields };
+  return { steps: new Map(), checklists: new Map(), attempts: [], results: [], ...fields };
 }
 
 /** A promise with its resolve and reject, to control when a fake call finishes. */
@@ -61,6 +89,7 @@ describe('LessonProgress', () => {
     setStepStatus: ReturnType<typeof vi.fn<ProgressService['setStepStatus']>>;
     saveChecklist: ReturnType<typeof vi.fn<ProgressService['saveChecklist']>>;
     recordAnswer: ReturnType<typeof vi.fn<ProgressService['recordAnswer']>>;
+    saveInteractionResult: ReturnType<typeof vi.fn<ProgressService['saveInteractionResult']>>;
   };
   let progress: LessonProgress;
 
@@ -78,6 +107,12 @@ describe('LessonProgress', () => {
       })),
       recordAnswer: vi.fn(async (...args: Parameters<ProgressService['recordAnswer']>) =>
         attempt(`q-${args[2]}`, args[2], args[6], args[3]),
+      ),
+      saveInteractionResult: vi.fn(
+        async (...args: Parameters<ProgressService['saveInteractionResult']>) => ({
+          ...interactionResult('nieuw', args[5], args[4].score),
+          interaction_id: args[2],
+        }),
       ),
     };
     TestBed.configureTestingModule({
@@ -146,6 +181,84 @@ describe('LessonProgress', () => {
     const latest = progress.latestAnswers(questions);
     expect([...latest.keys()]).toEqual(['een']);
     expect(latest.get('een')?.id).toBe('nieuwst');
+  });
+
+  it('latestResult ignores results for another content version', async () => {
+    fake.loadLesson.mockResolvedValue(
+      snapshot({
+        results: [
+          interactionResult('nieuw-oude-versie', 1, 8),
+          interactionResult('nieuwst', 2, 5),
+          interactionResult('ouder', 2, 3),
+        ],
+      }),
+    );
+    await progress.load(lesson, 'proefcursus');
+    expect(progress.latestResult('voel-spel')?.id).toBe('nieuwst');
+    expect(progress.latestResult('ander-spel')).toBeNull();
+
+    fake.loadLesson.mockResolvedValue(snapshot({ results: [interactionResult('oud', 1)] }));
+    await progress.reload();
+    expect(progress.latestResult('voel-spel')).toBeNull();
+  });
+
+  it('recordInteraction stores the result and marks the step completed', async () => {
+    await progress.load(lesson, 'proefcursus');
+    await progress.recordInteraction('spel', game, finished);
+    expect(fake.saveInteractionResult).toHaveBeenCalledWith(
+      'a1',
+      'proefles',
+      'voel-spel',
+      'trace-game',
+      finished,
+      2,
+    );
+    expect(progress.latestResult('voel-spel')?.score).toBe(7);
+    expect(fake.setStepStatus).toHaveBeenLastCalledWith(
+      'a1',
+      'proefcursus',
+      'proefles',
+      'spel',
+      'completed',
+      2,
+      undefined,
+    );
+    expect(progress.doneSteps()).toEqual(['spel']);
+    expect(progress.saveError('spel')).toBeNull();
+  });
+
+  it('a failed result save sets saveError and leaves the step as it was', async () => {
+    fake.loadLesson.mockResolvedValue(
+      snapshot({
+        steps: new Map<string, StepProgress>([['spel', { id: 'p1', status: 'started' }]]),
+      }),
+    );
+    await progress.load(lesson, 'proefcursus');
+    fake.saveInteractionResult.mockRejectedValueOnce(new ProgressError('unavailable', 'test'));
+    await progress.recordInteraction('spel', game, finished);
+    expect(progress.saveError('spel')).toBe(RESULT_NOT_SAVED);
+    expect(progress.latestResult('voel-spel')).toBeNull();
+    expect(fake.setStepStatus).not.toHaveBeenCalled();
+    expect(progress.doneSteps()).toEqual([]);
+
+    // The next game that is saved clears the message.
+    await progress.recordInteraction('spel', game, finished);
+    expect(progress.saveError('spel')).toBeNull();
+    expect(progress.doneSteps()).toEqual(['spel']);
+  });
+
+  it('recordInteraction does nothing when progress is not ready', async () => {
+    const load = deferred<LessonProgressSnapshot>();
+    fake.loadLesson.mockReturnValueOnce(load.promise);
+    const loading = progress.load(lesson, 'proefcursus');
+    await progress.recordInteraction('spel', game, finished);
+    expect(fake.saveInteractionResult).not.toHaveBeenCalled();
+    load.reject(new ProgressError('unavailable', 'test'));
+    await loading;
+    expect(progress.state()).toBe('unavailable');
+    await progress.recordInteraction('spel', game, finished);
+    expect(fake.saveInteractionResult).not.toHaveBeenCalled();
+    expect(progress.saveError('spel')).toBeNull();
   });
 
   it('ticking the first item marks the practice step started, the last one completed', async () => {

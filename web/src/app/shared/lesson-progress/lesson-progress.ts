@@ -1,18 +1,24 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { AuthService } from '../../core/auth/auth.service';
-import type { Lesson } from '../../core/content/content.types';
-import type { QuizAttemptRecord, StepStatus } from '../../core/pocketbase/types';
+import type { Interaction, Lesson } from '../../core/content/content.types';
+import type {
+  InteractionResultRecord,
+  QuizAttemptRecord,
+  StepStatus,
+} from '../../core/pocketbase/types';
 import {
   ProgressService,
   type LessonProgressSnapshot,
   type StepProgress,
 } from '../../core/progress/progress.service';
+import type { InteractionResult } from '../../interactions/interaction';
 
 /** Whether the progress of this lesson is known: quiz and checklist only write when `ready`. */
 export type LessonProgressState = 'loading' | 'ready' | 'unavailable';
 
 export const TICK_NOT_SAVED = 'Dat vinkje is niet bewaard. Probeer het zo nog eens.';
 export const ANSWER_NOT_SAVED = 'Je antwoord is niet bewaard.';
+export const RESULT_NOT_SAVED = 'Je score is niet bewaard.';
 
 interface Target {
   readonly lesson: Lesson;
@@ -21,10 +27,10 @@ interface Target {
 }
 
 /**
- * The progress of the logged-in user in one lesson: step statuses, ticks per checklist and quiz
- * attempts, as signals, and the actions that store them through ProgressService. Not provided in
- * root: the lesson page provides it, next to LessonContext. Quiz and checklist inject it
- * optionally; without it they work in memory only.
+ * The progress of the logged-in user in one lesson: step statuses, ticks per checklist, quiz
+ * attempts and interaction results, as signals, and the actions that store them through ProgressService. Not provided in
+ * root: the lesson page provides it, next to LessonContext. Quiz, checklist and interaction
+ * inject it optionally; without it they work in memory only.
  *
  * Writes to one record run one after the other (a queue per record), so a quick series of ticks
  * never races and the last state wins.
@@ -38,6 +44,7 @@ export class LessonProgress {
   private readonly steps = signal<ReadonlyMap<string, StepProgress>>(new Map());
   private readonly ticks = signal<ReadonlyMap<string, readonly string[]>>(new Map());
   private readonly attempts = signal<readonly QuizAttemptRecord[]>([]);
+  private readonly results = signal<readonly InteractionResultRecord[]>([]);
   private readonly errors = signal<ReadonlyMap<string, string>>(new Map());
   private readonly loadCount = signal(0);
 
@@ -91,6 +98,19 @@ export class LessonProgress {
       if (!latest.has(attempt.question_id)) latest.set(attempt.question_id, attempt);
     }
     return latest;
+  }
+
+  /**
+   * The newest result of an interaction with the current version of the lesson (an older result
+   * may belong to a game that has changed since), or null.
+   */
+  latestResult(interactionId: string): InteractionResultRecord | null {
+    const version = this.target?.lesson.version;
+    return (
+      this.results().find(
+        (result) => result.interaction_id === interactionId && result.content_version === version,
+      ) ?? null
+    );
   }
 
   /**
@@ -225,6 +245,36 @@ export class LessonProgress {
     await this.markStep(stepId, complete ? 'completed' : 'started');
   }
 
+  /**
+   * Stores a finished game as a new interaction result, and then marks the step completed. A
+   * failed save keeps the score on the page (the game holds it) and sets the save error.
+   */
+  async recordInteraction(
+    stepId: string,
+    interaction: Interaction,
+    result: InteractionResult,
+  ): Promise<void> {
+    if (this.currentState() !== 'ready' || !this.target) return;
+    const target = this.target;
+    this.clearError(stepId);
+    try {
+      const saved = await this.service.saveInteractionResult(
+        target.userId,
+        target.lesson.id,
+        interaction.id,
+        interaction.kind,
+        result,
+        target.lesson.version,
+      );
+      if (this.target !== target) return;
+      this.results.update((results) => [saved, ...results]);
+    } catch {
+      if (this.target === target) this.setError(stepId, RESULT_NOT_SAVED);
+      return;
+    }
+    await this.markStep(stepId, 'completed');
+  }
+
   private async fetch(): Promise<void> {
     const target = this.target;
     if (!target) return;
@@ -233,6 +283,7 @@ export class LessonProgress {
     this.steps.set(new Map());
     this.ticks.set(new Map());
     this.attempts.set([]);
+    this.results.set([]);
     this.errors.set(new Map());
     this.checklistIds.clear();
     if (!target.userId) {
@@ -255,6 +306,7 @@ export class LessonProgress {
     );
     for (const [id, checklist] of snapshot.checklists) this.checklistIds.set(id, checklist.id);
     this.attempts.set(snapshot.attempts);
+    this.results.set(snapshot.results);
     this.currentState.set('ready');
     this.loadCount.update((count) => count + 1);
 

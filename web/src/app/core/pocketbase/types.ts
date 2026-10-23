@@ -47,3 +47,16 @@ export interface ChecklistStateRecord extends ProgressRecordBase {
   /** Ids of the ticked items, in item order; PocketBase gives null for an empty json field. */
   checked: string[] | null;
 }
+
+/** An `interaction_results` record: one per finished game, never changed. */
+export interface InteractionResultRecord extends ProgressRecordBase {
+  lesson_id: string;
+  interaction_id: string;
+  /** The kind of interaction (`trace-game`, …). */
+  kind: string;
+  score: number;
+  total: number;
+  /** Json; PocketBase gives null for an empty json field. */
+  detail: unknown;
+  content_version: number;
+}

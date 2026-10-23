@@ -85,6 +85,7 @@ describe('Lesson', () => {
         steps: new Map(),
         checklists: new Map(),
         attempts: [],
+        results: [],
       }),
     );
     user = signal<UserRecord | null>({
@@ -285,6 +286,7 @@ describe('Lesson', () => {
       ]),
       checklists: new Map(),
       attempts: [],
+      results: [],
     });
     const { element } = await open();
     const items = [...element.querySelectorAll('snf-step-nav li')];
