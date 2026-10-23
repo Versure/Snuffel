@@ -182,6 +182,15 @@ describe('content agents', () => {
     }
   });
 
+  test('snuffel-leren names source-researcher and content-reviewer, and both agent files exist', () => {
+    const text = readFileSync(skillFile('snuffel-leren'), 'utf8');
+    const named = agentReferences(text, agentNames);
+    for (const name of ['source-researcher', 'content-reviewer']) {
+      assert.ok(named.includes(name), `snuffel-leren does not name ${name}`);
+      assert.ok(existsSync(join(agentsDir, `${name}.md`)), `.claude/agents/${name}.md missing`);
+    }
+  });
+
   test('snuffel-leren names its agents, the catalogue, content:check and the content branch', () => {
     const text = readFileSync(skillFile('snuffel-leren'), 'utf8');
     for (const needle of [
