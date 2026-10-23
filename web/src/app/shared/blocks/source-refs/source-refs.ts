@@ -5,7 +5,8 @@ import { LessonContext } from '../../lesson-context/lesson-context';
 
 /**
  * "Bron:" with a link per source below a block or card. The link text is the publisher, the
- * accessible name "Bron: <title> (<publisher>) (opent in een nieuw tabblad)". Nothing for an empty list or without a context.
+ * accessible name "Bron: <title> (<publisher>) (opent in een nieuw tabblad)". Nothing for an
+ * empty list or without a context.
  */
 @Component({
   selector: 'snf-source-refs',
