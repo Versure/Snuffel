@@ -50,11 +50,12 @@ test.describe('the start page', () => {
     await expect(practice.getByRole('heading', { level: 3 })).toHaveText('Proefhuiswerk');
     await expectCard(page, 'Proefcursus', '0 van 2 lessen klaar', 0);
     await expectCard(page, 'Proefhuiswerk', '0 van 1 lessen klaar', 0);
-    for (const bar of await page.getByRole('progressbar').all()) {
+    for (const title of ['Proefcursus', 'Proefhuiswerk']) {
+      const bar = page.getByRole('progressbar', { name: `Voortgang ${title}`, exact: true });
       await expect(bar).toHaveAttribute('aria-valuemin', '0');
-      // A short name; the text is the value, so it is read once.
-      await expect(bar).toHaveAccessibleName('Voortgang');
     }
+    // A short name per course; the text is the value, so it is read once.
+    await expect(page.getByRole('progressbar')).toHaveCount(2);
   });
 
   test('each of two children sees only its own progress on the start page', async ({ page }) => {

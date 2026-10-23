@@ -60,6 +60,13 @@ describe('CourseCard', () => {
     expect(bar?.getAttribute('aria-valuemax')).toBe('2');
   });
 
+  it('names the bar after the course', async () => {
+    const { element } = await render();
+    expect(element.querySelector('[role="progressbar"]')?.getAttribute('aria-label')).toBe(
+      'Voortgang Proefcursus',
+    );
+  });
+
   it('says Alle lessen klaar when every lesson is completed', async () => {
     const { element } = await render({ completed: 3, total: 3 });
     expect(textOf(element.querySelector('.label'))).toBe('Alle lessen klaar!');

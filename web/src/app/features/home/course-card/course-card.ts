@@ -22,6 +22,8 @@ export class CourseCard {
   readonly progress = input.required<CourseProgressSummary | null>();
 
   protected readonly title = computed(() => plainText(this.course().title));
+  // Each bar on the start page gets its course in its name, so a list of elements tells them apart.
+  protected readonly barName = computed(() => HOME_TEXT.progressName(this.title()));
   protected readonly link = computed(() => ['/leren', this.course().id]);
   protected readonly label = computed(() => {
     const progress = this.progress();
