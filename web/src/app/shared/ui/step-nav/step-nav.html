@@ -1,0 +1,17 @@
+<nav aria-label="Stappen van deze les">
+  <ol class="steps">
+    @for (step of steps(); track step.id; let index = $index) {
+      <li [class.done]="doneIds().has(step.id)">
+        <a [routerLink]="[]" [fragment]="anchorPrefix + step.id" (click)="onClick($event, step.id)">
+          <!-- One name for screen readers ("Stap 1: Uitleg"); the circle and label are what you see. -->
+          <span class="snf-visually-hidden"
+            >Stap {{ index + 1 }}: {{ step.label
+            }}{{ doneIds().has(step.id) ? ' (klaar)' : '' }}</span
+          >
+          <span class="number" aria-hidden="true">{{ index + 1 }}</span>
+          <span class="label" aria-hidden="true">{{ step.label }}</span>
+        </a>
+      </li>
+    }
+  </ol>
+</nav>

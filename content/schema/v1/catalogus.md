@@ -19,7 +19,7 @@ content/
 
 - De mapnaam van een cursus is het cursus-id.
 - Elk bestand begint met `"schemaVersion": 1`.
-- `npm run content:build` zet alles klaar in `web/public/content/` (niet in git): `manifest.json`, `<cursus-id>/course.json`, `<cursus-id>/lessons/<les-id>.json` en de gebruikte afbeeldingen. In de uitvoer heet een lesbestand naar het les-id, niet naar het nummer, zodat een adres nooit verandert als de volgorde wijzigt.
+- `npm run content:build` zet alles klaar in `web/public/content/` (niet in git): `manifest.json`, `<cursus-id>/course.json`, `<cursus-id>/lessons/<les-id>.json` en de gebruikte afbeeldingen. In de uitvoer heet een lesbestand naar het les-id, niet naar het nummer, zodat een adres nooit verandert als de volgorde wijzigt. Het manifest noemt per cursus elke gebruikte afbeelding met de hash van de bytes (`assets`), zodat de app een gewijzigde svg nooit uit de cache van de browser haalt.
 - Fixtures gaan alleen mee met `npm run content:build:fixtures` (dat doen `npm start` en `npm run e2e`). De image voor de NAS wordt zonder fixtures gebouwd: een kind ziet de proefles nooit.
 
 ## Id's
@@ -225,7 +225,19 @@ Elke stap heeft `id`, `type` en `title`. Een les van een leertraject (`kind: cou
 | `figure`       | `src`, `alt`, `sourceRefs`, `caption` mag           | `{ "type": "figure", "src": "assets/hengeltop.svg", "alt": "Een buigende hengeltop", "sourceRefs": [] }`          |
 | `ted-says`     | `mood`, `text`, `sourceRefs`                        | `{ "type": "ted-says", "mood": "thinking", "text": "Let op je hengeltop.", "sourceRefs": [] }`                    |
 
-- `icon` is de naam van een icoon uit de vaste set van de app (kebab-case); de set komt met de lesweergave (M7).
+- `icon` is de naam van een icoon uit de vaste set van de app (tabel hieronder). Een andere naam is een `schema`-fout; de melding noemt de toegestane namen. Een nieuw icoon vraagt een tekening in de app en een regel in het schema.
+
+| `icon`     | Tekening                                                      | Kleur |
+| ---------- | ------------------------------------------------------------- | ----- |
+| `tick`     | een rechte lijn met één scherpe piek omhoog (een korte tik)   | geel  |
+| `shake`    | een lijn die snel op en neer gaat (schudden, trillen)         | roze  |
+| `stop`     | een pijl omlaag naar een gestippelde lijn (vast aan de bodem) | lila  |
+| `check`    | een vinkje (goed, zo doe je het)                              | geel  |
+| `cross`    | een kruis (fout, zo niet)                                     | roze  |
+| `question` | een vraagteken (twijfel, zelf nadenken)                       | lila  |
+| `idea`     | een gloeilamp (slim idee, handigheidje)                       | geel  |
+| `warning`  | een driehoek met een uitroepteken (pas op, gevaar)            | roze  |
+
 - `figure.src` wijst naar een `.svg` in de map `assets/` van de cursus (of een submap), met alleen kleine letters, cijfers en streepjes in de namen (bijv. `assets/vissen/snoek.svg`), zonder `..` en zonder symlink. `alt` beschrijft wat je ziet en is nooit leeg. De svg laadt niets van buiten (alleen de XML-namespaces van w3.org mogen erin staan) en gebruikt `currentColor` in plaats van vaste kleuren.
 
 ## Opmaak in tekst
@@ -245,6 +257,21 @@ In alle tekstvelden mag een kleine subset van Markdown, alleen binnen een regel:
 - Elke `[[term]]` moet in de `glossary` van dezelfde les staan.
 - In `course.json` mag geen `[[term]]` staan: een cursus heeft geen `glossary` (`course-term-not-allowed`). Schrijf de term daar als gewone tekst. Links in `course.json` (bijvoorbeeld in `goal` of `sources[].note`) worden net zo gecontroleerd als in een les.
 - Alle gevallen staan in `inline-markup.cases.json`; de tools en de app worden daartegen getest.
+
+## Zo toont de app een les
+
+Een les staat in de app op `/leren/<cursus-id>/<les-id>`, voor wie ingelogd is (kind en ouder). Het is één doorlopende pagina; `#stap-<stap-id>` achter het adres opent hem bij die stap.
+
+- **Kop:** een link "Naar de start", de `sticker`, "Ongeveer `estimatedMinutes` minuten", de `title` (het laatste woord op een paarse band), Ted (`ted.intro.mood`) met `ted.intro.text` in een ballon, en het `objective` op een papieren kader.
+- **Stappen-navigatie:** een genummerd rondje per stap met een kort label: `explain` "Uitleg", `trace-game` "Spel", `stepped-exercise` "Oefenen", `quiz` "Quiz", `at-the-water` "Aan het water", `do-it-yourself` "Zelf doen". Een tik springt naar de stap.
+- **Stap:** de `title` als kop met een roze rondje met het nummer.
+- **Blokken:** `text` is een alinea; `example` staat in een kaart; `signal-cards` zijn kaarten met het icoon, de titel en de tekst; `rule` is een roze blok met de titel groot; `tip` is een kaart met de titel (zonder titel: "Tip"); `figure` is de afbeelding met het onderschrift eronder; `ted-says` is een kleine Ted in de gekozen stemming met een ballon.
+- **Bronnen:** onder elk blok en elke kaart met `sourceRefs` staat "Bron:" met per bron de uitgever als link. Een blok zonder bronnen toont niets. Bij quizvragen, praktijkpunten en de interactiestap toont de app (nog) geen bronnen.
+- **Vaktermen:** een `[[term]]` is een woord met een stippellijn eronder. Tikken toont de `definition` uit de `glossary` direct onder de term; nog eens tikken of Escape sluit hem. Onderaan de les staat de woordenlijst met alle termen op alfabet.
+- **Links:** elke link naar buiten opent in een nieuw tabblad. Alleen `https://` wordt een link.
+- **Afbeeldingen:** een `figure` staat op een vaste lichte achtergrond, ook in de donkere modus, want een svg in een afbeelding volgt de kleuren van de app niet. Teken dus met `currentColor` (wordt zwart) of met donkere lijnen.
+- **Einde:** Ted (blij) met `ted.finished`, dan "Woordenlijst", "Verder lezen" (titel van de bron als link, de uitgever en `why`) en "Vragen" (elke vraag met het antwoord eronder). Een lege lijst geeft geen kopje.
+- **Wat nog komt:** tot M8 is een `quiz` een voorbeeld om te lezen: alle vragen met de opties A, B, C, D als tekst, zonder knoppen, uitleg, hints of het goede antwoord. Een interactie (`trace-game`, `stepped-exercise`) is tot M9 en M10 een donker paneel met Ted: "Dit spel komt binnenkort." of "Deze oefening komt binnenkort." Een `practice`-stap is tot M8 een plakbriefje met de punten als lijst, zonder vinkjes, met `successCriterion` vet eronder. `ted.correct` en `ted.incorrect` worden nog niet getoond.
 
 ## Interacties
 

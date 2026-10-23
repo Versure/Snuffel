@@ -1,0 +1,48 @@
+:host {
+  display: block;
+}
+
+.glossary {
+  margin: 0;
+  padding: 0.4rem 1rem;
+  background: var(--snf-color-surface);
+  border: var(--snf-border-width) solid var(--snf-color-ink);
+  border-radius: var(--snf-radius-lg);
+  box-shadow: var(--snf-shadow-md);
+}
+
+.entry {
+  padding: 0.5rem 0;
+  border-bottom: 2px dashed var(--snf-color-text-muted);
+}
+
+.entry:last-child {
+  border-bottom: 0;
+}
+
+dt {
+  font-weight: 700;
+}
+
+dd {
+  margin: 0;
+}
+
+.reading {
+  margin: 0;
+  padding: 0 0 0 1.2rem;
+}
+
+.reading li {
+  margin: 0 0 0.8rem;
+}
+
+.why {
+  display: block;
+}
+
+h3 {
+  margin: 1.2rem 0 0.3rem;
+  font-size: 1.1rem;
+  line-height: 1.3;
+}

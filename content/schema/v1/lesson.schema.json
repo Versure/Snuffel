@@ -99,6 +99,12 @@
         "$ref": "#/$defs/id"
       }
     },
+    "signalIcon": {
+      "title": "SignalIcon",
+      "description": "Name of an icon from the app's fixed icon set; the app draws each one itself.",
+      "type": "string",
+      "enum": ["tick", "shake", "stop", "check", "cross", "question", "idea", "warning"]
+    },
     "mood": {
       "title": "TedMood",
       "type": "string",
@@ -498,8 +504,7 @@
       "required": ["icon", "title", "text", "sourceRefs"],
       "properties": {
         "icon": {
-          "description": "Name of an icon from the app's fixed icon set (kebab-case).",
-          "$ref": "#/$defs/id"
+          "$ref": "#/$defs/signalIcon"
         },
         "title": {
           "$ref": "#/$defs/text"

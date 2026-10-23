@@ -1,0 +1,74 @@
+@let current = state();
+<main [attr.aria-busy]="current.kind === 'loading' ? 'true' : null">
+  @switch (current.kind) {
+    @case ('loading') {
+      <snf-ted-says class="state-ted" mood="thinking" size="small">Even snuffelen…</snf-ted-says>
+    }
+    @case ('loaded') {
+      @let data = current.lesson;
+      <header class="hero">
+        <a class="back" routerLink="/">Naar de start</a>
+        <div class="meta">
+          <snf-sticker>{{ data.sticker }}</snf-sticker>
+          <span class="minutes">Ongeveer {{ data.estimatedMinutes }} minuten</span>
+        </div>
+        <h1>
+          {{ titleParts().head }}
+          @if (titleParts().band) {
+            <snf-band>{{ titleParts().band }}</snf-band>
+          }
+        </h1>
+        <snf-ted-says class="intro" [mood]="data.ted.intro.mood" size="large" [wiggle]="true">
+          <snf-inline-text [text]="data.ted.intro.text" />
+        </snf-ted-says>
+        <p class="objective"><snf-inline-text [text]="data.objective" /></p>
+        <snf-step-nav [steps]="navItems()" (navigate)="goToStep($event)" />
+      </header>
+
+      @for (step of data.steps; track step.id; let index = $index) {
+        <snf-lesson-step [step]="step" [number]="index + 1" />
+      }
+
+      <snf-ted-says class="finished" mood="happy" size="small">
+        <snf-inline-text [text]="data.ted.finished" />
+      </snf-ted-says>
+
+      <snf-lesson-end
+        [glossary]="data.glossary"
+        [furtherReading]="data.furtherReading"
+        [faq]="data.faq"
+      />
+    }
+    @case ('not-found') {
+      <h1>Les niet gevonden</h1>
+      <snf-ted-says class="state-ted" mood="oops" size="small">
+        Deze les kan ik niet vinden.
+      </snf-ted-says>
+      <a snf-button variant="light" routerLink="/">Naar de start</a>
+    }
+    @case ('planned') {
+      <h1>{{ current.title }}</h1>
+      <snf-ted-says class="state-ted" mood="thinking" size="small">
+        Aan deze les wordt nog gewerkt. Hij komt eraan!
+      </snf-ted-says>
+      <a snf-button variant="light" routerLink="/">Naar de start</a>
+    }
+    @case ('unavailable') {
+      <h1>Les laden lukt niet</h1>
+      <snf-ted-says class="state-ted" mood="oops" size="small">
+        Snuffel kan de les nu niet laden.
+      </snf-ted-says>
+      <div class="actions">
+        <button snf-button type="button" (click)="retry()">Opnieuw</button>
+        <a snf-button variant="light" routerLink="/">Naar de start</a>
+      </div>
+    }
+    @case ('unsupported-version') {
+      <h1>Nieuwere versie nodig</h1>
+      <snf-ted-says class="state-ted" mood="oops" size="small">
+        Deze les is gemaakt voor een nieuwere versie van Snuffel. Ververs de pagina.
+      </snf-ted-says>
+      <a snf-button variant="light" routerLink="/">Naar de start</a>
+    }
+  }
+</main>

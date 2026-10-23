@@ -1,0 +1,12 @@
+<ul class="cards">
+  @for (card of block().cards; track $index) {
+    <li class="card">
+      <snf-signal-icon class="icon" [name]="card.icon" />
+      <div>
+        <h3><snf-inline-text [text]="card.title" /></h3>
+        <p><snf-inline-text [text]="card.text" /></p>
+        <snf-source-refs [refs]="card.sourceRefs" />
+      </div>
+    </li>
+  }
+</ul>

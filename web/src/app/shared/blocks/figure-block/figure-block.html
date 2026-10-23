@@ -1,0 +1,13 @@
+<figure>
+  <div class="frame">
+    @if (url(); as url) {
+      <img [src]="url" [alt]="block().alt" loading="lazy" decoding="async" />
+    } @else {
+      <p class="fallback">{{ block().alt }}</p>
+    }
+  </div>
+  @if (block().caption; as caption) {
+    <figcaption><snf-inline-text [text]="caption" /></figcaption>
+  }
+</figure>
+<snf-source-refs [refs]="block().sourceRefs" />

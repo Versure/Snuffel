@@ -1,0 +1,25 @@
+@let data = step();
+<section [id]="sectionId()" [attr.aria-labelledby]="headingId()">
+  <h2 [id]="headingId()" tabindex="-1">
+    <span class="number">{{ number() }}</span
+    >{{ ' ' }}
+    <snf-inline-text [text]="data.title" [terms]="false" />
+  </h2>
+  @switch (data.type) {
+    @case ('explain') {
+      @for (block of data.blocks; track $index) {
+        <snf-block [block]="block" />
+      }
+    }
+    @case ('interaction') {
+      <p class="intro"><snf-inline-text [text]="data.intro" /></p>
+      <snf-interaction-placeholder [interaction]="data.interaction" />
+    }
+    @case ('quiz') {
+      <snf-quiz-preview [step]="data" />
+    }
+    @case ('practice') {
+      <snf-practice-list [step]="data" />
+    }
+  }
+</section>

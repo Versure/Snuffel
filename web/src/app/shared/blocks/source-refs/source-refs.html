@@ -1,0 +1,16 @@
+@if (sources().length > 0) {
+  <p class="sources">
+    Bron:
+    @for (source of sources(); track source.id; let last = $last) {
+      <snf-external-link
+        [url]="source.url"
+        [label]="source.publisher"
+        [hiddenBefore]="'Bron: ' + source.title + ' ('"
+        hiddenAfter=")"
+      />
+      @if (!last) {
+        <span>, </span>
+      }
+    }
+  </p>
+}

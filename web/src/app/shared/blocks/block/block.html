@@ -1,0 +1,24 @@
+@let data = block();
+@switch (data.type) {
+  @case ('text') {
+    <snf-text-block [block]="data" />
+  }
+  @case ('example') {
+    <snf-example-block [block]="data" />
+  }
+  @case ('signal-cards') {
+    <snf-signal-cards-block [block]="data" />
+  }
+  @case ('rule') {
+    <snf-rule-block [block]="data" />
+  }
+  @case ('tip') {
+    <snf-tip-block [block]="data" />
+  }
+  @case ('figure') {
+    <snf-figure-block [block]="data" />
+  }
+  @case ('ted-says') {
+    <snf-ted-says-block [block]="data" />
+  }
+}

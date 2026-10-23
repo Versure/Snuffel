@@ -1,0 +1,32 @@
+:host {
+  display: block;
+  margin: 1.4rem 0;
+}
+
+/* Ink on pink: white on pink fails WCAG AA (decision M2). Links, sources and the focus ring
+   follow, so nothing pink or purple ends up on pink. The tilt is static, not an animation. */
+.rule {
+  --snf-color-link: var(--snf-color-on-pink);
+  --snf-color-text-muted: var(--snf-color-on-pink);
+  --snf-focus-ring: 3px solid var(--snf-color-on-pink);
+
+  padding: 1rem 1.1rem;
+  color: var(--snf-color-on-pink);
+  background: var(--snf-color-pink);
+  border: var(--snf-border-width) solid var(--snf-color-ink);
+  border-radius: var(--snf-radius-rule);
+  box-shadow: var(--snf-shadow-lg);
+  transform: rotate(-1deg);
+}
+
+p {
+  margin: 0;
+}
+
+.title {
+  margin-bottom: 0.35rem;
+  font-family: var(--snf-font-display);
+  font-size: 1.9rem;
+  letter-spacing: 0.03em;
+  line-height: 1;
+}

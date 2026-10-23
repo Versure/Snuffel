@@ -4,6 +4,7 @@ import { provideRouter, Router } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
 import { App } from './app';
 import { routes } from './app.routes';
+import { authGuard } from './core/auth/auth.guard';
 import { AuthService } from './core/auth/auth.service';
 import type { UserRecord, UserRole } from './core/pocketbase/types';
 
@@ -101,6 +102,15 @@ describe('App routes', () => {
 
   it('keeps /stijl open without a login', async () => {
     expect(await open('/stijl')).toBe('/stijl');
+  });
+
+  it('protects the lesson route with authGuard', async () => {
+    const route = routes.find((candidate) => candidate.path === 'leren/:courseId/:lessonId');
+    expect(route?.canActivate).toEqual([authGuard]);
+    expect(route?.title).toBe('Les · Snuffel');
+    expect(await open('/leren/proefcursus/proefles')).toBe(
+      '/login?terug=%2Fleren%2Fproefcursus%2Fproefles',
+    );
   });
 
   it('sends a child from /ouder to /', async () => {

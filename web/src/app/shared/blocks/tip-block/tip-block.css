@@ -1,0 +1,16 @@
+:host {
+  display: block;
+}
+
+p {
+  margin: 0;
+}
+
+.title {
+  margin-bottom: 0.25rem;
+  font-family: var(--snf-font-display);
+  font-size: 1.45rem;
+  letter-spacing: 0.03em;
+  line-height: 1.1;
+  color: var(--snf-color-heading);
+}

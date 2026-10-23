@@ -1,0 +1,46 @@
+:host {
+  display: block;
+  width: 3.2rem;
+  height: 3.2rem;
+}
+
+svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Colours from the reference: tick yellow, shake pink, stop lilac. Fixed in both themes. */
+.tile {
+  stroke: var(--snf-color-black);
+  stroke-width: 3;
+}
+
+.icon--yellow .tile {
+  fill: var(--snf-color-yellow);
+}
+
+.icon--pink .tile {
+  fill: var(--snf-color-pink);
+}
+
+.icon--lilac .tile {
+  fill: var(--snf-color-lilac);
+}
+
+.stroke {
+  fill: none;
+  stroke: var(--snf-color-black);
+  stroke-width: 3.5;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+.stroke--dashed {
+  stroke-dasharray: 4 4;
+  stroke-linecap: butt;
+}
+
+.dot {
+  fill: var(--snf-color-black);
+}

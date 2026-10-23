@@ -29,6 +29,8 @@
   /* Fixed colours of the light button; they do not change with the theme. */
   --snf-color-cream: #fff6dc;
   --snf-color-black: #141414;
+  /* Background of the signal icon "stop" (as in the reference); fixed in both themes. */
+  --snf-color-lilac: #cfc3e8;
 
   --snf-font-display: 'Bangers', 'Impact', 'Arial Narrow', sans-serif;
   --snf-font-body: 'Atkinson Hyperlegible', -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
@@ -38,10 +40,12 @@
   --snf-shadow-md: 4px 4px 0 var(--snf-color-ink);
   --snf-shadow-lg: 5px 5px 0 var(--snf-color-ink);
   --snf-shadow-note: 5px 6px 0 var(--snf-color-ink);
+  --snf-shadow-panel: 6px 6px 0 var(--snf-color-purple);
 
   --snf-radius-md: 14px;
   --snf-radius-lg: 16px;
   --snf-radius-xl: 22px;
+  --snf-radius-rule: 18px;
   --snf-radius-pill: 999px;
   --snf-radius-band: 4px 14px 6px 12px;
   --snf-radius-note: 4px 4px 22px 4px;

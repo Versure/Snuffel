@@ -9,6 +9,11 @@ import { isSupportedSchemaVersion } from './supported-versions';
 const CONTENT_BASE = '/content/';
 /** Paths in the manifest: lower-case segments ending in .json, never another host or `..`. */
 const SAFE_PATH = /^[a-z0-9-]+(\/[a-z0-9-]+)*\.json$/;
+/** Asset paths in the manifest, the same pattern as `figure.src` in lesson.schema.json. */
+const SAFE_ASSET_PATH = /^assets\/[a-z0-9-]+(\/[a-z0-9-]+)*\.svg$/;
+/** A course id (kebab-case) and a content hash (16 hex characters). */
+const SAFE_ID = /^[a-z0-9]+(-[a-z0-9]+)*$/;
+const SAFE_HASH = /^[0-9a-f]{16}$/;
 
 /**
  * Loads the built content: the manifest (once per session, always revalidated with the server)
@@ -46,6 +51,23 @@ export class ContentService {
     const lesson = await this.fetchJson<Lesson>(entry.file, entry.hash);
     this.assertVersion(lesson, `lesson ${lessonId}`);
     return lesson;
+  }
+
+  /**
+   * The url of each asset of a course, by its `figure.src`: `/content/<course>/<src>?v=<hash>`.
+   * Comes from the shared manifest, so it costs no extra request. Paths outside `assets/` or
+   * with an invalid hash are left out.
+   */
+  async assetUrls(courseId: string): Promise<ReadonlyMap<string, string>> {
+    const course = await this.findCourse(courseId);
+    const urls = new Map<string, string>();
+    if (!SAFE_ID.test(course.id)) return urls;
+    for (const { path, hash } of course.assets ?? []) {
+      if (SAFE_ASSET_PATH.test(path) && SAFE_HASH.test(hash)) {
+        urls.set(path, `${CONTENT_BASE}${course.id}/${path}?v=${hash}`);
+      }
+    }
+    return urls;
   }
 
   private async fetchManifest(): Promise<ContentManifest> {

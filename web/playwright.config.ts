@@ -21,12 +21,13 @@ export default defineConfig({
   projects: [
     {
       name: 'mobile',
-      testIgnore: ['server/**', 'container/**'],
+      // Lesson tests need a login, so they only run in the server projects.
+      testIgnore: ['server/**', 'container/**', 'lesson/**'],
       use: { ...devices['Pixel 7'] },
     },
     {
       name: 'desktop',
-      testIgnore: ['server/**', 'container/**'],
+      testIgnore: ['server/**', 'container/**', 'lesson/**'],
       use: { ...devices['Desktop Chrome'] },
     },
     {
@@ -36,15 +37,16 @@ export default defineConfig({
       use: { baseURL: serverURL },
     },
     {
+      // lesson/** needs the fixture lesson, which the e2e build has (pree2e) and the image not.
       name: 'server-mobile',
-      testMatch: 'server/**/*.spec.ts',
+      testMatch: ['server/**/*.spec.ts', 'lesson/**/*.spec.ts'],
       testIgnore: 'server/seed.setup.ts',
       dependencies: ['server-setup'],
       use: { ...devices['Pixel 7'], baseURL: serverURL },
     },
     {
       name: 'server-desktop',
-      testMatch: 'server/**/*.spec.ts',
+      testMatch: ['server/**/*.spec.ts', 'lesson/**/*.spec.ts'],
       testIgnore: 'server/seed.setup.ts',
       dependencies: ['server-setup'],
       use: { ...devices['Desktop Chrome'], baseURL: serverURL },

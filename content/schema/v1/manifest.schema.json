@@ -35,7 +35,7 @@
       "title": "ManifestCourse",
       "type": "object",
       "additionalProperties": false,
-      "required": ["id", "title", "kind", "file", "hash", "lessons"],
+      "required": ["id", "title", "kind", "file", "hash", "lessons", "assets"],
       "properties": {
         "id": {
           "$ref": "#/$defs/id"
@@ -60,6 +60,30 @@
           "items": {
             "$ref": "#/$defs/manifestLesson"
           }
+        },
+        "assets": {
+          "description": "Every asset a published lesson of the course uses, sorted by path. Empty if there are none.",
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/manifestAsset"
+          }
+        }
+      }
+    },
+    "manifestAsset": {
+      "title": "ManifestAsset",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "hash"],
+      "properties": {
+        "path": {
+          "description": "Path relative to the course directory, the same as figure.src in the lesson.",
+          "type": "string",
+          "pattern": "^assets/[a-z0-9-]+(/[a-z0-9-]+)*\\.svg$"
+        },
+        "hash": {
+          "$ref": "#/$defs/hash"
         }
       }
     },

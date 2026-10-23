@@ -1,0 +1,20 @@
+<p class="intro"><snf-inline-text [text]="step().intro" /></p>
+<snf-sticky-note>
+  <ul class="items">
+    @for (item of step().items; track item.id) {
+      <li class="item">
+        <snf-inline-text [text]="item.text" />
+        @if (item.links?.length) {
+          <span class="links">
+            @for (link of item.links; track $index) {
+              <snf-external-link [url]="link.url" [label]="link.label" />
+            }
+          </span>
+        }
+      </li>
+    }
+  </ul>
+  <p class="success">
+    <strong><snf-inline-text [text]="step().successCriterion" /></strong>
+  </p>
+</snf-sticky-note>

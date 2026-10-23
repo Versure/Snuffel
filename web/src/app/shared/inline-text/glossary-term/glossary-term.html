@@ -1,0 +1,18 @@
+@if (definition(); as definition) {
+  <button
+    #button
+    type="button"
+    class="term"
+    [attr.aria-expanded]="open()"
+    [attr.aria-controls]="definitionId"
+    (click)="toggle()"
+  >
+    {{ text() }}
+  </button>
+  <span class="definition" [id]="definitionId" [hidden]="!open()">
+    <strong class="definition-term">{{ term() }}:</strong>{{ ' ' }}
+    <snf-inline-text [text]="definition" [terms]="false" />
+  </span>
+} @else {
+  <span>{{ text() }}</span>
+}

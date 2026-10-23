@@ -1,0 +1,58 @@
+/*
+ * A term in running text: a button that looks like a word with a dotted underline. Padding
+ * with an equal negative margin gives a tap area of at least 44 × 44 px without moving the line
+ * (plan M7, question 10).
+ */
+.term {
+  --snf-term-pad-block: max(0px, calc((var(--snf-tap-min) - 1lh) / 2));
+
+  display: inline-block;
+  min-width: var(--snf-tap-min);
+  min-height: var(--snf-tap-min);
+  padding: var(--snf-term-pad-block) 0.4em;
+  margin: calc(-1 * var(--snf-term-pad-block)) -0.4em;
+  font: inherit;
+  line-height: inherit;
+  letter-spacing: inherit;
+  color: inherit;
+  text-align: center;
+  text-decoration: underline dotted;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.2em;
+  background: none;
+  border: 0;
+  border-radius: var(--snf-radius-md);
+  cursor: pointer;
+}
+
+.term[aria-expanded='true'] {
+  text-decoration-style: solid;
+}
+
+/* The balloon right below the term, in the flow of the text (never wider than the screen). */
+.definition {
+  position: relative;
+  display: block;
+  margin: 0.7rem 0 0.6rem;
+  padding: 0.5rem 0.8rem;
+  font-family: var(--snf-font-body);
+  font-size: 1rem;
+  font-style: normal;
+  font-weight: 400;
+  letter-spacing: normal;
+  line-height: 1.45;
+  text-align: left;
+  color: var(--snf-color-text);
+  background: var(--snf-color-paper);
+  border: var(--snf-border-width) solid var(--snf-color-ink);
+  border-radius: var(--snf-radius-md);
+  box-shadow: var(--snf-shadow-sm);
+}
+
+.definition[hidden] {
+  display: none;
+}
+
+.definition-term {
+  font-weight: 700;
+}
