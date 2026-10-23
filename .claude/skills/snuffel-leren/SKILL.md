@@ -47,9 +47,9 @@ Te weinig betrouwbare bronnen: **stop** en zeg Jop wat er ontbreekt. Verzin nooi
 
 ## 3. Leerpad
 
-Maak een leerpad: lessen met elk **één nieuw begrip**, in volgorde van voorkennis, met per les het leerdoel ("Na deze les …"). Schrijf `course.json` (zie de catalogus) met alle lessen als `planned` en de bronnen van `source-researcher` onder `sources`.
+Maak een leerpad: lessen met elk **één nieuw begrip**, in volgorde van voorkennis, met per les het leerdoel ("Na deze les …").
 
-Maak de branch vanaf `main`: `git switch -c content/<cursus-id>-<les-id>` (de eerste les die je gaat maken).
+Maak eerst de branch vanaf `main`: `git switch -c content/<cursus-id>-<les-id>` (de eerste les die je gaat maken). Schrijf daarna pas `course.json` (zie de catalogus) met alle lessen als `planned` en de bronnen van `source-researcher` onder `sources`, zodat er nooit een bestand op `main` ontstaat.
 
 **Stop: Jop keurt het leerpad goed.** Laat het leerpad zien (lessen, begrip, leerdoel) met de bronnen in een tabel. Ga pas verder na zijn akkoord; past hij iets aan, verwerk het eerst.
 
