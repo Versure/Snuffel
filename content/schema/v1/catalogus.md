@@ -258,6 +258,21 @@ In alle tekstvelden mag een kleine subset van Markdown, alleen binnen een regel:
 - In `course.json` mag geen `[[term]]` staan: een cursus heeft geen `glossary` (`course-term-not-allowed`). Schrijf de term daar als gewone tekst. Links in `course.json` (bijvoorbeeld in `goal` of `sources[].note`) worden net zo gecontroleerd als in een les.
 - Alle gevallen staan in `inline-markup.cases.json`; de tools en de app worden daartegen getest.
 
+## Zo toont de app een les
+
+Een les staat in de app op `/leren/<cursus-id>/<les-id>`, voor wie ingelogd is (kind en ouder). Het is één doorlopende pagina; `#stap-<stap-id>` achter het adres opent hem bij die stap.
+
+- **Kop:** een link "Naar de start", de `sticker`, "Ongeveer `estimatedMinutes` minuten", de `title` (het laatste woord op een paarse band), Ted (`ted.intro.mood`) met `ted.intro.text` in een ballon, en het `objective` op een papieren kader.
+- **Stappen-navigatie:** een genummerd rondje per stap met een kort label: `explain` "Uitleg", `trace-game` "Spel", `stepped-exercise` "Oefenen", `quiz` "Quiz", `at-the-water` "Aan het water", `do-it-yourself` "Zelf doen". Een tik springt naar de stap.
+- **Stap:** de `title` als kop met een roze rondje met het nummer.
+- **Blokken:** `text` is een alinea; `example` staat in een kaart; `signal-cards` zijn kaarten met het icoon, de titel en de tekst; `rule` is een roze blok met de titel groot; `tip` is een kaart met de titel (zonder titel: "Tip"); `figure` is de afbeelding met het onderschrift eronder; `ted-says` is een kleine Ted in de gekozen stemming met een ballon.
+- **Bronnen:** onder elk blok en elke kaart met `sourceRefs` staat "Bron:" met per bron de uitgever als link. Een blok zonder bronnen toont niets. Bij quizvragen, praktijkpunten en de interactiestap toont de app (nog) geen bronnen.
+- **Vaktermen:** een `[[term]]` is een woord met een stippellijn eronder. Tikken toont de `definition` uit de `glossary` direct onder de term; nog eens tikken of Escape sluit hem. Onderaan de les staat de woordenlijst met alle termen op alfabet.
+- **Links:** elke link naar buiten opent in een nieuw tabblad. Alleen `https://` wordt een link.
+- **Afbeeldingen:** een `figure` staat op een vaste lichte achtergrond, ook in de donkere modus, want een svg in een afbeelding volgt de kleuren van de app niet. Teken dus met `currentColor` (wordt zwart) of met donkere lijnen.
+- **Einde:** Ted (blij) met `ted.finished`, dan "Woordenlijst", "Verder lezen" (titel van de bron als link, de uitgever en `why`) en "Vragen" (elke vraag met het antwoord eronder). Een lege lijst geeft geen kopje.
+- **Wat nog komt:** tot M8 is een `quiz` een voorbeeld om te lezen: alle vragen met de opties A, B, C, D als tekst, zonder knoppen, uitleg, hints of het goede antwoord. Een interactie (`trace-game`, `stepped-exercise`) is tot M9 en M10 een donker paneel met Ted: "Dit spel komt binnenkort." of "Deze oefening komt binnenkort." Een `practice`-stap is tot M8 een plakbriefje met de punten als lijst, zonder vinkjes, met `successCriterion` vet eronder. `ted.correct` en `ted.incorrect` worden nog niet getoond.
+
 ## Interacties
 
 Een interactie is data voor een bestaand onderdeel van de app. Alleen deze twee soorten bestaan; een nieuwe soort vraagt code (skill `spelcomponent-bouwen`). Elke interactiestap telt **2 minuten** in de berekende tijd.
