@@ -48,4 +48,6 @@ test('.dockerignore keeps huiswerk-fotos out of the build context', () => {
     .split('\n')
     .map((line) => line.trim().replace(/\/$/, ''));
   assert.ok(lines.includes(photoDir));
+  const exceptions = lines.filter((line) => line.startsWith('!') && line.includes(photoDir));
+  assert.deepEqual(exceptions, [], 'a !-rule in .dockerignore lets homework photos back in');
 });
