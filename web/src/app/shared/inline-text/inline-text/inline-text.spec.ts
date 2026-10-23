@@ -7,12 +7,20 @@ import { InlineText } from './inline-text';
 interface MarkupCase {
   readonly name: string;
   readonly input: string;
+  readonly tokens: readonly { readonly type: string; readonly url?: string }[];
 }
 const cases = (markupCases as { cases: readonly MarkupCase[] }).cases;
-const caseInput = (name: string): string => {
+const findCase = (name: string): MarkupCase => {
   const found = cases.find((markupCase) => markupCase.name === name);
   if (!found) throw new Error(`no case ${name}`);
-  return found.input;
+  return found;
+};
+const caseInput = (name: string): string => findCase(name).input;
+/** The url of the link in a case, so no host is written out in this spec. */
+const caseUrl = (name: string): string => {
+  const url = findCase(name).tokens.find((token) => token.type === 'link')?.url;
+  if (!url) throw new Error(`no link in case ${name}`);
+  return url;
 };
 
 @Component({
@@ -62,7 +70,7 @@ describe('InlineText', () => {
   it('renders an https link with target and rel', async () => {
     const p = await render(caseInput('link'));
     const link = p.querySelector('a');
-    expect(link?.getAttribute('href')).toMatch(/^https:\/\/www\.sportvisunie\.nl\//);
+    expect(link?.getAttribute('href')).toBe(caseUrl('link'));
     expect(link?.getAttribute('target')).toBe('_blank');
     expect(link?.getAttribute('rel')).toBe('noopener noreferrer');
     expect(link?.textContent).toContain('VISpas-check');
