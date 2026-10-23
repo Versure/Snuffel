@@ -219,6 +219,14 @@ test.describe('the page of a child (/ouder/<id>)', () => {
       checklist_states: 1,
       interaction_results: 1,
     });
+    // The records that must stay are there, so "unchanged" below proves something.
+    expect(before.aBreuken).toEqual({
+      lesson_progress: 4,
+      quiz_attempts: 3,
+      checklist_states: 1,
+      interaction_results: 1,
+    });
+    expect(before.bProefles).toEqual(aProefles);
 
     await openChildPage(page, a);
     const row = childLesson(page, proeflesTitle);
@@ -257,6 +265,12 @@ test.describe('the page of a child (/ouder/<id>)', () => {
       { lessonId: 'proefles', questionId: 'schokken-terug', optionId: 'aanslaan', correct: true },
     ]);
     const before = await countLessonRecords(baseURL(), child.id, 'proefles');
+    expect(before).toEqual({
+      lesson_progress: 4,
+      quiz_attempts: 1,
+      checklist_states: 0,
+      interaction_results: 0,
+    });
     await openAsParent(page, `/ouder/${child.id}`);
     const row = childLesson(page, proeflesTitle);
     const question = await askToClear(row);
