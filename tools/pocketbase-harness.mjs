@@ -89,30 +89,36 @@ export async function waitForHealth(
   );
 }
 
-/**
- * Starts PocketBase in a new, empty directory below pocketbase/pb_data/test-<id>.
- * Returns `{ url, dataDir, stop() }`; `stop()` ends the process and removes the directory.
- */
-export async function startPocketBase({
-  superuser = testSuperuser,
-  timeoutMs = 20_000,
-  log = () => {},
-} = {}) {
-  const binary = await fetchPocketBase({ log });
-  const id = `${process.pid}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
-  const dataDir = join(dataRoot, `test-${id}`);
-  const removeData = () => rmSync(dataDir, { recursive: true, force: true });
+/** True when PocketBase (or Node) failed because the port was already taken. */
+export function isAddressInUse(error) {
+  return /address already in use|EADDRINUSE/i.test(error?.message ?? '');
+}
 
-  if (superuser) {
+/**
+ * Calls `attempt(port)` with a fresh port from `pickPort()` until it succeeds. `freePort()`
+ * releases its port before PocketBase binds it, so a parallel test file can take it in
+ * between; only that bind conflict is retried, at most `attempts` times in total.
+ */
+export async function retryOnAddressInUse(
+  attempt,
+  { attempts = 5, pickPort = freePort, log = () => {} } = {},
+) {
+  for (let tryNumber = 1; ; tryNumber++) {
+    const port = await pickPort();
     try {
-      await upsertSuperuser(binary, dataDir, superuser);
+      return await attempt(port);
     } catch (error) {
-      removeData();
-      throw error;
+      if (tryNumber >= attempts || !isAddressInUse(error)) throw error;
+      log(`Port ${port} was taken before PocketBase could bind it; trying another port.`);
     }
   }
+}
 
-  const port = await freePort();
+/**
+ * Starts `pocketbase serve` on `port` and waits until it is healthy.
+ * Returns `{ url, kill() }`; on failure the process is ended before the error is thrown.
+ */
+async function servePocketBase(binary, dataDir, port, timeoutMs) {
   const url = `http://127.0.0.1:${port}`;
   const child = spawn(binary, ['serve', `--http=127.0.0.1:${port}`, ...pocketBaseFlags(dataDir)], {
     stdio: ['ignore', 'pipe', 'pipe'],
@@ -127,14 +133,13 @@ export async function startPocketBase({
       done();
     }),
   );
-  // Never leave a server or a data directory behind, also not when the test process dies.
+  // Never leave a server behind, also not when the test process dies.
   const onExit = () => {
     if (!exited) child.kill('SIGKILL');
-    removeData();
   };
   process.on('exit', onExit);
 
-  async function stop() {
+  async function kill() {
     process.off('exit', onExit);
     if (!exited) {
       child.kill('SIGTERM');
@@ -142,14 +147,51 @@ export async function startPocketBase({
       await exit;
       clearTimeout(timer);
     }
-    removeData();
   }
 
   try {
     await waitForHealth(url, { timeoutMs, output: () => output, exited: () => exited });
   } catch (error) {
-    await stop();
+    await kill();
     throw error;
   }
-  return { url, dataDir, stop };
+  return { url, kill };
+}
+
+/**
+ * Starts PocketBase in a new, empty directory below pocketbase/pb_data/test-<id>, on a
+ * new port when the first one turns out to be taken.
+ * Returns `{ url, dataDir, stop() }`; `stop()` ends the process and removes the directory.
+ */
+export async function startPocketBase({
+  superuser = testSuperuser,
+  timeoutMs = 20_000,
+  log = () => {},
+} = {}) {
+  const binary = await fetchPocketBase({ log });
+  const id = `${process.pid}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
+  const dataDir = join(dataRoot, `test-${id}`);
+  const removeData = () => rmSync(dataDir, { recursive: true, force: true });
+  // Never leave a data directory behind, also not when the test process dies.
+  process.on('exit', removeData);
+
+  let server;
+  try {
+    if (superuser) await upsertSuperuser(binary, dataDir, superuser);
+    server = await retryOnAddressInUse(
+      (port) => servePocketBase(binary, dataDir, port, timeoutMs),
+      { log },
+    );
+  } catch (error) {
+    process.off('exit', removeData);
+    removeData();
+    throw error;
+  }
+
+  async function stop() {
+    await server.kill();
+    process.off('exit', removeData);
+    removeData();
+  }
+  return { url: server.url, dataDir, stop };
 }
