@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, inject, resource } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { AuthService } from '../../core/auth/auth.service';
 import { isContentError } from '../../core/content/content-error';
 import { ContentService } from '../../core/content/content.service';
@@ -42,7 +43,7 @@ const byTitle = (a: ManifestCourse, b: ManifestCourse) => a.title.localeCompare(
  */
 @Component({
   selector: 'snf-home',
-  imports: [Button, CourseCard, TedSays],
+  imports: [Button, CourseCard, RouterLink, TedSays],
   templateUrl: './home.html',
   styleUrl: './home.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -52,6 +53,8 @@ export class Home {
   private readonly progress = inject(ProgressService);
   protected readonly user = inject(AuthService).user;
   protected readonly text = HOME_TEXT;
+  /** Only for convenience in the UI; /ouder has its own guard and PocketBase its rules. */
+  protected readonly isParent = computed(() => this.user()?.role === 'parent');
 
   private readonly manifest = resource({
     loader: () => this.content.loadManifest(),

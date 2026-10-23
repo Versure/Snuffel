@@ -299,4 +299,19 @@ describe('Home', () => {
     expect(element.querySelector('.progress-error')).toBeNull();
     expect(element.querySelectorAll('[role="progressbar"]')).toHaveLength(3);
   });
+
+  it('a parent sees a link to the parent overview', async () => {
+    user.set({ id: 'p1', username: 'ouder', name: 'Ouder', role: 'parent' });
+    const { element } = await render();
+    const link = Array.from(element.querySelectorAll('a')).find(
+      (candidate) => textOf(candidate) === 'Naar het ouderoverzicht',
+    );
+    expect(link?.getAttribute('href')).toBe('/ouder');
+  });
+
+  it('a child sees no link to the parent overview', async () => {
+    const { element } = await render();
+    expect(textOf(element)).not.toContain('Naar het ouderoverzicht');
+    expect(element.querySelector('a[href="/ouder"]')).toBeNull();
+  });
 });

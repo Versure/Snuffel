@@ -12,6 +12,7 @@ export const HOME_TEXT = {
     'Deze inhoud is gemaakt voor een nieuwere versie van Snuffel. Ververs de pagina.',
   progressUnavailable: 'Je voortgang kan ik nu niet ophalen.',
   retry: 'Opnieuw',
+  parentOverview: 'Naar het ouderoverzicht',
   progressName: (title: string) => `Voortgang ${title}`,
   lessonsCompleted: (completed: number, total: number) =>
     completed >= total ? 'Alle lessen klaar!' : `${completed} van ${total} lessen klaar`,
