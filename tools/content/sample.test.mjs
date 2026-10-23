@@ -50,6 +50,15 @@ describe('sample ids', () => {
     assert.ok(found.some((line) => line.endsWith(': voorbeeld-les')));
   });
 
+  test('a lesson file named NN-voorbeeld-… in content/courses is found', (t) => {
+    const fixture = fixtureRoot(t, { place: 'courses' });
+    fixture.writeJson('lessons/02-voorbeeld-los.json', fixture.readLesson());
+    const found = sampleIdsInRealContent(fixture.root);
+    assert.deepEqual(found, [
+      `${fixture.relCourseDir}/lessons/02-voorbeeld-los.json: voorbeeld-los`,
+    ]);
+  });
+
   test('a voorbeeld- course in the fixtures is allowed', (t) => {
     const fixture = fixtureRoot(t);
     fixture.copyCourseTo('voorbeeld-cursus');
