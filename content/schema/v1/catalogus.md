@@ -264,7 +264,7 @@ In alle tekstvelden mag een kleine subset van Markdown, alleen binnen een regel:
 
 Een les staat in de app op `/leren/<cursus-id>/<les-id>`, voor wie ingelogd is (kind en ouder). Het is één doorlopende pagina; `#stap-<stap-id>` achter het adres opent hem bij die stap.
 
-- **Kop:** een link "Naar de start", de `sticker`, "Ongeveer `estimatedMinutes` minuten", de `title` (het laatste woord op een paarse band), Ted (`ted.intro.mood`) met `ted.intro.text` in een ballon, en het `objective` op een papieren kader.
+- **Kop:** een link "Naar de lessen" (naar het overzicht van de cursus), de `sticker`, "Ongeveer `estimatedMinutes` minuten", de `title` (het laatste woord op een paarse band), Ted (`ted.intro.mood`) met `ted.intro.text` in een ballon, en het `objective` op een papieren kader.
 - **Stappen-navigatie:** een genummerd rondje per stap met een kort label: `explain` "Uitleg", `trace-game` "Spel", `stepped-exercise` "Oefenen", `quiz` "Quiz", `at-the-water` "Aan het water", `do-it-yourself` "Zelf doen". Een tik springt naar de stap.
 - **Stap:** de `title` als kop met een roze rondje met het nummer.
 - **Blokken:** `text` is een alinea; `example` staat in een kaart; `signal-cards` zijn kaarten met het icoon, de titel en de tekst; `rule` is een roze blok met de titel groot; `tip` is een kaart met de titel (zonder titel: "Tip"); `figure` is de afbeelding met het onderschrift eronder; `ted-says` is een kleine Ted in de gekozen stemming met een ballon.

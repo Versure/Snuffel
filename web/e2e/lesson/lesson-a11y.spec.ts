@@ -233,8 +233,8 @@ test.describe('lesson accessibility', () => {
       expect(outline.width, label).toBe('3px');
     };
 
-    // Tab from the start link to the first link of the step navigation.
-    await page.getByRole('link', { name: 'Naar de start' }).first().focus();
+    // Tab from the link to the lessons to the first link of the step navigation.
+    await page.getByRole('link', { name: 'Naar de lessen' }).first().focus();
     await page.keyboard.press('Tab');
     await expectRing(page.getByRole('link', { name: 'Stap 1: Uitleg' }), 'step navigation');
 

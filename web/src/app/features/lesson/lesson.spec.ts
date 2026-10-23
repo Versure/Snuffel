@@ -122,7 +122,6 @@ describe('Lesson', () => {
     );
     expect(element.querySelector('.intro snf-ted')?.classList).toContain('snf-ted--wiggle');
     expect(textOf(element.querySelector('.objective'))).toBe(lesson.objective);
-    expect(element.querySelector('a.back')?.getAttribute('href')).toBe('/');
     expect(element.querySelectorAll('snf-step-nav li')).toHaveLength(4);
 
     const headings = [...element.querySelectorAll('snf-lesson-step h2')].map(textOf);
@@ -145,6 +144,15 @@ describe('Lesson', () => {
     expect(element.querySelector('main')?.hasAttribute('aria-busy')).toBe(false);
   });
 
+  it('the header links to the course overview', async () => {
+    const { element } = await open();
+    const back = element.querySelector('header a.back');
+    expect(textOf(back)).toBe('Naar de lessen');
+    expect(back?.getAttribute('href')).toBe('/leren/proefcursus');
+    // The buttons of the error states still lead to the start page (see the state tests).
+    expect(element.querySelector('header a[href="/"]')).toBeNull();
+  });
+
   it('sets the page title to the lesson title', async () => {
     await open();
     expect(TestBed.inject(Title).getTitle()).toBe('Proefles: aanbeet of vastzitten? · Snuffel');
@@ -156,7 +164,7 @@ describe('Lesson', () => {
     expect(
       element.querySelector<SVGElement>('snf-ted svg')?.style.getPropertyValue('--m-mond-oeps'),
     ).toBe('inline');
-    expect(element.querySelector('a[href="/"]')).not.toBeNull();
+    expect(textOf(element.querySelector('a[href="/"]'))).toBe('Naar de start');
     expect(TestBed.inject(Title).getTitle()).toBe('Les niet gevonden · Snuffel');
   });
 

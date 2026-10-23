@@ -7,7 +7,7 @@
     @case ('loaded') {
       @let data = current.lesson;
       <header class="hero">
-        <a class="back" routerLink="/">Naar de start</a>
+        <a class="back" [routerLink]="['/leren', current.course.id]">Naar de lessen</a>
         <div class="meta">
           <snf-sticker>{{ data.sticker }}</snf-sticker>
           <span class="minutes">Ongeveer {{ data.estimatedMinutes }} minuten</span>
