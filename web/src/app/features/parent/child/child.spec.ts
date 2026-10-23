@@ -14,7 +14,7 @@ import {
   type LessonRecords,
   type UserProgressSnapshot,
 } from '../../../core/progress/progress.service';
-import { proefles, proeflesEntry, records, stepRecord } from '../testing';
+import { checklistRecord, proefles, proeflesEntry, records, stepRecord } from '../testing';
 import { ChildOverview } from './child';
 
 const proefcursus: ManifestCourse = {
@@ -281,11 +281,27 @@ describe('ChildOverview', () => {
       'Niet alles is gewist. Probeer het nog eens.',
     );
     expect(textOf(element.querySelector('.cleared'))).toBe('');
-    expect(loadUserProgress).toHaveBeenCalledTimes(1);
+    // The progress loads again after the failed clear.
+    expect(loadUserProgress).toHaveBeenCalledTimes(2);
     buttonIn(lesson('Proefles'), 'Opnieuw')?.click();
     await fixture.whenStable();
     expect(clearLesson).toHaveBeenCalledTimes(2);
     expect(textOf(element.querySelector('.cleared'))).toBe('De voortgang van Proefles is gewist.');
+  });
+
+  it('a failed clear shows what is left of the lesson', async () => {
+    clearLesson.mockImplementationOnce(async () => {
+      // The step records are gone, the checklist is not.
+      snapshot = snapshotOf({ proefles: records({ checklists: [checklistRecord(['vispas'])] }) });
+      throw new ProgressError('unavailable', 'test');
+    });
+    const { lesson } = await clearProefles();
+    expect(loadUserProgress).toHaveBeenCalledTimes(2);
+    expect(textOf(lesson('Proefles')?.querySelector('snf-lesson-status'))).toBe('Nieuw');
+    expect(textOf(lesson('Proefles')?.querySelector('.clear-status'))).toBe(
+      'Niet alles is gewist. Probeer het nog eens.',
+    );
+    expect(buttonIn(lesson('Proefles'), 'Opnieuw')).toBeDefined();
   });
 
   it('the buttons are disabled while clearing', async () => {

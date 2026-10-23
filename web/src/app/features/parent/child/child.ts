@@ -281,6 +281,8 @@ export class ChildOverview {
       await this.progress.clearLesson(state.child.id, lesson.id);
     } catch {
       setState('failed');
+      // Part of the records can be gone: show what is left. The question stays with "Opnieuw".
+      this.snapshot.reload();
       return;
     }
     setState('idle');
