@@ -7,8 +7,8 @@ import {
   inject,
   Injector,
   input,
+  linkedSignal,
   output,
-  signal,
   viewChild,
 } from '@angular/core';
 import type { Lesson, LessonStep, ManifestLesson } from '../../../core/content/content.types';
@@ -132,6 +132,12 @@ export class ChildLesson {
   /** The name of the child, for the question before clearing. */
   readonly childName = input.required<string>();
   readonly clearState = input<ClearState>('idle');
+  /**
+   * How often the progress of this lesson was cleared on this page. It only goes up, so the
+   * question closes after every clear that succeeded, also when the states in between were
+   * never rendered.
+   */
+  readonly clearedCount = input(0);
 
   /** Load the lesson file again. */
   readonly retry = output();
@@ -141,7 +147,11 @@ export class ChildLesson {
   private readonly injector = inject(Injector);
   private readonly clearButton = viewChild('clearButton', { read: ElementRef<HTMLButtonElement> });
   private readonly question = viewChild<ElementRef<HTMLElement>>('question');
-  private readonly confirming = signal(false);
+  /** Asked by the parent; false again after a clear that succeeded. */
+  private readonly confirming = linkedSignal({
+    source: this.clearedCount,
+    computation: () => false,
+  });
 
   protected readonly text = CHILD_TEXT;
   protected readonly title = computed(() => plainText(this.lesson().title));

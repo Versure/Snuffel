@@ -47,6 +47,7 @@
                       [now]="now"
                       [childName]="name()"
                       [clearState]="clearStateOf(lesson.id)"
+                      [clearedCount]="clearedCountOf(lesson.id)"
                       (retry)="retryLesson(course.id, lesson.id)"
                       (clear)="clearLesson(lesson)"
                     />

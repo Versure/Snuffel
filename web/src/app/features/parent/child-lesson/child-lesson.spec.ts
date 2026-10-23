@@ -24,6 +24,7 @@ const now = new Date(2026, 9, 23, 16, 0);
     [now]="now"
     childName="Kind A"
     [clearState]="clearState()"
+    [clearedCount]="clearedCount()"
     (retry)="retries = retries + 1"
     (clear)="clears = clears + 1"
   />`,
@@ -35,6 +36,7 @@ class Host {
   readonly content = signal<Lesson | 'unavailable' | null>(proefles);
   readonly progress = signal<LessonRecords | null>(records());
   readonly clearState = signal<ClearState>('idle');
+  readonly clearedCount = signal(0);
   retries = 0;
   clears = 0;
 }
@@ -264,5 +266,41 @@ describe('ChildLesson', () => {
     );
     buttonIn(element, 'Opnieuw')?.click();
     expect(fixture.componentInstance.clears).toBe(1);
+  });
+
+  it('the question closes after a clear that succeeded, also when records are still there', async () => {
+    const { fixture, element } = await render(records({ steps: started }));
+    buttonIn(element, 'Voortgang wissen')?.click();
+    await fixture.whenStable();
+    buttonIn(element, 'Ja, wissen')?.click();
+    fixture.componentInstance.clearState.set('clearing');
+    await fixture.whenStable();
+    expect(element.querySelector('[role="group"]')).not.toBeNull();
+    fixture.componentInstance.clearState.set('idle');
+    fixture.componentInstance.clearedCount.set(1);
+    await fixture.whenStable();
+    // The records are still the old ones until the parent loaded them again.
+    expect(element.querySelector('[role="group"]')).toBeNull();
+    expect(buttonIn(element, 'Voortgang wissen')).toBeDefined();
+    // Records that come back do not bring the question back.
+    fixture.componentInstance.progress.set(null);
+    await fixture.whenStable();
+    fixture.componentInstance.progress.set(records({ steps: started }));
+    await fixture.whenStable();
+    expect(element.querySelector('[role="group"]')).toBeNull();
+  });
+
+  it('the question closes after a clear that succeeded before clearing was rendered', async () => {
+    const { fixture, element } = await render(records({ steps: started }));
+    buttonIn(element, 'Voortgang wissen')?.click();
+    await fixture.whenStable();
+    buttonIn(element, 'Ja, wissen')?.click();
+    fixture.componentInstance.clearedCount.set(1);
+    await fixture.whenStable();
+    expect(element.querySelector('[role="group"]')).toBeNull();
+    // Asking again opens the question again.
+    buttonIn(element, 'Voortgang wissen')?.click();
+    await fixture.whenStable();
+    expect(element.querySelector('[role="group"]')).not.toBeNull();
   });
 });

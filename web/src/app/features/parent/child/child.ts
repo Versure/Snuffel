@@ -163,6 +163,8 @@ export class ChildOverview {
   });
   /** Clearing per lesson id; a lesson without an entry is idle. */
   private readonly clearStates = signal<ReadonlyMap<string, ClearState>>(new Map());
+  /** The number of clears that succeeded per lesson id, so the question in that lesson closes. */
+  private readonly clearedCounts = signal<ReadonlyMap<string, number>>(new Map());
   /** The message after clearing, in a live region. */
   protected readonly cleared = signal('');
   private readonly clearedMessage = viewChild<ElementRef<HTMLElement>>('clearedMessage');
@@ -260,6 +262,10 @@ export class ChildOverview {
     return this.clearStates().get(lessonId) ?? 'idle';
   }
 
+  protected clearedCountOf(lessonId: string): number {
+    return this.clearedCounts().get(lessonId) ?? 0;
+  }
+
   /**
    * Clears every record of this child for one lesson, then loads the progress again. Only the
    * id of a loaded child is used, never the id from the URL as such.
@@ -278,6 +284,9 @@ export class ChildOverview {
       return;
     }
     setState('idle');
+    this.clearedCounts.update((current) =>
+      new Map(current).set(lesson.id, (current.get(lesson.id) ?? 0) + 1),
+    );
     this.cleared.set(CHILD_TEXT.cleared(plainText(lesson.title)));
     this.snapshot.reload();
     afterNextRender(() => this.clearedMessage()?.nativeElement.focus(), {

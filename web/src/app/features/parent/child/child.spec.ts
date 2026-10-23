@@ -265,6 +265,15 @@ describe('ChildOverview', () => {
     expect(buttonIn(lesson('Proefles'), 'Voortgang wissen')).toBeUndefined();
   });
 
+  it('after clearing the question is closed, also when the lesson has records again', async () => {
+    // The child works on the lesson again while the parent clears it.
+    clearLesson.mockImplementationOnce(async () => undefined);
+    const { lesson } = await clearProefles();
+    expect(loadUserProgress).toHaveBeenCalledTimes(2);
+    expect(lesson('Proefles')?.querySelector('[role="group"]')).toBeNull();
+    expect(buttonIn(lesson('Proefles'), 'Voortgang wissen')).toBeDefined();
+  });
+
   it('a failed clear says not everything is cleared and offers Opnieuw', async () => {
     clearLesson.mockRejectedValueOnce(new ProgressError('unavailable', 'test'));
     const { fixture, element, lesson } = await clearProefles();
