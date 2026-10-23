@@ -21,7 +21,7 @@ export class ProgressBar {
   readonly label = input.required<string>();
 
   /** The bar is named by the label underneath (read once, as the name and the value text). */
-  protected readonly labelId = `snf-voortgang-${nextId++}`;
+  protected readonly labelId = `snf-progress-${nextId++}`;
 
   protected readonly safeMax = computed(() => Math.max(1, Math.round(this.max())));
   protected readonly safeValue = computed(() =>

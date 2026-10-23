@@ -18,8 +18,8 @@
         </div>
       }
       @for (section of content.sections; track section.id) {
-        <section [attr.aria-labelledby]="'sectie-' + section.id">
-          <h2 [id]="'sectie-' + section.id">{{ section.heading }}</h2>
+        <section [attr.aria-labelledby]="'section-' + section.id">
+          <h2 [id]="'section-' + section.id">{{ section.heading }}</h2>
           <ul class="cards">
             @for (course of section.courses; track course.id) {
               <li><snf-course-card [course]="course" [progress]="progressOf(course)" /></li>
