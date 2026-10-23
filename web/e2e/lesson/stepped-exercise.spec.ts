@@ -19,7 +19,7 @@ import {
   solveExercise,
   storedRecords,
 } from './actions';
-import { exerciseLesson, openExerciseLesson } from './fixture';
+import { exerciseLesson, openExerciseLesson, waitForStepAnchor } from './fixture';
 
 const ted = exerciseLesson.ted;
 const resultsPattern = '**/api/collections/interaction_results/records**';
@@ -66,6 +66,7 @@ test.describe('the stepped exercise', () => {
     // 0.76 is within the tolerance 0.01; 3/4 and 0.75 liter are the same number as 0,75.
     for (const typed of ['0,75', '0.75 liter', '3/4', '0,76', ' 0,74 Liter ']) {
       await page.reload();
+      await waitForStepAnchor(page, anchor);
       await goToExercise(page, 'recept');
       const card = exerciseCard(page, 'recept');
       await expect(card.locator('.unit')).toHaveText('liter');
@@ -76,6 +77,7 @@ test.describe('the stepped exercise', () => {
     }
     // 0,8 is 0.05 away: wrong, and the child can try again.
     await page.reload();
+    await waitForStepAnchor(page, anchor);
     await goToExercise(page, 'recept');
     const card = exerciseCard(page, 'recept');
     await answerExercise(page, '0,8');
@@ -91,6 +93,7 @@ test.describe('the stepped exercise', () => {
     await openExerciseLesson(page, { hash: anchor });
     for (const typed of ['3/5', 'Drie vijfde.', '3 / 5', '  DRIE   vijfde ']) {
       await page.reload();
+      await waitForStepAnchor(page, anchor);
       const card = exerciseCard(page, 'gelijke-noemers');
       await answerExercise(page, typed);
       await expect(card.getByRole('button', { name: 'Volgende opgave' }), typed).toBeVisible();
@@ -98,6 +101,7 @@ test.describe('the stepped exercise', () => {
     }
     // Something that is not accepted stays open (for a text exercise, 0,6 is just wrong).
     await page.reload();
+    await waitForStepAnchor(page, anchor);
     await answerExercise(page, '0,6');
     await expect(exerciseCard(page, 'gelijke-noemers').locator('input.input')).toBeEnabled();
     expect(startsWithLine(await exerciseTedText(page), ted.incorrect)).toBe(true);
@@ -372,6 +376,7 @@ test.describe('the stepped exercise', () => {
     await expect(oefenenLink(page, true)).toBeVisible();
     await settle(page);
     await page.reload();
+    await waitForStepAnchor(page, anchor);
     await expect(oefenenLink(page, true)).toBeVisible();
     await expect(previous(page)).toHaveText('Vorige keer: 4 van 4 goed.');
     // A new series starts at the first exercise.

@@ -271,11 +271,13 @@ export async function solveExercise(page: Page, id: string): Promise<void> {
   await expect(card.getByRole('button', { name: /^(Volgende opgave|Klaar)$/ })).toBeVisible();
 }
 
-/** Taps Volgende opgave (or Klaar) and waits for the heading of the next card or the end. */
+/** Taps Volgende opgave (or Klaar) and waits until the next card (or the end screen) is shown. */
 export async function nextExercise(page: Page): Promise<void> {
-  await exerciseBlock(page)
-    .getByRole('button', { name: /^(Volgende opgave|Klaar)$/ })
-    .click();
+  const block = exerciseBlock(page);
+  const heading = block.locator('.heading');
+  const before = await heading.innerText();
+  await block.getByRole('button', { name: /^(Volgende opgave|Klaar)$/ }).click();
+  await expect(heading).not.toHaveText(before);
 }
 
 /** Solves the exercises before `id` (right, on their own) so that `id` is on screen. */

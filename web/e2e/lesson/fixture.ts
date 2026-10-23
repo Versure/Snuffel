@@ -80,3 +80,13 @@ export async function openExerciseLesson(
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Proefles: breuken optellen');
   return account;
 }
+
+/**
+ * Waits until the lesson page has followed the anchor (`#stap-<id>`). It does that once the page
+ * is stable (lazy parts loaded, progress restored) and then moves the focus to the step heading;
+ * a test that starts typing before that would have its focus taken away.
+ */
+export async function waitForStepAnchor(page: Page, hash: string): Promise<void> {
+  if (!hash.startsWith('#stap-')) return;
+  await expect(page.locator(`${hash}-titel`)).toBeFocused();
+}
