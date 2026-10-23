@@ -4,7 +4,7 @@ Dit is de handleiding bij het inhoudsformaat van Snuffel, versie 1. Hij is voor 
 
 Sleutels zijn Engels, teksten Nederlands.
 
-Id's die met `voorbeeld-` beginnen zijn gereserveerd voor voorbeelden in `content/fixtures/` (gemaakt met `/snuffel-leren --voorbeeld`); in `content/courses/` komen ze nooit voor.
+Id's die met `voorbeeld-` beginnen zijn gereserveerd voor voorbeelden in `content/fixtures/` (gemaakt met `/snuffel-leren <wens> --voorbeeld`); in `content/courses/` komen ze nooit voor.
 
 ## Bestanden
 
