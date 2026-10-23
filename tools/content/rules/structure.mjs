@@ -163,7 +163,8 @@ function checkExercise(exercise, path, file, issues) {
   }
   commonMistakes.forEach((mistake, m) => {
     const at = `${path}.commonMistakes[${m}].answer`;
-    if (answer.type === 'choice' && !options.includes(mistake.answer)) {
+    // Compared as in answer.mjs: spaces around the id do not count.
+    if (answer.type === 'choice' && !options.includes(mistake.answer.trim())) {
       issues.push(
         issue(
           'interaction-answer-unknown',

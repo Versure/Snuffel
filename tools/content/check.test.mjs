@@ -343,6 +343,19 @@ describe('content:check on a broken fixture', () => {
     assert.deepEqual(codesOf(result), ['interaction-answer-unknown']);
   });
 
+  test('a choice mistake with spaces around an option id is that option, as in the app', (t) => {
+    const fixture = exerciseFixture(t, choiceAnswer, [
+      { answer: ' twee-zesde ', feedback: 'Tel de noemers niet op.' },
+    ]);
+    assertClean(fixture.check());
+    const accepted = exerciseFixture(t, choiceAnswer, [
+      { answer: ' drie-kwart', feedback: 'Nee.' },
+    ]);
+    const result = accepted.check();
+    assertIssue(result, 'exercise-mistake-accepted', mistakePath(0));
+    assert.deepEqual(codesOf(result), ['exercise-mistake-accepted']);
+  });
+
   test('a number mistake that is no number gives exercise-mistake-unreadable', (t) => {
     const fixture = exerciseFixture(
       t,
