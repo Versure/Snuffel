@@ -32,7 +32,7 @@ Kies daarna `kind`: `course` (leertraject) of `practice` (huiswerk-oefenles; dan
 
 ### Huiswerk met foto's van het werkboek
 
-Bij huiswerk (`kind: practice`) vraag je in hetzelfde intakebericht om **foto's van de pagina's** uit het werkboek: het pad naar de bestanden of een map, bij voorkeur onder `huiswerk-fotos/` in de repo (die map staat in `.gitignore`); slepen in het gesprek mag ook. Dat telt als één van de zes vragen. Heeft Jop geen foto's, dan werkt de huiswerkmodus zoals hieronder zonder foto's.
+Gaat de wens over huiswerk (`kind: practice`), vraag dan in hetzelfde intakebericht om **foto's van de pagina's** uit het werkboek: het pad naar de bestanden of een map, bij voorkeur onder `huiswerk-fotos/` in de repo (die map staat in `.gitignore`); slepen in het gesprek mag ook. Dat telt als één van de zes vragen. Heeft Jop geen foto's, dan werkt de huiswerkmodus zoals hieronder zonder foto's.
 
 Lees elke foto met `Read` (een map: eerst `Glob` op de afbeeldingen erin). Haal eruit:
 
@@ -41,7 +41,7 @@ Lees elke foto met `Read` (een map: eerst `Glob` op de afbeeldingen erin). Haal 
 - de **notatie en werkwijze** van het boek (bijv. hoe een breuk, een tussenstap, een eenheid of een tabel genoteerd wordt); de les gebruikt precies die notatie;
 - het niveau en het **soort opgaven** (wat er gevraagd wordt, hoeveel stappen, met of zonder context).
 
-**Persoonsgegevens op foto's:** naam, klas, school, handschrift, behaalde cijfers of iets anders dat naar een kind wijst, negeer je. Ze komen nergens: niet in inhoud, commits, branchnaam of PR, en niet in je antwoorden aan de agents. **Kopieer nooit een foto** naar `content/` of elders in de repo (een test faalt op foto's onder `content/`), en noem in de PR geen bestandsnamen of mapnamen van foto's (die kunnen een naam bevatten); schrijf "eigen foto's van het hoofdstuk".
+**Persoonsgegevens op foto's:** naam, klas, school, handschrift, behaalde cijfers of iets anders dat naar een kind wijst, negeer je. Ze komen nergens: niet in inhoud, commits, branchnaam of PR, en niet in je opdrachten aan de agents (die krijgen alleen de paden). **Kopieer nooit een foto** naar `content/` of elders in de repo (een test faalt op foto's onder `content/`), en noem in de PR geen bestandsnamen of mapnamen van foto's (die kunnen een naam bevatten); schrijf "eigen foto's van het hoofdstuk".
 
 **Privacy van de kinderen:** namen, leeftijden van een bepaald kind, school, woonplaats of andere persoonsgegevens komen **nooit** in inhoud, commits, branchnamen of de PR. De intake bepaalt alleen niveau en toon (bijv. `"audience": "Kinderen vanaf 12, zelfstandig of samen met een ouder"`).
 
