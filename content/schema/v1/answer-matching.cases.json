@@ -43,6 +43,7 @@
     { "name": "only one final full stop", "input": "enz..", "normalized": "enz." },
     { "name": "accents count", "input": "Café", "normalized": "café" },
     { "name": "markup", "input": "**drie** [[vijfde]]", "normalized": "drie vijfde" },
+    { "name": "markup typed by the child", "input": "*3/5*", "normalized": "3/5" },
     { "name": "tab and newline", "input": "drie\t\nvijfde", "normalized": "drie vijfde" },
     { "name": "empty", "input": "  ", "normalized": "" }
   ],
@@ -169,6 +170,13 @@
       "answer": { "type": "text", "accepted": ["**drie** [[vijfde]]"] },
       "commonMistakes": [],
       "input": "drie vijfde",
+      "outcome": "correct"
+    },
+    {
+      "name": "markup typed by the child is ignored too",
+      "answer": { "type": "text", "accepted": ["3/5"] },
+      "commonMistakes": [],
+      "input": "*3/5*",
       "outcome": "correct"
     },
     {
