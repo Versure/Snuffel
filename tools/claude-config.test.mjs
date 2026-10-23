@@ -205,6 +205,13 @@ describe('content agents', () => {
     }
   });
 
+  test('snuffel-leren asks for homework photos in huiswerk-fotos/ and names the method source', () => {
+    const text = readFileSync(skillFile('snuffel-leren'), 'utf8');
+    for (const needle of ['huiswerk-fotos/', "foto's", 'type: "method"', 'reliability: "medium"']) {
+      assert.ok(text.includes(needle), `snuffel-leren does not mention ${needle}`);
+    }
+  });
+
   test('snuffel-leren names its agents, the catalogue, content:check and the content branch', () => {
     const text = readFileSync(skillFile('snuffel-leren'), 'utf8');
     for (const needle of [

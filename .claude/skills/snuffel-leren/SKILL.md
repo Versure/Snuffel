@@ -1,6 +1,6 @@
 ---
 name: snuffel-leren
-description: Maakt van een korte wens van Jop een Snuffel-les (leertraject of huiswerk-oefenles) als alleen inhoud in content/ - intake, echte bronnen via source-researcher, leerpad, les schrijven volgens de catalogus, content:check, review door content-reviewer, eigen branch en pull request. Gebruik bij "/snuffel-leren <wens>", "nieuwe les", "maak een les over …", "leertraject", of "huiswerkhulp voor …". Met --voorbeeld een voorbeeldles als fixture, zonder commit of PR.
+description: Maakt van een korte wens van Jop een Snuffel-les (leertraject of huiswerk-oefenles) als alleen inhoud in content/ - intake, echte bronnen via source-researcher, leerpad, les schrijven volgens de catalogus, content:check, review door content-reviewer, eigen branch en pull request. Gebruik bij "/snuffel-leren <wens>", "nieuwe les", "maak een les over …", "leertraject", of "huiswerkhulp voor …". Bij huiswerk kan Jop foto's van werkboekpagina's geven (in huiswerk-fotos/, buiten git). Met --voorbeeld een voorbeeldles als fixture, zonder commit of PR.
 argument-hint: '<korte wens> [--voorbeeld]'
 ---
 
@@ -26,22 +26,36 @@ Stel alleen de vragen die de wens nog niet beantwoordt, **in één bericht, maxi
 - wat kan diegene al: stel een paar korte controlevragen;
 - wat is "gelukt": iets concreets en zichtbaars;
 - hoeveel tijd per week;
-- context: de vijver; bij huiswerk vak, niveau, methode en hoofdstuk.
+- context: de vijver; bij huiswerk vak, niveau, methode en hoofdstuk, of liever foto's van de pagina's (zie hieronder).
 
 Kies daarna `kind`: `course` (leertraject) of `practice` (huiswerk-oefenles; dan zijn `subject`, `schoolLevel`, `method` en `chapter` verplicht).
+
+### Huiswerk met foto's van het werkboek
+
+Bij huiswerk (`kind: practice`) vraag je in hetzelfde intakebericht om **foto's van de pagina's** uit het werkboek: het pad naar de bestanden of een map, bij voorkeur onder `huiswerk-fotos/` in de repo (die map staat in `.gitignore`); slepen in het gesprek mag ook. Dat telt als één van de zes vragen. Heeft Jop geen foto's, dan werkt de huiswerkmodus zoals hieronder zonder foto's.
+
+Lees elke foto met `Read` (een map: eerst `Glob` op de afbeeldingen erin). Haal eruit:
+
+- vak, niveau, methode en hoofdstuk; vraag alleen wat er niet op staat (in hetzelfde bericht of, als de foto's pas na de intake komen, in één vervolgbericht; samen nooit meer dan zes vragen);
+- de uitleg van het boek: welk begrip, in welke volgorde, met welke voorbeelden;
+- de **notatie en werkwijze** van het boek (bijv. hoe een breuk, een tussenstap, een eenheid of een tabel genoteerd wordt); de les gebruikt precies die notatie;
+- het niveau en het **soort opgaven** (wat er gevraagd wordt, hoeveel stappen, met of zonder context).
+
+**Persoonsgegevens op foto's:** naam, klas, school, handschrift, behaalde cijfers of iets anders dat naar een kind wijst, negeer je. Ze komen nergens: niet in inhoud, commits, branchnaam of PR, en niet in je antwoorden aan de agents. **Kopieer nooit een foto** naar `content/` of elders in de repo (een test faalt op foto's onder `content/`), en noem in de PR geen bestandsnamen of mapnamen van foto's (die kunnen een naam bevatten); schrijf "eigen foto's van het hoofdstuk".
 
 **Privacy van de kinderen:** namen, leeftijden van een bepaald kind, school, woonplaats of andere persoonsgegevens komen **nooit** in inhoud, commits, branchnamen of de PR. De intake bepaalt alleen niveau en toon (bijv. `"audience": "Kinderen vanaf 12, zelfstandig of samen met een ouder"`).
 
 ## 2. Bronnen eerst
 
-Zet de agent `source-researcher` in met: onderwerp, doelgroep, het leerdoel (of het voorlopige leerpad) en de beweringen waar de les een bron voor nodig heeft; bij huiswerk ook vak, niveau, methode en hoofdstuk.
+Zet de agent `source-researcher` in met: onderwerp, doelgroep, het leerdoel (of het voorlopige leerpad) en de beweringen waar de les een bron voor nodig heeft; bij huiswerk ook vak, niveau, methode en hoofdstuk, en de paden van de foto's als die er zijn (zodat hij weet wat het hoofdstuk behandelt).
 
 Controleer zijn lijst voor je verdergaat:
 
 - minstens drie bronnen, elk echt geopend (bronnen onder "Niet geopend" tellen niet);
 - elke `url` begint met `https://`, zonder trackingparameters;
 - `type` en `reliability` volgens de tabel in de catalogus;
-- geen bewering steunt alleen op `low`-bronnen.
+- geen bewering steunt alleen op `low`-bronnen;
+- bij huiswerk: de methode staat erin als `type: "method"`, `reliability: "medium"`, met als `url` de `https://`-pagina van de methode bij de uitgever (door `source-researcher` echt geopend) en als `note` "hoofdstuk <X>, eigen foto's (niet in de repo)" (zonder foto's: "hoofdstuk <X>"). Kon hij die pagina niet openen, dan komt er **geen** methodebron in `course.sources`; meld dat aan Jop (en in de PR). De foto's zelf zijn nooit een bron. Verdere bronnen (kerndoelen SLO, uitleg van de stof) komen gewoon van het web.
 
 Te weinig betrouwbare bronnen: **stop** en zeg Jop wat er ontbreekt. Verzin nooit een bron, en vul nooit iets aan uit je geheugen.
 
@@ -77,6 +91,7 @@ Bestand `content/courses/<cursus-id>/lessons/NN-<les-id>.json` (`NN` is het volg
 - Begin met een uitgewerkt voorbeeld (`explain` met een `example`), daarna `stepped-exercise`-opgaven (zie de catalogus) die **lijken op** het huiswerk maar het niet overnemen.
 - Hints en tussenstappen gaan vóór het antwoord; de uitwerking (`workedSolution`) komt pas na een eigen poging.
 - Neem nooit opgaven letterlijk over uit het huiswerk of de methode.
+- **Met foto's:** volg de stof, de volgorde en de **notatie** van het boek, op hetzelfde niveau. **Parafraseer** de uitleg in je eigen woorden. De opgaven lijken op die in het boek (zelfde soort, zelfde niveau, zelfde notatie), maar zijn nooit letterlijk overgenomen, en ook niet dezelfde zin met alleen andere getallen: bedenk een eigen context (bij voorkeur iets herkenbaars, zoals de vijver of vissen).
 - Meld Jop dat de oefening pas na M10 in de app werkt (tot dan staat er een plaatshouder).
 
 ## 6. Valideren
@@ -85,11 +100,11 @@ Bestand `content/courses/<cursus-id>/lessons/NN-<les-id>.json` (`NN` is het volg
 
 ## 7. Review
 
-Zet de agent `content-reviewer` in met het pad van `course.json` en van de les. Blokkerende punten: oplossen, opnieuw `npm run content:check`, opnieuw `content-reviewer`. **Maximaal twee rondes.** Bewaar elk rapport voor de PR.
+Zet de agent `content-reviewer` in met het pad van `course.json` en van de les; bij huiswerk ook vak, niveau, methode en hoofdstuk, en de paden van de foto's als die er zijn (hij controleert dan dat de les de stof en notatie van het boek volgt, dat niets (bijna) letterlijk van de foto's komt en dat er geen persoonsgegevens van de foto's in staan). Blokkerende punten: oplossen, opnieuw `npm run content:check`, opnieuw `content-reviewer`. **Maximaal twee rondes.** Bewaar elk rapport voor de PR.
 
 ## 8. Toevoegen
 
-1. `git add content/` en commit: `feat(content): add <cursus-id>/<les-id>`.
+1. `git add content/` en commit: `feat(content): add <cursus-id>/<les-id>`. Controleer vooraf met `git status` dat er geen foto's of andere bestanden buiten de les meegaan.
 2. `npm run verify` moet groen zijn.
 3. `git push -u origin content/<cursus-id>-<les-id>`.
 4. Maak een PR tegen `main` (`gh pr create --base main`, of de GitHub-tool van de omgeving) met deze beschrijving in het Nederlands:
@@ -149,3 +164,4 @@ Geef aan het eind een verslag terug, met daarin hoe Jop de voorbeeldles weer weg
 - Past een les niet in de catalogus (er is een nieuwe interactiesoort nodig): **stop** en stel een mijlpaal voor via de skill `spelcomponent-bouwen`. Dat is codewerk, geen inhoud.
 - Geen app-code, geen schemawijziging (daarvoor is er `schema-wijzigen`), geen AI-API's of andere diensten in de app.
 - Nooit een bron verzinnen, nooit tekst kopiëren, nooit persoonsgegevens van de kinderen.
+- Foto's van het werkboek blijven in `huiswerk-fotos/` (buiten git) of in het gesprek; nooit in de repo, nooit in de PR.
