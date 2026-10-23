@@ -13,12 +13,14 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { map } from 'rxjs';
+import { AuthService } from '../../core/auth/auth.service';
 import { isContentError } from '../../core/content/content-error';
 import { ContentService } from '../../core/content/content.service';
 import type { Course, Lesson as LessonData } from '../../core/content/content.types';
 import { InlineText } from '../../shared/inline-text/inline-text/inline-text';
 import { plainText } from '../../shared/inline-text/inline-markup';
 import { LessonContext } from '../../shared/lesson-context/lesson-context';
+import { LessonProgress } from '../../shared/lesson-progress/lesson-progress';
 import { Band } from '../../shared/ui/band/band';
 import { Button } from '../../shared/ui/button/button';
 import { STEP_ANCHOR_PREFIX, StepNav } from '../../shared/ui/step-nav/step-nav';
@@ -40,12 +42,13 @@ type LoadResult = Exclude<LessonState, { kind: 'loading' }>;
 
 /**
  * The lesson page (`/leren/:courseId/:lessonId`): one continuous page with the header, the step
- * navigation, every step and the end sections. Provides the lesson context to everything in it.
+ * navigation, every step and the end sections. Provides the lesson context and the progress of
+ * the logged-in user in this lesson to everything in it.
  */
 @Component({
   selector: 'snf-lesson',
   imports: [Band, Button, InlineText, LessonEnd, LessonStep, RouterLink, StepNav, Sticker, TedSays],
-  providers: [LessonContext],
+  providers: [LessonContext, LessonProgress],
   templateUrl: './lesson.html',
   styleUrl: './lesson.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -56,6 +59,8 @@ export class Lesson {
   private readonly context = inject(LessonContext);
   private readonly title = inject(Title);
   private readonly injector = inject(Injector);
+  private readonly auth = inject(AuthService);
+  protected readonly progress = inject(LessonProgress);
 
   private readonly params = toSignal(
     this.route.paramMap.pipe(
@@ -81,6 +86,27 @@ export class Lesson {
   protected readonly lesson = computed(() => {
     const state = this.state();
     return state.kind === 'loaded' ? state.lesson : null;
+  });
+
+  /**
+   * The progress is loaded after the lesson, for the logged-in user: another user (or another
+   * lesson) loads again. Opening a lesson only reads; it never writes progress.
+   */
+  private readonly progressTarget = computed(
+    () => {
+      const state = this.state();
+      if (state.kind !== 'loaded') return undefined;
+      return { lesson: state.lesson, courseId: state.course.id, userId: this.auth.user()?.id };
+    },
+    // A renewed session of the same user is not a reason to load again.
+    {
+      equal: (a, b) =>
+        a?.lesson === b?.lesson && a?.courseId === b?.courseId && a?.userId === b?.userId,
+    },
+  );
+  private readonly progressLoader = resource({
+    params: () => this.progressTarget(),
+    loader: ({ params }) => this.progress.load(params.lesson, params.courseId),
   });
 
   /** The title split in two: the last word goes on the band (no band for a single word). */

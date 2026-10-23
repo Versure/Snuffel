@@ -10,16 +10,24 @@
       @for (block of data.blocks; track $index) {
         <snf-block [block]="block" />
       }
+      <!-- Invisible marker: one second in view means read to the end (plan M8, question 3). -->
+      <div
+        class="end-marker"
+        aria-hidden="true"
+        snfSeen
+        [snfSeenDwell]="readDwell"
+        (seen)="onReadToEnd()"
+      ></div>
     }
     @case ('interaction') {
       <p class="intro"><snf-inline-text [text]="data.intro" /></p>
       <snf-interaction-placeholder [interaction]="data.interaction" />
     }
     @case ('quiz') {
-      <snf-quiz-preview [step]="data" />
+      <snf-quiz [step]="data" [ted]="ted()" />
     }
     @case ('practice') {
-      <snf-practice-list [step]="data" />
+      <snf-checklist [step]="data" />
     }
   }
 </section>

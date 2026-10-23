@@ -1,0 +1,140 @@
+:host {
+  display: block;
+}
+
+.prompt {
+  margin: 0 0 0.6rem;
+  font-weight: 700;
+}
+
+.prompt:focus {
+  outline: none;
+}
+
+.prompt:focus-visible {
+  outline: var(--snf-focus-ring);
+  outline-offset: var(--snf-focus-ring-offset);
+}
+
+.options {
+  display: grid;
+  gap: 0.5rem;
+}
+
+/* The options of the reference (.optie). */
+.option {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem 0.8rem;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  min-height: var(--snf-button-min-height);
+  padding: 0.6rem 0.9rem;
+  font: inherit;
+  text-align: left;
+  color: var(--snf-color-text);
+  background: var(--snf-color-surface);
+  border: var(--snf-border-width) solid var(--snf-color-ink);
+  border-radius: var(--snf-radius-md);
+  box-shadow: var(--snf-shadow-sm);
+  cursor: pointer;
+}
+
+.option:active:not(:disabled) {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0 var(--snf-color-ink);
+}
+
+.option:focus-visible {
+  outline: var(--snf-focus-ring);
+  outline-offset: var(--snf-focus-ring-offset);
+}
+
+.option:disabled {
+  cursor: default;
+}
+
+.option.right {
+  background: var(--snf-color-success-soft);
+  border-color: var(--snf-color-success);
+}
+
+.option.wrong {
+  background: var(--snf-color-error-soft);
+  border-color: var(--snf-color-error);
+}
+
+.marks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+
+/* Colour is never the only sign: the answer and the right option also say so in words. */
+.mark {
+  padding: 0.05rem 0.5rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--snf-color-text);
+  background: var(--snf-color-surface);
+  border: 2px solid var(--snf-color-ink);
+  border-radius: var(--snf-radius-md);
+}
+
+.hints {
+  margin: 0.7rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.hint {
+  margin: 0 0 0.4rem;
+  padding: 0.5rem 0.75rem;
+  color: var(--snf-color-text);
+  background: var(--snf-color-paper);
+  border: 2px dashed var(--snf-color-ink);
+  border-radius: var(--snf-radius-md);
+}
+
+.hint:focus {
+  outline: none;
+}
+
+.hint:focus-visible {
+  outline: var(--snf-focus-ring);
+  outline-offset: var(--snf-focus-ring-offset);
+}
+
+.hint-button {
+  margin-top: 0.7rem;
+}
+
+.feedback {
+  margin: 0.7rem 0 0;
+  padding: 0.6rem 0.8rem;
+  color: var(--snf-color-text);
+  border: 2px solid var(--snf-color-ink);
+  border-radius: var(--snf-radius-md);
+}
+
+.feedback:focus {
+  outline: none;
+}
+
+.feedback:focus-visible {
+  outline: var(--snf-focus-ring);
+  outline-offset: var(--snf-focus-ring-offset);
+}
+
+.feedback.right {
+  background: var(--snf-color-success-soft);
+}
+
+.feedback.wrong {
+  background: var(--snf-color-error-soft);
+}
+
+.explanation {
+  margin: 0.5rem 0 0;
+}

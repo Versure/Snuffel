@@ -1,9 +1,11 @@
 import { TestBed } from '@angular/core/testing';
+import { LessonProgress } from '../../../shared/lesson-progress/lesson-progress';
 import lessonJson from '../../../../../../content/fixtures/courses/proefcursus/lessons/01-proefles.json';
 import type { Lesson, LessonStep as LessonStepData } from '../../../core/content/content.types';
-import { LessonStep } from './lesson-step';
+import { LessonStep, READ_DWELL_MS } from './lesson-step';
 
-const steps = (lessonJson as unknown as Lesson).steps;
+const lesson = lessonJson as unknown as Lesson;
+const steps = lesson.steps;
 const stepOfType = (type: LessonStepData['type']): LessonStepData => {
   const found = steps.find((step) => step.type === type);
   if (!found) throw new Error(`no ${type} step`);
@@ -11,11 +13,26 @@ const stepOfType = (type: LessonStepData['type']): LessonStepData => {
 };
 
 describe('LessonStep', () => {
-  async function render(step: LessonStepData, number = 1): Promise<HTMLElement> {
+  afterEach(() => {
+    vi.useRealTimers();
+    vi.unstubAllGlobals();
+  });
+
+  async function render(
+    step: LessonStepData,
+    number = 1,
+    progress?: Partial<LessonProgress>,
+  ): Promise<HTMLElement> {
     TestBed.resetTestingModule();
+    if (progress) {
+      TestBed.configureTestingModule({
+        providers: [{ provide: LessonProgress, useValue: progress }],
+      });
+    }
     const fixture = TestBed.createComponent(LessonStep);
     fixture.componentRef.setInput('step', step);
     fixture.componentRef.setInput('number', number);
+    fixture.componentRef.setInput('ted', lesson.ted);
     await fixture.whenStable();
     return fixture.nativeElement as HTMLElement;
   }
@@ -47,15 +64,72 @@ describe('LessonStep', () => {
     );
   });
 
-  it('renders the quiz preview for a quiz step', async () => {
+  it('a quiz step renders snf-quiz', async () => {
     const element = await render(stepOfType('quiz'), 3);
-    expect(element.querySelector('snf-quiz-preview')).not.toBeNull();
-    expect(element.querySelectorAll('snf-quiz-preview ol.questions > li')).toHaveLength(4);
+    expect(element.querySelector('snf-quiz')).not.toBeNull();
+    expect(element.querySelectorAll('snf-quiz ol.questions > li snf-quiz-question')).toHaveLength(
+      4,
+    );
+    expect(element.querySelectorAll('snf-quiz button.option')).toHaveLength(16);
   });
 
-  it('renders the practice list for a practice step', async () => {
+  it('a practice step renders snf-checklist', async () => {
     const element = await render(stepOfType('practice'), 4);
-    expect(element.querySelector('snf-practice-list')).not.toBeNull();
-    expect(element.querySelectorAll('snf-practice-list ul.items > li')).toHaveLength(4);
+    expect(element.querySelector('snf-checklist')).not.toBeNull();
+    expect(
+      element.querySelectorAll('snf-checklist ul.items > li input[type="checkbox"]'),
+    ).toHaveLength(4);
+  });
+  it('reaching the end of an explain step marks it completed', async () => {
+    let seen: IntersectionObserverCallback = () => undefined;
+    const observed: Element[] = [];
+    vi.stubGlobal(
+      'IntersectionObserver',
+      class {
+        constructor(callback: IntersectionObserverCallback) {
+          seen = callback;
+        }
+        observe(element: Element) {
+          observed.push(element);
+        }
+        disconnect() {
+          // Nothing to clean up.
+        }
+      },
+    );
+    const markStep = vi.fn(async () => undefined);
+    const element = await render(stepOfType('explain'), 1, { markStep });
+    // The marker comes after the last block.
+    const marker = element.querySelector('section > .end-marker');
+    expect(observed).toEqual([marker]);
+    expect(marker?.previousElementSibling?.tagName.toLowerCase()).toBe('snf-block');
+    expect(marker?.getAttribute('aria-hidden')).toBe('true');
+    expect(markStep).not.toHaveBeenCalled();
+
+    vi.useFakeTimers();
+    const inView = (isIntersecting: boolean) =>
+      seen(
+        [{ isIntersecting, target: marker } as unknown as IntersectionObserverEntry],
+        {} as IntersectionObserver,
+      );
+    // Scrolling past (a jump with the step navigation) does not count.
+    inView(true);
+    vi.advanceTimersByTime(READ_DWELL_MS / 2);
+    inView(false);
+    vi.advanceTimersByTime(READ_DWELL_MS * 2);
+    expect(markStep).not.toHaveBeenCalled();
+    // Staying at the end does.
+    inView(true);
+    vi.advanceTimersByTime(READ_DWELL_MS);
+    vi.useRealTimers();
+    expect(markStep).toHaveBeenCalledTimes(1);
+    expect(markStep).toHaveBeenCalledWith('uitleg', 'completed');
+  });
+
+  it('only an explain step has the end marker', async () => {
+    for (const type of ['interaction', 'quiz', 'practice'] as const) {
+      const element = await render(stepOfType(type));
+      expect(element.querySelector('.end-marker'), type).toBeNull();
+    }
   });
 });

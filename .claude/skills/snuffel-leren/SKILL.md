@@ -141,7 +141,7 @@ Zet de agent `content-reviewer` in met het pad van `course.json` en van de les; 
 
 ## Nog niet te zien
 
-Tot M8 is de quiz een voorbeeld zonder knoppen en de praktijkopdracht een lijst zonder vinkjes; het voel-spel komt in M9, `stepped-exercise` in M10. Een cursuspagina komt in M11.
+De quiz (gehusseld, hints op verzoek, feedback per gekozen optie, score met Ted) en de checklist met vinkjes werken sinds M8 en bewaren de voortgang per kind; het voel-spel komt in M9, `stepped-exercise` in M10. Een cursuspagina komt in M11.
 ```
 
 Zijn er na twee reviewrondes nog blokkerende punten: open de PR toch, maar als **draft**, met die punten bovenaan.

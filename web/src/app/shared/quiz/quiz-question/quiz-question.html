@@ -1,0 +1,63 @@
+@let data = question();
+@let given = answer();
+<p class="prompt" [id]="promptId" tabindex="-1">
+  <span class="number">{{ number() }}.</span>{{ ' ' }}<snf-inline-text [text]="data.prompt" />
+</p>
+<div class="options" role="group" [attr.aria-labelledby]="promptId">
+  @for (option of options(); track option.id) {
+    @let mine = given?.optionId === option.id;
+    @let right = !!given && isRight(option);
+    <button
+      type="button"
+      class="option"
+      [class.right]="right"
+      [class.wrong]="mine && !right"
+      [disabled]="!!given || disabled()"
+      (click)="choose(option)"
+    >
+      <span class="option-text"><snf-inline-text [text]="option.text" [terms]="false" /></span>
+      @if (mine || right) {
+        <span class="marks">
+          @if (mine) {
+            <span class="mark">Jouw antwoord</span>
+          }
+          @if (right) {
+            <span class="mark">Goede antwoord</span>
+          }
+        </span>
+      }
+    </button>
+  }
+</div>
+@if (hints().length) {
+  <ul class="hints">
+    @for (hint of hints(); track $index) {
+      <li #hint class="hint" tabindex="-1">
+        <strong>Hint:</strong>{{ ' ' }}<snf-inline-text [text]="hint" />
+      </li>
+    }
+  </ul>
+}
+@if (canAskHint()) {
+  <button snf-button type="button" variant="light" class="hint-button" (click)="showHint()">
+    {{ hintsShown() === 0 ? 'Hint' : 'Nog een hint' }}
+  </button>
+}
+<div class="live" aria-live="polite">
+  @if (given) {
+    <div
+      #feedback
+      class="feedback"
+      [class.right]="given.correct"
+      [class.wrong]="!given.correct"
+      tabindex="-1"
+    >
+      <snf-ted-says [mood]="given.correct ? 'happy' : 'oops'" size="small">
+        <snf-inline-text [text]="tedLine()" />
+      </snf-ted-says>
+      @if (chosen(); as option) {
+        <p class="explanation"><snf-inline-text [text]="option.feedback" /></p>
+      }
+    </div>
+  }
+</div>

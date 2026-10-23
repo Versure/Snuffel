@@ -1,0 +1,43 @@
+@let data = step();
+@if (data.intro; as intro) {
+  <p class="intro"><snf-inline-text [text]="intro" /></p>
+}
+@if (state() === 'unavailable') {
+  <div class="unavailable">
+    <snf-ted-says mood="oops" size="small">Je voortgang kan ik nu niet ophalen.</snf-ted-says>
+    <button snf-button type="button" variant="light" (click)="retry()">Opnieuw</button>
+  </div>
+}
+<ol class="questions">
+  @for (question of data.questions; track question.id; let index = $index) {
+    <li class="question">
+      <snf-quiz-question
+        [question]="question"
+        [number]="index + 1"
+        [answer]="answers().get(question.id) ?? null"
+        [ted]="ted()"
+        [disabled]="disabled()"
+        [round]="round()"
+        (answered)="onAnswered(question, $event)"
+      />
+    </li>
+  }
+</ol>
+@if (error(); as message) {
+  <p class="error" role="alert">{{ message }}</p>
+}
+<div class="live" aria-live="polite">
+  @if (score(); as result) {
+    <div class="score">
+      <snf-ted-says [mood]="result.all ? 'cool' : 'happy'" size="small">
+        {{ result.right }} van {{ result.total }} goed.
+        @if (result.all) {
+          <snf-inline-text [text]="result.line" />
+        } @else {
+          Lees de uitleg bij de rode vragen nog eens.
+        }
+      </snf-ted-says>
+      <button snf-button type="button" variant="light" (click)="restart()">Opnieuw</button>
+    </div>
+  }
+</div>

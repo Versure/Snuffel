@@ -1,0 +1,43 @@
+:host {
+  display: block;
+}
+
+.intro {
+  margin: 0 0 1rem;
+}
+
+.unavailable {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem 1rem;
+  align-items: center;
+  margin: 0 0 1rem;
+}
+
+.questions {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.question {
+  margin: 0 0 1.6rem;
+}
+
+.error {
+  margin: 0 0 1rem;
+  padding: 0.5rem 0.75rem;
+  font-weight: 700;
+  color: var(--snf-color-text);
+  background: var(--snf-color-error-soft);
+  border: 2px solid var(--snf-color-error);
+  border-radius: var(--snf-radius-md);
+}
+
+.score {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem 1rem;
+  align-items: center;
+  font-weight: 700;
+}

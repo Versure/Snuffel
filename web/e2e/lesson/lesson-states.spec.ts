@@ -1,6 +1,7 @@
 import type { Page } from '@playwright/test';
 import { expect, test } from '../fixtures';
-import { loginAs, testPassword } from '../support/login';
+import { loginAsNewChild } from '../support/accounts';
+import { testPassword } from '../support/login';
 import { fixtureCourse, fixtureLesson, lessonPath, openLesson } from './fixture';
 
 const lessonTitle = 'Proefles: aanbeet of vastzitten?';
@@ -27,7 +28,7 @@ test.describe('who may read a lesson', () => {
   });
 
   test('a child can read the lesson', async ({ page }) => {
-    await openLesson(page, { username: 'kind-a' });
+    await openLesson(page);
     await expect(page.locator('snf-lesson-step')).toHaveCount(fixtureLesson.steps.length);
   });
 
@@ -44,7 +45,7 @@ test.describe('who may read a lesson', () => {
 
 test.describe('when a lesson cannot be shown', () => {
   test('an unknown lesson shows Ted oops', async ({ page }) => {
-    await loginAs(page, 'kind-a', '/leren/proefcursus/bestaat-niet');
+    await loginAsNewChild(page, '/leren/proefcursus/bestaat-niet');
     await expect(bubble(page)).toHaveText('Deze les kan ik niet vinden.');
     await expect(page.locator('main snf-ted svg')).toHaveCSS('--m-mond-oeps', 'inline');
     await expect(page).toHaveTitle('Les niet gevonden · Snuffel');
@@ -52,7 +53,7 @@ test.describe('when a lesson cannot be shown', () => {
   });
 
   test('an unknown course shows Ted oops', async ({ page }) => {
-    await loginAs(page, 'kind-a', '/leren/bestaat-niet/proefles');
+    await loginAsNewChild(page, '/leren/bestaat-niet/proefles');
     await expect(bubble(page)).toHaveText('Deze les kan ik niet vinden.');
     await expect(page).toHaveTitle('Les niet gevonden · Snuffel');
     await backToStart(page).click();
@@ -61,7 +62,7 @@ test.describe('when a lesson cannot be shown', () => {
 
   test('a planned lesson says it is coming', async ({ page }) => {
     const planned = fixtureCourse.lessons.find((entry) => entry.status === 'planned')!;
-    await loginAs(page, 'kind-a', `/leren/proefcursus/${planned.id}`);
+    await loginAsNewChild(page, `/leren/proefcursus/${planned.id}`);
     await expect(bubble(page)).toHaveText('Aan deze les wordt nog gewerkt. Hij komt eraan!');
     await expect(page.locator('main snf-ted svg')).toHaveCSS('--m-mond-denk', 'inline');
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(planned.title);
@@ -72,7 +73,7 @@ test.describe('when a lesson cannot be shown', () => {
     await page.route('**/content/proefcursus/lessons/**', (route) =>
       route.fulfill({ status: 503, body: 'Service Unavailable' }),
     );
-    await loginAs(page, 'kind-a', lessonPath);
+    await loginAsNewChild(page, lessonPath);
     await expect(bubble(page)).toHaveText('Snuffel kan de les nu niet laden.');
     await expect(backToStart(page)).toBeVisible();
 

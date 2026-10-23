@@ -1,0 +1,39 @@
+@let data = step();
+<p class="intro"><snf-inline-text [text]="data.intro" /></p>
+@if (state() === 'unavailable') {
+  <div class="unavailable">
+    <snf-ted-says mood="oops" size="small">Je voortgang kan ik nu niet ophalen.</snf-ted-says>
+    <button snf-button type="button" variant="light" (click)="retry()">Opnieuw</button>
+  </div>
+}
+<snf-sticky-note>
+  <ul class="items">
+    @for (item of data.items; track item.id) {
+      <li class="item">
+        <label class="row" [for]="inputId(item.id)">
+          <input
+            type="checkbox"
+            [id]="inputId(item.id)"
+            [checked]="ticked().has(item.id)"
+            [disabled]="disabled()"
+            (change)="onChange(item.id, $event)"
+          />
+          <span class="text"><snf-inline-text [text]="item.text" [terms]="false" /></span>
+        </label>
+        @if (item.links?.length) {
+          <span class="links">
+            @for (link of item.links; track $index) {
+              <snf-external-link [url]="link.url" [label]="link.label" />
+            }
+          </span>
+        }
+      </li>
+    }
+  </ul>
+  @if (error(); as message) {
+    <p class="error" role="alert">{{ message }}</p>
+  }
+  <p class="success">
+    <strong><snf-inline-text [text]="data.successCriterion" /></strong>
+  </p>
+</snf-sticky-note>

@@ -3,6 +3,7 @@ import { resolve } from 'node:path';
 import type { Page } from '@playwright/test';
 import type { Course, Lesson } from '../../src/app/core/content/content.types';
 import { expect } from '../fixtures';
+import { loginAsNewChild, type TestAccount } from '../support/accounts';
 import { loginAs } from '../support/login';
 
 // The fixture lesson, read from disk: the e2e build has it (pree2e builds with --fixtures).
@@ -26,12 +27,22 @@ export const fixtureLesson = JSON.parse(
 
 export const lessonPath = '/leren/proefcursus/proefles';
 
-/** Logs in as `username` (kind-a by default) and opens the fixture lesson, optionally at an anchor. */
-export async function openLesson(page: Page, { hash = '', username = 'kind-a' } = {}) {
-  await loginAs(page, username, `${lessonPath}${hash}`);
+/**
+ * Logs in and opens the fixture lesson, optionally at an anchor. By default as a new child of its
+ * own (reading and clicking store progress, so tests never share an account); with `username` as
+ * that seeded account. Returns the account when it is a new one.
+ */
+export async function openLesson(
+  page: Page,
+  { hash = '', username }: { hash?: string; username?: string } = {},
+): Promise<TestAccount | null> {
+  let account: TestAccount | null = null;
+  if (username) await loginAs(page, username, `${lessonPath}${hash}`);
+  else account = await loginAsNewChild(page, `${lessonPath}${hash}`);
   await expect(page.getByRole('heading', { level: 1 })).toHaveText(
     'Proefles: aanbeet of vastzitten?',
   );
+  return account;
 }
 
 /** Whitespace collapsed to single spaces. */
