@@ -171,7 +171,7 @@ describe('QuizQuestion', () => {
     expect(document.activeElement).toBe(element.querySelector('.feedback'));
   });
 
-  it('colour is never the only sign (Jouw antwoord, Goed antwoord)', async () => {
+  it('colour is never the only sign (Jouw antwoord, Goede antwoord)', async () => {
     await render();
     await choose('Wachten');
     const marks = (text: string) =>
@@ -181,13 +181,13 @@ describe('QuizQuestion', () => {
           ?.querySelectorAll('.mark') ?? []),
       ].map(textOf);
     expect(marks('Wachten')).toEqual(['Jouw antwoord']);
-    expect(marks('Direct aanslaan')).toEqual(['Goed antwoord']);
+    expect(marks('Direct aanslaan')).toEqual(['Goede antwoord']);
     expect(marks('Lijn vieren')).toEqual([]);
 
     // A right answer has both.
     fixture.componentRef.setInput('answer', { optionId: 'a', correct: true, hintsUsed: 0 });
     await fixture.whenStable();
-    expect(marks('Direct aanslaan')).toEqual(['Jouw antwoord', 'Goed antwoord']);
+    expect(marks('Direct aanslaan')).toEqual(['Jouw antwoord', 'Goede antwoord']);
   });
 
   it('a restored answer shows the hints it used, and disabled closes everything', async () => {

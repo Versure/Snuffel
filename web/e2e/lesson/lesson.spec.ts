@@ -352,7 +352,7 @@ test.describe('the fixture lesson', () => {
     for (const line of [...lesson.ted.correct, ...lesson.ted.incorrect]) {
       expect(all).not.toContain(plainText(line));
     }
-    expect(all).not.toContain('Goed antwoord');
+    expect(all).not.toContain('Goede antwoord');
     expect(all).not.toContain('Jouw antwoord');
     await expect(section.locator('.option.right, .option.wrong, .feedback, .score')).toHaveCount(0);
   });

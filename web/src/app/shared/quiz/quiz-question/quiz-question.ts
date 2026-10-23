@@ -35,7 +35,7 @@ let nextId = 0;
 /**
  * One quiz question: the prompt and its options as buttons, in a shuffled order per round. One
  * try per round: after a tap the options close, the chosen option turns green or red (and the
- * right one green), with "Jouw antwoord" and "Goed antwoord" as text, and Ted reacts with the
+ * right one green), with "Jouw antwoord" and "Goede antwoord" as text, and Ted reacts with the
  * feedback of the chosen option. Hints on request, one by one, until the question is answered.
  */
 @Component({

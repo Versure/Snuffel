@@ -56,7 +56,7 @@ test.describe('the quiz', () => {
     const chosen = optionButton(page, first, rightOption(first));
     await expect(chosen).toHaveClass(/\bright\b/);
     await expect(chosen).toContainText('Jouw antwoord');
-    await expect(chosen).toContainText('Goed antwoord');
+    await expect(chosen).toContainText('Goede antwoord');
     const block = questionBlock(page, first);
     await expect(block.locator('.option.wrong')).toHaveCount(0);
     const option = first.options.find((candidate) => candidate.id === rightOption(first))!;
@@ -74,10 +74,10 @@ test.describe('the quiz', () => {
     const chosen = optionButton(page, first, wrong);
     await expect(chosen).toHaveClass(/\bwrong\b/);
     await expect(chosen).toContainText('Jouw antwoord');
-    await expect(chosen).not.toContainText('Goed antwoord');
+    await expect(chosen).not.toContainText('Goede antwoord');
     const right = optionButton(page, first, rightOption(first));
     await expect(right).toHaveClass(/\bright\b/);
-    await expect(right).toContainText('Goed antwoord');
+    await expect(right).toContainText('Goede antwoord');
     const block = questionBlock(page, first);
     const option = first.options.find((candidate) => candidate.id === wrong)!;
     await expect(block.locator('.feedback .explanation')).toHaveText(plainText(option.feedback));
