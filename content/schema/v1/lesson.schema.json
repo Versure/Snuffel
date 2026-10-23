@@ -784,7 +784,7 @@
     },
     "shapePulse": {
       "title": "ShapePulse",
-      "description": "One peak at time at.",
+      "description": "One peak at time at: a bell curve (gaussian), height * exp(-((t - at)^2) / (2 * width^2)), with width as the standard deviation.",
       "type": "object",
       "additionalProperties": false,
       "required": ["type", "at", "width", "height"],
@@ -805,7 +805,7 @@
     },
     "shapePulses": {
       "title": "ShapePulses",
-      "description": "count peaks, interval apart, from start.",
+      "description": "count peaks, interval apart, from start: the sum of count pulses with the same width and height at start, start + interval, ….",
       "type": "object",
       "additionalProperties": false,
       "required": ["type", "start", "interval", "count", "width", "height"],
@@ -834,7 +834,7 @@
     },
     "shapeRamp": {
       "title": "ShapeRamp",
-      "description": "Smooth rise of height between from and to.",
+      "description": "Smooth rise from 0 to height between from and to (smoothstep: 0 before from, height after to, height * s * s * (3 - 2 * s) with s = (t - from) / (to - from) in between).",
       "type": "object",
       "additionalProperties": false,
       "required": ["type", "from", "to", "height"],
@@ -855,7 +855,7 @@
     },
     "shapeWobble": {
       "title": "ShapeWobble",
-      "description": "Trembling with an amplitude and a frequency (waves over the whole trace), optionally only between from and to.",
+      "description": "Trembling: amplitude * sin(2 * pi * (frequency * t + phase)), frequency waves over the whole trace, only between from and to (default 0 and 1). With fadeIn the trembling grows smoothly (like a ramp) from 0 at from to full at from + fadeIn.",
       "type": "object",
       "additionalProperties": false,
       "required": ["type", "amplitude", "frequency"],
@@ -875,6 +875,14 @@
           "$ref": "#/$defs/unit"
         },
         "to": {
+          "$ref": "#/$defs/unit"
+        },
+        "phase": {
+          "description": "Shift of the waves as a part of one wave (0-1, default 0).",
+          "$ref": "#/$defs/unit"
+        },
+        "fadeIn": {
+          "description": "Time after from in which the trembling grows to full amplitude (0-1, default 0: at once).",
           "$ref": "#/$defs/unit"
         }
       }

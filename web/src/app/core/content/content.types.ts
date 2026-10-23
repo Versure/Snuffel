@@ -107,6 +107,16 @@ export type TraceUnit = number;
 
 export type TracePositiveUnit = number;
 
+/**
+ * A time or height on the 0-1 scale of the trace.
+ */
+export type TraceUnit1 = number;
+
+/**
+ * A time or height on the 0-1 scale of the trace.
+ */
+export type TraceUnit2 = number;
+
 export type ExerciseAnswer = NumberAnswer | TextAnswer | ChoiceAnswer;
 
 /**
@@ -295,7 +305,7 @@ export interface ShapeBase {
 }
 
 /**
- * One peak at time at.
+ * One peak at time at: a bell curve (gaussian), height * exp(-((t - at)^2) / (2 * width^2)), with width as the standard deviation.
  */
 export interface ShapePulse {
   type: 'pulse';
@@ -305,7 +315,7 @@ export interface ShapePulse {
 }
 
 /**
- * count peaks, interval apart, from start.
+ * count peaks, interval apart, from start: the sum of count pulses with the same width and height at start, start + interval, ….
  */
 export interface ShapePulses {
   type: 'pulses';
@@ -317,7 +327,7 @@ export interface ShapePulses {
 }
 
 /**
- * Smooth rise of height between from and to.
+ * Smooth rise from 0 to height between from and to (smoothstep: 0 before from, height after to, height * s * s * (3 - 2 * s) with s = (t - from) / (to - from) in between).
  */
 export interface ShapeRamp {
   type: 'ramp';
@@ -327,7 +337,7 @@ export interface ShapeRamp {
 }
 
 /**
- * Trembling with an amplitude and a frequency (waves over the whole trace), optionally only between from and to.
+ * Trembling: amplitude * sin(2 * pi * (frequency * t + phase)), frequency waves over the whole trace, only between from and to (default 0 and 1). With fadeIn the trembling grows smoothly (like a ramp) from 0 at from to full at from + fadeIn.
  */
 export interface ShapeWobble {
   type: 'wobble';
@@ -335,6 +345,8 @@ export interface ShapeWobble {
   frequency: number;
   from?: TraceUnit;
   to?: TraceUnit;
+  phase?: TraceUnit1;
+  fadeIn?: TraceUnit2;
 }
 
 export interface SteppedExerciseInteraction {
