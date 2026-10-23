@@ -53,6 +53,15 @@ const skillFolders = readdirSync(skillsDir, { withFileTypes: true })
   .map((entry) => entry.name)
   .sort();
 const skillFile = (name) => join(skillsDir, name, 'SKILL.md');
+const agent = (name) => readFrontmatter(join(agentsDir, `${name}.md`));
+
+/** The tools of an agent are all in `allowed` and include every tool in `required`. */
+function assertToolsWithin(name, allowed, required) {
+  const { tools } = agent(name);
+  assert.ok(Array.isArray(tools) && tools.length > 0, `${name}: tools missing`);
+  for (const tool of tools) assert.ok(allowed.includes(tool), `${name}: tool ${tool} not allowed`);
+  for (const tool of required) assert.ok(tools.includes(tool), `${name}: needs ${tool}`);
+}
 
 /**
  * Names in backticks that look like an agent: a known agent name, or any name ending in
@@ -153,5 +162,15 @@ describe('.claude configuration', () => {
 
   test('the interaction catalogue in tools/content/catalog.mjs lists exactly the schema kinds', () => {
     assert.deepEqual(Object.keys(interactionCatalog).sort(), schemaInteractionKinds());
+  });
+});
+
+describe('content agents', () => {
+  test('source-researcher can only read and use the web', () => {
+    assertToolsWithin(
+      'source-researcher',
+      ['Read', 'Glob', 'Grep', 'WebSearch', 'WebFetch'],
+      ['WebFetch', 'WebSearch'],
+    );
   });
 });
