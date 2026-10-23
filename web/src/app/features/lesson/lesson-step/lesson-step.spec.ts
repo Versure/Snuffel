@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { LessonProgress } from '../../../shared/lesson-progress/lesson-progress';
 import lessonJson from '../../../../../../content/fixtures/courses/proefcursus/lessons/01-proefles.json';
 import type { Lesson, LessonStep as LessonStepData } from '../../../core/content/content.types';
-import { LessonStep } from './lesson-step';
+import { LessonStep, READ_DWELL_MS } from './lesson-step';
 
 const lesson = lessonJson as unknown as Lesson;
 const steps = lesson.steps;
@@ -13,7 +13,10 @@ const stepOfType = (type: LessonStepData['type']): LessonStepData => {
 };
 
 describe('LessonStep', () => {
-  afterEach(() => vi.unstubAllGlobals());
+  afterEach(() => {
+    vi.useRealTimers();
+    vi.unstubAllGlobals();
+  });
 
   async function render(
     step: LessonStepData,
@@ -103,10 +106,23 @@ describe('LessonStep', () => {
     expect(marker?.getAttribute('aria-hidden')).toBe('true');
     expect(markStep).not.toHaveBeenCalled();
 
-    seen(
-      [{ isIntersecting: true, target: marker } as unknown as IntersectionObserverEntry],
-      {} as IntersectionObserver,
-    );
+    vi.useFakeTimers();
+    const inView = (isIntersecting: boolean) =>
+      seen(
+        [{ isIntersecting, target: marker } as unknown as IntersectionObserverEntry],
+        {} as IntersectionObserver,
+      );
+    // Scrolling past (a jump with the step navigation) does not count.
+    inView(true);
+    vi.advanceTimersByTime(READ_DWELL_MS / 2);
+    inView(false);
+    vi.advanceTimersByTime(READ_DWELL_MS * 2);
+    expect(markStep).not.toHaveBeenCalled();
+    // Staying at the end does.
+    inView(true);
+    vi.advanceTimersByTime(READ_DWELL_MS);
+    vi.useRealTimers();
+    expect(markStep).toHaveBeenCalledTimes(1);
     expect(markStep).toHaveBeenCalledWith('uitleg', 'completed');
   });
 

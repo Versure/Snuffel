@@ -9,6 +9,9 @@ import { Quiz } from '../../../shared/quiz/quiz/quiz';
 import { Seen } from '../../../shared/seen/seen';
 import { STEP_ANCHOR_PREFIX } from '../../../shared/ui/step-nav/step-nav';
 
+/** Milliseconds the end of an explanation has to stay in view before it counts as read. */
+export const READ_DWELL_MS = 1000;
+
 /** The id of the section of a step (its anchor) and of its heading. */
 export function stepSectionId(stepId: string): string {
   return `${STEP_ANCHOR_PREFIX}${stepId}`;
@@ -40,7 +43,13 @@ export class LessonStep {
   protected readonly sectionId = computed(() => stepSectionId(this.step().id));
   protected readonly headingId = computed(() => stepHeadingId(this.step().id));
 
-  /** The end of an explanation came into view: read to the end, so the step is done. */
+  /**
+   * How long the end of an explanation has to stay in view: scrolling past it with the step
+   * navigation (smooth scrolling) is not reading.
+   */
+  protected readonly readDwell = READ_DWELL_MS;
+
+  /** The end of an explanation stayed in view: read to the end, so the step is done. */
   protected onReadToEnd(): void {
     void this.progress?.markStep(this.step().id, 'completed');
   }
