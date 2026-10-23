@@ -8,6 +8,8 @@ pocketbase/bin
 pocketbase/pb_data
 # Dev/test accounts with known passwords: never in the image.
 pocketbase/seed
+# Homework photos (personal data, copyrighted pages): never in the build context.
+huiswerk-fotos
 web/public/fonts
 web/public/content
 web/public/.content-*
