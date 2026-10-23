@@ -7,6 +7,7 @@ import type {
 } from '../../src/app/core/content/content.types';
 import { plainText } from '../../src/app/shared/inline-text/inline-markup';
 import { expect, test } from '../fixtures';
+import { gameBlock } from './actions';
 import { fixtureCourse, fixtureLesson, normalize, openLesson } from './fixture';
 
 const lesson = fixtureLesson;
@@ -87,6 +88,9 @@ test.describe('the fixture lesson', () => {
   });
 
   test('renders every text of the fixture lesson', async ({ page }) => {
+    // The game loads lazily and shows "Even laden…" until then: read the page only after that.
+    await expect(gameBlock(page).getByRole('button', { name: 'Start', exact: true })).toBeVisible();
+    await expect(page.locator('main').getByText('Even laden…')).toHaveCount(0);
     const shown = normalize(await page.locator('main').innerText());
     for (const text of visibleTexts()) {
       expect(shown, text).toContain(text);

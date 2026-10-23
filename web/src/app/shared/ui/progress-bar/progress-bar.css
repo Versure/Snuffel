@@ -1,0 +1,23 @@
+:host {
+  display: block;
+}
+
+.track {
+  box-sizing: border-box;
+  height: 1rem;
+  overflow: hidden;
+  background: var(--snf-color-paper);
+  border: var(--snf-border-width) solid var(--snf-color-ink);
+  border-radius: var(--snf-radius-pill);
+}
+
+.fill {
+  height: 100%;
+  background: var(--snf-color-pink);
+}
+
+.label {
+  margin: 0.35rem 0 0;
+  font-size: 0.95rem;
+  color: var(--snf-color-text);
+}

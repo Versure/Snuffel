@@ -9,6 +9,7 @@ import type {
   QuizAttemptRecord,
   StepStatus,
 } from '../pocketbase/types';
+import { groupStepStatuses, type StepStatuses, type StepStatusRecord } from './course-progress';
 import { toProgressError } from './progress-error';
 
 /** The status of one step, with the id of its record. */
@@ -84,6 +85,27 @@ export class ProgressService {
         attempts: [...attempts].sort(newestFirst),
         results: [...results].sort(newestFirst),
       };
+    } catch (error) {
+      throw toProgressError(error, 'Loading progress');
+    }
+  }
+
+  /**
+   * Loads the status of every step of one user, of every course or only of `courseId`, grouped
+   * by lesson and step. The filter on `user` is essential: a parent may read every record.
+   */
+  async loadStepStatuses(userId: string, courseId?: string): Promise<StepStatuses> {
+    const filter =
+      courseId === undefined
+        ? this.pb.filter('user = {:userId}', { userId })
+        : this.pb.filter('user = {:userId} && course_id = {:courseId}', { userId, courseId });
+    try {
+      const records = await this.pb.collection('lesson_progress').getFullList<StepStatusRecord>({
+        filter,
+        fields: 'lesson_id,step_id,status',
+        ...noCancel,
+      });
+      return groupStepStatuses(records);
     } catch (error) {
       throw toProgressError(error, 'Loading progress');
     }

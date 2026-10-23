@@ -1,0 +1,95 @@
+@let current = state();
+<main [attr.aria-busy]="current.kind === 'loading' ? 'true' : null">
+  @switch (current.kind) {
+    @case ('loading') {
+      <snf-ted-says class="state-ted" mood="thinking" size="small">{{ text.loading }}</snf-ted-says>
+    }
+    @case ('loaded') {
+      @let course = current.course;
+      @let view = overview();
+      <header class="hero">
+        <a class="back" routerLink="/">{{ text.back }}</a>
+        <h1>{{ heading() }}</h1>
+        @if (practiceLine()) {
+          <p class="practice">{{ practiceLine() }}</p>
+        }
+        <snf-ted-says class="greeting" mood="happy" size="small">
+          <snf-inline-text [text]="course.ted.greeting" [terms]="false" />
+        </snf-ted-says>
+        <div class="goal">
+          <p>
+            <strong>{{ text.goal }}</strong
+            >{{ ' ' }}<snf-inline-text [text]="course.goal" [terms]="false" />
+          </p>
+          <p>
+            <strong>{{ text.successCriterion }}</strong
+            >{{ ' ' }}<snf-inline-text [text]="course.successCriterion" [terms]="false" />
+          </p>
+        </div>
+      </header>
+
+      @if (progressState().kind === 'unavailable') {
+        <div class="progress-error">
+          <snf-ted-says mood="oops" size="small">{{ text.progressUnavailable }}</snf-ted-says>
+          <button snf-button type="button" (click)="retryProgress()">{{ text.retry }}</button>
+        </div>
+      }
+
+      @if (view) {
+        <snf-progress-bar
+          class="bar"
+          [value]="view.summary.completed"
+          [max]="view.summary.total"
+          [label]="view.label"
+        />
+        @if (view.next; as next) {
+          <a
+            snf-button
+            variant="pink"
+            class="next"
+            [routerLink]="['/leren', current.entry.id, next.lesson.id]"
+          >
+            {{ next.status === 'started' ? text.continue(next.title) : text.begin(next.title) }}
+          </a>
+        } @else if (view.allDone) {
+          <snf-ted-says class="all-done" mood="cool" size="small">{{ text.allDone }}</snf-ted-says>
+        }
+      }
+
+      <h2>{{ text.lessons }}</h2>
+      <!-- role="list": Safari drops the list semantics of a list without bullets. -->
+      <ol class="lessons" role="list">
+        @for (lesson of current.entry.lessons; track lesson.id; let index = $index) {
+          <li>
+            <snf-lesson-item
+              [courseId]="current.entry.id"
+              [lesson]="lesson"
+              [number]="index + 1"
+              [progress]="view?.lessons?.get(lesson.id) ?? null"
+            />
+          </li>
+        }
+      </ol>
+    }
+    @case ('not-found') {
+      <h1>{{ text.notFoundHeading }}</h1>
+      <snf-ted-says class="state-ted" mood="oops" size="small">{{ text.notFound }}</snf-ted-says>
+      <a snf-button variant="light" routerLink="/">{{ text.back }}</a>
+    }
+    @case ('unavailable') {
+      <h1>{{ text.unavailableHeading }}</h1>
+      <snf-ted-says class="state-ted" mood="oops" size="small">{{ text.unavailable }}</snf-ted-says>
+      <div class="actions">
+        <button snf-button type="button" (click)="retry()">{{ text.retry }}</button>
+        <a snf-button variant="light" routerLink="/">{{ text.back }}</a>
+      </div>
+    }
+    @case ('unsupported-version') {
+      <h1>{{ text.unsupportedHeading }}</h1>
+      <snf-ted-says class="state-ted" mood="oops" size="small">{{
+        text.unsupportedVersion
+      }}</snf-ted-says>
+      <a snf-button variant="light" routerLink="/">{{ text.back }}</a>
+    }
+  }
+</main>

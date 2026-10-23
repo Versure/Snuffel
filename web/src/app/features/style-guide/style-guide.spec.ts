@@ -91,6 +91,17 @@ describe('StyleGuide', () => {
     }
   });
 
+  it('shows the progress bar', async () => {
+    const { element } = await render();
+    const bars = Array.from(element.querySelectorAll('snf-progress-bar [role="progressbar"]'));
+    expect(bars.map((bar) => bar.getAttribute('aria-valuenow'))).toEqual(['0', '1', '2']);
+    expect(bars.map((bar) => bar.getAttribute('aria-valuetext'))).toEqual([
+      '0 van 2 lessen klaar',
+      '1 van 2 lessen klaar',
+      'Alle lessen klaar!',
+    ]);
+  });
+
   it('shows Ted in four moods with their own labels', async () => {
     const { element } = await render();
     const heading = element.querySelector('h2#ted');

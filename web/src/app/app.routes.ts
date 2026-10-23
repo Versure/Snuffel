@@ -22,6 +22,14 @@ export const routes: Routes = [
     loadComponent: () => import('./features/parent/parent').then((m) => m.Parent),
   },
   {
+    // The overview of a course; Angular matches on the number of segments, so the lesson route
+    // below is never taken for this one.
+    path: 'leren/:courseId',
+    title: 'Leertraject · Snuffel',
+    canActivate: [authGuard],
+    loadComponent: () => import('./features/course/course').then((m) => m.Course),
+  },
+  {
     // A lesson, for a child and a parent alike (plan M7, question 8).
     path: 'leren/:courseId/:lessonId',
     title: 'Les · Snuffel',

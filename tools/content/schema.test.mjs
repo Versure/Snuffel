@@ -277,6 +277,7 @@ describe('schemas', () => {
               estimatedMinutes: 10,
               file: 'roofvissen/lessons/aanbeet.json',
               hash: 'fedcba9876543210',
+              stepIds: ['uitleg', 'quiz'],
             },
             { id: 'later', title: 'Later', status: 'planned' },
           ],
@@ -302,6 +303,48 @@ describe('schemas', () => {
       validate('terms', { schemaVersion: 1, terms: [{ term: 'aanslaan', forms: ['slaat aan'] }] }),
       [],
     );
+  });
+
+  test('a published manifest lesson without stepIds is a schema error', () => {
+    const manifest = {
+      schemaVersion: 1,
+      courses: [
+        {
+          id: 'roofvissen',
+          title: 'Roofvissen',
+          kind: 'course',
+          file: 'roofvissen/course.json',
+          hash: '0123456789abcdef',
+          lessons: [
+            {
+              id: 'aanbeet',
+              title: 'Aanbeet',
+              status: 'published',
+              version: 1,
+              estimatedMinutes: 10,
+              file: 'roofvissen/lessons/aanbeet.json',
+              hash: 'fedcba9876543210',
+              stepIds: ['uitleg'],
+            },
+            { id: 'later', title: 'Later', status: 'planned' },
+          ],
+          assets: [],
+        },
+      ],
+    };
+    assert.deepEqual(validate('manifest', manifest), []);
+    const without = clone(manifest);
+    delete without.courses[0].lessons[0].stepIds;
+    assertError(validate('manifest', without), 'courses[0].lessons[0].stepIds');
+    const empty = clone(manifest);
+    empty.courses[0].lessons[0].stepIds = [];
+    assertError(validate('manifest', empty), 'courses[0].lessons[0].stepIds');
+    const twice = clone(manifest);
+    twice.courses[0].lessons[0].stepIds = ['uitleg', 'uitleg'];
+    assertError(validate('manifest', twice), 'courses[0].lessons[0].stepIds');
+    const planned = clone(manifest);
+    planned.courses[0].lessons[1].stepIds = ['uitleg'];
+    assertError(validate('manifest', planned), 'courses[0].lessons[1].stepIds');
   });
 
   test('rejects an unknown key with a Dutch message', () => {

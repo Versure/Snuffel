@@ -21,7 +21,7 @@ content/
 
 - De mapnaam van een cursus is het cursus-id.
 - Elk bestand begint met `"schemaVersion": 1`.
-- `npm run content:build` zet alles klaar in `web/public/content/` (niet in git): `manifest.json`, `<cursus-id>/course.json`, `<cursus-id>/lessons/<les-id>.json` en de gebruikte afbeeldingen. In de uitvoer heet een lesbestand naar het les-id, niet naar het nummer, zodat een adres nooit verandert als de volgorde wijzigt. Het manifest noemt per cursus elke gebruikte afbeelding met de hash van de bytes (`assets`), zodat de app een gewijzigde svg nooit uit de cache van de browser haalt.
+- `npm run content:build` zet alles klaar in `web/public/content/` (niet in git): `manifest.json`, `<cursus-id>/course.json`, `<cursus-id>/lessons/<les-id>.json` en de gebruikte afbeeldingen. In de uitvoer heet een lesbestand naar het les-id, niet naar het nummer, zodat een adres nooit verandert als de volgorde wijzigt. Het manifest noemt per cursus elke gebruikte afbeelding met de hash van de bytes (`assets`), zodat de app een gewijzigde svg nooit uit de cache van de browser haalt. Bij elke gepubliceerde les staan ook de stap-id's (`stepIds`, in de volgorde van de les); daarmee weten de startpagina en het cursusoverzicht wanneer een les klaar is, zonder elk lesbestand op te halen.
 - Fixtures gaan alleen mee met `npm run content:build:fixtures` (dat doen `npm start` en `npm run e2e`). De image voor de NAS wordt zonder fixtures gebouwd: een kind ziet de proefles nooit.
 
 ## Id's
@@ -260,11 +260,26 @@ In alle tekstvelden mag een kleine subset van Markdown, alleen binnen een regel:
 - In `course.json` mag geen `[[term]]` staan: een cursus heeft geen `glossary` (`course-term-not-allowed`). Schrijf de term daar als gewone tekst. Links in `course.json` (bijvoorbeeld in `goal` of `sources[].note`) worden net zo gecontroleerd als in een les.
 - Alle gevallen staan in `inline-markup.cases.json`; de tools en de app worden daartegen getest.
 
+## Startpagina en cursusoverzicht
+
+Na het inloggen opent de **startpagina** (`/`): Ted zegt "Hoi, <naam>!" en daaronder staat per cursus een kaart, in twee groepen: "Leertrajecten" (`kind: course`) en "Huiswerk oefenen" (`kind: practice`), elk op titel. Een kaart toont de `title`, een voortgangsbalk en "<klaar> van <totaal> lessen klaar" (of "Alle lessen klaar!"); `totaal` telt **alle** lessen in `lessons`, ook de geplande. Een tik op de kaart opent het **cursusoverzicht** (`/leren/<cursus-id>`).
+
+Het overzicht toont uit `course.json`: de `title`, Ted (blij) met `ted.greeting`, bij `practice` een regel met `subject` · `schoolLevel` · `chapter`, "Doel: `goal`" en "Gelukt als: `successCriterion`". Daaronder de balk, een knop naar de eerste gepubliceerde les die nog niet klaar is ("Begin met: …" of "Verder met: …"; alles klaar: Ted stoer met "Alles klaar! Goed gesnuffeld.") en alle lessen **in de volgorde van `lessons`**, genummerd, met "Ongeveer `estimatedMinutes` minuten" en een label:
+
+| Label                                   | Wanneer                                                                       |
+| --------------------------------------- | ----------------------------------------------------------------------------- |
+| "Klaar ✓"                               | elke stap die de les **nu** heeft, is klaar (welke `version` er toen ook was) |
+| "Bezig: <n> van <totaal> stappen klaar" | minstens één stap is begonnen of klaar, maar niet alle                        |
+| "Nieuw"                                 | nog geen enkele stap van de les begonnen                                      |
+| "Komt nog"                              | de les is `planned` (geen link)                                               |
+
+Alleen de stappen die de les nu heeft tellen; voortgang van een stap of les die niet meer bestaat, telt niet. Let op: **voeg je een stap toe aan een gepubliceerde les, dan staat hij voor iedereen die hem af had weer op "Bezig"** (met één stap te gaan). Maak voor nieuwe stof liever een nieuwe les.
+
 ## Zo toont de app een les
 
 Een les staat in de app op `/leren/<cursus-id>/<les-id>`, voor wie ingelogd is (kind en ouder). Het is één doorlopende pagina; `#stap-<stap-id>` achter het adres opent hem bij die stap.
 
-- **Kop:** een link "Naar de start", de `sticker`, "Ongeveer `estimatedMinutes` minuten", de `title` (het laatste woord op een paarse band), Ted (`ted.intro.mood`) met `ted.intro.text` in een ballon, en het `objective` op een papieren kader.
+- **Kop:** een link "Naar de lessen" (naar het overzicht van de cursus), de `sticker`, "Ongeveer `estimatedMinutes` minuten", de `title` (het laatste woord op een paarse band), Ted (`ted.intro.mood`) met `ted.intro.text` in een ballon, en het `objective` op een papieren kader.
 - **Stappen-navigatie:** een genummerd rondje per stap met een kort label: `explain` "Uitleg", `trace-game` "Spel", `stepped-exercise` "Oefenen", `quiz` "Quiz", `at-the-water` "Aan het water", `do-it-yourself` "Zelf doen". Een tik springt naar de stap.
 - **Stap:** de `title` als kop met een roze rondje met het nummer.
 - **Blokken:** `text` is een alinea; `example` staat in een kaart; `signal-cards` zijn kaarten met het icoon, de titel en de tekst; `rule` is een roze blok met de titel groot; `tip` is een kaart met de titel (zonder titel: "Tip"); `figure` is de afbeelding met het onderschrift eronder; `ted-says` is een kleine Ted in de gekozen stemming met een ballon.

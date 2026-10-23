@@ -520,6 +520,12 @@ export interface ManifestLesson {
   estimatedMinutes?: number;
   file?: string;
   hash?: ContentHash;
+  /**
+   * The ids of the steps of a published lesson, in lesson order.
+   *
+   * @minItems 1
+   */
+  stepIds?: ContentId[];
 }
 
 export interface ManifestAsset {

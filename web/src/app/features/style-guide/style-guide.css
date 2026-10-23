@@ -73,3 +73,10 @@ code {
 snf-ted-says {
   margin: 0 0 1.5rem;
 }
+
+.progress-bars {
+  display: grid;
+  gap: 1rem;
+  max-width: 24rem;
+  margin: 1rem 0;
+}

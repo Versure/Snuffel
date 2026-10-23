@@ -1,0 +1,32 @@
+<span class="number" aria-hidden="true">{{ number() }}</span>
+<span class="snf-visually-hidden">{{ text.lessonNumber(number()) }}</span>
+<div class="body">
+  @if (planned()) {
+    <span class="title">{{ title() }}</span>
+  } @else {
+    <a class="title" [routerLink]="link()">{{ title() }}</a>
+  }
+  <div class="meta">
+    @if (lesson().estimatedMinutes; as minutes) {
+      <span class="minutes">{{ text.minutes(minutes) }}</span>
+    }
+    @switch (status()) {
+      @case ('completed') {
+        <span class="label label--completed"
+          >{{ text.completed }} <span aria-hidden="true">✓</span></span
+        >
+      }
+      @case ('started') {
+        <span class="label label--started">{{
+          text.started(progress()?.done ?? 0, progress()?.total ?? 0)
+        }}</span>
+      }
+      @case ('new') {
+        <span class="label label--new">{{ text.new }}</span>
+      }
+      @case ('planned') {
+        <span class="label label--planned">{{ text.planned }}</span>
+      }
+    }
+  </div>
+</div>

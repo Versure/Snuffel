@@ -1,7 +1,44 @@
-<main>
-  <h1>Snuffel</h1>
+@let content = contentState();
+<main [attr.aria-busy]="content.kind === 'loading' ? 'true' : null">
+  <h1>{{ text.heading }}</h1>
   <snf-ted-says class="ted" mood="happy" size="small">
-    <p>Hoi, {{ user()?.name }}!</p>
+    <p class="greeting">{{ text.greeting(user()?.name ?? '') }}</p>
+    <p>{{ text.question }}</p>
   </snf-ted-says>
-  <p>Hier komt het leerportaal. Ted is nog aan het snuffelen.</p>
+
+  @switch (content.kind) {
+    @case ('loading') {
+      <snf-ted-says class="state-ted" mood="thinking" size="small">{{ text.loading }}</snf-ted-says>
+    }
+    @case ('ready') {
+      @if (progressState().kind === 'unavailable') {
+        <div class="progress-error">
+          <snf-ted-says mood="oops" size="small">{{ text.progressUnavailable }}</snf-ted-says>
+          <button snf-button type="button" (click)="retryProgress()">{{ text.retry }}</button>
+        </div>
+      }
+      @for (section of content.sections; track section.id) {
+        <section [attr.aria-labelledby]="'section-' + section.id">
+          <h2 [id]="'section-' + section.id">{{ section.heading }}</h2>
+          <ul class="cards">
+            @for (course of section.courses; track course.id) {
+              <li><snf-course-card [course]="course" [progress]="progressOf(course)" /></li>
+            }
+          </ul>
+        </section>
+      }
+    }
+    @case ('empty') {
+      <snf-ted-says class="state-ted" mood="thinking" size="small">{{ text.empty }}</snf-ted-says>
+    }
+    @case ('unavailable') {
+      <snf-ted-says class="state-ted" mood="oops" size="small">{{ text.unavailable }}</snf-ted-says>
+      <button snf-button type="button" (click)="retryContent()">{{ text.retry }}</button>
+    }
+    @case ('unsupported-version') {
+      <snf-ted-says class="state-ted" mood="oops" size="small">{{
+        text.unsupportedVersion
+      }}</snf-ted-says>
+    }
+  }
 </main>

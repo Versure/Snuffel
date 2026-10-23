@@ -4,6 +4,7 @@ import { RouterLink } from '@angular/router';
 import { Band } from '../../shared/ui/band/band';
 import { Button } from '../../shared/ui/button/button';
 import { Card } from '../../shared/ui/card/card';
+import { ProgressBar } from '../../shared/ui/progress-bar/progress-bar';
 import { SpeechBubble } from '../../shared/ui/speech-bubble/speech-bubble';
 import { Sticker } from '../../shared/ui/sticker/sticker';
 import { StickyNote } from '../../shared/ui/sticky-note/sticky-note';
@@ -30,7 +31,18 @@ interface Swatch {
 /** Shows the house style on /stijl. Not linked anywhere; for Jop to compare with the reference. */
 @Component({
   selector: 'snf-style-guide',
-  imports: [Band, Button, Card, RouterLink, SpeechBubble, Sticker, StickyNote, Ted, TedSays],
+  imports: [
+    Band,
+    Button,
+    Card,
+    ProgressBar,
+    RouterLink,
+    SpeechBubble,
+    Sticker,
+    StickyNote,
+    Ted,
+    TedSays,
+  ],
   templateUrl: './style-guide.html',
   styleUrl: './style-guide.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
