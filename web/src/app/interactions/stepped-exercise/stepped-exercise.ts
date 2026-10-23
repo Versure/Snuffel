@@ -258,7 +258,7 @@ export class SteppedExercise implements InteractionComponent<SteppedExerciseConf
     if (!exercise || this.progress().correct) return;
     const { outcome, feedback } = checkAnswer(exercise.answer, input, exercise.commonMistakes);
     if (!isAttempt(outcome)) {
-      this.notice.set(outcome === 'unreadable' ? 'unreadable' : 'empty');
+      this.showNotice(outcome === 'unreadable' ? 'unreadable' : 'empty');
       return;
     }
     this.notice.set(null);
@@ -282,6 +282,21 @@ export class SteppedExercise implements InteractionComponent<SteppedExerciseConf
       this.answered.emit();
     }
     this.focusAfterRender('.say');
+  }
+
+  /**
+   * Shows why an answer is no attempt and puts the focus in the input (also after a tap on
+   * Controleer), so a screen reader reads the message through aria-describedby and aria-invalid.
+   */
+  private showNotice(notice: Notice): void {
+    const selector = 'input.input';
+    if (this.notice() === notice) {
+      // Nothing changes on the screen, so there is no next render: focus at once.
+      this.host.nativeElement.querySelector<HTMLElement>(selector)?.focus();
+      return;
+    }
+    this.notice.set(notice);
+    this.focusAfterRender(selector);
   }
 
   private finish(): void {

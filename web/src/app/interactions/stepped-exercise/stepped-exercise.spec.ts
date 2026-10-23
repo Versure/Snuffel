@@ -233,6 +233,30 @@ describe('SteppedExercise', () => {
     expect(button(setup.element, EXERCISE_TEXT.solution)).toBeDefined();
   });
 
+  it('after Controleer with an empty or unreadable answer the focus is in the input', async () => {
+    const setup = await render(only(recipe));
+    const input = field(setup.element)!;
+    const check = button(setup.element, 'Controleer')!;
+    check.focus();
+    await click(setup, check);
+    expect(notice(setup.element)).toBe(EXERCISE_TEXT.empty);
+    expect(document.activeElement).toBe(input);
+    // The same message again: the focus still goes back to the input.
+    check.focus();
+    await click(setup, check);
+    expect(document.activeElement).toBe(input);
+    // Unreadable.
+    await type(setup, 'abc');
+    check.focus();
+    await click(setup, check);
+    expect(notice(setup.element)).toBe(EXERCISE_TEXT.unreadable);
+    expect(input.getAttribute('aria-invalid')).toBe('true');
+    expect(input.getAttribute('aria-describedby')).toContain(
+      setup.element.querySelector('.notice')!.id,
+    );
+    expect(document.activeElement).toBe(input);
+  });
+
   it('Enter in the input checks the answer', async () => {
     const setup = await render();
     await type(setup, '3/5');

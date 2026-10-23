@@ -254,12 +254,15 @@ test.describe('the stepped exercise', () => {
     await expect(input).toBeFocused();
     await card.getByRole('button', { name: 'Controleer', exact: true }).click();
     await expect(card.locator('.notice')).toHaveText('Vul eerst een antwoord in.');
+    // A tap on Controleer also puts the focus in the input, so the message is read out.
+    await expect(input).toBeFocused();
     // Unreadable.
     await answerExercise(page, 'abc');
     await expect(card.locator('.notice')).toHaveText(
       'Dat kan ik niet lezen als getal. Schrijf bijvoorbeeld 0,75 of 3/4.',
     );
     await expect(input).toHaveAttribute('aria-invalid', 'true');
+    await expect(input).toBeFocused();
     const described = await input.getAttribute('aria-describedby');
     expect(described).toContain((await card.locator('.notice').getAttribute('id')) ?? 'x');
     // Other unit: unreadable too.
