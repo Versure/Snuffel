@@ -1,5 +1,6 @@
 import {
   afterNextRender,
+  ApplicationRef,
   ChangeDetectionStrategy,
   Component,
   computed,
@@ -59,6 +60,7 @@ export class Lesson {
   private readonly context = inject(LessonContext);
   private readonly title = inject(Title);
   private readonly injector = inject(Injector);
+  private readonly appRef = inject(ApplicationRef);
   private readonly auth = inject(AuthService);
   protected readonly progress = inject(LessonProgress);
 
@@ -146,7 +148,11 @@ export class Lesson {
       const fragment = untracked(this.fragment);
       if (!fragment?.startsWith(STEP_ANCHOR_PREFIX)) return;
       const stepId = fragment.slice(STEP_ANCHOR_PREFIX.length);
-      afterNextRender(() => this.goToStep(stepId), { injector: this.injector });
+      // Wait until the page is stable: a lazily loaded game (snf-interaction) or restored
+      // progress above the step would otherwise push it away after the scroll.
+      afterNextRender(() => void this.appRef.whenStable().then(() => this.goToStep(stepId)), {
+        injector: this.injector,
+      });
     });
   }
 
