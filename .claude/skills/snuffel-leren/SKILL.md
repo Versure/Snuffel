@@ -145,7 +145,7 @@ Zet de agent `content-reviewer` in met het pad van `course.json` en van de les; 
 
 ## Nog niet te zien
 
-De quiz (gehusseld, hints op verzoek, feedback per gekozen optie, score met Ted) en de checklist met vinkjes werken sinds M8 en bewaren de voortgang per kind; het voel-spel (`trace-game`) werkt sinds M9 en bewaart elk uitgespeeld spel; de oefening (`stepped-exercise`) werkt sinds M10 en bewaart elke afgeronde reeks. Een cursuspagina komt in M11.
+De quiz (gehusseld, hints op verzoek, feedback per gekozen optie, score met Ted) en de checklist met vinkjes werken sinds M8 en bewaren de voortgang per kind; het voel-spel (`trace-game`) werkt sinds M9 en bewaart elk uitgespeeld spel; de oefening (`stepped-exercise`) werkt sinds M10 en bewaart elke afgeronde reeks. Sinds M11 staat elke cursus als kaart op de startpagina en heeft hij een cursusoverzicht (`/leren/<cursus-id>`) met het doel en de status van elke les (klaar, bezig, nieuw, komt nog). Een stap toevoegen aan een gepubliceerde les zet hem voor wie hem af had weer op "bezig"; maak voor nieuwe stof liever een nieuwe les.
 ```
 
 Zijn er na twee reviewrondes nog blokkerende punten: open de PR toch, maar als **draft**, met die punten bovenaan.
