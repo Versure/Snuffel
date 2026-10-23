@@ -11,7 +11,8 @@ export const STEP_ANCHOR_PREFIX = 'stap-';
 
 /**
  * The steps of a lesson as numbered circles with a short label. Each one links to the anchor of
- * its step on the same page; `navigate` tells the page which step, so it can move the focus.
+ * its step on the same page; `navigate` tells the page which step after a plain left click, so it
+ * can move the focus.
  * A step in `done` gets a filled circle (filled from M8 on).
  */
 @Component({
@@ -28,4 +29,15 @@ export class StepNav {
 
   protected readonly doneIds = computed(() => new Set(this.done()));
   protected readonly anchorPrefix = STEP_ANCHOR_PREFIX;
+
+  /**
+   * Only a plain left click moves on this page. A click with ctrl, meta, shift or alt (open in a
+   * new tab or window, download) leaves the page as it is, just like RouterLink does.
+   */
+  protected onClick(event: MouseEvent, stepId: string): void {
+    if (event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) {
+      return;
+    }
+    this.navigate.emit(stepId);
+  }
 }

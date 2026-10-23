@@ -88,4 +88,28 @@ describe('StepNav', () => {
     await fixture.whenStable();
     expect(fixture.componentInstance.navigated).toEqual(['quiz']);
   });
+
+  it('does not emit navigate for a click with a modifier key or another button', async () => {
+    const { fixture, element, links } = await render();
+    // The test only checks the output; the browser default (a new tab) is not wanted here.
+    element.addEventListener('click', (event) => event.preventDefault());
+    const clicks: MouseEventInit[] = [
+      { ctrlKey: true },
+      { metaKey: true },
+      { shiftKey: true },
+      { altKey: true },
+      { button: 1 },
+    ];
+    for (const init of clicks) {
+      links()[1].dispatchEvent(
+        new MouseEvent('click', { bubbles: true, cancelable: true, ...init }),
+      );
+    }
+    await fixture.whenStable();
+    expect(fixture.componentInstance.navigated).toEqual([]);
+
+    links()[1].dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
+    await fixture.whenStable();
+    expect(fixture.componentInstance.navigated).toEqual(['spel']);
+  });
 });
