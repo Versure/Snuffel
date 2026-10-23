@@ -1,0 +1,77 @@
+:host {
+  display: flex;
+  gap: 0.9rem;
+  align-items: flex-start;
+  padding: 0.75rem 1rem;
+  background: var(--snf-color-surface);
+  border: var(--snf-border-width) solid var(--snf-color-ink);
+  border-radius: var(--snf-radius-lg);
+  box-shadow: var(--snf-shadow-md);
+}
+
+.number {
+  flex: none;
+  min-width: 2.4rem;
+  font-family: var(--snf-font-display);
+  font-size: 2rem;
+  line-height: var(--snf-tap-min);
+  text-align: center;
+  color: var(--snf-color-heading);
+}
+
+.body {
+  flex: 1;
+  min-width: 0;
+}
+
+/* The title link is a tap area of at least 44 px high. */
+.title {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--snf-tap-min);
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+span.title {
+  color: var(--snf-color-text-muted);
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 0.8rem;
+  align-items: center;
+}
+
+.minutes {
+  color: var(--snf-color-text-muted);
+}
+
+.label {
+  display: inline-block;
+  padding: 0.05rem 0.7rem;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--snf-color-text);
+  border: var(--snf-border-width) solid var(--snf-color-ink);
+  border-radius: var(--snf-radius-pill);
+}
+
+.label--completed {
+  background: var(--snf-color-success-soft);
+}
+
+.label--started {
+  background: var(--snf-color-paper);
+}
+
+.label--new {
+  background: var(--snf-color-surface);
+}
+
+.label--planned {
+  color: var(--snf-color-text-muted);
+  background: transparent;
+  border-style: dotted;
+}

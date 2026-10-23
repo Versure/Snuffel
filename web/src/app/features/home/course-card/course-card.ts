@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, input } from '@angular/co
 import { RouterLink } from '@angular/router';
 import type { ManifestCourse } from '../../../core/content/content.types';
 import type { CourseProgressSummary } from '../../../core/progress/course-progress';
+import { plainText } from '../../../shared/inline-text/inline-markup';
 import { ProgressBar } from '../../../shared/ui/progress-bar/progress-bar';
 import { HOME_TEXT } from '../home-text';
 
@@ -20,6 +21,7 @@ export class CourseCard {
   readonly course = input.required<ManifestCourse>();
   readonly progress = input.required<CourseProgressSummary | null>();
 
+  protected readonly title = computed(() => plainText(this.course().title));
   protected readonly link = computed(() => ['/leren', this.course().id]);
   protected readonly label = computed(() => {
     const progress = this.progress();

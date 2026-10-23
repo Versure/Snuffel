@@ -113,6 +113,13 @@ describe('App routes', () => {
     );
   });
 
+  it('protects the course overview route with authGuard', async () => {
+    const route = routes.find((candidate) => candidate.path === 'leren/:courseId');
+    expect(route?.canActivate).toEqual([authGuard]);
+    expect(route?.title).toBe('Leertraject · Snuffel');
+    expect(await open('/leren/proefcursus')).toBe('/login?terug=%2Fleren%2Fproefcursus');
+  });
+
   it('sends a child from /ouder to /', async () => {
     loginAs('child');
     expect(await open('/ouder')).toBe('/');

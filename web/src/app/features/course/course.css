@@ -1,0 +1,80 @@
+:host {
+  display: block;
+}
+
+.hero {
+  padding: 0 0 0.5rem;
+}
+
+/* A text link with a tap area of at least 44 × 44 px. */
+.back {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--snf-tap-min);
+  margin-bottom: 0.4rem;
+}
+
+.practice {
+  margin: 0 0 0.5rem;
+  font-weight: 700;
+  color: var(--snf-color-text-muted);
+}
+
+.greeting {
+  margin: 0.75rem 0 1rem;
+}
+
+/* The goal on paper, as the objective of a lesson. */
+.goal {
+  padding: 0.75rem 1rem;
+  color: var(--snf-color-text);
+  background: var(--snf-color-paper);
+  border: var(--snf-border-width) solid var(--snf-color-ink);
+  border-radius: var(--snf-radius-md);
+  box-shadow: var(--snf-shadow-md);
+}
+
+.goal p {
+  margin: 0;
+}
+
+.goal p + p {
+  margin-top: 0.4rem;
+}
+
+.bar {
+  margin: 1.25rem 0 1rem;
+}
+
+.next {
+  margin: 0 0 0.5rem;
+}
+
+.all-done {
+  margin: 0.5rem 0 0;
+}
+
+.progress-error {
+  display: grid;
+  justify-items: start;
+  gap: 0.6rem;
+  margin: 1.25rem 0 0;
+}
+
+.lessons {
+  display: grid;
+  gap: 0.9rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.state-ted {
+  margin: 1rem 0 1.5rem;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
