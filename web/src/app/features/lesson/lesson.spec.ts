@@ -378,6 +378,35 @@ describe('Lesson', () => {
       expect(scrolled).toHaveBeenCalledTimes(1);
     });
 
+    it('the anchor does not take the focus from an element the child already uses', async () => {
+      holdProgress();
+      const { element } = await openWithoutStable('/leren/proefcursus/proefles#stap-quiz');
+      // The progress hangs, so the scroll waits; meanwhile the child uses the page.
+      const target = element.querySelector<HTMLElement>('a.back')!;
+      target.focus();
+      expect(document.activeElement).toBe(target);
+      await vi.advanceTimersByTimeAsync(STEP_SCROLL_MAX_WAIT_MS * 2);
+      expect(scrolled).not.toHaveBeenCalled();
+      expect(document.activeElement).toBe(target);
+    });
+
+    it('a tap in the step navigation still focuses the step when the child used the page', async () => {
+      const { harness, element } = await openWithoutStable('/leren/proefcursus/proefles#stap-quiz');
+      await harness.fixture.whenStable();
+      await vi.advanceTimersByTimeAsync(0);
+      scrolled.mockClear();
+      const link = [...element.querySelectorAll<HTMLAnchorElement>('snf-step-nav a')].find((item) =>
+        item.getAttribute('href')?.endsWith('#stap-uitleg'),
+      );
+      expect(link).toBeDefined();
+      link!.focus();
+      link!.click();
+      await vi.advanceTimersByTimeAsync(0);
+      await harness.fixture.whenStable();
+      expect(scrolledIds()).toEqual(['stap-uitleg']);
+      expect(document.activeElement?.id).toBe('stap-uitleg-titel');
+    });
+
     it('does not scroll for a lesson that is no longer shown', async () => {
       const other: LessonData = { ...lesson, title: 'Andere les' };
       loadLesson.mockImplementation(async (_courseId, lessonId) =>

@@ -400,6 +400,29 @@ test.describe('the stepped exercise', () => {
     }
   });
 
+  test('typing before the step anchor arrives keeps the focus in the input', async ({ page }) => {
+    // Slow progress keeps the page unstable, so the anchor only arrives later.
+    await page.route(resultsPattern, async (route) => {
+      if (route.request().method() === 'GET') {
+        await new Promise((resolve) => setTimeout(resolve, 3000));
+      }
+      await route.continue();
+    });
+    await openExerciseLesson(page, { hash: anchor });
+    const card = exerciseCard(page, 'gelijke-noemers');
+    const input = card.locator('input.input');
+    await input.click();
+    await page.keyboard.type('3/');
+    await expect(input).toBeFocused();
+    // Well after STEP_SCROLL_MAX_WAIT_MS and the slow progress: the focus is still there.
+    await page.waitForTimeout(4000);
+    await expect(input).toBeFocused();
+    await expect(page.locator(`${anchor}-titel`)).not.toBeFocused();
+    await page.keyboard.type('5');
+    await expect(input).toHaveValue('3/5');
+    await page.unroute(resultsPattern);
+  });
+
   test('a result that cannot be saved shows a message', async ({ page }) => {
     await openExerciseLesson(page, { hash: anchor });
     await page.route(resultsPattern, (route) =>

@@ -161,6 +161,10 @@ export class Lesson {
         if (done) return;
         done = true;
         clearTimeout(timer);
+        // A child who already uses the page (typing in an exercise, a tapped button) keeps its
+        // focus and place: a late anchor must not pull it away.
+        const active = document.activeElement;
+        if (active && active !== document.body) return;
         this.goToStep(stepId);
       };
       const render = afterNextRender(
