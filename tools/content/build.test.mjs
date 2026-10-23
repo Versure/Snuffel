@@ -1,5 +1,14 @@
 import assert from 'node:assert/strict';
-import { mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
+import {
+  mkdirSync,
+  mkdtempSync,
+  readdirSync,
+  readFileSync,
+  rmSync,
+  statSync,
+  writeFileSync,
+} from 'node:fs';
+import { tmpdir } from 'node:os';
 import { join, relative, sep } from 'node:path';
 import { describe, test } from 'node:test';
 import { buildContent, buildScript, contentHash, parseBuildArgs } from './build.mjs';
@@ -42,6 +51,28 @@ describe('content:build', () => {
     const manifest = JSON.parse(readFileSync(join(out, 'manifest.json'), 'utf8'));
     assert.deepEqual(manifest, { schemaVersion: 1, courses: [] });
     assert.deepEqual(listFiles(out), ['manifest.json']);
+  });
+
+  test('without --fixtures the manifest has no fixture course at all', (t) => {
+    // The real repository: every course under content/fixtures/courses (the proefcursus, and the
+    // sample course made with snuffel-leren --voorbeeld) stays out of the image build.
+    const fixtureCourses = readdirSync(join(repoRoot, 'content', 'fixtures', 'courses'), {
+      withFileTypes: true,
+    })
+      .filter((entry) => entry.isDirectory())
+      .map((entry) => entry.name);
+    assert.ok(fixtureCourses.includes('proefcursus'));
+    const out = mkdtempSync(join(tmpdir(), 'snuffel-build-'));
+    t.after(() => rmSync(out, { recursive: true, force: true }));
+    const result = buildContent({ root: repoRoot, out: join(out, 'content') });
+    assert.equal(result.ok, true);
+    const manifest = JSON.parse(readFileSync(join(out, 'content', 'manifest.json'), 'utf8'));
+    const ids = manifest.courses.map((course) => course.id);
+    for (const name of fixtureCourses) assert.ok(!ids.includes(name), `${name} is in the manifest`);
+    for (const file of result.files) {
+      const [top] = file.split('/');
+      assert.ok(!fixtureCourses.includes(top), `${file} comes from a fixture course`);
+    }
   });
 
   test('with --fixtures the lesson and asset are written', (t) => {
