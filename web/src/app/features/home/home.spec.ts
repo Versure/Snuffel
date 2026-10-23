@@ -70,6 +70,14 @@ function moodOf(tedSays: Element | null | undefined): string {
   return 'cool';
 }
 
+/**
+ * Render what is there without waiting for a request that hangs (whenStable would wait for it).
+ */
+async function settle(fixture: { detectChanges(): void }): Promise<void> {
+  for (let i = 0; i < 5; i++) await Promise.resolve();
+  fixture.detectChanges();
+}
+
 describe('Home', () => {
   let user: ReturnType<typeof signal<UserRecord | null>>;
   let loadManifest: ReturnType<typeof vi.fn<() => Promise<ContentManifest>>>;
@@ -232,6 +240,40 @@ describe('Home', () => {
     expect(loadStepStatuses).toHaveBeenLastCalledWith('b1');
     const labels = Array.from(element.querySelectorAll('snf-course-card .label')).map(textOf);
     expect(labels).toEqual(['Alle lessen klaar!', '0 van 2 lessen klaar', '0 van 1 lessen klaar']);
+  });
+
+  it('shows no progress of the previous user while the new one is still loading', async () => {
+    statuses = groupStepStatuses([
+      { lesson_id: 'proefles', step_id: 'uitleg', status: 'completed' },
+      { lesson_id: 'proefles', step_id: 'quiz', status: 'completed' },
+    ]);
+    const { fixture, element } = await render();
+    expect(Array.from(element.querySelectorAll('snf-course-card .label')).map(textOf)).toContain(
+      '1 van 2 lessen klaar',
+    );
+
+    // The request for the next user hangs.
+    let resolve!: (value: StepStatuses) => void;
+    loadStepStatuses.mockImplementation(
+      () => new Promise<StepStatuses>((done) => (resolve = done)),
+    );
+    user.set({ id: 'b1', username: 'kind-b', name: 'Kind B', role: 'child' });
+    await settle(fixture);
+    expect(loadStepStatuses).toHaveBeenLastCalledWith('b1');
+    expect(textOf(element.querySelector('.greeting'))).toBe('Hoi, Kind B!');
+    expect(element.querySelectorAll('snf-course-card')).toHaveLength(3);
+    expect(element.querySelector('[role="progressbar"]')).toBeNull();
+    expect(textOf(element)).not.toContain('lessen klaar');
+
+    // Then the progress of the new user, and only that.
+    resolve(groupStepStatuses([]));
+    await fixture.whenStable();
+    const labels = Array.from(element.querySelectorAll('snf-course-card .label')).map(textOf);
+    expect(labels).toEqual([
+      '0 van 1 lessen klaar',
+      '0 van 2 lessen klaar',
+      '0 van 1 lessen klaar',
+    ]);
   });
 
   it('shows the courses without bars and a retry when progress cannot be loaded', async () => {

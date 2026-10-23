@@ -228,6 +228,38 @@ describe('Course', () => {
     expect(loadStepStatuses).toHaveBeenCalledWith('a1', 'proefcursus');
   });
 
+  it('shows no progress of the previous user while the new one is still loading', async () => {
+    statuses = groupStepStatuses(done('proefles', ['uitleg', 'spel', 'quiz', 'zelf-doen']));
+    const { harness, element } = await open();
+    expect(textOf(element.querySelector('snf-lesson-item .label'))).toBe('Klaar ✓');
+
+    // The request for the next user hangs.
+    let resolve!: (value: StepStatuses) => void;
+    loadStepStatuses.mockImplementation(
+      () => new Promise<StepStatuses>((finish) => (resolve = finish)),
+    );
+    user.set({ id: 'b1', username: 'kind-b', name: 'Kind B', role: 'child' });
+    for (let i = 0; i < 5; i++) await Promise.resolve();
+    // Not whenStable: it would wait for the request that hangs.
+    harness.fixture.detectChanges();
+    expect(loadStepStatuses).toHaveBeenLastCalledWith('b1', 'proefcursus');
+    expect(textOf(element.querySelector('h1'))).toBe('Proefcursus');
+    expect(element.querySelectorAll('snf-lesson-item')).toHaveLength(2);
+    expect(element.querySelector('[role="progressbar"]')).toBeNull();
+    expect(element.querySelector('.label--new, .label--started, .label--completed')).toBeNull();
+    expect(element.querySelector('.all-done')).toBeNull();
+    expect(element.querySelector('.next')).toBeNull();
+    expect(textOf(element)).not.toContain('lessen klaar');
+
+    // Then the progress of the new user, and only that.
+    resolve(groupStepStatuses([]));
+    await harness.fixture.whenStable();
+    expect(textOf(element.querySelector('snf-lesson-item .label'))).toBe('Nieuw');
+    expect(
+      element.querySelector('snf-progress-bar [role="progressbar"]')?.getAttribute('aria-valuenow'),
+    ).toBe('0');
+  });
+
   it('shows Ted oops for an unknown course', async () => {
     const { element, button } = await open('/leren/bestaat-niet');
     expect(textOf(element.querySelector('h1'))).toBe('Leertraject niet gevonden');
