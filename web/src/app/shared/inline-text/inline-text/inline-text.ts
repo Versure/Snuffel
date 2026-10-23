@@ -1,8 +1,6 @@
-import { NgTemplateOutlet } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, forwardRef, input } from '@angular/core';
-import { ExternalLink } from '../external-link/external-link';
-import { GlossaryTerm } from '../glossary-term/glossary-term';
+import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 import { parseInline } from '../inline-markup';
+import { InlineTokens } from '../inline-tokens/inline-tokens';
 
 /**
  * Lesson text with its inline markup: bold, italic, links and subject terms. Renders the tokens
@@ -10,8 +8,7 @@ import { parseInline } from '../inline-markup';
  */
 @Component({
   selector: 'snf-inline-text',
-  // forwardRef: a glossary term renders its definition with InlineText.
-  imports: [NgTemplateOutlet, ExternalLink, forwardRef(() => GlossaryTerm)],
+  imports: [InlineTokens],
   templateUrl: './inline-text.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

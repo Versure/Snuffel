@@ -1,0 +1,23 @@
+@for (token of tokens(); track $index) {
+  @switch (token.type) {
+    @case ('strong') {
+      <strong><snf-inline-tokens [tokens]="token.children" [terms]="terms()" /></strong>
+    }
+    @case ('em') {
+      <em><snf-inline-tokens [tokens]="token.children" [terms]="terms()" /></em>
+    }
+    @case ('link') {
+      <snf-external-link [url]="token.url" [label]="token.text" />
+    }
+    @case ('term') {
+      @if (terms()) {
+        <snf-glossary-term [term]="token.term" [text]="token.text" />
+      } @else {
+        <ng-container>{{ token.text }}</ng-container>
+      }
+    }
+    @default {
+      <ng-container>{{ token.text }}</ng-container>
+    }
+  }
+}

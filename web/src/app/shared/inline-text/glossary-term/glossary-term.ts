@@ -21,7 +21,7 @@ let nextId = 0;
  */
 @Component({
   selector: 'snf-glossary-term',
-  // forwardRef: InlineText renders terms, and a definition is rendered with InlineText.
+  // forwardRef: InlineText (via InlineTokens) renders terms, and a definition uses InlineText.
   imports: [forwardRef(() => InlineText)],
   templateUrl: './glossary-term.html',
   styleUrl: './glossary-term.css',
