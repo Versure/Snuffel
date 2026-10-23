@@ -150,7 +150,7 @@ Elke bron in `sources` heeft `id`, `title`, `url` (alleen `https://`), `publishe
 
 Elke stap heeft `id`, `type` en `title`. Een les van een leertraject (`kind: course`) heeft precies één `quiz`-stap; een oefenles hoogstens één.
 
-De ouder ziet in het ouderoverzicht (`/ouder/<kind>`) per stap de `title` met wat het kind deed ("Quiz: 3 van 4 goed", "Aan het water: 2 van 3 afgevinkt", "Voel de lijn: 7 van 8 goed"). Geef quiz-, interactie- en praktijkstappen dus een titel die ook zonder de les duidelijk is. De quizscore telt per vraag het **laatste** antwoord met de huidige `version` van de les (zoals de quiz na herladen), en alleen opties die de vraag nu nog heeft.
+De ouder ziet in het ouderoverzicht (`/ouder/<kind>`) per stap de `title` met wat het kind deed ("Quiz: 3 van 4 goed", "Aan het water: 2 van 4 afgevinkt", "Voel de lijn: 7 van 8 goed"). Geef quiz-, interactie- en praktijkstappen dus een titel die ook zonder de les duidelijk is. De quizscore telt per vraag het **laatste** antwoord met de huidige `version` van de les (zoals de quiz na herladen), en alleen opties die de vraag nu nog heeft.
 
 **`explain`**: uitleg in blokken.
 
