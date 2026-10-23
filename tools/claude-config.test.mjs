@@ -189,6 +189,13 @@ describe('content agents', () => {
     }
   });
 
+  test('content-reviewer checks lessons against homework photos', () => {
+    const text = readFileSync(join(agentsDir, 'content-reviewer.md'), 'utf8');
+    for (const needle of ['huiswerk-fotos/', "foto's", 'notatie', 'persoonsgegevens']) {
+      assert.ok(text.includes(needle), `content-reviewer does not mention ${needle}`);
+    }
+  });
+
   test('snuffel-leren names source-researcher and content-reviewer, and both agent files exist', () => {
     const text = readFileSync(skillFile('snuffel-leren'), 'utf8');
     const named = agentReferences(text, agentNames);
