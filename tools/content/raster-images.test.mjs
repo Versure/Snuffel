@@ -6,19 +6,7 @@ import { tmpdir } from 'node:os';
 import { join, relative, sep } from 'node:path';
 import { describe, test } from 'node:test';
 import { repoRoot } from './check.mjs';
-
-export const rasterExtensions = [
-  '.jpg',
-  '.jpeg',
-  '.png',
-  '.heic',
-  '.heif',
-  '.webp',
-  '.gif',
-  '.bmp',
-  '.tif',
-  '.tiff',
-];
+import { rasterExtensions } from './raster-extensions.mjs';
 
 /** Every raster image below `root`/content, as a path relative to `root` with forward slashes. */
 export function rasterImagesInContent(root) {
