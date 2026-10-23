@@ -241,6 +241,23 @@ describe('schemas', () => {
     assert.deepEqual(validate('lesson', lessonWithInteraction(steppedExercise)), []);
   });
 
+  test('a stepped-exercise with 11 exercises is a schema error', () => {
+    const exercise = steppedExercise.config.exercises[0];
+    const ten = clone(steppedExercise);
+    ten.config.exercises = Array.from({ length: 10 }, (_, index) => ({
+      ...clone(exercise),
+      id: `som-${index + 1}`,
+    }));
+    assert.deepEqual(validate('lesson', lessonWithInteraction(ten)), []);
+
+    const eleven = clone(ten);
+    eleven.config.exercises.push({ ...clone(exercise), id: 'som-11' });
+    assertError(
+      validate('lesson', lessonWithInteraction(eleven)),
+      'steps[1].interaction.config.exercises',
+    );
+  });
+
   test('accepts a manifest and a terms list', () => {
     const manifest = {
       schemaVersion: 1,

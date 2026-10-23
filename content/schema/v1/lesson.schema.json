@@ -896,6 +896,7 @@
         "exercises": {
           "type": "array",
           "minItems": 1,
+          "maxItems": 10,
           "items": {
             "$ref": "#/$defs/exercise"
           }
@@ -962,6 +963,7 @@
     },
     "numberAnswer": {
       "title": "NumberAnswer",
+      "description": "Correct when the number of the child is at most tolerance from value. The child may type a decimal with a comma or a point, a fraction (3/4) or a mixed number (1 1/4).",
       "type": "object",
       "additionalProperties": false,
       "required": ["type", "value", "tolerance"],
@@ -1058,7 +1060,7 @@
       "required": ["answer", "feedback"],
       "properties": {
         "answer": {
-          "description": "A wrong answer as a child would type or choose it.",
+          "description": "A wrong answer as a child would type it; for a choice answer the id of an option.",
           "$ref": "#/$defs/text"
         },
         "feedback": {
