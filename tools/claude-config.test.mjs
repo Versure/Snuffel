@@ -174,6 +174,13 @@ describe('content agents', () => {
     );
   });
 
+  test('source-researcher reads homework photos and rates a method as medium', () => {
+    const text = readFileSync(join(agentsDir, 'source-researcher.md'), 'utf8');
+    for (const needle of ['huiswerk-fotos/', 'type: "method"', 'reliability: "medium"']) {
+      assert.ok(text.includes(needle), `source-researcher does not mention ${needle}`);
+    }
+  });
+
   test('content-reviewer can only read and open sources', () => {
     assertToolsWithin('content-reviewer', ['Read', 'Glob', 'Grep', 'WebFetch'], ['WebFetch']);
     const { tools } = agent('content-reviewer');
