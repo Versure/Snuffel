@@ -5,7 +5,20 @@ import { join, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 export const roots = ['web/src', 'web/public', 'pocketbase/pb_hooks', 'pocketbase/pb_migrations'];
-const extensions = ['.ts', '.js', '.html', '.css', '.json', '.svg', '.webmanifest'];
+const extensions = [
+  '.ts',
+  '.mts',
+  '.js',
+  '.mjs',
+  '.cjs',
+  '.html',
+  '.css',
+  '.json',
+  '.svg',
+  '.webmanifest',
+  '.txt',
+  '.xml',
+];
 // Only the generated content output (lesson sources may link out) and its staging dirs from
 // content:build are skipped; app code in a directory called `content` is scanned like the rest.
 const ignoredDirs = ['web/public/content'];

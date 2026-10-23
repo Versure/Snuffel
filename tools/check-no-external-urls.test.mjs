@@ -81,4 +81,15 @@ describe('findExternalUrls', () => {
     const dir = project({ 'web/src': '' });
     assert.throws(() => findExternalUrls(dir, lenient), { code: 'ENOTDIR' });
   });
+
+  test('scans module, text and xml files too', () => {
+    const files = ['a.mjs', 'b.cjs', 'c.mts', 'robots.txt', 'sitemap.xml'];
+    const dir = project(
+      Object.fromEntries(files.map((file) => [`web/public/${file}`, `${url}\n`])),
+    );
+    assert.deepEqual(
+      findExternalUrls(dir, lenient).sort(),
+      files.map((file) => `web/public/${file}:1  ${url}`).sort(),
+    );
+  });
 });
