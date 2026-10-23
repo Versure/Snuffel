@@ -6,7 +6,7 @@ argument-hint: '<korte wens> [--voorbeeld]'
 
 # Snuffel leren: een les maken
 
-Argument: een korte wens in gewone taal, bijv. _"Ik wil dat mijn kind leert hoe je een snoek onthaakt."_ Met `--voorbeeld` draait de skill in de **voorbeeldmodus** (zie onderaan).
+Argument: een korte wens in gewone taal, bijv. _"Ik wil dat mijn kind leert hoe je een snoek onthaakt."_ Met `--voorbeeld` achter de wens (`/snuffel-leren <wens> --voorbeeld`) draait de skill in de **voorbeeldmodus** (zie onderaan).
 
 Je maakt **alleen inhoud**: bestanden onder `content/`. Geen app-code, geen schema, geen tools. Is er iets anders nodig, stop dan en zeg wat (zie "Grenzen"). De app roept nooit een AI-API of andere dienst aan; hints, uitleg en Ted-teksten zijn statische inhoud die jij nu schrijft.
 
