@@ -24,6 +24,8 @@ function readTree(dir) {
   return Object.fromEntries(listFiles(dir).map((file) => [file, readFileSync(join(dir, file))]));
 }
 
+const isFigure = (block) => block.type === 'figure';
+
 function build(fixture, options = {}) {
   const out = join(fixture.root, 'out', 'content');
   return {
@@ -116,6 +118,28 @@ describe('content:build', () => {
       manifest.courses[0].assets.map((asset) => asset.path),
       ['assets/hengeltop.svg'],
     );
+  });
+
+  test('manifest assets are unique by path and sorted', (t) => {
+    const fixture = fixtureRoot(t);
+    const svg = readFileSync(fixture.path('assets/hengeltop.svg'), 'utf8');
+    fixture.writeFile('assets/z-top.svg', svg);
+    fixture.writeFile('assets/a-top.svg', svg);
+    fixture.mutateLesson((lesson) => {
+      const step = lesson.steps.find((candidate) => candidate.blocks?.some(isFigure));
+      const figure = step.blocks.find(isFigure);
+      // Refers to hengeltop twice and the new ones out of order.
+      for (const src of ['assets/z-top.svg', 'assets/hengeltop.svg', 'assets/a-top.svg']) {
+        step.blocks.push({ ...figure, src });
+      }
+    });
+    const { out, result } = build(fixture, { fixtures: true });
+    assert.equal(result.ok, true);
+    const manifest = JSON.parse(readFileSync(join(out, 'manifest.json'), 'utf8'));
+    const paths = manifest.courses[0].assets.map((asset) => asset.path);
+    assert.deepEqual(paths, ['assets/a-top.svg', 'assets/hengeltop.svg', 'assets/z-top.svg']);
+    assert.equal(new Set(paths).size, paths.length);
+    assert.deepEqual(paths, [...paths].sort());
   });
 
   test('a course without figures has an empty assets list', (t) => {
