@@ -122,7 +122,7 @@ test.describe('guards', () => {
     await page.goto('/ouder');
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Ouderoverzicht');
     await expect(page).toHaveTitle('Ouderoverzicht · Snuffel');
-    await expect(page.getByText('Hier zie je straks hoe het met de kinderen gaat.')).toBeVisible();
+    await expect(page.getByText('Zo gaat het met de kinderen.')).toBeVisible();
   });
 
   test('logging in via /login?terug=%2Fouder lands on /ouder', async ({ page }) => {

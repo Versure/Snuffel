@@ -1,0 +1,44 @@
+:host {
+  display: block;
+}
+
+/* The whole card is one link, well above 44 × 44 px. */
+.card {
+  display: block;
+  min-height: var(--snf-tap-min);
+  padding: 1rem 1.1rem;
+  color: var(--snf-color-text);
+  font-weight: 400;
+  text-decoration: none;
+  background: var(--snf-color-surface);
+  border: var(--snf-border-width) solid var(--snf-color-ink);
+  border-radius: var(--snf-radius-lg);
+  box-shadow: var(--snf-shadow-lg);
+}
+
+.name {
+  margin: 0 0 0.4rem;
+  font-family: var(--snf-font-display);
+  font-weight: 400;
+  font-size: 1.8rem;
+  line-height: 1.05;
+  letter-spacing: 0.03em;
+  color: var(--snf-color-heading);
+}
+
+.name:only-child {
+  margin-bottom: 0;
+}
+
+.line {
+  margin: 0;
+}
+
+.card:hover .name {
+  text-decoration: underline;
+}
+
+.card:focus-visible {
+  outline: var(--snf-focus-ring);
+  outline-offset: var(--snf-focus-ring-offset);
+}

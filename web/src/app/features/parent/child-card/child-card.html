@@ -1,0 +1,9 @@
+<a class="card" [routerLink]="link()">
+  <h2 class="name">{{ name() }}</h2>
+  @if (lastActivity(); as last) {
+    <p class="line last-activity">{{ last }}</p>
+  }
+  @if (lessonsCompleted(); as completed) {
+    <p class="line lessons-completed">{{ completed }}</p>
+  }
+</a>

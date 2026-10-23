@@ -3,9 +3,28 @@
 }
 
 .ted {
-  margin: 1rem 0;
+  margin: 1rem 0 1.25rem;
 }
 
 .ted p {
   margin: 0;
+}
+
+.state-ted {
+  margin: 1rem 0 1.5rem;
+}
+
+.activity-error {
+  display: grid;
+  justify-items: start;
+  gap: 0.6rem;
+  margin: 0 0 1.5rem;
+}
+
+.cards {
+  display: grid;
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
