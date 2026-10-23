@@ -150,7 +150,7 @@
               "answer": "vis",
               "shape": [
                 { "type": "base", "level": 0.22 },
-                { "type": "wobble", "amplitude": 0.015, "frequency": 6 },
+                { "type": "wobble", "amplitude": 0.015, "frequency": 6.3662 },
                 { "type": "pulse", "at": 0.5, "width": 0.012, "height": 0.62 },
                 { "type": "pulse", "at": 0.57, "width": 0.01, "height": 0.32 }
               ],
@@ -162,7 +162,29 @@
               "shape": [
                 { "type": "base", "level": 0.22 },
                 { "type": "ramp", "from": 0.32, "to": 0.4, "height": 0.42 },
-                { "type": "wobble", "amplitude": 0.17, "frequency": 9, "from": 0.32, "to": 1 }
+                {
+                  "type": "wobble",
+                  "amplitude": 0.085,
+                  "frequency": 6.6845,
+                  "phase": 0.0908,
+                  "from": 0.32,
+                  "fadeIn": 0.08
+                },
+                {
+                  "type": "wobble",
+                  "amplitude": 0.085,
+                  "frequency": 10.8225,
+                  "phase": 0.9092,
+                  "from": 0.32,
+                  "fadeIn": 0.08
+                },
+                {
+                  "type": "wobble",
+                  "amplitude": 0.05,
+                  "frequency": 14.3239,
+                  "from": 0.32,
+                  "fadeIn": 0.08
+                }
               ],
               "explanation": "Zwaar én schokken terug: er leeft iets. Waarschijnlijk een snoek die met zijn kop schudt. Aanslaan!"
             },
@@ -172,7 +194,7 @@
               "shape": [
                 { "type": "base", "level": 0.22 },
                 { "type": "ramp", "from": 0.32, "to": 0.42, "height": 0.63 },
-                { "type": "wobble", "amplitude": 0.004, "frequency": 5 }
+                { "type": "wobble", "amplitude": 0.004, "frequency": 4.7746 }
               ],
               "explanation": "Zwaar en daarna helemaal vlak, er komt niets terug: je zit vast. Niet rukken, loop een stukje opzij."
             },
@@ -182,7 +204,7 @@
               "shape": [
                 { "type": "base", "level": 0.22 },
                 { "type": "ramp", "from": 0.25, "to": 0.85, "height": 0.42 },
-                { "type": "wobble", "amplitude": 0.02, "frequency": 1.4 }
+                { "type": "wobble", "amplitude": 0.02, "frequency": 1.4324 }
               ],
               "explanation": "Langzaam zwaarder en soepel glijdend, zonder schokken: een plant. Draai iets hoger en sneller binnen."
             },

@@ -21,7 +21,7 @@ import type {
   Course,
   Lesson as LessonData,
 } from '../../core/content/content.types';
-import { Lesson } from './lesson';
+import { Lesson, STEP_SCROLL_MAX_WAIT_MS } from './lesson';
 
 // The fixture lesson from content/ (never copied into web/src).
 const course = courseJson as unknown as Course;
@@ -85,6 +85,7 @@ describe('Lesson', () => {
         steps: new Map(),
         checklists: new Map(),
         attempts: [],
+        results: [],
       }),
     );
     user = signal<UserRecord | null>({
@@ -132,7 +133,7 @@ describe('Lesson', () => {
       '4 Aan het water',
     ]);
     expect(element.querySelectorAll('snf-block')).toHaveLength(8);
-    expect(element.querySelector('snf-interaction-placeholder')).not.toBeNull();
+    expect(element.querySelector('snf-interaction')).not.toBeNull();
     expect(element.querySelector('snf-quiz')).not.toBeNull();
     expect(element.querySelector('snf-checklist')).not.toBeNull();
     expect(textOf(element.querySelector('.finished'))).toBe(
@@ -285,6 +286,7 @@ describe('Lesson', () => {
       ]),
       checklists: new Map(),
       attempts: [],
+      results: [],
     });
     const { element } = await open();
     const items = [...element.querySelectorAll('snf-step-nav li')];
@@ -312,5 +314,96 @@ describe('Lesson', () => {
     expect(boxes.length).toBe(4);
     expect(boxes.every((box) => box.disabled)).toBe(true);
     expect(element.querySelectorAll('snf-step-nav li.done')).toHaveLength(0);
+  });
+
+  describe('the step anchor in the url', () => {
+    let scrolled: ReturnType<typeof vi.fn<(this: Element) => void>>;
+    let original: typeof Element.prototype.scrollIntoView;
+
+    beforeEach(() => {
+      original = Element.prototype.scrollIntoView;
+      scrolled = vi.fn<(this: Element) => void>();
+      Element.prototype.scrollIntoView = scrolled;
+      vi.useFakeTimers();
+    });
+
+    afterEach(() => {
+      vi.useRealTimers();
+      Element.prototype.scrollIntoView = original;
+    });
+
+    /** Progress that only arrives when the test says so (or never). */
+    function holdProgress() {
+      let release: (value: LessonProgressSnapshot) => void = () => undefined;
+      loadProgress.mockImplementation(
+        () => new Promise<LessonProgressSnapshot>((resolve) => (release = resolve)),
+      );
+      return (value: LessonProgressSnapshot) => release(value);
+    }
+
+    /** Navigates without waiting for a stable page (hanging progress keeps it unstable). */
+    async function openWithoutStable(url: string) {
+      const harness = await RouterTestingHarness.create();
+      void harness.navigateByUrl(url);
+      await vi.advanceTimersByTimeAsync(50);
+      const element = harness.routeNativeElement as HTMLElement;
+      expect(textOf(element.querySelector('h1'))).toBe('Proefles: aanbeet of vastzitten?');
+      return { harness, element };
+    }
+
+    const scrolledIds = () => scrolled.mock.contexts.map((element) => element.id);
+
+    it('scrolls to the step once the page is stable, and only once', async () => {
+      const { harness } = await openWithoutStable('/leren/proefcursus/proefles#stap-quiz');
+      await harness.fixture.whenStable();
+      await vi.advanceTimersByTimeAsync(0);
+      expect(scrolledIds()).toEqual(['stap-quiz']);
+      expect(document.activeElement?.id).toBe('stap-quiz-titel');
+      await vi.advanceTimersByTimeAsync(STEP_SCROLL_MAX_WAIT_MS * 2);
+      expect(scrolled).toHaveBeenCalledTimes(1);
+    });
+
+    it('scrolls after at most STEP_SCROLL_MAX_WAIT_MS when the progress hangs, and only once', async () => {
+      const release = holdProgress();
+      const { harness } = await openWithoutStable('/leren/proefcursus/proefles#stap-quiz');
+      await vi.advanceTimersByTimeAsync(STEP_SCROLL_MAX_WAIT_MS - 100);
+      expect(scrolled).not.toHaveBeenCalled();
+      await vi.advanceTimersByTimeAsync(100);
+      expect(scrolledIds()).toEqual(['stap-quiz']);
+
+      // The progress arrives later: the page becomes stable, but there is no second scroll.
+      release({ steps: new Map(), checklists: new Map(), attempts: [], results: [] });
+      await vi.advanceTimersByTimeAsync(50);
+      await harness.fixture.whenStable();
+      expect(scrolled).toHaveBeenCalledTimes(1);
+    });
+
+    it('does not scroll for a lesson that is no longer shown', async () => {
+      const other: LessonData = { ...lesson, title: 'Andere les' };
+      loadLesson.mockImplementation(async (_courseId, lessonId) =>
+        lessonId === 'andere-les' ? other : lesson,
+      );
+      // The progress of the first lesson hangs; the other lesson loads its progress at once,
+      // so the page becomes stable while the first scroll is still waiting.
+      loadProgress.mockImplementationOnce(
+        () => new Promise<LessonProgressSnapshot>(() => undefined),
+      );
+      const { harness, element } = await openWithoutStable('/leren/proefcursus/proefles#stap-quiz');
+      void harness.navigateByUrl('/leren/proefcursus/andere-les');
+      await vi.advanceTimersByTimeAsync(50);
+      await harness.fixture.whenStable();
+      expect(textOf(element.querySelector('h1'))).toBe('Andere les');
+      expect(loadProgress).toHaveBeenCalledTimes(2);
+      await vi.advanceTimersByTimeAsync(STEP_SCROLL_MAX_WAIT_MS * 2);
+      expect(scrolled).not.toHaveBeenCalled();
+    });
+
+    it('does not scroll after the page is left', async () => {
+      holdProgress();
+      const { harness } = await openWithoutStable('/leren/proefcursus/proefles#stap-quiz');
+      harness.fixture.destroy();
+      await vi.advanceTimersByTimeAsync(STEP_SCROLL_MAX_WAIT_MS * 2);
+      expect(scrolled).not.toHaveBeenCalled();
+    });
   });
 });

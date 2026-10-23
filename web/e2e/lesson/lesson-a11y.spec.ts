@@ -1,7 +1,22 @@
 import AxeBuilder from '@axe-core/playwright';
 import type { Locator, Page } from '@playwright/test';
 import { expect, test } from '../fixtures';
-import { answerAll, checkbox, practice, questionBlock, quiz, section, settle } from './actions';
+import {
+  answerAll,
+  checkbox,
+  choiceButton,
+  chooseRight,
+  currentPattern,
+  game,
+  gameBlock,
+  playWholeGame,
+  practice,
+  questionBlock,
+  quiz,
+  section,
+  settle,
+  startGame,
+} from './actions';
 import { openLesson } from './fixture';
 
 async function expectNoViolations(page: Page, label: string): Promise<void> {
@@ -19,6 +34,19 @@ async function workThrough(page: Page): Promise<void> {
   await checkbox(page, practice.items[2].id).check();
   await expect(section(page, quiz.id).locator('.score')).toBeVisible();
   await expect(questionBlock(page, quiz.questions[0]).locator('.hint')).toBeVisible();
+  await settle(page);
+}
+
+/** Starts the game with reduced motion, so the choices are open at once. */
+async function openGameForChoice(page: Page): Promise<void> {
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await startGame(page);
+}
+
+/** Plays a whole game with reduced motion (one wrong answer) and waits until it is stored. */
+async function finishGame(page: Page): Promise<void> {
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await playWholeGame(page, [0]);
   await settle(page);
 }
 
@@ -91,6 +119,38 @@ test.describe('lesson accessibility', () => {
     await expectNoViolations(page, 'answered, dark');
   });
 
+  test('the lesson has no axe violations with the game open for a choice (light)', async ({
+    page,
+  }) => {
+    await page.emulateMedia({ colorScheme: 'light' });
+    await openLesson(page);
+    await openGameForChoice(page);
+    await expectNoViolations(page, 'game open, light');
+  });
+
+  test('the lesson has no axe violations with the game open for a choice (dark)', async ({
+    page,
+  }) => {
+    await page.emulateMedia({ colorScheme: 'dark' });
+    await openLesson(page);
+    await openGameForChoice(page);
+    await expectNoViolations(page, 'game open, dark');
+  });
+
+  test('the lesson has no axe violations with a finished game (light)', async ({ page }) => {
+    await page.emulateMedia({ colorScheme: 'light' });
+    await openLesson(page);
+    await finishGame(page);
+    await expectNoViolations(page, 'game finished, light');
+  });
+
+  test('the lesson has no axe violations with a finished game (dark)', async ({ page }) => {
+    await page.emulateMedia({ colorScheme: 'dark' });
+    await openLesson(page);
+    await finishGame(page);
+    await expectNoViolations(page, 'game finished, dark');
+  });
+
   test('every button, link and checklist label is at least 44 × 44 px', async ({ page }) => {
     await openLesson(page);
     const count = await page.locator('a, button, snf-checklist label').count();
@@ -104,6 +164,59 @@ test.describe('lesson accessibility', () => {
     await workThrough(page);
     await expect(section(page, quiz.id).getByRole('button', { name: 'Opnieuw' })).toBeVisible();
     expect(await smallTargets(page)).toEqual([]);
+    // The game: Start, every choice, Bekijk nog eens, Volgende and Nog een potje.
+    await expect(gameBlock(page).getByRole('button', { name: 'Start' })).toBeVisible();
+    await openGameForChoice(page);
+    await expect(gameBlock(page).locator('button.choice')).toHaveCount(game.choices.length);
+    await expect(gameBlock(page).getByRole('button', { name: 'Bekijk nog eens' })).toBeVisible();
+    expect(await smallTargets(page)).toEqual([]);
+    await chooseRight(page);
+    await expect(gameBlock(page).getByRole('button', { name: 'Volgende' })).toBeVisible();
+    expect(await smallTargets(page)).toEqual([]);
+    for (let round = 1; round < game.rounds; round += 1) {
+      await gameBlock(page).getByRole('button', { name: 'Volgende', exact: true }).click();
+      await expect(choiceButton(page, game.choices[0].id)).toBeEnabled();
+      await chooseRight(page);
+    }
+    await expect(gameBlock(page).getByRole('button', { name: 'Nog een potje' })).toBeVisible();
+    expect(await smallTargets(page)).toEqual([]);
+  });
+
+  test('the game can be played with the keyboard', async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await openLesson(page);
+    const expectRing = async (label: string) => {
+      const outline = await page.evaluate(() => {
+        const style = getComputedStyle(document.activeElement as Element);
+        return { style: style.outlineStyle, width: style.outlineWidth };
+      });
+      expect(outline.style, label).not.toBe('none');
+      expect(outline.width, label).toBe('3px');
+    };
+    const start = gameBlock(page).getByRole('button', { name: 'Start', exact: true });
+    await start.focus();
+    await expect(start).toBeFocused();
+    await page.keyboard.press('Enter');
+    // The focus goes to Ted's text, and Tab reaches the first choice.
+    await expect(gameBlock(page).locator('.say')).toBeFocused();
+    await expect(choiceButton(page, game.choices[0].id)).toBeEnabled();
+    await page.keyboard.press('Tab');
+    await expect(choiceButton(page, game.choices[0].id)).toBeFocused();
+    await expectRing('first choice');
+    // Tab to the right answer and choose it with Enter.
+    const pattern = await currentPattern(page);
+    const index = game.choices.findIndex((choice) => choice.id === pattern.answer);
+    for (let step = 0; step < index; step += 1) await page.keyboard.press('Tab');
+    await expect(choiceButton(page, pattern.answer)).toBeFocused();
+    await page.keyboard.press('Enter');
+    await expect(choiceButton(page, pattern.answer)).toContainText('Jouw keuze');
+    // The focus goes to Volgende; Enter starts the next round.
+    const next = gameBlock(page).getByRole('button', { name: 'Volgende', exact: true });
+    await expect(next).toBeFocused();
+    await expectRing('Volgende');
+    await page.keyboard.press('Enter');
+    await expect(gameBlock(page).locator('.rounds')).toHaveText(`Ronde 2 van ${game.rounds}`);
+    await expect(gameBlock(page).locator('.say')).toBeFocused();
   });
 
   test('keyboard focus shows the focus ring on the step navigation and a term', async ({
@@ -162,6 +275,9 @@ test.describe('lesson accessibility', () => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await openLesson(page);
     await workThrough(page);
+    // A started game draws its line at once.
+    await startGame(page);
+    await expect(gameBlock(page).locator('svg[data-drawing="false"]')).toHaveCount(1);
     // See server/auth.spec.ts: check how long each animation lasts, not whether one runs.
     const long = await page.evaluate(() =>
       document

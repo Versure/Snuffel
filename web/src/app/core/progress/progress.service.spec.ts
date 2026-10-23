@@ -3,6 +3,7 @@ import PocketBase, { ClientResponseError } from 'pocketbase';
 import { PocketBaseService } from '../pocketbase/pocketbase.service';
 import type {
   ChecklistStateRecord,
+  InteractionResultRecord,
   LessonProgressRecord,
   QuizAttemptRecord,
 } from '../pocketbase/types';
@@ -53,6 +54,21 @@ function attempt(id: string, created: string): QuizAttemptRecord {
   };
 }
 
+function result(id: string, created: string): InteractionResultRecord {
+  return {
+    ...base,
+    id,
+    created,
+    lesson_id: 'proefles',
+    interaction_id: 'voel-spel',
+    kind: 'trace-game',
+    score: 6,
+    total: 8,
+    detail: { rounds: [] },
+    content_version: 1,
+  };
+}
+
 const error = (status: number) => new ClientResponseError({ status });
 
 describe('ProgressService', () => {
@@ -66,6 +82,7 @@ describe('ProgressService', () => {
       lesson_progress: fakeCollection(),
       quiz_attempts: fakeCollection(),
       checklist_states: fakeCollection(),
+      interaction_results: fakeCollection(),
     };
     vi.spyOn(client, 'collection').mockImplementation(
       (name: string) => collections[name] as unknown as ReturnType<PocketBase['collection']>,
@@ -76,7 +93,7 @@ describe('ProgressService', () => {
     service = TestBed.inject(ProgressService);
   });
 
-  it('loadLesson asks the three collections with filter parameters and maps the records', async () => {
+  it('loadLesson asks the four collections with filter parameters and maps the records', async () => {
     const checklist: ChecklistStateRecord = {
       ...base,
       id: 'c1',
@@ -93,6 +110,7 @@ describe('ProgressService', () => {
       { ...checklist, id: 'c2', checklist_id: 'leeg', checked: null },
     ]);
     collections['quiz_attempts'].getFullList.mockResolvedValue([attempt('q1', '2026-01-01')]);
+    collections['interaction_results'].getFullList.mockResolvedValue([result('r1', '2026-01-01')]);
 
     const snapshot = await service.loadLesson('kind"a', 'proef"les');
 
@@ -102,14 +120,21 @@ describe('ProgressService', () => {
     });
     // Quotes are escaped by pb.filter, never pasted into the filter.
     expect(expectedFilter).toContain('\\"');
-    for (const name of ['lesson_progress', 'checklist_states', 'quiz_attempts']) {
+    for (const name of [
+      'lesson_progress',
+      'checklist_states',
+      'quiz_attempts',
+      'interaction_results',
+    ]) {
       expect(collections[name].getFullList).toHaveBeenCalledWith(
         expect.objectContaining({ filter: expectedFilter, requestKey: null }),
       );
     }
-    expect(collections['quiz_attempts'].getFullList).toHaveBeenCalledWith(
-      expect.objectContaining({ sort: '-created' }),
-    );
+    for (const name of ['quiz_attempts', 'interaction_results']) {
+      expect(collections[name].getFullList).toHaveBeenCalledWith(
+        expect.objectContaining({ sort: '-created' }),
+      );
+    }
     expect([...snapshot.steps]).toEqual([
       ['uitleg', { id: 'p-uitleg', status: 'completed' }],
       ['quiz', { id: 'p-quiz', status: 'started' }],
@@ -119,6 +144,83 @@ describe('ProgressService', () => {
       ['leeg', { id: 'c2', checked: [] }],
     ]);
     expect(snapshot.attempts.map((item) => item.id)).toEqual(['q1']);
+    expect(snapshot.results.map((item) => item.id)).toEqual(['r1']);
+  });
+
+  it('loadLesson also loads the interaction results newest first', async () => {
+    collections['interaction_results'].getFullList.mockResolvedValue([
+      result('oud', '2026-01-01 10:00:00.000Z'),
+      result('nieuwst', '2026-01-03 10:00:00.000Z'),
+      result('midden', '2026-01-02 10:00:00.000Z'),
+    ]);
+    const snapshot = await service.loadLesson('kind-a', 'proefles');
+    expect(collections['interaction_results'].getFullList).toHaveBeenCalledWith(
+      expect.objectContaining({ sort: '-created', requestKey: null }),
+    );
+    expect(snapshot.results.map((item) => item.id)).toEqual(['nieuwst', 'midden', 'oud']);
+  });
+
+  it('saveInteractionResult always creates a new record with score, total, detail and content_version', async () => {
+    const results = collections['interaction_results'];
+    const detail = { rounds: [{ pattern: 'tik', choice: 'vis', correct: true }] };
+    await service.saveInteractionResult(
+      'kind-a',
+      'proefles',
+      'voel-spel',
+      'trace-game',
+      { score: 1, total: 1, detail },
+      3,
+    );
+    await service.saveInteractionResult(
+      'kind-a',
+      'proefles',
+      'voel-spel',
+      'trace-game',
+      { score: 0, total: 1, detail },
+      3,
+    );
+    expect(results.create).toHaveBeenCalledTimes(2);
+    expect(results.create).toHaveBeenNthCalledWith(
+      1,
+      {
+        user: 'kind-a',
+        lesson_id: 'proefles',
+        interaction_id: 'voel-spel',
+        kind: 'trace-game',
+        score: 1,
+        total: 1,
+        detail,
+        content_version: 3,
+      },
+      { requestKey: null },
+    );
+    expect(results.create.mock.calls[1][0]).toMatchObject({ score: 0 });
+    expect(results.update).not.toHaveBeenCalled();
+  });
+
+  it('a failed save becomes ProgressError', async () => {
+    collections['interaction_results'].create.mockRejectedValue(error(0));
+    await expect(
+      service.saveInteractionResult(
+        'kind-a',
+        'proefles',
+        'voel-spel',
+        'trace-game',
+        { score: 1, total: 1, detail: {} },
+        1,
+      ),
+    ).rejects.toMatchObject({ name: 'ProgressError', reason: 'unavailable' });
+    collections['interaction_results'].create.mockRejectedValue(error(403));
+    await expect(
+      service.saveInteractionResult(
+        'kind-a',
+        'proefles',
+        'voel-spel',
+        'trace-game',
+        { score: 1, total: 1, detail: {} },
+        1,
+      ),
+    ).rejects.toBeInstanceOf(ProgressError);
   });
 
   it('loadLesson sorts attempts newest first', async () => {

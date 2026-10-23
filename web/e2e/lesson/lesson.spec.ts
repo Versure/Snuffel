@@ -50,6 +50,9 @@ function visibleTexts(): string[] {
         break;
       case 'interaction':
         texts.push(step.intro);
+        if (step.interaction.kind === 'trace-game') {
+          texts.push(...step.interaction.config.choices.map((choice) => choice.label));
+        }
         break;
       case 'quiz':
         if (step.intro) texts.push(step.intro);
@@ -357,16 +360,28 @@ test.describe('the fixture lesson', () => {
     await expect(section.locator('.option.right, .option.wrong, .feedback, .score')).toHaveCount(0);
   });
 
-  test('the game shows a placeholder', async ({ page }) => {
+  test('the game shows the trace game with its choices, closed before Start', async ({ page }) => {
     const section = step(page, 'spel');
-    const placeholder = section.locator('snf-interaction-placeholder');
-    await expect(placeholder).toBeVisible();
-    await expect(placeholder).toHaveText('Dit spel komt binnenkort.');
-    await expect(placeholder.locator('snf-ted svg')).toHaveAttribute('aria-hidden', 'true');
-    // The configuration of the game is not shown.
+    const game = section.locator('snf-trace-game');
+    await expect(game).toBeVisible();
+    await expect(section.locator('snf-interaction-placeholder')).toHaveCount(0);
+    await expect(game.locator('.title')).toHaveText('Voel-spel');
+    await expect(game.getByRole('button', { name: 'Start', exact: true })).toBeVisible();
+    const choices = game.locator('button.choice');
+    await expect(choices).toHaveText(['Vis!', 'Vast', 'Plant', 'Bodem']);
+    for (const choice of await choices.all()) await expect(choice).toBeDisabled();
+    // The explanations of the patterns and Ted's reactions are not shown before playing.
     const text = await section.innerText();
-    for (const label of ['Vis!', 'Plant', 'Bodem']) expect(text).not.toContain(label);
-    await expect(section.locator('button')).toHaveCount(0);
+    const interaction = lesson.steps.find((candidate) => candidate.id === 'spel');
+    if (interaction?.type !== 'interaction' || interaction.interaction.kind !== 'trace-game') {
+      throw new Error('no trace-game in step "spel" of the fixture');
+    }
+    const patterns = interaction.interaction.config.patterns;
+    expect(patterns.length).toBeGreaterThan(0);
+    for (const pattern of patterns) {
+      expect(text).not.toContain(plainText(pattern.explanation));
+    }
+    expect(text).not.toContain('Jouw keuze');
   });
 
   test('the practice step shows its items as a checklist with links and the success criterion', async ({

@@ -1,8 +1,10 @@
 import { inject, Injectable } from '@angular/core';
 import { ClientResponseError } from 'pocketbase';
 import { PocketBaseService } from '../pocketbase/pocketbase.service';
+import type { InteractionResult } from '../../interactions/interaction';
 import type {
   ChecklistStateRecord,
+  InteractionResultRecord,
   LessonProgressRecord,
   QuizAttemptRecord,
   StepStatus,
@@ -29,6 +31,8 @@ export interface LessonProgressSnapshot {
   readonly checklists: ReadonlyMap<string, ChecklistProgress>;
   /** Every quiz attempt of this lesson, newest first. */
   readonly attempts: readonly QuizAttemptRecord[];
+  /** Every interaction result (finished game) of this lesson, newest first. */
+  readonly results: readonly InteractionResultRecord[];
 }
 
 /**
@@ -39,7 +43,7 @@ const noCancel = { requestKey: null } as const;
 
 /**
  * Reads and writes progress in PocketBase (`lesson_progress`, `quiz_attempts`,
- * `checklist_states`). Every filter is built with parameters (`pb.filter`), and an update only
+ * `checklist_states`, `interaction_results`). Every filter is built with parameters (`pb.filter`), and an update only
  * sends the fields a child may change; the access rules in PocketBase are the real protection.
  * Every failure becomes a ProgressError.
  */
@@ -47,14 +51,17 @@ const noCancel = { requestKey: null } as const;
 export class ProgressService {
   private readonly pb = inject(PocketBaseService).client;
 
-  /** Loads the step statuses, checklists and quiz attempts of one user for one lesson. */
+  /**
+   * Loads the step statuses, checklists, quiz attempts and interaction results of one user for
+   * one lesson.
+   */
   async loadLesson(userId: string, lessonId: string): Promise<LessonProgressSnapshot> {
     const filter = this.pb.filter('lesson_id = {:lessonId} && user = {:userId}', {
       lessonId,
       userId,
     });
     try {
-      const [steps, checklists, attempts] = await Promise.all([
+      const [steps, checklists, attempts, results] = await Promise.all([
         this.pb
           .collection('lesson_progress')
           .getFullList<LessonProgressRecord>({ filter, ...noCancel }),
@@ -64,6 +71,9 @@ export class ProgressService {
         this.pb
           .collection('quiz_attempts')
           .getFullList<QuizAttemptRecord>({ filter, sort: '-created', ...noCancel }),
+        this.pb
+          .collection('interaction_results')
+          .getFullList<InteractionResultRecord>({ filter, sort: '-created', ...noCancel }),
       ]);
       return {
         steps: new Map(steps.map((record) => [record.step_id, toStepProgress(record)])),
@@ -72,6 +82,7 @@ export class ProgressService {
         ),
         // Sorted here as well: the order must not depend on the server alone.
         attempts: [...attempts].sort(newestFirst),
+        results: [...results].sort(newestFirst),
       };
     } catch (error) {
       throw toProgressError(error, 'Loading progress');
@@ -206,6 +217,34 @@ export class ProgressService {
       throw toProgressError(error, 'Saving the answer');
     }
   }
+
+  /** Stores one finished game (an interaction): always a new record. */
+  async saveInteractionResult(
+    userId: string,
+    lessonId: string,
+    interactionId: string,
+    kind: string,
+    result: InteractionResult,
+    contentVersion: number,
+  ): Promise<InteractionResultRecord> {
+    try {
+      return await this.pb.collection('interaction_results').create<InteractionResultRecord>(
+        {
+          user: userId,
+          lesson_id: lessonId,
+          interaction_id: interactionId,
+          kind,
+          score: result.score,
+          total: result.total,
+          detail: result.detail,
+          content_version: contentVersion,
+        },
+        noCancel,
+      );
+    } catch (error) {
+      throw toProgressError(error, 'Saving the result');
+    }
+  }
 }
 
 function toStepProgress(record: LessonProgressRecord): StepProgress {
@@ -219,7 +258,7 @@ function toChecklistProgress(record: ChecklistStateRecord): ChecklistProgress {
   return { id: record.id, checked };
 }
 
-function newestFirst(a: QuizAttemptRecord, b: QuizAttemptRecord): number {
+function newestFirst(a: { created: string }, b: { created: string }): number {
   return a.created < b.created ? 1 : a.created > b.created ? -1 : 0;
 }
 

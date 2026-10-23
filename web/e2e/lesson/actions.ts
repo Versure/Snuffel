@@ -1,8 +1,10 @@
 import type { Locator, Page } from '@playwright/test';
 import type {
+  InteractionStep,
   PracticeStep,
   QuizQuestion,
   QuizStep,
+  TraceGameConfig,
 } from '../../src/app/core/content/content.types';
 import { plainText } from '../../src/app/shared/inline-text/inline-markup';
 import { expect } from '../fixtures';
@@ -14,6 +16,12 @@ export const quiz = fixtureLesson.steps.find((step): step is QuizStep => step.ty
 export const practice = fixtureLesson.steps.find(
   (step): step is PracticeStep => step.type === 'practice',
 )!;
+
+export const gameStep = fixtureLesson.steps.find(
+  (step): step is InteractionStep =>
+    step.type === 'interaction' && step.interaction.kind === 'trace-game',
+)!;
+export const game = gameStep.interaction.config as TraceGameConfig;
 
 export function section(page: Page, stepId: string): Locator {
   return page.locator(`section#stap-${stepId}`);
@@ -96,6 +104,7 @@ export interface StoredRecords {
   lesson_progress: Record<string, unknown>[];
   quiz_attempts: Record<string, unknown>[];
   checklist_states: Record<string, unknown>[];
+  interaction_results: Record<string, unknown>[];
 }
 
 /**
@@ -117,6 +126,7 @@ export async function storedRecords(page: Page): Promise<StoredRecords> {
       lesson_progress: await read('lesson_progress'),
       quiz_attempts: await read('quiz_attempts'),
       checklist_states: await read('checklist_states'),
+      interaction_results: await read('interaction_results'),
     };
   });
 }
@@ -124,4 +134,77 @@ export async function storedRecords(page: Page): Promise<StoredRecords> {
 /** The visible text of the feedback of a question. */
 export async function feedbackText(page: Page, question: QuizQuestion): Promise<string> {
   return normalize(await questionBlock(page, question).locator('.feedback').innerText());
+}
+
+// The trace game (voel-spel) of the fixture.
+
+/** The game in the lesson (`snf-trace-game`). */
+export function gameBlock(page: Page): Locator {
+  return section(page, gameStep.id).locator('snf-trace-game');
+}
+
+/** The screen of the game; `data-pattern` is the pattern on it (plan M9, question 7). */
+export function gameScreen(page: Page): Locator {
+  return gameBlock(page).getByRole('img', {
+    name: 'Hengel en een lijn die laat zien hoe hard er getrokken wordt',
+  });
+}
+
+/** The button of a choice of the game. */
+export function choiceButton(page: Page, choiceId: string): Locator {
+  return gameBlock(page).locator(`button.choice[data-choice="${choiceId}"]`);
+}
+
+/** What Ted says in the game, whitespace collapsed. */
+export async function gameTedText(page: Page): Promise<string> {
+  return normalize(await gameBlock(page).locator('.say').innerText());
+}
+
+/** Taps Start and waits until the choices are open. */
+export async function startGame(page: Page): Promise<void> {
+  await gameBlock(page).getByRole('button', { name: 'Start', exact: true }).click();
+  await expect(choiceButton(page, game.choices[0].id)).toBeEnabled();
+}
+
+/** The pattern on the screen and the id of its right choice. */
+export async function currentPattern(page: Page) {
+  const id = await gameScreen(page).getAttribute('data-pattern');
+  const pattern = game.patterns.find((candidate) => candidate.id === id);
+  if (!pattern) throw new Error(`unknown pattern "${id}"`);
+  return pattern;
+}
+
+/** Chooses the right answer for the pattern on the screen. */
+export async function chooseRight(page: Page): Promise<void> {
+  const pattern = await currentPattern(page);
+  await choiceButton(page, pattern.answer).click();
+  await expect(choiceButton(page, pattern.answer)).toContainText('Jouw keuze');
+}
+
+/** Chooses a wrong answer for the pattern on the screen; returns its id. */
+export async function chooseWrong(page: Page): Promise<string> {
+  const pattern = await currentPattern(page);
+  const wrong = game.choices.find((choice) => choice.id !== pattern.answer)!.id;
+  await choiceButton(page, wrong).click();
+  await expect(choiceButton(page, wrong)).toContainText('Jouw keuze');
+  return wrong;
+}
+
+/**
+ * Plays a whole game from Start (or Nog een potje): right answers, except the rounds (0-based)
+ * in `wrong`. Fast with reduced motion; also works without, by waiting for each line.
+ */
+export async function playWholeGame(page: Page, wrong: readonly number[] = []): Promise<void> {
+  const block = gameBlock(page);
+  const again = block.getByRole('button', { name: 'Nog een potje', exact: true });
+  if (await again.isVisible()) await again.click();
+  else await block.getByRole('button', { name: 'Start', exact: true }).click();
+  for (let round = 0; round < game.rounds; round += 1) {
+    if (round > 0) await block.getByRole('button', { name: 'Volgende', exact: true }).click();
+    await expect(block.locator('.rounds')).toHaveText(`Ronde ${round + 1} van ${game.rounds}`);
+    await expect(choiceButton(page, game.choices[0].id)).toBeEnabled();
+    if (wrong.includes(round)) await chooseWrong(page);
+    else await chooseRight(page);
+  }
+  await expect(block.getByRole('button', { name: 'Nog een potje', exact: true })).toBeVisible();
 }

@@ -212,6 +212,31 @@ describe('schemas', () => {
     assert.deepEqual(validate('lesson', lessonWithInteraction(traceGame)), []);
   });
 
+  test('a wobble accepts phase and fadeIn', () => {
+    const game = clone(traceGame);
+    game.config.patterns[1].shape.push({
+      type: 'wobble',
+      amplitude: 0.085,
+      frequency: 6.6845,
+      phase: 0.0908,
+      from: 0.32,
+      fadeIn: 0.08,
+    });
+    assert.deepEqual(validate('lesson', lessonWithInteraction(game)), []);
+  });
+
+  test('a wobble with phase 1.5 or fadeIn -0.1 is a schema error', () => {
+    for (const [field, value] of [
+      ['phase', 1.5],
+      ['fadeIn', -0.1],
+    ]) {
+      const game = clone(traceGame);
+      game.config.patterns[0].shape[2][field] = value;
+      const errors = validate('lesson', lessonWithInteraction(game));
+      assertError(errors, `steps[1].interaction.config.patterns[0].shape[2].${field}`);
+    }
+  });
+
   test('accepts a stepped-exercise', () => {
     assert.deepEqual(validate('lesson', lessonWithInteraction(steppedExercise)), []);
   });

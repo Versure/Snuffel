@@ -275,9 +275,10 @@ Een les staat in de app op `/leren/<cursus-id>/<les-id>`, voor wie ingelogd is (
 - **Einde:** Ted (blij) met `ted.finished`, dan "Woordenlijst", "Verder lezen" (titel van de bron als link, de uitgever en `why`) en "Vragen" (elke vraag met het antwoord eronder). Een lege lijst geeft geen kopje.
 - **Quiz:** alle vragen onder elkaar, genummerd, met de opties als knoppen in een **gehusselde volgorde** (elke ronde anders). Per ronde mag een vraag **één keer** beantwoord worden: na een tik gaan de opties dicht, de gekozen optie wordt groen (goed) of rood (fout) met "Jouw antwoord" erbij, en bij een fout antwoord wordt ook de goede optie groen met "Goede antwoord". Daaronder staat een kleine Ted (blij bij goed, geschrokken bij fout) met een willekeurige regel uit `ted.correct` of `ted.incorrect`, en de `feedback` van de **gekozen** optie. Schrijf dus bij elke optie een `feedback` die zonder de andere opties te begrijpen is. `hints` verschijnen alleen op verzoek, één voor één ("Hint", "Nog een hint"), zolang de vraag open is; hoeveel hints iemand vroeg, wordt bewaard. Na de laatste vraag: "<goed> van <totaal> goed." met Ted (stoer met een regel uit `ted.correct` als alles goed is, anders blij met "Lees de uitleg bij de rode vragen nog eens.") en een knop "Opnieuw" voor een nieuwe ronde.
 - **Praktijk:** een plakbriefje met per `item` een vinkje; de hele regel is het tikvlak, een link in een item staat ernaast (een tik op de link vinkt niets aan). `successCriterion` staat vet onder de lijst, zonder vinkje. Vinkjes worden bewaard, per kind.
-- **Wanneer een stap klaar is** (een gevuld rondje in de stappen-navigatie): een `explain`-stap als het einde van de stap een seconde in beeld is geweest (lezen tot het eind; wie met de navigatie over de uitleg heen springt, heeft hem niet gelezen); een `quiz` als elke vraag beantwoord is, goed of fout; een `practice`-stap als alle items aangevinkt zijn. Een interactie is tot M9 nooit klaar. Een stap die klaar is, blijft klaar, ook als je daarna een vinkje weghaalt. Een les openen bewaart niets.
+- **Wanneer een stap klaar is** (een gevuld rondje in de stappen-navigatie): een `explain`-stap als het einde van de stap een seconde in beeld is geweest (lezen tot het eind; wie met de navigatie over de uitleg heen springt, heeft hem niet gelezen); een `quiz` als elke vraag beantwoord is, goed of fout; een `practice`-stap als alle items aangevinkt zijn; een `trace-game` als een spel **uitgespeeld** is (alle rondes, welke score ook). Een `stepped-exercise` is tot M10 nooit klaar. Een stap die klaar is, blijft klaar, ook als je daarna een vinkje weghaalt. Een les openen bewaart niets.
 - **`version` en bewaarde antwoorden:** bij elk antwoord bewaart de app de `version` van de les. Na herladen toont de quiz alleen antwoorden met dezelfde `version` als de les nu. Verander je een quizvraag of een optie zonder `version` op te hogen, dan ziet een kind zijn oude antwoord bij een veranderde vraag. Daarom moet `version` omhoog bij elke wijziging (`content:check` dwingt dat af).
-- **Wat nog komt:** een interactie (`trace-game`, `stepped-exercise`) is tot M9 en M10 een donker paneel met Ted: "Dit spel komt binnenkort." of "Deze oefening komt binnenkort." Bronnen bij een quizvraag of een praktijkpunt toont de app (nog) niet.
+- **Spel:** zie `trace-game` hieronder. Elk uitgespeeld spel wordt bewaard (score, aantal rondes en per ronde patroon en keuze); na herladen staat onder het spel "Vorige keer: <goed> van <totaal> goed." (alleen met dezelfde `version`). Een half gespeeld spel wordt niet onthouden.
+- **Wat nog komt:** een `stepped-exercise` is tot M10 een donker paneel met Ted: "Deze oefening komt binnenkort." Bronnen bij een quizvraag of een praktijkpunt toont de app (nog) niet.
 
 ## Interacties
 
@@ -287,6 +288,16 @@ Een interactie is data voor een bestaand onderdeel van de app. Alleen deze twee 
 
 Een lijn die over de tijd getekend wordt, met een buigende hengeltop. Het kind kiest wat het "voelt". Bij "beweging beperken" staat de lijn meteen helemaal getekend.
 
+**Wanneer past het:** als het kind een signaal moet leren herkennen dat over de tijd verloopt (een beet, een trilling, een ritme) en de verschillen tussen een paar soorten wil leren voelen. Niet voor iets dat je in één beeld kunt laten zien; dan is een `figure` of een quizvraag beter.
+
+**Zo werkt het in de app:**
+
+- Een donker paneel "Voel-spel" met "<rounds> rondes", een scherm met water, een gele lijn en een roze hengel, en de keuzes als gekleurde knoppen in twee kolommen. De knoppen zijn dicht tot er een lijn getekend is.
+- "Start" maakt de rondes: elk patroon minstens één keer (als er genoeg rondes zijn), de rest willekeurig maar nooit een patroon twee keer vaker dan een ander, gehusseld, en nooit twee keer hetzelfde patroon achter elkaar als dat kan. Met minder rondes dan patronen komen er verschillende, willekeurige patronen.
+- Per ronde tekent de lijn zich in `durationMs` en buigt de hengeltop mee; Ted denkt na: "Voel mee… wat gebeurt er aan je lijn?". Daarna gaan de keuzes open ("Wat was het?") en kan het kind "Bekijk nog eens" kiezen.
+- Goed: Ted blij met een willekeurige regel uit `ted.correct` en de `explanation` van het patroon, en er komt een visje bij in de vangst. Fout: Ted geschrokken met een regel uit `ted.incorrect`, "Het was: <label van het goede antwoord>." en de `explanation`. De gekozen knop krijgt een rand en "Jouw keuze".
+- Na de laatste ronde: "<goed> van <totaal> goed." met Ted stoer en "Jij voelt het verschil al!" bij hooguit één fout, anders Ted blij met "Speel nog een keer, dan voel je het verschil steeds beter.", en een knop "Nog een potje". Deze teksten zijn vast in de app; de config heeft geen eigen Ted-teksten. Schrijf `ted.correct` en `ted.incorrect` dus zo dat ze ook bij het spel passen.
+
 | Veld         | Wat                                                                                                                                  |
 | ------------ | ------------------------------------------------------------------------------------------------------------------------------------ |
 | `choices`    | 2 tot 6 keuzes: `id`, `label`, `color` (een tokennaam: `yellow`, `pink`, `purple`, `blue`, `green`, `orange`; nooit een kleurwaarde) |
@@ -294,15 +305,41 @@ Een lijn die over de tijd getekend wordt, met een buigende hengeltop. Het kind k
 | `rounds`     | aantal rondes, 1 tot 12                                                                                                              |
 | `durationMs` | hoe lang het tekenen van één lijn duurt, 1000 tot 10000                                                                              |
 
-De lijn is de som van de bouwstenen. Tijd en hoogte lopen van 0 tot 1.
+De lijn is de som van de bouwstenen op tijdstip `t`. Tijd en hoogte lopen van 0 tot 1; de rustlijn ligt meestal rond 0,22. Wat boven 1,27 of onder −0,09 uitkomt, valt buiten het scherm (de lijn zakt nooit in het water).
 
-| Bouwsteen | Velden                                          | Wat                                                                   |
-| --------- | ----------------------------------------------- | --------------------------------------------------------------------- |
-| `base`    | `level`                                         | vaste hoogte                                                          |
-| `pulse`   | `at`, `width`, `height`                         | één piek op tijdstip `at`                                             |
-| `pulses`  | `start`, `interval`, `count`, `width`, `height` | `count` pieken om de `interval`, vanaf `start`                        |
-| `ramp`    | `from`, `to`, `height`                          | geleidelijk `height` zwaarder tussen `from` en `to`                   |
-| `wobble`  | `amplitude`, `frequency`, `from` en `to` mogen  | trillen; `frequency` is het aantal golven over de hele lijn (tot 100) |
+| Bouwsteen | Velden                                                                          | Wat                                                                                                                                                                                                                                                                                                                                            |
+| --------- | ------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `base`    | `level`                                                                         | vaste hoogte: `level`                                                                                                                                                                                                                                                                                                                          |
+| `pulse`   | `at`, `width`, `height`                                                         | één piek (een klokvorm) op tijdstip `at`: `height · e^(−(t − at)² / (2 · width²))`; `width` is de standaardafwijking, dus de piek is ongeveer `4 · width` breed                                                                                                                                                                                |
+| `pulses`  | `start`, `interval`, `count`, `width`, `height`                                 | `count` pieken zoals `pulse`, op `start`, `start + interval`, …                                                                                                                                                                                                                                                                                |
+| `ramp`    | `from`, `to`, `height`                                                          | vloeiend van 0 naar `height` tussen `from` en `to` (smoothstep: `height · s² · (3 − 2s)` met `s = (t − from) / (to − from)`); daarna blijft hij op `height`                                                                                                                                                                                    |
+| `wobble`  | `amplitude`, `frequency`; mogen: `from`, `to`, `phase`, `fadeIn` (alle 0 tot 1) | trillen: `amplitude · sin(2π · (frequency · t + phase))`, alleen tussen `from` en `to` (standaard 0 en 1). `frequency` is het aantal golven over de hele lijn (tot 100); `phase` schuift de golf een deel van een golf op; met `fadeIn` groeit het trillen na `from` vloeiend aan (zoals `ramp`) en is het na `from + fadeIn` op volle sterkte |
+
+Zo is "zwaar met schudden" (de `zwaar` uit de proefles) gebouwd: eerst rustig, dan in korte tijd zwaar, en vanaf dat moment groeit een onregelmatig schudden aan (drie trillingen door elkaar):
+
+```json
+[
+  { "type": "base", "level": 0.22 },
+  { "type": "ramp", "from": 0.32, "to": 0.4, "height": 0.42 },
+  {
+    "type": "wobble",
+    "amplitude": 0.085,
+    "frequency": 6.6845,
+    "phase": 0.0908,
+    "from": 0.32,
+    "fadeIn": 0.08
+  },
+  {
+    "type": "wobble",
+    "amplitude": 0.085,
+    "frequency": 10.8225,
+    "phase": 0.9092,
+    "from": 0.32,
+    "fadeIn": 0.08
+  },
+  { "type": "wobble", "amplitude": 0.05, "frequency": 14.3239, "from": 0.32, "fadeIn": 0.08 }
+]
+```
 
 ```json
 {
@@ -338,6 +375,14 @@ De lijn is de som van de bouwstenen. Tijd en hoogte lopen van 0 tot 1.
   }
 }
 ```
+
+**Valkuilen:**
+
+- **Patronen die op elkaar lijken.** Als twee patronen met een ander antwoord bijna dezelfde lijn geven, is het spel gokken. Maak het verschil zichtbaar in vorm (één tik tegenover regelmatige tikjes, zwaar en schudden tegenover zwaar en vlak), niet alleen in kleine getallen.
+- **Te korte `durationMs`.** Onder de 2500 ms is een lijn nauwelijks te volgen; 3000 tot 4000 ms werkt goed. Langer dan 5000 ms wordt saai bij 8 rondes.
+- **Te veel of te weinig rondes.** Neem minstens zoveel rondes als patronen, zodat elk patroon langskomt; 8 tot 10 is genoeg.
+- **`version` omhoog bij een gewijzigd patroon.** Bewaarde scores horen bij één `version`; verander je een patroon, een keuze of het aantal rondes, hoog dan `version` op (`content:check` dwingt dat af), anders klopt "Vorige keer" niet meer met het spel.
+- **Een kleur twee keer.** Elke keuze een eigen `color`; de knoppen hebben ook hun tekst, maar twee gelijke kleuren verwarren.
 
 ### `stepped-exercise` (huiswerk-oefenles)
 

@@ -1,5 +1,6 @@
 import {
   afterNextRender,
+  ApplicationRef,
   ChangeDetectionStrategy,
   Component,
   computed,
@@ -40,6 +41,9 @@ export type LessonState =
 
 type LoadResult = Exclude<LessonState, { kind: 'loading' }>;
 
+/** The longest wait for a stable page before scrolling to the step from the url anchor. */
+export const STEP_SCROLL_MAX_WAIT_MS = 1500;
+
 /**
  * The lesson page (`/leren/:courseId/:lessonId`): one continuous page with the header, the step
  * navigation, every step and the end sections. Provides the lesson context and the progress of
@@ -59,6 +63,7 @@ export class Lesson {
   private readonly context = inject(LessonContext);
   private readonly title = inject(Title);
   private readonly injector = inject(Injector);
+  private readonly appRef = inject(ApplicationRef);
   private readonly auth = inject(AuthService);
   protected readonly progress = inject(LessonProgress);
 
@@ -141,12 +146,36 @@ export class Lesson {
     effect(() => this.title.setTitle(this.pageTitle()));
 
     // After loading: go to the step from the anchor in the url (#stap-<id>).
-    effect(() => {
+    effect((onCleanup) => {
       if (this.state().kind !== 'loaded') return;
       const fragment = untracked(this.fragment);
       if (!fragment?.startsWith(STEP_ANCHOR_PREFIX)) return;
       const stepId = fragment.slice(STEP_ANCHOR_PREFIX.length);
-      afterNextRender(() => this.goToStep(stepId), { injector: this.injector });
+      // Wait until the page is stable: a lazily loaded game (snf-interaction) or restored
+      // progress above the step would otherwise push it away after the scroll. Progress that
+      // never arrives (the SDK has no timeout) must not stop the scroll: whichever comes first,
+      // a stable page or STEP_SCROLL_MAX_WAIT_MS, scrolls, and only once.
+      let done = false;
+      let timer: ReturnType<typeof setTimeout> | undefined;
+      const scroll = () => {
+        if (done) return;
+        done = true;
+        clearTimeout(timer);
+        this.goToStep(stepId);
+      };
+      const render = afterNextRender(
+        () => {
+          timer = setTimeout(scroll, STEP_SCROLL_MAX_WAIT_MS);
+          void this.appRef.whenStable().then(scroll);
+        },
+        { injector: this.injector },
+      );
+      // Another lesson (the state changes) or leaving the page: a late scroll is stale.
+      onCleanup(() => {
+        done = true;
+        clearTimeout(timer);
+        render.destroy();
+      });
     });
   }
 
