@@ -14,6 +14,10 @@ const blocks: [string, BlockData][] = [
   ],
   ['snf-rule-block', { type: 'rule', title: 'Regel', text: 'Tekst.', sourceRefs: [] }],
   ['snf-tip-block', { type: 'tip', text: 'Tip.', sourceRefs: [] }],
+  [
+    'snf-figure-block',
+    { type: 'figure', src: 'assets/hengeltop.svg', alt: 'Hengeltop', sourceRefs: [] },
+  ],
   ['snf-ted-says-block', { type: 'ted-says', mood: 'happy', text: 'Hoi.', sourceRefs: [] }],
 ];
 
