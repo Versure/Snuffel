@@ -256,6 +256,31 @@ test.describe('the trace game', () => {
       expect((await storedRecords(page)).interaction_results).toEqual([]);
     });
 
+    test('when progress cannot be loaded the game stays playable and nothing is stored', async ({
+      page,
+    }) => {
+      const pattern =
+        /\/api\/collections\/(lesson_progress|quiz_attempts|checklist_states|interaction_results)\/records/;
+      await page.route(pattern, (route) =>
+        route.request().method() === 'GET'
+          ? route.fulfill({ status: 503, contentType: 'application/json', body: '{}' })
+          : route.continue(),
+      );
+      await page.reload();
+      const stepSection = section(page, gameStep.id);
+      await expect(stepSection.locator('.unavailable')).toContainText(
+        'Je voortgang kan ik nu niet ophalen.',
+      );
+      await expect(stepSection.getByRole('button', { name: 'Opnieuw' })).toBeVisible();
+      // Still playable.
+      await playWholeGame(page, [2]);
+      await expect(gameBlock(page).locator('.rounds')).toHaveText(
+        `${game.rounds - 1} van ${game.rounds} goed`,
+      );
+      await page.unroute(pattern);
+      expect((await storedRecords(page)).interaction_results).toEqual([]);
+    });
+
     test('a second child does not see the result of the first', async ({ page, browser }) => {
       await playWholeGame(page);
       await expect.poll(async () => (await storedRecords(page)).interaction_results.length).toBe(1);
