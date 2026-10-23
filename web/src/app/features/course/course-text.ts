@@ -1,3 +1,4 @@
+import { LESSON_STATUS_TEXT } from '../../shared/ui/lesson-status/lesson-status-text';
 import { HOME_TEXT } from '../home/home-text';
 
 /** Every text of the course overview and its lesson items (Dutch, as the child sees it). */
@@ -21,10 +22,10 @@ export const COURSE_TEXT = {
   unsupportedVersion: HOME_TEXT.unsupportedVersion,
   lessonNumber: (number: number) => `Les ${number}`,
   minutes: (minutes: number) => `Ongeveer ${minutes} minuten`,
-  completed: 'Klaar',
-  started: (done: number, total: number) => `Bezig: ${done} van ${total} stappen klaar`,
-  new: 'Nieuw',
-  planned: 'Komt nog',
+  completed: LESSON_STATUS_TEXT.completed,
+  started: LESSON_STATUS_TEXT.started,
+  new: LESSON_STATUS_TEXT.new,
+  planned: LESSON_STATUS_TEXT.planned,
   pageTitle: (title: string) => `${title} · Snuffel`,
   notFoundTitle: 'Leertraject niet gevonden · Snuffel',
   defaultTitle: 'Leertraject · Snuffel',

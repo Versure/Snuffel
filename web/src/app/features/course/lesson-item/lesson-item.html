@@ -10,23 +10,12 @@
     @if (lesson().estimatedMinutes; as minutes) {
       <span class="minutes">{{ text.minutes(minutes) }}</span>
     }
-    @switch (status()) {
-      @case ('completed') {
-        <span class="label label--completed"
-          >{{ text.completed }} <span aria-hidden="true">✓</span></span
-        >
-      }
-      @case ('started') {
-        <span class="label label--started">{{
-          text.started(progress()?.done ?? 0, progress()?.total ?? 0)
-        }}</span>
-      }
-      @case ('new') {
-        <span class="label label--new">{{ text.new }}</span>
-      }
-      @case ('planned') {
-        <span class="label label--planned">{{ text.planned }}</span>
-      }
+    @if (status(); as status) {
+      <snf-lesson-status
+        [status]="status"
+        [done]="progress()?.done ?? 0"
+        [total]="progress()?.total ?? 0"
+      />
     }
   </div>
 </div>

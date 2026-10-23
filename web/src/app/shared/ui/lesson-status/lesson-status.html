@@ -1,0 +1,16 @@
+@switch (status()) {
+  @case ('completed') {
+    <span class="label label--completed"
+      >{{ text.completed }} <span aria-hidden="true">✓</span></span
+    >
+  }
+  @case ('started') {
+    <span class="label label--started">{{ text.started(done(), total()) }}</span>
+  }
+  @case ('new') {
+    <span class="label label--new">{{ text.new }}</span>
+  }
+  @case ('planned') {
+    <span class="label label--planned">{{ text.planned }}</span>
+  }
+}
