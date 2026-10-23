@@ -31,7 +31,10 @@ const manifest: ContentManifest = {
         },
         { id: 'proefles-later', title: 'Later', status: 'planned' },
       ],
-      assets: [],
+      assets: [
+        { path: 'assets/hengeltop.svg', hash: 'aaaaaaaaaaaaaaaa' },
+        { path: 'assets/vissen/snoek.svg', hash: 'bbbbbbbbbbbbbbbb' },
+      ],
     },
     {
       id: 'tweede',
@@ -210,6 +213,87 @@ describe('ContentService', () => {
       courses: [{ ...manifest.courses[0], file: '../evil.json' }],
     });
     await expectReason(result, 'not-found');
+  });
+});
+
+describe('ContentService.assetUrls', () => {
+  let service: ContentService;
+  let http: HttpTestingController;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      providers: [provideHttpClient(withFetch()), provideHttpClientTesting()],
+    });
+    service = TestBed.inject(ContentService);
+    http = TestBed.inject(HttpTestingController);
+  });
+
+  afterEach(() => http.verify());
+
+  async function flushManifest(data: unknown = manifest): Promise<void> {
+    for (let attempt = 0; attempt < 10; attempt++) {
+      const [match] = http.match(manifestUrl);
+      if (match) {
+        match.flush(data as ContentManifest);
+        return;
+      }
+      await new Promise((resolve) => setTimeout(resolve, 0));
+    }
+    throw new Error('no manifest request');
+  }
+
+  it('assetUrls maps each asset to its url with the hash', async () => {
+    const result = service.assetUrls('proefcursus');
+    await flushManifest();
+    expect([...(await result)]).toEqual([
+      ['assets/hengeltop.svg', '/content/proefcursus/assets/hengeltop.svg?v=aaaaaaaaaaaaaaaa'],
+      [
+        'assets/vissen/snoek.svg',
+        '/content/proefcursus/assets/vissen/snoek.svg?v=bbbbbbbbbbbbbbbb',
+      ],
+    ]);
+    expect((await service.assetUrls('tweede')).size).toBe(0);
+  });
+
+  it('assetUrls of an unknown course gives not-found', async () => {
+    const result = service.assetUrls('bestaat-niet');
+    await flushManifest();
+    const error: unknown = await result.then(
+      () => null,
+      (rejection: unknown) => rejection,
+    );
+    expect(error).toBeInstanceOf(ContentError);
+    expect((error as ContentError).reason).toBe('not-found');
+  });
+
+  it('assetUrls skips a path outside assets/', async () => {
+    const result = service.assetUrls('proefcursus');
+    await flushManifest({
+      ...manifest,
+      courses: [
+        {
+          ...manifest.courses[0],
+          assets: [
+            { path: '../geheim.svg', hash: 'aaaaaaaaaaaaaaaa' },
+            { path: 'assets/../../x.svg', hash: 'aaaaaaaaaaaaaaaa' },
+            { path: 'lessons/proefles.json', hash: 'aaaaaaaaaaaaaaaa' },
+            { path: 'assets/goed.svg', hash: 'niet-hex' },
+            { path: 'assets/goed.svg', hash: 'cccccccccccccccc' },
+          ],
+        },
+      ],
+    });
+    expect([...(await result).keys()]).toEqual(['assets/goed.svg']);
+  });
+
+  it('assetUrls does not fetch the manifest twice', async () => {
+    const first = service.assetUrls('proefcursus');
+    const second = service.assetUrls('proefcursus');
+    await flushManifest();
+    expect((await first).size).toBe(2);
+    expect((await second).size).toBe(2);
+    expect((await service.assetUrls('proefcursus')).size).toBe(2);
+    // http.verify() in afterEach: no further request.
   });
 });
 
