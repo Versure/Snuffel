@@ -1,0 +1,15 @@
+<svg
+  viewBox="0 0 48 48"
+  aria-hidden="true"
+  focusable="false"
+  [attr.data-icon]="name()"
+  [class]="'icon icon--' + drawing().color"
+>
+  <rect class="tile" x="2" y="2" width="44" height="44" rx="12" />
+  @for (stroke of drawing().strokes; track $index) {
+    <path class="stroke" [class.stroke--dashed]="stroke.dashed" [attr.d]="stroke.d" />
+  }
+  @for (dot of drawing().dots ?? []; track $index) {
+    <circle class="dot" r="2.4" [attr.cx]="dot.cx" [attr.cy]="dot.cy" />
+  }
+</svg>

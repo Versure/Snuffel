@@ -1,0 +1,48 @@
+:host {
+  display: block;
+  margin: 0 0 1rem;
+}
+
+.cards {
+  display: grid;
+  gap: 0.9rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.card {
+  display: grid;
+  grid-template-columns: 3.2rem minmax(0, 1fr);
+  gap: 0.8rem;
+  align-items: start;
+  padding: 0.85rem;
+  color: var(--snf-color-text);
+  background: var(--snf-color-surface);
+  border: var(--snf-border-width) solid var(--snf-color-ink);
+  border-radius: var(--snf-radius-lg);
+  box-shadow: var(--snf-shadow-md);
+}
+
+/* A slight, static tilt as in the reference; no animation. */
+.card:nth-child(2) {
+  transform: rotate(0.6deg);
+}
+
+.card:nth-child(3) {
+  transform: rotate(-0.5deg);
+}
+
+h3 {
+  margin: 0 0 0.2rem;
+  font-family: var(--snf-font-display);
+  font-size: 1.35rem;
+  font-weight: 400;
+  letter-spacing: 0.03em;
+  line-height: 1.1;
+  color: var(--snf-color-heading);
+}
+
+p {
+  margin: 0;
+}

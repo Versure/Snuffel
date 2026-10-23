@@ -5,6 +5,13 @@ import { Block } from './block';
 const blocks: [string, BlockData][] = [
   ['snf-text-block', { type: 'text', text: 'Tekst.', sourceRefs: [] }],
   ['snf-example-block', { type: 'example', text: 'Voorbeeld.', sourceRefs: [] }],
+  [
+    'snf-signal-cards-block',
+    {
+      type: 'signal-cards',
+      cards: [{ icon: 'tick', title: 'Tik', text: 'Tekst.', sourceRefs: [] }],
+    },
+  ],
   ['snf-rule-block', { type: 'rule', title: 'Regel', text: 'Tekst.', sourceRefs: [] }],
   ['snf-tip-block', { type: 'tip', text: 'Tip.', sourceRefs: [] }],
   ['snf-ted-says-block', { type: 'ted-says', mood: 'happy', text: 'Hoi.', sourceRefs: [] }],
