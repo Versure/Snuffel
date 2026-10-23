@@ -373,10 +373,13 @@ test.describe('the fixture lesson', () => {
     // The explanations of the patterns and Ted's reactions are not shown before playing.
     const text = await section.innerText();
     const interaction = lesson.steps.find((candidate) => candidate.id === 'spel');
-    if (interaction?.type === 'interaction' && interaction.interaction.kind === 'trace-game') {
-      for (const pattern of interaction.interaction.config.patterns) {
-        expect(text).not.toContain(plainText(pattern.explanation));
-      }
+    if (interaction?.type !== 'interaction' || interaction.interaction.kind !== 'trace-game') {
+      throw new Error('no trace-game in step "spel" of the fixture');
+    }
+    const patterns = interaction.interaction.config.patterns;
+    expect(patterns.length).toBeGreaterThan(0);
+    for (const pattern of patterns) {
+      expect(text).not.toContain(plainText(pattern.explanation));
     }
     expect(text).not.toContain('Jouw keuze');
   });
