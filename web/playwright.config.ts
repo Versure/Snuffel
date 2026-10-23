@@ -21,13 +21,13 @@ export default defineConfig({
   projects: [
     {
       name: 'mobile',
-      // Lesson tests need a login, so they only run in the server projects.
-      testIgnore: ['server/**', 'container/**', 'lesson/**'],
+      // Lesson and overview tests need a login, so they only run in the server projects.
+      testIgnore: ['server/**', 'container/**', 'lesson/**', 'overview/**'],
       use: { ...devices['Pixel 7'] },
     },
     {
       name: 'desktop',
-      testIgnore: ['server/**', 'container/**', 'lesson/**'],
+      testIgnore: ['server/**', 'container/**', 'lesson/**', 'overview/**'],
       use: { ...devices['Desktop Chrome'] },
     },
     {
@@ -37,16 +37,16 @@ export default defineConfig({
       use: { baseURL: serverURL },
     },
     {
-      // lesson/** needs the fixture lesson, which the e2e build has (pree2e) and the image not.
+      // lesson/** and overview/** need the fixture lesson, which the e2e build has (pree2e) and the image not.
       name: 'server-mobile',
-      testMatch: ['server/**/*.spec.ts', 'lesson/**/*.spec.ts'],
+      testMatch: ['server/**/*.spec.ts', 'lesson/**/*.spec.ts', 'overview/**/*.spec.ts'],
       testIgnore: 'server/seed.setup.ts',
       dependencies: ['server-setup'],
       use: { ...devices['Pixel 7'], baseURL: serverURL },
     },
     {
       name: 'server-desktop',
-      testMatch: ['server/**/*.spec.ts', 'lesson/**/*.spec.ts'],
+      testMatch: ['server/**/*.spec.ts', 'lesson/**/*.spec.ts', 'overview/**/*.spec.ts'],
       testIgnore: 'server/seed.setup.ts',
       dependencies: ['server-setup'],
       use: { ...devices['Desktop Chrome'], baseURL: serverURL },
