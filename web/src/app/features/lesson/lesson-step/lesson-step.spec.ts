@@ -56,12 +56,14 @@ describe('LessonStep', () => {
     );
   });
 
-  it('renders the intro and a placeholder for an interaction step', async () => {
+  it('an interaction step renders snf-interaction with the intro', async () => {
     const element = await render(stepOfType('interaction'), 2);
     expect(element.querySelector('.intro')?.textContent).toContain('Je ziet hoe hard');
-    expect(element.querySelector('snf-interaction-placeholder')?.textContent).toContain(
-      'Dit spel komt binnenkort.',
-    );
+    expect(element.querySelector('snf-interaction')).not.toBeNull();
+    // The trace game of the fixture is loaded through the registry, not the placeholder.
+    await vi.waitFor(() => expect(element.querySelector('snf-trace-game')).not.toBeNull());
+    expect(element.querySelector('snf-interaction-placeholder')).toBeNull();
+    expect(element.querySelector('snf-trace-game button.choice')?.textContent).toContain('Vis!');
   });
 
   it('a quiz step renders snf-quiz', async () => {

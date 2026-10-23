@@ -21,7 +21,7 @@
     }
     @case ('interaction') {
       <p class="intro"><snf-inline-text [text]="data.intro" /></p>
-      <snf-interaction-placeholder [interaction]="data.interaction" />
+      <snf-interaction [step]="data" [ted]="ted()" />
     }
     @case ('quiz') {
       <snf-quiz [step]="data" [ted]="ted()" />

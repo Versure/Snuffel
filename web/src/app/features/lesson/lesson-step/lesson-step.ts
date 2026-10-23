@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 import type { LessonStep as LessonStepData, LessonTed } from '../../../core/content/content.types';
-import { InteractionPlaceholder } from '../../../interactions/interaction-placeholder/interaction-placeholder';
+import { InteractionHost } from '../../../interactions/interaction-host/interaction-host';
 import { Block } from '../../../shared/blocks/block/block';
 import { InlineText } from '../../../shared/inline-text/inline-text/inline-text';
 import { LessonProgress } from '../../../shared/lesson-progress/lesson-progress';
@@ -27,7 +27,7 @@ export function stepHeadingId(stepId: string): string {
  */
 @Component({
   selector: 'snf-lesson-step',
-  imports: [Block, Checklist, InlineText, InteractionPlaceholder, Quiz, Seen],
+  imports: [Block, Checklist, InlineText, InteractionHost, Quiz, Seen],
   templateUrl: './lesson-step.html',
   styleUrl: './lesson-step.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -37,7 +37,7 @@ export class LessonStep {
 
   readonly step = input.required<LessonStepData>();
   readonly number = input.required<number>();
-  /** Ted's lines of the lesson, for the quiz. */
+  /** Ted's lines of the lesson, for the quiz and the interaction. */
   readonly ted = input.required<LessonTed>();
 
   protected readonly sectionId = computed(() => stepSectionId(this.step().id));

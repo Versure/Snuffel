@@ -1,0 +1,29 @@
+@if (unavailable()) {
+  <div class="unavailable">
+    <snf-ted-says mood="oops" size="small">Je voortgang kan ik nu niet ophalen.</snf-ted-says>
+    <button snf-button type="button" variant="light" (click)="retryProgress()">Opnieuw</button>
+  </div>
+}
+@switch (status()) {
+  @case ('none') {
+    <snf-interaction-placeholder [interaction]="step().interaction" />
+  }
+  @case ('loading') {
+    <div class="panel loading">
+      <p class="message">Even laden…</p>
+    </div>
+  }
+  @case ('error') {
+    <div class="panel failed">
+      <snf-ted-says mood="oops" size="small">Dit spel kan ik nu niet laden.</snf-ted-says>
+      <button snf-button type="button" variant="light" (click)="retryLoad()">Opnieuw</button>
+    </div>
+  }
+}
+<ng-container #outlet />
+@if (error(); as message) {
+  <p class="error" role="alert">{{ message }}</p>
+}
+@if (previous(); as result) {
+  <p class="previous">Vorige keer: {{ result.score }} van {{ result.total }} goed.</p>
+}

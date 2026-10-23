@@ -1,0 +1,49 @@
+:host {
+  display: block;
+  margin: 0 0 1rem;
+}
+
+.unavailable {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem 1rem;
+  align-items: center;
+  margin: 0 0 1rem;
+}
+
+/* The dark game panel while the game loads or when it cannot be loaded. */
+.panel {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem 1rem;
+  align-items: center;
+  min-height: 7rem;
+  padding: 1rem;
+  color: var(--snf-color-panel-text);
+  background: var(--snf-color-panel);
+  border: var(--snf-border-width) solid var(--snf-color-ink);
+  border-radius: var(--snf-radius-xl);
+  box-shadow: var(--snf-shadow-panel);
+}
+
+.message {
+  margin: 0;
+  font-family: var(--snf-font-display);
+  font-size: 1.35rem;
+  letter-spacing: 0.03em;
+}
+
+.error {
+  margin: 1rem 0 0;
+  padding: 0.5rem 0.75rem;
+  font-weight: 700;
+  color: var(--snf-color-text);
+  background: var(--snf-color-error-soft);
+  border: 2px solid var(--snf-color-error);
+  border-radius: var(--snf-radius-md);
+}
+
+.previous {
+  margin: 0.8rem 0 0;
+  font-weight: 700;
+}
