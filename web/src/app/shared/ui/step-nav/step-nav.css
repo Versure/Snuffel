@@ -1,0 +1,48 @@
+:host {
+  display: block;
+}
+
+.steps {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(4.6rem, 1fr));
+  gap: 0.4rem;
+  margin: 1.5rem 0 0.5rem;
+  padding: 0;
+  list-style: none;
+}
+
+a {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: var(--snf-tap-min);
+  min-height: var(--snf-tap-min);
+  padding: 0.2rem 0.1rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  line-height: 1.2;
+  text-align: center;
+  text-decoration: none;
+  color: var(--snf-color-text);
+  border-radius: var(--snf-radius-md);
+}
+
+.number {
+  display: grid;
+  place-items: center;
+  width: 2.2rem;
+  height: 2.2rem;
+  margin-bottom: 0.2rem;
+  font-family: var(--snf-font-display);
+  font-size: 1.25rem;
+  font-weight: 400;
+  color: var(--snf-color-text);
+  background: var(--snf-color-surface);
+  border: var(--snf-border-width) solid var(--snf-color-ink);
+  border-radius: 50%;
+}
+
+.done .number {
+  color: var(--snf-color-white);
+  background: var(--snf-color-purple);
+}

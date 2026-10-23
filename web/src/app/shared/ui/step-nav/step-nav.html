@@ -1,0 +1,17 @@
+<nav aria-label="Stappen van deze les">
+  <ol class="steps">
+    @for (step of steps(); track step.id; let index = $index) {
+      <li [class.done]="doneIds().has(step.id)">
+        <a [routerLink]="[]" [fragment]="anchorPrefix + step.id" (click)="navigate.emit(step.id)">
+          <span class="snf-visually-hidden">Stap </span>
+          <span class="number">{{ index + 1 }}</span>
+          <span class="snf-visually-hidden">: </span>
+          <span class="label">{{ step.label }}</span>
+          @if (doneIds().has(step.id)) {
+            <span class="snf-visually-hidden"> (klaar)</span>
+          }
+        </a>
+      </li>
+    }
+  </ol>
+</nav>
