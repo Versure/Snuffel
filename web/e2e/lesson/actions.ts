@@ -293,8 +293,12 @@ export async function goToExercise(page: Page, id: string): Promise<void> {
 /** Solves every exercise from the current one on and taps Klaar: the end screen. */
 export async function finishSeries(page: Page): Promise<void> {
   const block = exerciseBlock(page);
-  for (const exercise of exercises) {
-    if (!(await exerciseCard(page, exercise.id).isVisible())) continue;
+  // The exercise loads lazily, and the page can be done with its anchor before it is there:
+  // wait for the first card, then start at the exercise it shows.
+  const heading = block.locator('.heading');
+  await expect(heading).toHaveText(/^\s*Opgave \d+ van \d+\s*$/);
+  const start = Number(/Opgave (\d+)/.exec(await heading.innerText())![1]) - 1;
+  for (const exercise of exercises.slice(start)) {
     await solveExercise(page, exercise.id);
     await nextExercise(page);
   }
