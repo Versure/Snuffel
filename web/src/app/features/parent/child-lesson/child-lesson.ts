@@ -1,4 +1,16 @@
-import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
+import {
+  afterNextRender,
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  ElementRef,
+  inject,
+  Injector,
+  input,
+  output,
+  signal,
+  viewChild,
+} from '@angular/core';
 import type { Lesson, LessonStep, ManifestLesson } from '../../../core/content/content.types';
 import {
   checklistSummary,
@@ -21,6 +33,9 @@ export interface LessonDetail {
   readonly title: string;
   readonly lines: readonly string[];
 }
+
+/** Where clearing the progress of a lesson is: not started, running, or failed (partly). */
+export type ClearState = 'idle' | 'clearing' | 'failed';
 
 /** Every record of one lesson, as given when the child has none. */
 export const NO_RECORDS: LessonRecords = { steps: [], checklists: [], attempts: [], results: [] };
@@ -114,9 +129,19 @@ export class ChildLesson {
   /** Every record of the child for this lesson; null while the progress is unknown. */
   readonly progress = input.required<LessonRecords | null>();
   readonly now = input.required<Date>();
+  /** The name of the child, for the question before clearing. */
+  readonly childName = input.required<string>();
+  readonly clearState = input<ClearState>('idle');
 
   /** Load the lesson file again. */
   readonly retry = output();
+  /** Clear every record of the child for this lesson (after the parent confirmed). */
+  readonly clear = output();
+
+  private readonly injector = inject(Injector);
+  private readonly clearButton = viewChild('clearButton', { read: ElementRef<HTMLButtonElement> });
+  private readonly question = viewChild<ElementRef<HTMLElement>>('question');
+  private readonly confirming = signal(false);
 
   protected readonly text = CHILD_TEXT;
   protected readonly title = computed(() => plainText(this.lesson().title));
@@ -158,6 +183,32 @@ export class ChildLesson {
       .map((step) => detailOf(step, content, progress))
       .filter((detail): detail is LessonDetail => detail !== null);
   });
+
+  protected readonly questionId = computed(() => `clear-question-${this.lesson().id}`);
+  protected readonly questionText = computed(() =>
+    CHILD_TEXT.clearQuestion(this.title(), this.childName()),
+  );
+  /** The question shows while asked and as long as there is something to clear. */
+  protected readonly asking = computed(() => this.confirming() && this.hasRecords());
+  protected readonly busy = computed(() => this.clearState() === 'clearing');
+
+  protected ask(): void {
+    this.confirming.set(true);
+    afterNextRender(() => this.question()?.nativeElement.focus(), { injector: this.injector });
+  }
+
+  protected cancel(): void {
+    if (this.busy()) return;
+    this.confirming.set(false);
+    afterNextRender(() => this.clearButton()?.nativeElement.focus(), { injector: this.injector });
+  }
+
+  protected confirm(): void {
+    if (this.busy()) return;
+    // The buttons are disabled while clearing; the focus stays in the question.
+    this.question()?.nativeElement.focus();
+    this.clear.emit();
+  }
 
   protected readonly contentUnavailable = computed(
     () => this.hasRecords() && this.content() === 'unavailable',

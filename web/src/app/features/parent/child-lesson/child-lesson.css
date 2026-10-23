@@ -52,3 +52,35 @@
 .content-error p {
   margin: 0;
 }
+
+/* The question before clearing, in the row itself; the text says what happens, not only the colour. */
+.question {
+  display: grid;
+  gap: 0.6rem;
+  justify-self: stretch;
+  padding: 0.75rem 1rem;
+  color: var(--snf-color-text);
+  background: var(--snf-color-error-soft);
+  border: var(--snf-border-width) solid var(--snf-color-error);
+  border-radius: var(--snf-radius-md);
+}
+
+.question:focus-visible {
+  outline: var(--snf-focus-ring);
+  outline-offset: var(--snf-focus-ring-offset);
+}
+
+.question-text,
+.clear-status {
+  margin: 0;
+}
+
+.clear-status {
+  font-weight: 700;
+}
+
+.question-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}

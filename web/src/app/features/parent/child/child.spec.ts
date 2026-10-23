@@ -77,6 +77,7 @@ describe('ChildOverview', () => {
   let params: BehaviorSubject<ReturnType<typeof convertToParamMap>>;
   let loadChild: ReturnType<typeof vi.fn<AccountsService['loadChild']>>;
   let loadUserProgress: ReturnType<typeof vi.fn<ProgressService['loadUserProgress']>>;
+  let clearLesson: ReturnType<typeof vi.fn<ProgressService['clearLesson']>>;
   let loadLesson: ReturnType<typeof vi.fn<ContentService['loadLesson']>>;
   let snapshot: UserProgressSnapshot;
   let progressFails: boolean;
@@ -98,6 +99,9 @@ describe('ChildOverview', () => {
       if (progressFails) throw new ProgressError('unavailable', 'test');
       return snapshot;
     });
+    clearLesson = vi.fn<ProgressService['clearLesson']>(async () => {
+      snapshot = snapshotOf({});
+    });
     loadLesson = vi.fn<ContentService['loadLesson']>(async (courseId, lessonId) => {
       if (lessonId === 'proefles') return proefles;
       throw new ContentError('unavailable', `${courseId}/${lessonId}`);
@@ -112,7 +116,7 @@ describe('ChildOverview', () => {
           provide: ContentService,
           useValue: { loadManifest: async () => manifest, loadLesson },
         },
-        { provide: ProgressService, useValue: { loadUserProgress } },
+        { provide: ProgressService, useValue: { loadUserProgress, clearLesson } },
         { provide: Title, useValue: { setTitle } },
       ],
     });
@@ -228,5 +232,66 @@ describe('ChildOverview', () => {
     const back = element.querySelector('a.back');
     expect(textOf(back)).toBe('Naar het ouderoverzicht');
     expect(back?.getAttribute('href')).toBe('/ouder');
+  });
+
+  const buttonIn = (element: Element | undefined, label: string) =>
+    Array.from(element?.querySelectorAll<HTMLButtonElement>('button') ?? []).find(
+      (candidate) => textOf(candidate) === label,
+    );
+
+  async function clearProefles() {
+    const rendered = await render();
+    buttonIn(rendered.lesson('Proefles'), 'Voortgang wissen')?.click();
+    await rendered.fixture.whenStable();
+    buttonIn(rendered.lesson('Proefles'), 'Ja, wissen')?.click();
+    await rendered.fixture.whenStable();
+    return rendered;
+  }
+
+  it('Ja, wissen clears the lesson of this child only', async () => {
+    await clearProefles();
+    expect(clearLesson).toHaveBeenCalledTimes(1);
+    expect(clearLesson).toHaveBeenCalledWith('a1', 'proefles');
+  });
+
+  it('after clearing says it is cleared, moves the focus there and loads again', async () => {
+    const { element, lesson } = await clearProefles();
+    const message = element.querySelector<HTMLElement>('.cleared');
+    expect(message?.getAttribute('aria-live')).toBe('polite');
+    expect(textOf(message)).toBe('De voortgang van Proefles is gewist.');
+    expect(document.activeElement).toBe(message);
+    expect(loadUserProgress).toHaveBeenCalledTimes(2);
+    expect(textOf(lesson('Proefles')?.querySelector('snf-lesson-status'))).toBe('Nieuw');
+    expect(buttonIn(lesson('Proefles'), 'Voortgang wissen')).toBeUndefined();
+  });
+
+  it('a failed clear says not everything is cleared and offers Opnieuw', async () => {
+    clearLesson.mockRejectedValueOnce(new ProgressError('unavailable', 'test'));
+    const { fixture, element, lesson } = await clearProefles();
+    expect(textOf(lesson('Proefles')?.querySelector('.clear-status'))).toBe(
+      'Niet alles is gewist. Probeer het nog eens.',
+    );
+    expect(textOf(element.querySelector('.cleared'))).toBe('');
+    expect(loadUserProgress).toHaveBeenCalledTimes(1);
+    buttonIn(lesson('Proefles'), 'Opnieuw')?.click();
+    await fixture.whenStable();
+    expect(clearLesson).toHaveBeenCalledTimes(2);
+    expect(textOf(element.querySelector('.cleared'))).toBe('De voortgang van Proefles is gewist.');
+  });
+
+  it('the buttons are disabled while clearing', async () => {
+    let finish: () => void = () => undefined;
+    clearLesson.mockImplementationOnce(() => new Promise<void>((resolve) => (finish = resolve)));
+    const { fixture, lesson } = await render();
+    buttonIn(lesson('Proefles'), 'Voortgang wissen')?.click();
+    await fixture.whenStable();
+    buttonIn(lesson('Proefles'), 'Ja, wissen')?.click();
+    fixture.detectChanges();
+    expect(buttonIn(lesson('Proefles'), 'Ja, wissen')?.disabled).toBe(true);
+    expect(textOf(lesson('Proefles')?.querySelector('.clear-status'))).toBe('Bezig met wissen…');
+    buttonIn(lesson('Proefles'), 'Ja, wissen')?.click();
+    expect(clearLesson).toHaveBeenCalledTimes(1);
+    finish();
+    await fixture.whenStable();
   });
 });

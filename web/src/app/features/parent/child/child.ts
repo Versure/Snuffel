@@ -1,11 +1,15 @@
 import {
+  afterNextRender,
   ChangeDetectionStrategy,
   Component,
   computed,
   effect,
+  type ElementRef,
   inject,
+  Injector,
   resource,
   signal,
+  viewChild,
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Title } from '@angular/platform-browser';
@@ -13,7 +17,12 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { map } from 'rxjs';
 import { AccountsService } from '../../../core/accounts/accounts.service';
 import { ContentService } from '../../../core/content/content.service';
-import type { ContentManifest, Lesson, ManifestCourse } from '../../../core/content/content.types';
+import type {
+  ContentManifest,
+  Lesson,
+  ManifestCourse,
+  ManifestLesson,
+} from '../../../core/content/content.types';
 import type { UserRecord } from '../../../core/pocketbase/types';
 import { lastActivity } from '../../../core/progress/child-progress';
 import { courseProgress, type CourseProgressSummary } from '../../../core/progress/course-progress';
@@ -28,7 +37,7 @@ import { ProgressBar } from '../../../shared/ui/progress-bar/progress-bar';
 import { TedSays } from '../../../shared/ui/ted-says/ted-says';
 import { HOME_TEXT } from '../../home/home-text';
 import { activityText } from '../activity-text';
-import { ChildLesson, NO_RECORDS } from '../child-lesson/child-lesson';
+import { ChildLesson, NO_RECORDS, type ClearState } from '../child-lesson/child-lesson';
 import { CHILD_TEXT } from '../parent-text';
 
 export type ChildState =
@@ -80,6 +89,7 @@ export class ChildOverview {
   private readonly content = inject(ContentService);
   private readonly progress = inject(ProgressService);
   private readonly title = inject(Title);
+  private readonly injector = inject(Injector);
   protected readonly text = CHILD_TEXT;
   /** Loaded again on every visit, so the moment of the visit is "now". */
   protected readonly now = new Date();
@@ -151,6 +161,12 @@ export class ChildOverview {
       );
     },
   });
+  /** Clearing per lesson id; a lesson without an entry is idle. */
+  private readonly clearStates = signal<ReadonlyMap<string, ClearState>>(new Map());
+  /** The message after clearing, in a live region. */
+  protected readonly cleared = signal('');
+  private readonly clearedMessage = viewChild<ElementRef<HTMLElement>>('clearedMessage');
+
   /** Lesson files loaded again one by one with "Opnieuw" ('loading' while it runs). */
   private readonly retried = signal<ReadonlyMap<string, LessonContent | 'loading'>>(new Map());
 
@@ -238,6 +254,35 @@ export class ChildOverview {
     if (retried !== undefined) return retried === 'loading' ? null : retried;
     if (!this.files.hasValue()) return null;
     return this.files.value().get(lessonId) ?? null;
+  }
+
+  protected clearStateOf(lessonId: string): ClearState {
+    return this.clearStates().get(lessonId) ?? 'idle';
+  }
+
+  /**
+   * Clears every record of this child for one lesson, then loads the progress again. Only the
+   * id of a loaded child is used, never the id from the URL as such.
+   */
+  protected async clearLesson(lesson: ManifestLesson): Promise<void> {
+    const state = this.state();
+    if (state.kind !== 'loaded' || this.clearStateOf(lesson.id) === 'clearing') return;
+    const setState = (value: ClearState) =>
+      this.clearStates.update((current) => new Map(current).set(lesson.id, value));
+    setState('clearing');
+    this.cleared.set('');
+    try {
+      await this.progress.clearLesson(state.child.id, lesson.id);
+    } catch {
+      setState('failed');
+      return;
+    }
+    setState('idle');
+    this.cleared.set(CHILD_TEXT.cleared(plainText(lesson.title)));
+    this.snapshot.reload();
+    afterNextRender(() => this.clearedMessage()?.nativeElement.focus(), {
+      injector: this.injector,
+    });
   }
 
   protected retry(): void {

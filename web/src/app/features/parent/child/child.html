@@ -18,6 +18,9 @@
         </div>
       }
 
+      <!-- Always there, so the message after clearing is announced. -->
+      <p #clearedMessage class="cleared" aria-live="polite" tabindex="-1">{{ cleared() }}</p>
+
       @for (section of sections(); track section.id) {
         <section class="section" [attr.aria-labelledby]="'section-' + section.id">
           <h2 [id]="'section-' + section.id">{{ section.heading }}</h2>
@@ -42,7 +45,10 @@
                       [content]="contentOf(lesson.id)"
                       [progress]="recordsOf(lesson.id)"
                       [now]="now"
+                      [childName]="name()"
+                      [clearState]="clearStateOf(lesson.id)"
                       (retry)="retryLesson(course.id, lesson.id)"
+                      (clear)="clearLesson(lesson)"
                     />
                   </li>
                 }

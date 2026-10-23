@@ -11,7 +11,7 @@ import {
   resultRecord,
   stepRecord,
 } from '../testing';
-import { ChildLesson } from './child-lesson';
+import { ChildLesson, type ClearState } from './child-lesson';
 
 const now = new Date(2026, 9, 23, 16, 0);
 
@@ -22,7 +22,10 @@ const now = new Date(2026, 9, 23, 16, 0);
     [content]="content()"
     [progress]="progress()"
     [now]="now"
+    childName="Kind A"
+    [clearState]="clearState()"
     (retry)="retries = retries + 1"
+    (clear)="clears = clears + 1"
   />`,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -31,7 +34,9 @@ class Host {
   readonly lesson = signal<ManifestLesson>(proeflesEntry);
   readonly content = signal<Lesson | 'unavailable' | null>(proefles);
   readonly progress = signal<LessonRecords | null>(records());
+  readonly clearState = signal<ClearState>('idle');
   retries = 0;
+  clears = 0;
 }
 
 const textOf = (element: Element | null | undefined) =>
@@ -174,5 +179,90 @@ describe('ChildLesson', () => {
   it('without progress shows no status and no details', async () => {
     const { element } = await render(null);
     expect(textOf(element)).toBe('Proefles');
+  });
+
+  const buttonIn = (element: HTMLElement, label: string) =>
+    Array.from(element.querySelectorAll<HTMLButtonElement>('button')).find(
+      (candidate) => textOf(candidate) === label,
+    );
+
+  it('the clear button is there only when the lesson has records', async () => {
+    const empty = await render(records());
+    expect(buttonIn(empty.element, 'Voortgang wissen')).toBeUndefined();
+    empty.fixture.componentInstance.progress.set(null);
+    await empty.fixture.whenStable();
+    expect(buttonIn(empty.element, 'Voortgang wissen')).toBeUndefined();
+    empty.fixture.componentInstance.progress.set(
+      records({ checklists: [checklistRecord(['vispas'])] }),
+    );
+    await empty.fixture.whenStable();
+    expect(buttonIn(empty.element, 'Voortgang wissen')).toBeDefined();
+  });
+
+  it('clear asks for confirmation with the lesson and the name', async () => {
+    const { fixture, element } = await render(records({ steps: started }));
+    buttonIn(element, 'Voortgang wissen')?.click();
+    await fixture.whenStable();
+    const question = element.querySelector<HTMLElement>('[role="group"]');
+    expect(question).not.toBeNull();
+    const label = document.getElementById(question?.getAttribute('aria-labelledby') ?? '');
+    expect(textOf(label)).toBe(
+      'Alles van Proefles voor Kind A wissen? Stappen, quizantwoorden, vinkjes en scores gaan weg. Dit kan niet terug.',
+    );
+    expect(document.activeElement).toBe(question);
+    expect(buttonIn(element, 'Voortgang wissen')).toBeUndefined();
+    expect(fixture.componentInstance.clears).toBe(0);
+    buttonIn(element, 'Ja, wissen')?.click();
+    expect(fixture.componentInstance.clears).toBe(1);
+  });
+
+  it('Annuleren and Escape close the question and give the focus back', async () => {
+    const { fixture, element } = await render(records({ steps: started }));
+    buttonIn(element, 'Voortgang wissen')?.click();
+    await fixture.whenStable();
+    buttonIn(element, 'Annuleren')?.click();
+    await fixture.whenStable();
+    expect(element.querySelector('[role="group"]')).toBeNull();
+    expect(document.activeElement).toBe(buttonIn(element, 'Voortgang wissen'));
+
+    buttonIn(element, 'Voortgang wissen')?.click();
+    await fixture.whenStable();
+    element
+      .querySelector('[role="group"]')
+      ?.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+    await fixture.whenStable();
+    expect(element.querySelector('[role="group"]')).toBeNull();
+    expect(document.activeElement).toBe(buttonIn(element, 'Voortgang wissen'));
+    expect(fixture.componentInstance.clears).toBe(0);
+  });
+
+  it('the buttons are disabled while clearing', async () => {
+    const { fixture, element } = await render(records({ steps: started }));
+    buttonIn(element, 'Voortgang wissen')?.click();
+    await fixture.whenStable();
+    fixture.componentInstance.clearState.set('clearing');
+    await fixture.whenStable();
+    expect(textOf(element.querySelector('.clear-status'))).toBe('Bezig met wissen…');
+    expect(buttonIn(element, 'Ja, wissen')?.disabled).toBe(true);
+    expect(buttonIn(element, 'Annuleren')?.disabled).toBe(true);
+    // Escape does not close the question while clearing.
+    element
+      .querySelector('[role="group"]')
+      ?.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+    await fixture.whenStable();
+    expect(element.querySelector('[role="group"]')).not.toBeNull();
+  });
+
+  it('a failed clear says not everything is cleared and offers Opnieuw', async () => {
+    const { fixture, element } = await render(records({ steps: started }));
+    buttonIn(element, 'Voortgang wissen')?.click();
+    await fixture.whenStable();
+    fixture.componentInstance.clearState.set('failed');
+    await fixture.whenStable();
+    expect(textOf(element.querySelector('.clear-status'))).toBe(
+      'Niet alles is gewist. Probeer het nog eens.',
+    );
+    buttonIn(element, 'Opnieuw')?.click();
+    expect(fixture.componentInstance.clears).toBe(1);
   });
 });

@@ -55,3 +55,21 @@
   padding: 0;
   list-style: none;
 }
+
+.cleared {
+  margin: 0;
+  font-weight: 700;
+}
+
+.cleared:not(:empty) {
+  margin: 0 0 1rem;
+  padding: 0.6rem 1rem;
+  background: var(--snf-color-success-soft);
+  border: var(--snf-border-width) solid var(--snf-color-success);
+  border-radius: var(--snf-radius-md);
+}
+
+.cleared:focus-visible {
+  outline: var(--snf-focus-ring);
+  outline-offset: var(--snf-focus-ring-offset);
+}

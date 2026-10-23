@@ -44,6 +44,14 @@ export const CHILD_TEXT = {
   exercisePlays: (plays: number) => `${plays} keer gemaakt`,
   gameNotPlayed: 'nog niet gespeeld',
   exerciseNotDone: 'nog niet gemaakt',
+  clear: 'Voortgang wissen',
+  clearQuestion: (lesson: string, name: string) =>
+    `Alles van ${lesson} voor ${name} wissen? Stappen, quizantwoorden, vinkjes en scores gaan weg. Dit kan niet terug.`,
+  clearConfirm: 'Ja, wissen',
+  clearCancel: 'Annuleren',
+  clearing: 'Bezig met wissen…',
+  clearFailed: 'Niet alles is gewist. Probeer het nog eens.',
+  cleared: (lesson: string) => `De voortgang van ${lesson} is gewist.`,
   exerciseHelp: (hints: number, solutions: number, exercises: number) =>
     `${hints} ${hints === 1 ? 'hint' : 'hints'}, uitwerking bekeken bij ${solutions} van ${exercises} opgaven`,
 } as const;
