@@ -1,0 +1,95 @@
+@let tipPoint = tip();
+<div class="game">
+  <div class="head">
+    <span class="title">Voel-spel</span>
+    <span class="rounds">{{ heading() }}</span>
+  </div>
+  <div class="screen">
+    <svg
+      [attr.viewBox]="viewBox"
+      role="img"
+      aria-label="Hengel en een lijn die laat zien hoe hard er getrokken wordt"
+      [attr.data-pattern]="shown()"
+      [attr.data-drawing]="drawing()"
+    >
+      <rect class="water" x="0" y="150" width="320" height="50" />
+      <path
+        class="wave"
+        d="M0 150 Q20 144 40 150 T80 150 T120 150 T160 150 T200 150 T240 150 T280 150 T320 150"
+      />
+      <text class="label" x="10" y="20">trek op de lijn</text>
+      <line class="rest" x1="10" y1="132" x2="200" y2="132" />
+      <polyline class="trace" [attr.points]="points()" />
+      <path class="rod" [attr.d]="rod()" />
+      <line class="fishing-line" [attr.x1]="tipPoint.x" [attr.y1]="tipPoint.y" x2="230" y2="160" />
+    </svg>
+  </div>
+
+  <div class="ted" aria-live="polite">
+    <snf-ted-says [mood]="tedLine().mood" size="small">
+      <span class="say" tabindex="-1">
+        @for (part of tedLine().parts; track $index) {
+          @if (!$first) {
+            {{ ' ' }}
+          }
+          <snf-inline-text [text]="part" />
+        }
+      </span>
+    </snf-ted-says>
+  </div>
+
+  <div class="choices">
+    @for (choice of choices(); track choice.id) {
+      <button
+        type="button"
+        class="choice"
+        [class.chosen]="isChosen(choice)"
+        [attr.data-color]="choice.color"
+        [attr.data-choice]="choice.id"
+        [disabled]="!choicesOpen()"
+        (click)="choose(choice)"
+      >
+        <snf-inline-text [text]="choice.label" [terms]="false" />
+        @if (isChosen(choice)) {
+          <span class="mine">Jouw keuze</span>
+        }
+      </button>
+    }
+  </div>
+
+  <div class="buttons">
+    @switch (phase()) {
+      @case ('idle') {
+        <button snf-button type="button" variant="pink" class="start" (click)="start()">
+          Start
+        </button>
+      }
+      @default {
+        @if (phase() !== 'round' || roundDrawn()) {
+          <button snf-button type="button" variant="light" class="replay" (click)="replay()">
+            Bekijk nog eens
+          </button>
+        }
+        @if (phase() === 'answered') {
+          <button snf-button type="button" class="next" (click)="next()">Volgende</button>
+        } @else if (phase() === 'finished') {
+          <button snf-button type="button" class="next" (click)="next()">Nog een potje</button>
+        }
+      }
+    }
+  </div>
+
+  <div class="catch">
+    @for (fish of answers(); track $index) {
+      @if (fish.correct) {
+        <svg class="fish" viewBox="0 0 30 18" aria-hidden="true">
+          <path class="fish-body" d="M2 9 Q10 0 20 9 Q10 18 2 9 Z M20 9 L28 3 L28 15 Z" />
+          <circle class="fish-eye" cx="8" cy="8" r="1.5" />
+        </svg>
+      }
+    }
+    @if (phase() !== 'idle') {
+      <span class="snf-visually-hidden">{{ score() }} goed</span>
+    }
+  </div>
+</div>
