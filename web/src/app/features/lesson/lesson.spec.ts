@@ -6,6 +6,7 @@ import courseJson from '../../../../../content/fixtures/courses/proefcursus/cour
 import lessonJson from '../../../../../content/fixtures/courses/proefcursus/lessons/01-proefles.json';
 import { ContentError, type ContentErrorReason } from '../../core/content/content-error';
 import { ContentService } from '../../core/content/content.service';
+import { LessonContext } from '../../shared/lesson-context/lesson-context';
 import type {
   ContentManifest,
   Course,
@@ -203,5 +204,36 @@ describe('Lesson', () => {
     expect(source?.textContent).toContain('Sportvisserij Nederland');
     // Asset urls: the figure loads with the hash.
     expect(element.querySelector('snf-figure-block img')?.getAttribute('src')).toBe(assetUrl);
+  });
+
+  it('keeps the context of the shown lesson when an older load finishes later', async () => {
+    const other: LessonData = {
+      ...lesson,
+      title: 'Andere les',
+      glossary: [{ term: 'loodkop', definition: 'een kop van lood' }],
+    };
+    let releaseFirst: (value: LessonData) => void = () => undefined;
+    loadLesson.mockImplementation(async (_courseId, lessonId) => {
+      if (lessonId === 'andere-les') return other;
+      return new Promise<LessonData>((resolve) => (releaseFirst = resolve));
+    });
+    const harness = await RouterTestingHarness.create();
+    void harness.navigateByUrl('/leren/proefcursus/proefles');
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    harness.fixture.detectChanges();
+    const context = harness.routeDebugElement?.injector.get(LessonContext);
+    if (!context) throw new Error('no lesson context');
+
+    await harness.navigateByUrl('/leren/proefcursus/andere-les');
+    await harness.fixture.whenStable();
+    expect(harness.routeDebugElement?.injector.get(LessonContext)).toBe(context);
+    expect(context.glossary()).toEqual(other.glossary);
+
+    releaseFirst(lesson);
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    await harness.fixture.whenStable();
+    expect(context.glossary()).toEqual(other.glossary);
+    const element = harness.routeNativeElement as HTMLElement;
+    expect(textOf(element.querySelector('h1'))).toBe('Andere les');
   });
 });

@@ -70,7 +70,7 @@ export class Lesson {
 
   private readonly loader = resource({
     params: () => this.params(),
-    loader: ({ params }) => this.load(params.courseId, params.lessonId),
+    loader: ({ params, abortSignal }) => this.load(params.courseId, params.lessonId, abortSignal),
   });
 
   protected readonly state = computed((): LessonState => {
@@ -138,13 +138,24 @@ export class Lesson {
     section.scrollIntoView({ block: 'start' });
   }
 
-  private async load(courseId: string, lessonId: string): Promise<LoadResult> {
+  /**
+   * Loads a lesson and fills the lesson context. `abortSignal` is aborted when the params change
+   * (or on reload) before this load is done; such a stale load leaves the context alone, so it
+   * never overwrites the context of the lesson that is shown.
+   */
+  private async load(
+    courseId: string,
+    lessonId: string,
+    abortSignal: AbortSignal,
+  ): Promise<LoadResult> {
     try {
       const [course, lesson, assetUrls] = await Promise.all([
         this.content.loadCourse(courseId),
         this.content.loadLesson(courseId, lessonId),
         this.content.assetUrls(courseId),
       ]);
+      // The resource ignores the result of an aborted load.
+      if (abortSignal.aborted) return { kind: 'unavailable' };
       this.context.glossary.set(lesson.glossary);
       this.context.sources.set(course.sources);
       this.context.assetUrls.set(assetUrls);
