@@ -13,6 +13,18 @@ class Host {
   readonly label = signal('1 van 2 lessen klaar');
 }
 
+@Component({
+  imports: [ProgressBar],
+  template: `<snf-progress-bar
+    [value]="0"
+    [max]="2"
+    label="0 van 2 lessen klaar"
+    name="Voortgang Proefcursus"
+  />`,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+class NamedHost {}
+
 async function render(value = 1, max = 2, label = '1 van 2 lessen klaar') {
   const fixture = TestBed.createComponent(Host);
   fixture.componentInstance.value.set(value);
@@ -32,9 +44,19 @@ describe('ProgressBar', () => {
     expect(bar?.getAttribute('aria-valuemax')).toBe('2');
     expect(bar?.getAttribute('aria-valuenow')).toBe('1');
     expect(bar?.getAttribute('aria-valuetext')).toBe('1 van 2 lessen klaar');
-    // Named by the visible label.
-    const labelId = bar?.getAttribute('aria-labelledby') ?? '';
-    expect(element.querySelector(`#${labelId}`)?.textContent?.trim()).toBe('1 van 2 lessen klaar');
+    // A short fixed name, so the label is read once (as the value text).
+    expect(bar?.getAttribute('aria-label')).toBe('Voortgang');
+    expect(bar?.hasAttribute('aria-labelledby')).toBe(false);
+    // The visible label is hidden from screen readers: they hear it as the value text.
+    expect(element.querySelector('.label')?.getAttribute('aria-hidden')).toBe('true');
+  });
+
+  it('takes another name when given one', async () => {
+    const fixture = TestBed.createComponent(NamedHost);
+    await fixture.whenStable();
+    const bar = (fixture.nativeElement as HTMLElement).querySelector('[role="progressbar"]');
+    expect(bar?.getAttribute('aria-label')).toBe('Voortgang Proefcursus');
+    expect(bar?.getAttribute('aria-valuetext')).toBe('0 van 2 lessen klaar');
   });
 
   it('shows the label as text', async () => {

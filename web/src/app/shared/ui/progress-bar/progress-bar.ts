@@ -1,10 +1,9 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 
-let nextId = 0;
-
 /**
  * A progress bar with a visible label underneath (also the aria-valuetext), for example
- * "1 van 2 lessen klaar". No animation.
+ * "1 van 2 lessen klaar". The bar has a short fixed name ("Voortgang"), so a screen reader
+ * says the label once, as the value. No animation.
  */
 @Component({
   selector: 'snf-progress-bar',
@@ -19,9 +18,8 @@ export class ProgressBar {
   readonly max = input.required<number>();
   /** The text under the bar and the aria-valuetext. */
   readonly label = input.required<string>();
-
-  /** The bar is named by the label underneath (read once, as the name and the value text). */
-  protected readonly labelId = `snf-progress-${nextId++}`;
+  /** The accessible name of the bar; the label is its value text, not its name. */
+  readonly name = input('Voortgang');
 
   protected readonly safeMax = computed(() => Math.max(1, Math.round(this.max())));
   protected readonly safeValue = computed(() =>

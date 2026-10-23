@@ -51,7 +51,8 @@ test.describe('the start page', () => {
     await expectCard(page, 'Proefhuiswerk', '0 van 1 lessen klaar', 0);
     for (const bar of await page.getByRole('progressbar').all()) {
       await expect(bar).toHaveAttribute('aria-valuemin', '0');
-      await expect(bar).toHaveAccessibleName(/lessen klaar/);
+      // A short name; the text is the value, so it is read once.
+      await expect(bar).toHaveAccessibleName('Voortgang');
     }
   });
 

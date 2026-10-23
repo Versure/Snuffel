@@ -5,8 +5,8 @@
   [attr.aria-valuemax]="safeMax()"
   [attr.aria-valuenow]="safeValue()"
   [attr.aria-valuetext]="label()"
-  [attr.aria-labelledby]="labelId"
+  [attr.aria-label]="name()"
 >
   <div class="fill" [style.width.%]="percent()"></div>
 </div>
-<p class="label" [id]="labelId" aria-hidden="true">{{ label() }}</p>
+<p class="label" aria-hidden="true">{{ label() }}</p>
