@@ -22,6 +22,13 @@ export const routes: Routes = [
     loadComponent: () => import('./features/parent/parent').then((m) => m.Parent),
   },
   {
+    // A lesson, for a child and a parent alike (plan M7, question 8).
+    path: 'leren/:courseId/:lessonId',
+    title: 'Les · Snuffel',
+    canActivate: [authGuard],
+    loadComponent: () => import('./features/lesson/lesson').then((m) => m.Lesson),
+  },
+  {
     // Always available but not linked anywhere (decision M2, question 2); no login needed.
     path: 'stijl',
     title: 'Huisstijl · Snuffel',

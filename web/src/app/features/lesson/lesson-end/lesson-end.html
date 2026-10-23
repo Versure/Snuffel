@@ -1,0 +1,36 @@
+@if (sortedGlossary().length > 0) {
+  <section id="woordenlijst" aria-labelledby="woordenlijst-titel">
+    <h2 id="woordenlijst-titel">Woordenlijst</h2>
+    <dl class="glossary">
+      @for (entry of sortedGlossary(); track entry.term) {
+        <div class="entry">
+          <dt>{{ entry.term }}</dt>
+          <dd><snf-inline-text [text]="entry.definition" [terms]="false" /></dd>
+        </div>
+      }
+    </dl>
+  </section>
+}
+@if (reading().length > 0) {
+  <section id="verder-lezen" aria-labelledby="verder-lezen-titel">
+    <h2 id="verder-lezen-titel">Verder lezen</h2>
+    <ul class="reading">
+      @for (item of reading(); track item.source.id) {
+        <li>
+          <snf-external-link [url]="item.source.url" [label]="item.source.title" />
+          <span class="publisher"> ({{ item.source.publisher }})</span>
+          <span class="why"><snf-inline-text [text]="item.why" /></span>
+        </li>
+      }
+    </ul>
+  </section>
+}
+@if (faq().length > 0) {
+  <section id="vragen" aria-labelledby="vragen-titel">
+    <h2 id="vragen-titel">Vragen</h2>
+    @for (entry of faq(); track $index) {
+      <h3><snf-inline-text [text]="entry.q" [terms]="false" /></h3>
+      <p><snf-inline-text [text]="entry.a" /></p>
+    }
+  </section>
+}
