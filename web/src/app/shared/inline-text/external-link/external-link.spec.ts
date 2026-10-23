@@ -8,13 +8,19 @@ const httpUrl = ['http', '://example.org/bron'].join('');
 
 @Component({
   imports: [ExternalLink],
-  template: `<snf-external-link [url]="url()" [label]="label()" [accessibleName]="name()" />`,
+  template: `<snf-external-link
+    [url]="url()"
+    [label]="label()"
+    [hiddenBefore]="before()"
+    [hiddenAfter]="after()"
+  />`,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 class Host {
   readonly url = signal(httpsUrl);
   readonly label = signal('Sportvisserij Nederland');
-  readonly name = signal<string | undefined>(undefined);
+  readonly before = signal('');
+  readonly after = signal('');
 }
 
 describe('ExternalLink', () => {
@@ -38,11 +44,20 @@ describe('ExternalLink', () => {
     expect(link?.hasAttribute('aria-label')).toBe(false);
   });
 
-  it('uses the accessible name when given', async () => {
-    const element = await render((host) => host.name.set('Bron: Roofvissen (Sportvisserij)'));
-    expect(element.querySelector('a')?.getAttribute('aria-label')).toBe(
-      'Bron: Roofvissen (Sportvisserij) (opent in een nieuw tabblad)',
+  it('adds hidden text before and after the label, keeping the label in the name', async () => {
+    const element = await render((host) => {
+      host.before.set('Bron: Roofvissen (');
+      host.after.set(')');
+    });
+    const link = element.querySelector('a');
+    expect(link?.querySelector('.snf-visually-hidden')?.textContent).toBe(
+      'Bron: Roofvissen (Sportvisserij Nederland) (opent in een nieuw tabblad)',
     );
+    const visible = link?.querySelector('[aria-hidden="true"]');
+    expect(visible?.textContent).toBe('Sportvisserij Nederland');
+    expect(link?.getAttribute('target')).toBe('_blank');
+    expect(link?.getAttribute('rel')).toBe('noopener noreferrer');
+    expect(link?.hasAttribute('aria-label')).toBe(false);
   });
 
   it('renders anything but https as plain text', async () => {

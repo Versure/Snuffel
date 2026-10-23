@@ -16,12 +16,14 @@ const HTTPS = /^https:\/\/[^\s]+$/;
 export class ExternalLink {
   readonly url = input.required<string>();
   readonly label = input.required<string>();
-  /** A fuller accessible name than the visible label (it must contain the label). */
-  readonly accessibleName = input<string>();
+  /**
+   * Text for screen readers only, before and after the visible label (for example "Bron: <title>
+   * (" and ")"). The whole name is then one visually hidden text and the visible label is hidden
+   * from screen readers: separate hidden pieces would be read with extra spaces, and an
+   * aria-label would not contain the visible text as axe requires.
+   */
+  readonly hiddenBefore = input('');
+  readonly hiddenAfter = input('');
 
   protected readonly isHttps = computed(() => HTTPS.test(this.url()));
-  protected readonly ariaLabel = computed(() => {
-    const name = this.accessibleName();
-    return name ? `${name} (opent in een nieuw tabblad)` : null;
-  });
 }

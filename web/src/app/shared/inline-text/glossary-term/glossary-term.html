@@ -10,7 +10,7 @@
     {{ text() }}
   </button>
   <span class="definition" [id]="definitionId" [hidden]="!open()">
-    <strong class="definition-term">{{ term() }}:</strong>
+    <strong class="definition-term">{{ term() }}:</strong>{{ ' ' }}
     <snf-inline-text [text]="definition" [terms]="false" />
   </span>
 } @else {

@@ -17,6 +17,10 @@
   border-bottom: 2px dashed var(--snf-color-text-muted);
 }
 
+.item:last-child {
+  border-bottom: 0;
+}
+
 .links {
   display: flex;
   flex-wrap: wrap;

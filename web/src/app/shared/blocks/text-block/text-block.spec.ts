@@ -20,8 +20,9 @@ describe('TextBlock', () => {
       text: 'Tekst.',
       sourceRefs: ['svnl'],
     });
-    expect(textOf(withSources.querySelector('.sources'))).toContain(
-      'Bron: Sportvisserij Nederland',
+    expect(textOf(withSources.querySelector('.sources'))).toMatch(/^Bron: /);
+    expect(withSources.querySelector('.sources a')?.textContent).toContain(
+      'Sportvisserij Nederland',
     );
     const without = await renderBlock(TextBlock, { type: 'text', text: 'Tekst.', sourceRefs: [] });
     expect(without.querySelector('.sources')).toBeNull();

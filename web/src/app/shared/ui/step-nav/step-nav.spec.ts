@@ -23,10 +23,6 @@ class Host {
   readonly navigated: string[] = [];
 }
 
-/** Text of an element without whitespace differences. */
-const textOf = (element: Element): string =>
-  (element.textContent ?? '').replace(/\s+/g, ' ').trim();
-
 describe('StepNav', () => {
   async function render() {
     TestBed.configureTestingModule({ providers: [provideRouter([])] });
@@ -62,18 +58,14 @@ describe('StepNav', () => {
 
   it('has the accessible name Stap N: label', async () => {
     const { links } = await render();
-    expect(links().map(textOf)).toEqual([
-      'Stap 1: Uitleg',
-      'Stap 2: Spel',
-      'Stap 3: Quiz',
-      'Stap 4: Zelf doen',
-    ]);
-    // "Stap" and ":" are for screen readers only.
+    // The name comes from one visually hidden text; the circle and the label are hidden from
+    // screen readers, so nothing is read twice.
+    expect(
+      links().map((link) => link.querySelector('.snf-visually-hidden')?.textContent?.trim()),
+    ).toEqual(['Stap 1: Uitleg', 'Stap 2: Spel', 'Stap 3: Quiz', 'Stap 4: Zelf doen']);
     for (const link of links()) {
-      const hidden = [...link.querySelectorAll('.snf-visually-hidden')].map((span) =>
-        span.textContent?.trim(),
-      );
-      expect(hidden).toEqual(['Stap', ':']);
+      expect(link.querySelector('.number')?.getAttribute('aria-hidden')).toBe('true');
+      expect(link.querySelector('.label')?.getAttribute('aria-hidden')).toBe('true');
     }
   });
 
@@ -85,7 +77,9 @@ describe('StepNav', () => {
     const done = [...element.querySelectorAll('li.done')];
     expect(done).toHaveLength(1);
     expect(done[0].querySelector('.label')?.textContent).toBe('Quiz');
-    expect(textOf(links()[2])).toBe('Stap 3: Quiz (klaar)');
+    expect(links()[2].querySelector('.snf-visually-hidden')?.textContent?.trim()).toBe(
+      'Stap 3: Quiz (klaar)',
+    );
   });
 
   it('emits navigate', async () => {

@@ -1,7 +1,16 @@
-@if (isHttps()) {
-  <a [href]="url()" target="_blank" rel="noopener noreferrer" [attr.aria-label]="ariaLabel()"
-    >{{ label() }}<span class="snf-visually-hidden"> (opent in een nieuw tabblad)</span></a
+<!-- Whitespace between the parts of the link text matters, so no formatting here. -->
+<!-- prettier-ignore -->
+@if (!isHttps()) {
+  <span>{{ label() }}</span>
+}
+@else if (hiddenBefore() || hiddenAfter()) {
+  <a [href]="url()" target="_blank" rel="noopener noreferrer"
+    ><span class="snf-visually-hidden"
+      >{{ hiddenBefore() }}{{ label() }}{{ hiddenAfter() }} (opent in een nieuw tabblad)</span
+    ><span aria-hidden="true">{{ label() }}</span></a
   >
 } @else {
-  <span>{{ label() }}</span>
+  <a [href]="url()" target="_blank" rel="noopener noreferrer"
+    >{{ label() }}<span class="snf-visually-hidden"> (opent in een nieuw tabblad)</span></a
+  >
 }

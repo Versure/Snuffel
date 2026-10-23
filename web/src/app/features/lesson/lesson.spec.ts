@@ -199,9 +199,8 @@ describe('Lesson', () => {
     );
     expect(term).toBeDefined();
     // Sources: the example block names its source.
-    expect(textOf(element.querySelector('snf-example-block .sources'))).toContain(
-      'Bron: Sportvisserij Nederland',
-    );
+    const source = element.querySelector('snf-example-block .sources a');
+    expect(source?.textContent).toContain('Sportvisserij Nederland');
     // Asset urls: the figure loads with the hash.
     expect(element.querySelector('snf-figure-block img')?.getAttribute('src')).toBe(assetUrl);
   });

@@ -47,16 +47,17 @@ describe('SourceRefs', () => {
 
   it('shows Bron: with a link per source, named after the publisher', async () => {
     const element = await render(['svnl', 'winkel']);
-    const text = element.querySelector('.sources')?.textContent?.replace(/\s+/g, ' ').trim();
-    expect(text).toBe(
-      'Bron: Sportvisserij Nederland (opent in een nieuw tabblad), Decathlon (opent in een nieuw tabblad)',
+    const sources = element.querySelector('.sources')?.cloneNode(true) as HTMLElement;
+    for (const hidden of sources.querySelectorAll('.snf-visually-hidden')) hidden.remove();
+    expect(sources.textContent?.replace(/\s+/g, ' ').trim()).toBe(
+      'Bron: Sportvisserij Nederland, Decathlon',
     );
     const links = [...element.querySelectorAll('a')];
     expect(links.map((link) => link.getAttribute('href'))).toEqual([
       `${base}svnl`,
       `${base}winkel`,
     ]);
-    expect(links[0].getAttribute('aria-label')).toBe(
+    expect(links[0].querySelector('.snf-visually-hidden')?.textContent).toBe(
       'Bron: Roofvissen met kunstaas (Sportvisserij Nederland) (opent in een nieuw tabblad)',
     );
     expect(links.every((link) => link.rel === 'noopener noreferrer')).toBe(true);
