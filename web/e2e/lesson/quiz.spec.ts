@@ -45,7 +45,9 @@ test.describe('the quiz', () => {
     for (const [index, order] of orders.entries()) {
       expect([...order].sort()).toEqual([...contentOrder[index]].sort());
     }
-    // With four questions of four options, all in content order has a chance of 1 in 331 776.
+    // With four questions of four options, all in content order has a chance of 1 in 331 776
+    // ((4!)^4), so this can fail falsely, but so rarely that a rerun settles it. That is
+    // acceptable: a seeded random would no longer test the real shuffle the child sees.
     expect(orders).not.toEqual(contentOrder);
   });
 
