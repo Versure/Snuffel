@@ -1,0 +1,35 @@
+:host {
+  display: block;
+  margin: 0 0 1rem;
+}
+
+.panel {
+  display: flex;
+  gap: 0.6rem;
+  align-items: center;
+  min-height: 7rem;
+  padding: 1rem;
+  color: var(--snf-color-panel-text);
+  background: var(--snf-color-panel);
+  border: var(--snf-border-width) solid var(--snf-color-ink);
+  border-radius: var(--snf-radius-xl);
+  box-shadow: var(--snf-shadow-panel);
+}
+
+.ted {
+  flex: none;
+}
+
+/* The bubble of the game panel: fixed cream with black text, in both themes. */
+.message {
+  flex: 1;
+  margin: 0;
+  padding: 0.55rem 0.8rem;
+  font-family: var(--snf-font-display);
+  font-size: 1.35rem;
+  letter-spacing: 0.03em;
+  line-height: 1.15;
+  color: var(--snf-color-black);
+  background: var(--snf-color-cream);
+  border-radius: var(--snf-radius-md);
+}
