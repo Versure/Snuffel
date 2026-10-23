@@ -3,7 +3,7 @@ import type { LessonStep as LessonStepData } from '../../../core/content/content
 import { InteractionPlaceholder } from '../../../interactions/interaction-placeholder/interaction-placeholder';
 import { Block } from '../../../shared/blocks/block/block';
 import { InlineText } from '../../../shared/inline-text/inline-text/inline-text';
-import { PracticeList } from '../../../shared/practice/practice-list/practice-list';
+import { Checklist } from '../../../shared/practice/checklist/checklist';
 import { QuizPreview } from '../../../shared/quiz/quiz-preview/quiz-preview';
 import { STEP_ANCHOR_PREFIX } from '../../../shared/ui/step-nav/step-nav';
 
@@ -22,7 +22,7 @@ export function stepHeadingId(stepId: string): string {
  */
 @Component({
   selector: 'snf-lesson-step',
-  imports: [Block, InlineText, InteractionPlaceholder, PracticeList, QuizPreview],
+  imports: [Block, Checklist, InlineText, InteractionPlaceholder, QuizPreview],
   templateUrl: './lesson-step.html',
   styleUrl: './lesson-step.css',
   changeDetection: ChangeDetectionStrategy.OnPush,

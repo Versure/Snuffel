@@ -53,9 +53,11 @@ describe('LessonStep', () => {
     expect(element.querySelectorAll('snf-quiz-preview ol.questions > li')).toHaveLength(4);
   });
 
-  it('renders the practice list for a practice step', async () => {
+  it('a practice step renders snf-checklist', async () => {
     const element = await render(stepOfType('practice'), 4);
-    expect(element.querySelector('snf-practice-list')).not.toBeNull();
-    expect(element.querySelectorAll('snf-practice-list ul.items > li')).toHaveLength(4);
+    expect(element.querySelector('snf-checklist')).not.toBeNull();
+    expect(
+      element.querySelectorAll('snf-checklist ul.items > li input[type="checkbox"]'),
+    ).toHaveLength(4);
   });
 });

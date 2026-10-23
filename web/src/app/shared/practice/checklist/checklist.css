@@ -1,0 +1,108 @@
+:host {
+  display: block;
+}
+
+.intro {
+  margin: 0 0 1.4rem;
+}
+
+.unavailable {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem 1rem;
+  align-items: center;
+  margin: 0 0 1rem;
+}
+
+.items {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.item {
+  padding: 0.25rem 0;
+  border-bottom: 2px dashed var(--snf-color-text-muted);
+}
+
+.item:last-child {
+  border-bottom: 0;
+}
+
+/* The whole row is the tap area of the checkbox (at least 44 px high). */
+.row {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+  min-height: var(--snf-tap-min);
+  padding: 0.35rem 0;
+  cursor: pointer;
+}
+
+.text {
+  flex: 1;
+  padding-top: 0.1rem;
+}
+
+/* The checkbox of the reference: a square with an ink border, pink with a ✓ when ticked. */
+input {
+  appearance: none;
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 1.6rem;
+  height: 1.6rem;
+  margin: 0.15rem 0 0;
+  background: var(--snf-color-surface);
+  border: var(--snf-border-width) solid var(--snf-color-ink);
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+input:checked {
+  background: var(--snf-color-pink);
+}
+
+/* Ink on pink: white on pink fails WCAG AA (see tokens.css). */
+input:checked::after {
+  content: '✓';
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--snf-color-on-pink);
+}
+
+input:focus-visible {
+  outline: var(--snf-focus-ring);
+  outline-offset: var(--snf-focus-ring-offset);
+}
+
+input:disabled,
+input:disabled + .text {
+  cursor: default;
+}
+
+input:disabled {
+  opacity: 0.6;
+}
+
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 1.6rem;
+  margin: 0 0 0.25rem 2.35rem;
+}
+
+.error {
+  margin: 0.8rem 0 0;
+  padding: 0.5rem 0.75rem;
+  font-weight: 700;
+  color: var(--snf-color-text);
+  background: var(--snf-color-error-soft);
+  border: 2px solid var(--snf-color-error);
+  border-radius: var(--snf-radius-md);
+}
+
+.success {
+  margin: 0.8rem 0 0;
+}
