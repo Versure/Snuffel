@@ -7,8 +7,8 @@ import {
   type ElementRef,
   inject,
   Injector,
+  linkedSignal,
   resource,
-  signal,
   viewChild,
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -167,16 +167,30 @@ export class ChildOverview {
       );
     },
   });
+  // The clear states, the message and the retried files belong to one child: they start empty
+  // again when the page shows another child, so nothing of child A stays on the page of child B.
   /** Clearing per lesson id; a lesson without an entry is idle. */
-  private readonly clearStates = signal<ReadonlyMap<string, ClearState>>(new Map());
+  private readonly clearStates = linkedSignal<string, ReadonlyMap<string, ClearState>>({
+    source: this.childId,
+    computation: () => new Map(),
+  });
   /** The number of clears that succeeded per lesson id, so the question in that lesson closes. */
-  private readonly clearedCounts = signal<ReadonlyMap<string, number>>(new Map());
+  private readonly clearedCounts = linkedSignal<string, ReadonlyMap<string, number>>({
+    source: this.childId,
+    computation: () => new Map(),
+  });
   /** The message after clearing, in a live region. */
-  protected readonly cleared = signal('');
+  protected readonly cleared = linkedSignal<string, string>({
+    source: this.childId,
+    computation: () => '',
+  });
   private readonly clearedMessage = viewChild<ElementRef<HTMLElement>>('clearedMessage');
 
   /** Lesson files loaded again one by one with "Opnieuw" ('loading' while it runs). */
-  private readonly retried = signal<ReadonlyMap<string, LessonContent | 'loading'>>(new Map());
+  private readonly retried = linkedSignal<string, ReadonlyMap<string, LessonContent | 'loading'>>({
+    source: this.childId,
+    computation: () => new Map(),
+  });
 
   protected readonly name = computed(() => {
     const state = this.state();
@@ -283,14 +297,19 @@ export class ChildOverview {
       this.clearStates.update((current) => new Map(current).set(lesson.id, value));
     setState('clearing');
     this.cleared.set('');
+    const childId = state.child.id;
+    // A clear that ends after the page moved to another child says nothing on that page.
+    const stillShown = () => this.childId() === childId;
     try {
-      await this.progress.clearLesson(state.child.id, lesson.id);
+      await this.progress.clearLesson(childId, lesson.id);
     } catch {
+      if (!stillShown()) return;
       setState('failed');
       // Part of the records can be gone: show what is left. The question stays with "Opnieuw".
       this.snapshot.reload();
       return;
     }
+    if (!stillShown()) return;
     setState('idle');
     this.clearedCounts.update((current) =>
       new Map(current).set(lesson.id, (current.get(lesson.id) ?? 0) + 1),

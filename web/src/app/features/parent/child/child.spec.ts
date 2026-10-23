@@ -400,6 +400,56 @@ describe('ChildOverview', () => {
     });
   });
 
+  describe('on the page of another child', () => {
+    const kindB: UserRecord = { id: 'b1', name: 'Kind B', username: 'kind-b', role: 'child' };
+
+    beforeEach(() => {
+      loadChild.mockImplementation(async (id) =>
+        id === 'a1' ? kindA : id === 'b1' ? kindB : null,
+      );
+    });
+
+    it('shows nothing of a clear of the previous child', async () => {
+      clearLesson.mockRejectedValueOnce(new ProgressError('unavailable', 'test'));
+      const { fixture, element, lesson } = await clearProefles();
+      expect(textOf(lesson('Proefles')?.querySelector('.clear-status'))).toBe(
+        'Niet alles is gewist. Probeer het nog eens.',
+      );
+      snapshot = snapshotOf({ proefles: records({ steps: [stepRecord('uitleg', 'completed')] }) });
+      params.next(convertToParamMap({ childId: 'b1' }));
+      await fixture.whenStable();
+      expect(textOf(element.querySelector('h1'))).toBe('Kind B');
+      expect(lesson('Proefles')?.querySelector('.clear-status')).toBeNull();
+      expect(lesson('Proefles')?.querySelector('[role="group"]')).toBeNull();
+      // The question for child B asks again; it does not carry on the failed clear of child A.
+      buttonIn(lesson('Proefles'), 'Voortgang wissen')?.click();
+      await fixture.whenStable();
+      expect(buttonIn(lesson('Proefles'), 'Ja, wissen')).toBeDefined();
+      expect(buttonIn(lesson('Proefles'), 'Opnieuw')).toBeUndefined();
+      expect(textOf(lesson('Proefles')?.querySelector('.clear-status'))).toBe('');
+    });
+
+    it('says nothing when a clear of the previous child ends there', async () => {
+      let finish: () => void = () => undefined;
+      clearLesson.mockImplementationOnce(() => new Promise<void>((resolve) => (finish = resolve)));
+      const { fixture, element, lesson } = await render();
+      buttonIn(lesson('Proefles'), 'Voortgang wissen')?.click();
+      await fixture.whenStable();
+      buttonIn(lesson('Proefles'), 'Ja, wissen')?.click();
+      await settle();
+      expect(clearLesson).toHaveBeenCalledWith('a1', 'proefles');
+      params.next(convertToParamMap({ childId: 'b1' }));
+      await fixture.whenStable();
+      finish();
+      await settle();
+      await fixture.whenStable();
+      expect(textOf(element.querySelector('h1'))).toBe('Kind B');
+      expect(textOf(element.querySelector('.cleared'))).toBe('');
+      expect(lesson('Proefles')?.querySelector('.clear-status')).toBeNull();
+      expect(loadUserProgress).toHaveBeenLastCalledWith('b1');
+    });
+  });
+
   it('never shows the progress of the previous child while another child loads', async () => {
     const kindB: UserRecord = { id: 'b1', name: 'Kind B', username: 'kind-b', role: 'child' };
     loadChild.mockImplementation(async (id) => (id === 'a1' ? kindA : id === 'b1' ? kindB : null));
