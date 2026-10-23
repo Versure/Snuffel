@@ -4,6 +4,8 @@ Dit is de handleiding bij het inhoudsformaat van Snuffel, versie 1. Hij is voor 
 
 Sleutels zijn Engels, teksten Nederlands.
 
+Id's die met `voorbeeld-` beginnen zijn gereserveerd voor voorbeelden in `content/fixtures/` (gemaakt met `/snuffel-leren --voorbeeld`); in `content/courses/` komen ze nooit voor.
+
 ## Bestanden
 
 ```
@@ -14,7 +16,7 @@ content/
 │  ├─ course.json
 │  ├─ lessons/01-<les-id>.json        nummer voor de volgorde in de map, daarna het les-id
 │  └─ assets/<naam>.svg               afbeeldingen voor deze cursus
-└─ fixtures/courses/proefcursus/      testdata (de proefles), nooit in de image
+└─ fixtures/courses/<cursus-id>/      testdata (de proefles) en voorbeelden, nooit in de image
 ```
 
 - De mapnaam van een cursus is het cursus-id.
