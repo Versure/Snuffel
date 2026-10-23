@@ -60,6 +60,15 @@ describe('LessonItem', () => {
     expect(textOf(element.querySelector('.number'))).toBe('2');
   });
 
+  it('a screen reader hears the lesson number once, as Les 2', async () => {
+    const { element } = await render(published, null);
+    // The big number is decoration; the hidden text says what it is.
+    expect(element.querySelector('.number')?.getAttribute('aria-hidden')).toBe('true');
+    expect(textOf(element.querySelector('.snf-visually-hidden'))).toBe('Les 2');
+    // The link keeps the title as its name.
+    expect(textOf(element.querySelector('a'))).toBe('Proefles: aanbeet of vastzitten?');
+  });
+
   it('a planned lesson is no link and says Komt nog', async () => {
     const { element, label } = await render(planned, { status: 'planned', done: 0, total: 0 });
     expect(element.querySelector('a')).toBeNull();

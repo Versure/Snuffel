@@ -57,7 +57,8 @@
       }
 
       <h2>{{ text.lessons }}</h2>
-      <ol class="lessons">
+      <!-- role="list": Safari drops the list semantics of a list without bullets. -->
+      <ol class="lessons" role="list">
         @for (lesson of current.entry.lessons; track lesson.id; let index = $index) {
           <li>
             <snf-lesson-item

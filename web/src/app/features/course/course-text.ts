@@ -19,6 +19,7 @@ export const COURSE_TEXT = {
   unavailable: 'Snuffel kan dit leertraject nu niet laden.',
   unsupportedHeading: 'Nieuwere versie nodig',
   unsupportedVersion: HOME_TEXT.unsupportedVersion,
+  lessonNumber: (number: number) => `Les ${number}`,
   minutes: (minutes: number) => `Ongeveer ${minutes} minuten`,
   completed: 'Klaar',
   started: (done: number, total: number) => `Bezig: ${done} van ${total} stappen klaar`,

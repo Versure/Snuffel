@@ -48,6 +48,15 @@ test.describe('the course overview', () => {
     await expect(items.nth(1)).toContainText(laterTitle);
     await expect(items.nth(1).locator('.label')).toHaveText('Komt nog');
     await expect(items.nth(0).locator('.number')).toHaveText('1');
+    // A list for every browser (also Safari, despite list-style: none), with the number heard.
+    const list = page.getByRole('list').filter({ has: page.locator('snf-lesson-item') });
+    await expect(list.getByRole('listitem')).toHaveCount(2);
+    await expect(
+      list.getByRole('listitem').nth(0).getByText('Les 1', { exact: true }),
+    ).toBeAttached();
+    await expect(
+      list.getByRole('listitem').nth(1).getByText('Les 2', { exact: true }),
+    ).toBeAttached();
     await expect(items.nth(1).locator('.number')).toHaveText('2');
   });
 

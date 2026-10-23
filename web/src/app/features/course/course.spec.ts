@@ -166,6 +166,8 @@ describe('Course', () => {
 
   it('lists every lesson in course order with its number', async () => {
     const { element } = await open();
+    // role="list" keeps the list semantics in Safari, despite list-style: none.
+    expect(element.querySelector('ol.lessons')?.getAttribute('role')).toBe('list');
     const items = Array.from(element.querySelectorAll('ol.lessons > li snf-lesson-item'));
     expect(items.map((item) => textOf(item.querySelector('.number')))).toEqual(['1', '2']);
     expect(items.map((item) => textOf(item.querySelector('.title')))).toEqual([
