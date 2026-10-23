@@ -319,4 +319,106 @@ describe('ChildOverview', () => {
     finish();
     await fixture.whenStable();
   });
+
+  /** Lets the app render while a load still runs (whenStable would wait for the load). */
+  async function settle() {
+    for (let round = 0; round < 3; round++) {
+      await new Promise((resolve) => setTimeout(resolve, 20));
+    }
+  }
+
+  describe('while the progress loads again', () => {
+    const tweedeRecords = records({
+      steps: [{ ...stepRecord('uitleg', 'started'), lesson_id: 'tweede' }],
+    });
+    let finishClear: (error?: Error) => void;
+    let finishLoad: () => void;
+
+    beforeEach(() => {
+      snapshot = snapshotOf({
+        proefles: records({ steps: [stepRecord('uitleg', 'completed')] }),
+        tweede: tweedeRecords,
+      });
+      finishClear = () => undefined;
+      finishLoad = () => undefined;
+      clearLesson.mockImplementationOnce(
+        () =>
+          new Promise<void>((resolve, reject) => {
+            finishClear = (error) => (error ? reject(error) : resolve());
+          }),
+      );
+    });
+
+    /** Asks to clear Proefles and confirms, then opens the question in Tweede les. */
+    async function startClearing() {
+      const rendered = await render();
+      const { fixture, lesson } = rendered;
+      buttonIn(lesson('Proefles'), 'Voortgang wissen')?.click();
+      await fixture.whenStable();
+      buttonIn(lesson('Proefles'), 'Ja, wissen')?.click();
+      buttonIn(lesson('Tweede les'), 'Voortgang wissen')?.click();
+      await fixture.whenStable();
+      const question = lesson('Tweede les')?.querySelector<HTMLElement>('[role="group"]');
+      expect(question).toBeTruthy();
+      expect(document.activeElement).toBe(question);
+      // The next load waits until the test lets it finish.
+      loadUserProgress.mockImplementationOnce(
+        () =>
+          new Promise<UserProgressSnapshot>((resolve) => {
+            finishLoad = () => resolve(snapshot);
+          }),
+      );
+      return { ...rendered, question };
+    }
+
+    it('an open question in another row stays open and keeps the focus', async () => {
+      const { fixture, lesson, question } = await startClearing();
+      snapshot = snapshotOf({ proefles: records(), tweede: tweedeRecords });
+      finishClear(new ProgressError('unavailable', 'test'));
+      await settle();
+      expect(loadUserProgress).toHaveBeenCalledTimes(2);
+      // Still loading: the rows keep the previous progress.
+      expect(lesson('Tweede les')?.querySelector('[role="group"]')).toBe(question);
+      expect(document.activeElement).toBe(question);
+      expect(textOf(lesson('Proefles')?.querySelector('snf-lesson-status'))).not.toBe('');
+      finishLoad();
+      await fixture.whenStable();
+      expect(lesson('Tweede les')?.querySelector('[role="group"]')).toBe(question);
+      expect(document.activeElement).toBe(question);
+    });
+
+    it('an open question in another row stays open after a clear that succeeded', async () => {
+      const { fixture, lesson, question } = await startClearing();
+      snapshot = snapshotOf({ tweede: tweedeRecords });
+      finishClear();
+      await settle();
+      expect(lesson('Tweede les')?.querySelector('[role="group"]')).toBe(question);
+      finishLoad();
+      await fixture.whenStable();
+      expect(lesson('Tweede les')?.querySelector('[role="group"]')).toBe(question);
+      expect(textOf(lesson('Proefles')?.querySelector('snf-lesson-status'))).toBe('Nieuw');
+    });
+  });
+
+  it('never shows the progress of the previous child while another child loads', async () => {
+    const kindB: UserRecord = { id: 'b1', name: 'Kind B', username: 'kind-b', role: 'child' };
+    loadChild.mockImplementation(async (id) => (id === 'a1' ? kindA : id === 'b1' ? kindB : null));
+    const { fixture, element, lesson } = await render();
+    expect(textOf(lesson('Proefles')?.querySelector('snf-lesson-status'))).toBe(
+      'Bezig: 1 van 5 stappen klaar',
+    );
+    let finish: (value: UserProgressSnapshot) => void = () => undefined;
+    loadUserProgress.mockImplementationOnce(
+      () => new Promise<UserProgressSnapshot>((resolve) => (finish = resolve)),
+    );
+    params.next(convertToParamMap({ childId: 'b1' }));
+    await settle();
+    expect(textOf(element.querySelector('h1'))).toBe('Kind B');
+    expect(loadUserProgress).toHaveBeenLastCalledWith('b1');
+    expect(lesson('Proefles')?.querySelector('snf-lesson-status')).toBeNull();
+    expect(element.querySelector('main > .last-activity')).toBeNull();
+    finish(snapshotOf({}));
+    await fixture.whenStable();
+    expect(textOf(lesson('Proefles')?.querySelector('snf-lesson-status'))).toBe('Nieuw');
+  });
 });

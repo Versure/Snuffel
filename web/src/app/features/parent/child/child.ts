@@ -122,9 +122,15 @@ export class ChildOverview {
     loader: ({ params }) => this.progress.loadUserProgress(params.userId),
   });
 
+  /**
+   * While the progress of the same child loads again (`reloading`, after clearing) the previous
+   * snapshot stays, so the rows keep their state and an open question keeps the focus. For
+   * another child the resource starts without a value (`loading`), so the progress of one
+   * child never shows on the page of another.
+   */
   protected readonly progressState = computed((): ChildProgressState => {
-    if (this.snapshot.isLoading()) return { kind: 'loading' };
     if (this.snapshot.hasValue()) return { kind: 'ready', snapshot: this.snapshot.value() };
+    if (this.snapshot.isLoading()) return { kind: 'loading' };
     return this.snapshot.status() === 'error' ? { kind: 'unavailable' } : { kind: 'loading' };
   });
 
