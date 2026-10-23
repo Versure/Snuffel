@@ -4,6 +4,8 @@ Dit is de handleiding bij het inhoudsformaat van Snuffel, versie 1. Hij is voor 
 
 Sleutels zijn Engels, teksten Nederlands.
 
+Id's die met `voorbeeld-` beginnen zijn gereserveerd voor voorbeelden in `content/fixtures/` (gemaakt met `/snuffel-leren <wens> --voorbeeld`); in `content/courses/` komen ze nooit voor.
+
 ## Bestanden
 
 ```
@@ -14,7 +16,7 @@ content/
 │  ├─ course.json
 │  ├─ lessons/01-<les-id>.json        nummer voor de volgorde in de map, daarna het les-id
 │  └─ assets/<naam>.svg               afbeeldingen voor deze cursus
-└─ fixtures/courses/proefcursus/      testdata (de proefles), nooit in de image
+└─ fixtures/courses/<cursus-id>/      testdata (de proefles) en voorbeelden, nooit in de image
 ```
 
 - De mapnaam van een cursus is het cursus-id.
@@ -107,7 +109,7 @@ Elke bron in `sources` heeft `id`, `title`, `url` (alleen `https://`), `publishe
 - `type`: `government`, `association`, `education`, `science`, `media`, `encyclopedia`, `manufacturer`, `shop`, `blog`, `forum`, `method`.
 - `reliability`:
   - `high`: overheid, vakbond of vereniging, onderwijsinstelling, wetenschap;
-  - `medium`: gerenommeerde media, encyclopedie, fabrikant over zijn eigen product;
+  - `medium`: gerenommeerde media, encyclopedie, fabrikant over zijn eigen product, methode van een uitgever over de eigen lesstof (`method`, bij huiswerk);
   - `low`: winkel, blog, forum.
 - `sourceRefs` is verplicht op elk blok (bij `signal-cards` op elke kaart), elke quizvraag (die geldt voor vraag, opties en feedback samen), elk checklist-item en elke interactiestap. Een lege lijst `[]` mag alleen bij tekst zonder feitelijke bewering; dat beoordeelt de reviewer.
 - Een niet-lege lijst steunt nooit alleen op `low`-bronnen: er staat altijd minstens één `medium`- of `high`-bron bij.

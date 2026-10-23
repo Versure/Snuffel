@@ -25,6 +25,10 @@ web/public/fonts/
 pocketbase/pb_data/
 pocketbase/bin/
 
+# Homework photos for snuffel-leren: may show a child's name, school or handwriting, and the
+# pages are copyrighted. Never commit them (tools/homework-photos.test.mjs).
+huiswerk-fotos/
+
 # Secrets
 .env
 .env.*

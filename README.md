@@ -55,18 +55,19 @@ Let op: `start:lan` zet de dev-server met de testaccounts open voor iedereen op 
 
 ## Mappen
 
-| Map           | Inhoud                                                                                                                                                                          |
-| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `web/`        | Angular-app (`src/`), Playwright-tests (`e2e/`)                                                                                                                                 |
-| `content/`    | lessen als JSON: `courses/` (echte inhoud), `fixtures/` (de proefles, alleen lokaal en in de e2e), `schema/v1/` (schema's en catalogus), `terms.json` (vaktermen)               |
-| `tools/`      | scripts voor checks (privacy, Node-versie, inhoud in `content/`), fonts en PocketBase (ophalen, starten)                                                                        |
-| `pocketbase/` | vastgepinde versie (`pocketbase.json`), migraties (`pb_migrations/`), hooks (`pb_hooks/`), testaccounts voor lokaal (`seed/`), integratietests van de toegangsregels (`tests/`) |
-| `deploy/`     | `Dockerfile`, `compose.dev.yml` (lokaal) en `compose.nas.yml` (Synology)                                                                                                        |
-| `.github/`    | workflow `release.yml`: bouwt na elke merge naar `main` de image en zet hem op ghcr.io                                                                                          |
-| `docs/start/` | handoff uit de ontwerpfase: stijl, Ted, referentieles                                                                                                                           |
-| `docs/plan/`  | implementatieplan en plan per mijlpaal                                                                                                                                          |
-| `.claude/`    | agents, skills en hooks voor Claude Code                                                                                                                                        |
-| `.husky/`     | git-hooks                                                                                                                                                                       |
+| Map               | Inhoud                                                                                                                                                                                                                   |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `web/`            | Angular-app (`src/`), Playwright-tests (`e2e/`)                                                                                                                                                                          |
+| `content/`        | lessen als JSON: `courses/` (echte inhoud), `fixtures/` (de proefles en voorbeelden van `/snuffel-leren <wens> --voorbeeld`, alleen lokaal en in de e2e), `schema/v1/` (schema's en catalogus), `terms.json` (vaktermen) |
+| `tools/`          | scripts voor checks (privacy, Node-versie, inhoud in `content/`), fonts en PocketBase (ophalen, starten)                                                                                                                 |
+| `pocketbase/`     | vastgepinde versie (`pocketbase.json`), migraties (`pb_migrations/`), hooks (`pb_hooks/`), testaccounts voor lokaal (`seed/`), integratietests van de toegangsregels (`tests/`)                                          |
+| `deploy/`         | `Dockerfile`, `compose.dev.yml` (lokaal) en `compose.nas.yml` (Synology)                                                                                                                                                 |
+| `.github/`        | workflow `release.yml`: bouwt na elke merge naar `main` de image en zet hem op ghcr.io                                                                                                                                   |
+| `docs/start/`     | handoff uit de ontwerpfase: stijl, Ted, referentieles                                                                                                                                                                    |
+| `docs/plan/`      | implementatieplan en plan per mijlpaal                                                                                                                                                                                   |
+| `.claude/`        | agents, skills en hooks voor Claude Code                                                                                                                                                                                 |
+| `.husky/`         | git-hooks                                                                                                                                                                                                                |
+| `huiswerk-fotos/` | jouw foto's van werkboekpagina's voor `/snuffel-leren` (huiswerk); staat in `.gitignore` en komt nooit in git                                                                                                            |
 
 ## Inhoud
 
@@ -86,6 +87,22 @@ Lessen staan als JSON in `content/courses/<cursus-id>/`: een `course.json` met d
 - De proefles (`content/fixtures/courses/proefcursus`) is testdata met elk onderdeel van het formaat. Je ziet hem alleen lokaal (`npm start`) en in de e2e-tests; de image voor de NAS wordt zonder fixtures gebouwd.
 - `npm start` bouwt de inhoud één keer bij het starten. Wijzig je een les terwijl de dev-server draait, draai dan `npm run content:build:fixtures` opnieuw.
 
+### Een les laten maken
+
+Start Claude Code in de repo (op `main`, werkmap schoon) en typ `/snuffel-leren <korte wens>`, bijvoorbeeld `/snuffel-leren Ik wil dat mijn kind leert hoe je een snoek onthaakt`. De skill maakt alleen inhoud in `content/`, nooit app-code.
+
+1. **Intake:** hoogstens zes vragen in één bericht, alleen wat de wens nog niet zegt (wie leert, waarom, wat kan diegene al, wanneer is het gelukt, hoeveel tijd, en bij huiswerk vak, niveau, methode en hoofdstuk). Namen en andere gegevens van de kinderen komen nooit in de les, een commit of de PR; de intake bepaalt alleen niveau en toon.
+2. **Bronnen:** de agent `source-researcher` zoekt minstens drie betrouwbare bronnen en opent ze echt. Claude Code vraagt toestemming voor `WebSearch` en `WebFetch`.
+3. **Leerpad:** lessen met elk één nieuw begrip. **Hier stopt de skill: jij keurt het leerpad goed** (of stuurt bij).
+4. **Les schrijven, controleren en laten beoordelen:** de skill schrijft de les volgens de catalogus, draait `npm run content:check` tot die groen is en laat de agent `content-reviewer` de les tegen de bronnen controleren (hoogstens twee rondes).
+5. **Pull request:** per les een branch `content/<cursus-id>-<les-id>` en een PR met de bronnen, het rapport van de reviewer en hoe je de les leest. **Daar stopt de skill: jij leest de les en merget zelf.** Zijn er na twee rondes nog blokkerende punten, dan is de PR een draft met die punten bovenaan.
+
+Lokaal lezen: `git switch content/<cursus-id>-<les-id>`, `npm start` (een draaiende dev-server eerst stoppen), log in als `kind-a` en open http://localhost:4200/leren/<cursus-id>/<les-id>. Tot M8 is de quiz een voorbeeld zonder knoppen; het voel-spel komt in M9, huiswerkoefeningen in M10.
+
+**Huiswerk met foto's.** Bij huiswerk kun je foto's van de pagina's uit het werkboek geven in plaats van de stof te omschrijven. Zet ze in de map `huiswerk-fotos/` in de repo (bijvoorbeeld `huiswerk-fotos/wiskunde-h3/`) en geef bij de intake het pad van de map of de bestanden; slepen in het gesprek mag ook. De skill leest vak, methode, hoofdstuk, uitleg, notatie en soort opgaven van de foto's, schrijft de uitleg in eigen woorden en bedenkt eigen opgaven van hetzelfde soort en niveau. `huiswerk-fotos/` staat in `.gitignore` en komt nooit in git of in de image: op de foto's kunnen naam, school of handschrift van een kind staan, en de pagina's zijn auteursrechtelijk beschermd. Namen en andere gegevens op de foto's neemt de skill nergens over. Maak de foto zonder naam, klas, cijfers of ander persoonlijks erop (afdekken of bijsnijden); de foto's blijven buiten git en de image, maar Claude stuurt ze wel naar Anthropic om ze te lezen. Ruim de foto's zelf op als de les klaar is.
+
+Met `/snuffel-leren <wens> --voorbeeld` maakt de skill een voorbeeldles als fixture in `content/fixtures/courses/`, zonder commit of PR. Je leest hem lokaal op http://localhost:4200/leren/<cursus-id>/<les-id>; in de image voor de NAS zit hij nooit. Id's die met `voorbeeld-` beginnen zijn gereserveerd voor zulke voorbeelden. De voorbeeldmodus commit niets en laat dus ongecommitte bestanden achter in `content/fixtures/courses/<cursus-id>/`. Draai hem daarom op een eigen branch vanaf een schone `main` (bijvoorbeeld `git switch -c sample/<cursus-id>`), niet op `main` of op een `content/…`-branch. Weghalen: verwijder de map `content/fixtures/courses/<cursus-id>/`, of gebruik `git clean -fd content/fixtures/courses/<cursus-id>/` (eerst `git clean -nd …` om te zien wat er weggaat); daarna kun je terug naar `main` en de branch verwijderen.
+
 ## Huisstijl
 
 - Kleuren, fonts, randen, schaduwen en radii staan als design tokens in `web/src/styles/tokens.css` (licht en donker). Componenten gebruiken alleen deze tokens.
@@ -101,6 +118,7 @@ Lessen staan als JSON in `content/courses/<cursus-id>/`: een `course.json` met d
   - `commit-msg`: Conventional Commits (`feat(lesson): …`);
   - `pre-push`: weigert pushen naar `main`, draait `npm run verify`.
 - Claude Code: `/mijlpaal-uitvoeren M2` voert een mijlpaal uit met de agents `planner`, `implementer`, `tester` en `reviewer`, en stopt bij de pull request. Zie [.claude/](.claude).
+- Claude Code: `/snuffel-leren <wens>` maakt een les als alleen inhoud, met de agents `source-researcher` (zoekt en opent bronnen, alleen lezen plus web) en `content-reviewer` (controleert de les tegen de bronnen, verandert niets), en stopt bij het leerpad en bij de pull request. Zie "Een les laten maken".
 
 ## Lokaal de echte image draaien
 
