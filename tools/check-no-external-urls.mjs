@@ -25,13 +25,7 @@ function isIgnored(baseDir, dir) {
 }
 
 function* walk(baseDir, dir) {
-  let entries;
-  try {
-    entries = readdirSync(dir);
-  } catch {
-    return;
-  }
-  for (const entry of entries) {
+  for (const entry of readdirSync(dir)) {
     const path = join(dir, entry);
     if (statSync(path).isDirectory()) {
       if (!isIgnored(baseDir, path)) yield* walk(baseDir, path);
@@ -41,11 +35,31 @@ function* walk(baseDir, dir) {
   }
 }
 
-/** Every external URL in the scanned roots below `baseDir`, as `file:line  url`. */
-export function findExternalUrls(baseDir = '.') {
+/** Whether `dir` exists; only a missing directory counts, any other error is thrown. */
+function exists(dir) {
+  try {
+    statSync(dir);
+    return true;
+  } catch (error) {
+    if (error.code === 'ENOENT') return false;
+    throw error;
+  }
+}
+
+/**
+ * Every external URL in the scanned roots below `baseDir`, as `file:line  url`. A missing root is
+ * an error (a renamed directory would otherwise silently go unscanned), unless `allowMissingRoots`
+ * is set, which the tests use for small fixture projects.
+ */
+export function findExternalUrls(baseDir = '.', { allowMissingRoots = false } = {}) {
   const findings = [];
   for (const root of roots) {
-    for (const file of walk(baseDir, join(baseDir, root))) {
+    const rootDir = join(baseDir, root);
+    if (!exists(rootDir)) {
+      if (allowMissingRoots) continue;
+      throw new Error(`privacy: directory ${root} not found; run from the repository root`);
+    }
+    for (const file of walk(baseDir, rootDir)) {
       const lines = readFileSync(file, 'utf8').split('\n');
       lines.forEach((line, index) => {
         for (const [url] of line.matchAll(urlPattern)) {
