@@ -7,7 +7,7 @@
 }
 @if (details(); as list) {
   @if (list.length > 0) {
-    <dl class="details" [attr.aria-label]="text.details(title())">
+    <dl class="details">
       @for (detail of list; track detail.stepId) {
         <div class="detail">
           <dt>{{ detail.title }}:</dt>

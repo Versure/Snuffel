@@ -30,7 +30,6 @@ export const CHILD_TEXT = {
   pageTitle: (name: string) => `${name} · Ouderoverzicht · Snuffel`,
   notFoundTitle: 'Kind niet gevonden · Ouderoverzicht · Snuffel',
   defaultTitle: 'Ouderoverzicht · Snuffel',
-  details: (title: string) => `Details van ${title}`,
   quizScore: (correct: number, questions: number) => `${correct} van ${questions} goed`,
   quizPartly: (answered: number, questions: number, correct: number) =>
     `${answered} van ${questions} beantwoord, ${correct} goed`,
