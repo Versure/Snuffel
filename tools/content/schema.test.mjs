@@ -365,6 +365,31 @@ describe('schemas', () => {
     assertError(validate('lesson', game), 'steps[1].interaction.config.choices[0].color');
   });
 
+  const signalIcons = ['tick', 'shake', 'stop', 'check', 'cross', 'question', 'idea', 'warning'];
+
+  function lessonWithIcons(icons) {
+    const lesson = clone(minimalLesson);
+    lesson.steps[0].blocks.push({
+      type: 'signal-cards',
+      cards: icons.map((icon) => ({ icon, title: 'Kaart', text: 'Tekst.', sourceRefs: [] })),
+    });
+    return lesson;
+  }
+
+  test('accepts every signal icon from the set', () => {
+    assert.deepEqual(validate('lesson', lessonWithIcons(signalIcons)), []);
+    assert.deepEqual(loadSchema('lesson').$defs.signalIcon.enum, signalIcons);
+  });
+
+  test('rejects an unknown signal-card icon with a Dutch message', () => {
+    const error = assertError(
+      validate('lesson', lessonWithIcons(['fish'])),
+      'steps[0].blocks[2].cards[0].icon',
+    );
+    assert.match(error.message, /waarde "fish" is niet toegestaan/);
+    assert.match(error.message, new RegExp(`kies uit: ${signalIcons.join(', ')}`));
+  });
+
   test('pointerToPath writes array indexes in brackets', () => {
     assert.equal(pointerToPath(''), '');
     assert.equal(pointerToPath('', 'id'), 'id');

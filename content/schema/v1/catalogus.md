@@ -225,7 +225,19 @@ Elke stap heeft `id`, `type` en `title`. Een les van een leertraject (`kind: cou
 | `figure`       | `src`, `alt`, `sourceRefs`, `caption` mag           | `{ "type": "figure", "src": "assets/hengeltop.svg", "alt": "Een buigende hengeltop", "sourceRefs": [] }`          |
 | `ted-says`     | `mood`, `text`, `sourceRefs`                        | `{ "type": "ted-says", "mood": "thinking", "text": "Let op je hengeltop.", "sourceRefs": [] }`                    |
 
-- `icon` is de naam van een icoon uit de vaste set van de app (kebab-case); de set komt met de lesweergave (M7).
+- `icon` is de naam van een icoon uit de vaste set van de app (tabel hieronder). Een andere naam is een `schema`-fout; de melding noemt de toegestane namen. Een nieuw icoon vraagt een tekening in de app en een regel in het schema.
+
+| `icon`     | Tekening                                                      | Kleur |
+| ---------- | ------------------------------------------------------------- | ----- |
+| `tick`     | een rechte lijn met één scherpe piek omhoog (een korte tik)   | geel  |
+| `shake`    | een lijn die snel op en neer gaat (schudden, trillen)         | roze  |
+| `stop`     | een pijl omlaag naar een gestippelde lijn (vast aan de bodem) | lila  |
+| `check`    | een vinkje (goed, zo doe je het)                              | geel  |
+| `cross`    | een kruis (fout, zo niet)                                     | roze  |
+| `question` | een vraagteken (twijfel, zelf nadenken)                       | lila  |
+| `idea`     | een gloeilamp (slim idee, handigheidje)                       | geel  |
+| `warning`  | een driehoek met een uitroepteken (pas op, gevaar)            | roze  |
+
 - `figure.src` wijst naar een `.svg` in de map `assets/` van de cursus (of een submap), met alleen kleine letters, cijfers en streepjes in de namen (bijv. `assets/vissen/snoek.svg`), zonder `..` en zonder symlink. `alt` beschrijft wat je ziet en is nooit leeg. De svg laadt niets van buiten (alleen de XML-namespaces van w3.org mogen erin staan) en gebruikt `currentColor` in plaats van vaste kleuren.
 
 ## Opmaak in tekst

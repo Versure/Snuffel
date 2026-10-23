@@ -83,9 +83,10 @@ export type Block =
 export type SourceRefs = ContentId[];
 
 /**
- * Name of an icon from the app's fixed icon set (kebab-case).
+ * Name of an icon from the app's fixed icon set; the app draws each one itself.
  */
-export type ContentId1 = string;
+export type SignalIcon =
+  'tick' | 'shake' | 'stop' | 'check' | 'cross' | 'question' | 'idea' | 'warning';
 
 /**
  * Its id is the interaction_id in interaction_results.
@@ -95,7 +96,7 @@ export type Interaction = TraceGameInteraction | SteppedExerciseInteraction;
 /**
  * Id of one of the choices.
  */
-export type ContentId2 = string;
+export type ContentId1 = string;
 
 export type ShapePart = ShapeBase | ShapePulse | ShapePulses | ShapeRamp | ShapeWobble;
 
@@ -197,7 +198,7 @@ export interface SignalCardsBlock {
 }
 
 export interface SignalCard {
-  icon: ContentId1;
+  icon: SignalIcon;
   title: ContentText;
   text: ContentText;
   sourceRefs: SourceRefs;
@@ -275,7 +276,7 @@ export interface TraceChoice {
 
 export interface TracePattern {
   id: ContentId;
-  answer: ContentId2;
+  answer: ContentId1;
   /**
    * Building blocks; the line is the sum of all blocks at time t (0-1).
    *
