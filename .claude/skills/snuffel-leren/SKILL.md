@@ -94,7 +94,11 @@ Bestand `content/courses/<cursus-id>/lessons/NN-<les-id>.json` (`NN` is het volg
 - Hints en tussenstappen gaan vóór het antwoord; de uitwerking (`workedSolution`) komt pas na een eigen poging.
 - Neem nooit opgaven letterlijk over uit het huiswerk of de methode.
 - **Met foto's:** volg de stof, de volgorde en de **notatie** van het boek, op hetzelfde niveau. **Parafraseer** de uitleg in je eigen woorden. De opgaven lijken op die in het boek (zelfde soort, zelfde niveau, zelfde notatie), maar zijn nooit letterlijk overgenomen, en ook niet dezelfde zin met alleen andere getallen: bedenk een eigen context (bij voorkeur iets herkenbaars, zoals de vijver of vissen).
-- Meld Jop dat de oefening pas na M10 in de app werkt (tot dan staat er een plaatshouder).
+- De oefening werkt in de app sinds M10. Kort (details en valkuilen in de catalogus, sectie `stepped-exercise`):
+  - `accepted`: zet elke vorm die goed is erin (`5/6`, `vijf zesde`); hoofdletters, extra spaties, spaties rond `/` en een punt aan het eind tellen niet mee, accenten en typefouten wel.
+  - `number`: het kind mag een komma, een punt, een breuk (`3/4`) of een gemengd getal (`1 1/4`) typen, en de `unit` erachter. Zet `tolerance` boven 0 als een afgerond antwoord goed moet zijn (`0,33` bij `1/3`). Grote getallen zonder punt (`1.000` is één).
+  - `commonMistakes`: een fout antwoord zoals een kind het typt; bij `choice` het id van een optie. Een fout antwoord dat als goed zou tellen of (bij `number`) geen getal is, weigert `content:check`.
+  - Hoogstens 10 opgaven per oefening; tussenstappen zijn ook vóór een poging te openen, dus zet het eindantwoord er niet in.
 
 ## 6. Valideren
 
@@ -141,7 +145,7 @@ Zet de agent `content-reviewer` in met het pad van `course.json` en van de les; 
 
 ## Nog niet te zien
 
-De quiz (gehusseld, hints op verzoek, feedback per gekozen optie, score met Ted) en de checklist met vinkjes werken sinds M8 en bewaren de voortgang per kind; het voel-spel (`trace-game`) werkt sinds M9 en bewaart elk uitgespeeld spel; `stepped-exercise` komt in M10. Een cursuspagina komt in M11.
+De quiz (gehusseld, hints op verzoek, feedback per gekozen optie, score met Ted) en de checklist met vinkjes werken sinds M8 en bewaren de voortgang per kind; het voel-spel (`trace-game`) werkt sinds M9 en bewaart elk uitgespeeld spel; de oefening (`stepped-exercise`) werkt sinds M10 en bewaart elke afgeronde reeks. Een cursuspagina komt in M11.
 ```
 
 Zijn er na twee reviewrondes nog blokkerende punten: open de PR toch, maar als **draft**, met die punten bovenaan.

@@ -275,10 +275,11 @@ Een les staat in de app op `/leren/<cursus-id>/<les-id>`, voor wie ingelogd is (
 - **Einde:** Ted (blij) met `ted.finished`, dan "Woordenlijst", "Verder lezen" (titel van de bron als link, de uitgever en `why`) en "Vragen" (elke vraag met het antwoord eronder). Een lege lijst geeft geen kopje.
 - **Quiz:** alle vragen onder elkaar, genummerd, met de opties als knoppen in een **gehusselde volgorde** (elke ronde anders). Per ronde mag een vraag **één keer** beantwoord worden: na een tik gaan de opties dicht, de gekozen optie wordt groen (goed) of rood (fout) met "Jouw antwoord" erbij, en bij een fout antwoord wordt ook de goede optie groen met "Goede antwoord". Daaronder staat een kleine Ted (blij bij goed, geschrokken bij fout) met een willekeurige regel uit `ted.correct` of `ted.incorrect`, en de `feedback` van de **gekozen** optie. Schrijf dus bij elke optie een `feedback` die zonder de andere opties te begrijpen is. `hints` verschijnen alleen op verzoek, één voor één ("Hint", "Nog een hint"), zolang de vraag open is; hoeveel hints iemand vroeg, wordt bewaard. Na de laatste vraag: "<goed> van <totaal> goed." met Ted (stoer met een regel uit `ted.correct` als alles goed is, anders blij met "Lees de uitleg bij de rode vragen nog eens.") en een knop "Opnieuw" voor een nieuwe ronde.
 - **Praktijk:** een plakbriefje met per `item` een vinkje; de hele regel is het tikvlak, een link in een item staat ernaast (een tik op de link vinkt niets aan). `successCriterion` staat vet onder de lijst, zonder vinkje. Vinkjes worden bewaard, per kind.
-- **Wanneer een stap klaar is** (een gevuld rondje in de stappen-navigatie): een `explain`-stap als het einde van de stap een seconde in beeld is geweest (lezen tot het eind; wie met de navigatie over de uitleg heen springt, heeft hem niet gelezen); een `quiz` als elke vraag beantwoord is, goed of fout; een `practice`-stap als alle items aangevinkt zijn; een `trace-game` als een spel **uitgespeeld** is (alle rondes, welke score ook). Een `stepped-exercise` is tot M10 nooit klaar. Een stap die klaar is, blijft klaar, ook als je daarna een vinkje weghaalt. Een les openen bewaart niets.
+- **Wanneer een stap klaar is** (een gevuld rondje in de stappen-navigatie): een `explain`-stap als het einde van de stap een seconde in beeld is geweest (lezen tot het eind; wie met de navigatie over de uitleg heen springt, heeft hem niet gelezen); een `quiz` als elke vraag beantwoord is, goed of fout; een `practice`-stap als alle items aangevinkt zijn; een `trace-game` als een spel **uitgespeeld** is (alle rondes, welke score ook); een `stepped-exercise` als een reeks **afgerond** is ("Klaar" na de laatste opgave, welke score ook). Een stap die klaar is, blijft klaar, ook als je daarna een vinkje weghaalt. Een les openen bewaart niets.
 - **`version` en bewaarde antwoorden:** bij elk antwoord bewaart de app de `version` van de les. Na herladen toont de quiz alleen antwoorden met dezelfde `version` als de les nu. Verander je een quizvraag of een optie zonder `version` op te hogen, dan ziet een kind zijn oude antwoord bij een veranderde vraag. Daarom moet `version` omhoog bij elke wijziging (`content:check` dwingt dat af).
 - **Spel:** zie `trace-game` hieronder. Elk uitgespeeld spel wordt bewaard (score, aantal rondes en per ronde patroon en keuze); na herladen staat onder het spel "Vorige keer: <goed> van <totaal> goed." (alleen met dezelfde `version`). Een half gespeeld spel wordt niet onthouden.
-- **Wat nog komt:** een `stepped-exercise` is tot M10 een donker paneel met Ted: "Deze oefening komt binnenkort." Bronnen bij een quizvraag of een praktijkpunt toont de app (nog) niet.
+- **Oefening:** zie `stepped-exercise` hieronder. Elke afgeronde reeks wordt bewaard; na herladen staat eronder "Vorige keer: <zelf goed> van <totaal> goed.". Een half gemaakte reeks wordt niet onthouden.
+- **Wat nog komt:** bronnen bij een quizvraag, een praktijkpunt of een interactiestap toont de app (nog) niet.
 
 ## Interacties
 
@@ -386,7 +387,27 @@ Zo is "zwaar met schudden" (de `zwaar` uit de proefles) gebouwd: eerst rustig, d
 
 ### `stepped-exercise` (huiswerk-oefenles)
 
-Opgaven met een eigen antwoord van het kind, oplopende hints, tussenstappen die het kind kan openen, herkende foute antwoorden met gerichte uitleg, en een uitwerking die pas verschijnt na een eigen poging én alle hints. Het formaat bestaat al in v1; in de app is het pas vanaf M10 te zien.
+Opgaven met een eigen antwoord van het kind, oplopende hints, tussenstappen die het kind zelf opent, herkende foute antwoorden met gerichte uitleg, en een uitwerking die pas verschijnt na een eigen poging én alle hints. Werkt in de app sinds M10.
+
+**Wanneer past het:** bij huiswerk en oefenen, als elke opgave **één eigen antwoord** heeft dat de app kan controleren: een getal (`number`), een kort antwoord in woorden of een breuk (`text`), of een keuze uit een paar opties (`choice`). Niet voor open vragen, een uitleg in eigen woorden of iets met meer goede antwoorden dan je in `accepted` kunt zetten; daarvoor is een `practice`-stap (`do-it-yourself`) of een quizvraag beter.
+
+**Zo werkt het in de app:**
+
+- Een licht kaartje (zoals de quiz, geen donker paneel) met de opgaven **één voor één**: "Opgave <n> van <totaal>", de `prompt` groot, en een invoervak met "Controleer" (Enter werkt ook). Heeft het antwoord een `unit`, dan staat die achter het vak. Bij `choice` zijn de opties knoppen in een gehusselde volgorde (elke reeks anders); een tik is het antwoord.
+- **Onbeperkt proberen.** Goed: Ted blij met een regel uit `ted.correct`, het vak gaat dicht. Een herkende fout (`commonMistakes`): Ted nadenkend met de `feedback` van die fout. Een andere fout: Ted geschrokken met een regel uit `ted.incorrect` en "Probeer het nog eens, of vraag een hint.". Bij `choice` gaat een fout gekozen optie dicht met "Jouw antwoord".
+- **Leeg of onleesbaar telt niet** als poging: "Vul eerst een antwoord in." of (bij `number`) "Dat kan ik niet lezen als getal. Schrijf bijvoorbeeld 0,75 of 3/4.".
+- **Hints** op verzoek, één voor één ("Hint", "Nog een hint"). **Tussenstappen** zijn knoppen met de `title`; een tik klapt de `text` open en weer dicht, ook al vóór een poging.
+- **De uitwerking** ("Bekijk de uitwerking", daarna de `workedSolution` in een kader "Uitwerking") komt pas na **minstens één leesbare poging én alle hints** (zonder hints: na één poging), of meteen na een goed antwoord. Tot dan staat er: "De uitwerking kun je zien als je het zelf geprobeerd hebt en alle hints hebt bekeken.".
+- Een opgave is **afgerond** als hij goed is of als de uitwerking open is; dan komt "Volgende opgave" (na de laatste "Klaar"). Na de uitwerking mag het kind nog antwoorden, maar dan telt de opgave niet meer als "zelf goed".
+- Na de laatste opgave: "<zelf goed> van <totaal> zelf goed." met Ted stoer en een regel uit `ted.correct` als alles zelf goed was, anders Ted blij met "Kijk de uitwerkingen nog eens rustig na. Morgen gaat het nog beter.", en "Nog een keer" voor een nieuwe reeks. Deze teksten zijn vast in de app.
+
+**Hoe antwoorden vergeleken worden** (app en `content:check` op precies dezelfde manier; de gevallen staan in `content/schema/v1/answer-matching.cases.json`):
+
+- **`number`:** wat het kind typt wordt gelezen als getal: spaties eromheen tellen niet; komma **of** punt als decimaalteken (`0,75`, `0.75`); een min (`-` of `−`); een breuk (`3/4`, ook `3 / 4`) of een gemengd getal (`1 1/4`). Er is **geen duizendtallen-scheiding**: `1.000` is één. Een `unit` mag het kind erachter typen (`0,75 liter`, hoofdletters tellen niet); een andere eenheid, letters, twee decimaaltekens of `/0` is onleesbaar. Goed als het getal hoogstens `tolerance` van `value` ligt (de grens telt mee, plus een heel kleine marge tegen afrondingsfouten van de computer).
+- **`text`:** het antwoord en elke vorm in `accepted` worden eerst gelijk gemaakt: opmaak weg, spaties aan begin en eind weg, meer spaties worden één, geen spaties rond `/` (`5 / 6` = `5/6`), hoofdletters tellen niet, gekrulde aanhalingstekens en apostrofs tellen als rechte, één punt aan het eind telt niet. **Accenten tellen wel** (`café` is niet `cafe`), en typefouten worden niet goed gerekend: wat goed is, staat in `accepted`.
+- **`choice`:** goed als het kind `correctOptionId` kiest.
+- **`commonMistakes`:** eerst wordt "goed" gecontroleerd, daarna geeft de eerste passende fout zijn `feedback`. Bij `number` wordt `answer` gelezen als getal en past hij als het getal van het kind er binnen dezelfde `tolerance` bij ligt (`2/6` herkent dus ook `1/3`); bij `text` na dezelfde gelijkmaking als `accepted`; bij `choice` is `answer` het **id van een optie** (niet de tekst).
+- `content:check` meldt een fout antwoord dat als goed zou tellen (`exercise-mistake-accepted`), een fout antwoord bij `number` dat geen getal is (`exercise-mistake-unreadable`) en een fout antwoord bij `choice` dat geen optie-id is (`interaction-answer-unknown`).
 
 | Veld per opgave  | Wat                                                                                                                                                                             |
 | ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -394,8 +415,14 @@ Opgaven met een eigen antwoord van het kind, oplopende hints, tussenstappen die 
 | `answer`         | `{ "type": "number", "value", "tolerance", "unit" (mag) }`, `{ "type": "text", "accepted": [...] }` of `{ "type": "choice", "options": [{ "id", "text" }], "correctOptionId" }` |
 | `hints`          | oplopende hints, één voor één te openen                                                                                                                                         |
 | `steps`          | tussenstappen: `id`, `title`, `text`                                                                                                                                            |
-| `commonMistakes` | `answer` (een fout antwoord zoals een kind het geeft) en `feedback`                                                                                                             |
+| `commonMistakes` | `answer` (een fout antwoord zoals een kind het typt; bij `choice` het id van een optie) en `feedback`                                                                           |
 | `workedSolution` | de uitwerking                                                                                                                                                                   |
+
+Hoogstens **10 opgaven** per oefening (`maxItems`); 4 tot 6 is voor een les van 10 minuten meestal genoeg. `hints` en `steps` mogen leeg zijn.
+
+**Wat er bewaard wordt:** één resultaat per **afgeronde reeks** (alle opgaven afgerond en "Klaar" getikt; een half gemaakte reeks wordt niet onthouden): `score` is het aantal opgaven dat het kind **zelf goed** had (vóór de uitwerking), `total` het aantal opgaven, en per opgave het id, of hij zelf goed was, het aantal pogingen, getoonde hints, geopende tussenstappen en of de uitwerking open is geweest. Wat het kind typte wordt niet bewaard. De oefenstap is klaar na een afgeronde reeks; na herladen begint de reeks opnieuw, met "Vorige keer: <score> van <totaal> goed." eronder (alleen met dezelfde `version`).
+
+Voorbeeld (uit `content/fixtures/courses/proefhuiswerk/`, ingekort):
 
 ```json
 {
@@ -404,20 +431,74 @@ Opgaven met een eigen antwoord van het kind, oplopende hints, tussenstappen die 
   "config": {
     "exercises": [
       {
-        "id": "som-1",
-        "prompt": "Hoeveel is 1/2 + 1/4?",
-        "answer": { "type": "number", "value": 0.75, "tolerance": 0.001 },
-        "hints": ["Maak de noemers gelijk."],
-        "steps": [{ "id": "noemers", "title": "Noemers gelijk", "text": "1/2 = 2/4" }],
-        "commonMistakes": [
-          { "answer": "2/6", "feedback": "Tellers en noemers tel je niet los op." }
+        "id": "gelijke-noemers",
+        "prompt": "Hoeveel is 1/5 + 2/5?",
+        "answer": { "type": "text", "accepted": ["3/5", "drie vijfde"] },
+        "hints": [
+          "Kijk naar de noemers. Zijn ze gelijk?",
+          "De noemers zijn gelijk. Tel alleen de tellers op."
         ],
-        "workedSolution": "1/2 = 2/4, en 2/4 + 1/4 = 3/4."
+        "steps": [
+          {
+            "id": "noemer-blijft",
+            "title": "Wat doe je met de noemer?",
+            "text": "De noemer zegt in hoeveel stukken de pizza is verdeeld. Dat verandert niet als je stukken bij elkaar legt."
+          }
+        ],
+        "commonMistakes": [
+          {
+            "answer": "3/10",
+            "feedback": "Je telde de noemers ook op. Dat mag niet: de pizza blijft in vijf stukken verdeeld."
+          }
+        ],
+        "workedSolution": "De noemers zijn gelijk: allebei 5. Tel de tellers op: 1 + 2 = 3. De noemer blijft 5. Het antwoord is 3/5."
+      },
+      {
+        "id": "recept",
+        "prompt": "Voor een saus doe je 1/2 liter melk en 1/4 liter room in een pan. Hoeveel liter is dat samen? Schrijf het als kommagetal.",
+        "answer": { "type": "number", "value": 0.75, "tolerance": 0.01, "unit": "liter" },
+        "hints": ["Maak eerst van 1/2 liter een aantal kwarten."],
+        "steps": [],
+        "commonMistakes": [
+          { "answer": "0,5", "feedback": "Je vergat de room. Tel de melk en de room allebei mee." }
+        ],
+        "workedSolution": "1/2 liter is 2/4 liter. Samen is dat 3/4 liter, en dat is 0,75 liter."
+      },
+      {
+        "id": "kies-de-som",
+        "prompt": "Welke som is samen 3/4?",
+        "answer": {
+          "type": "choice",
+          "options": [
+            { "id": "half-en-kwart", "text": "1/2 + 1/4" },
+            { "id": "los-opgeteld", "text": "1/1 + 2/3" },
+            { "id": "twee-kwart", "text": "1/4 + 1/4" }
+          ],
+          "correctOptionId": "half-en-kwart"
+        },
+        "hints": ["Reken elke som uit in kwarten, of kijk of hij groter is dan een hele."],
+        "steps": [],
+        "commonMistakes": [
+          {
+            "answer": "los-opgeteld",
+            "feedback": "Tel je de tellers en de noemers los op, dan krijg je 3/4. Maar 1/1 is al een hele pizza."
+          }
+        ],
+        "workedSolution": "1/2 + 1/4 = 2/4 + 1/4 = 3/4."
       }
     ]
   }
 }
 ```
+
+**Valkuilen:**
+
+- **Een tussenstap of hint die het antwoord voorzegt.** Tussenstappen zijn altijd te openen, ook vóór een poging; zet het eindantwoord er dus niet in. De laatste hint mag dichtbij komen, het antwoord zelf staat alleen in de `workedSolution`.
+- **Te weinig vormen in `accepted`.** Het kind typt wat het denkt: `5/6`, `vijf zesde`, misschien `vijf-zesde`. Zet elke vorm die goed is in `accepted`; hoofdletters, spaties, een punt aan het eind en spaties rond `/` hoef je niet apart te noemen. Moet een breuk ook als kommagetal goed zijn, gebruik dan `number`.
+- **`tolerance` 0 bij een afgerond antwoord.** Is het antwoord `1/3` en mag het kind `0,33` typen, zet dan `tolerance` op `0.01`; met 0 is alleen `1/3` zelf goed. Bij een getal dat precies is (`0,75`) mag `tolerance` 0 blijven.
+- **Grote getallen met een punt.** `1.000` leest de app als één, niet als duizend. Vraag om grote getallen zonder punt ("schrijf het getal zonder punt"), of gebruik `text`.
+- **Een `commonMistake` die eigenlijk goed is.** Ligt een fout antwoord binnen `tolerance` of is het een vorm uit `accepted`, dan zou het kind een "fout" krijgen voor een goed antwoord. `content:check` vangt dat (`exercise-mistake-accepted`).
+- **`version` omhoog bij een gewijzigde opgave.** Bewaarde resultaten horen bij één `version`; verander je een opgave, een antwoord of het aantal opgaven, hoog dan `version` op (`content:check` dwingt dat af).
 
 ## Vaktermen (`content/terms.json`)
 
