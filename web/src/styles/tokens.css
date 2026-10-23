@@ -31,6 +31,22 @@
   --snf-color-black: #141414;
   /* Background of the signal icon "stop" (as in the reference); fixed in both themes. */
   --snf-color-lilac: #cfc3e8;
+  /*
+   * The trace game (voel-spel): light choice buttons with black text, and the screen, which is
+   * always a dark panel (as in the reference). Fixed in both themes. Orange is not in the
+   * reference (decision M9, question 6).
+   */
+  --snf-color-choice-yellow: #ffd83d;
+  --snf-color-choice-purple: #cfc3e8;
+  --snf-color-choice-green: #8fe3a8;
+  --snf-color-choice-pink: #ffb3cd;
+  --snf-color-choice-blue: #7cc1d8;
+  --snf-color-choice-orange: #ffc078;
+  --snf-color-game-screen: #22183a;
+  --snf-color-game-screen-border: #3d2d66;
+  --snf-color-game-water: #2b5c8a;
+  --snf-color-game-wave: #7cc1d8;
+  --snf-color-game-label: #cfc3e8;
 
   --snf-font-display: 'Bangers', 'Impact', 'Arial Narrow', sans-serif;
   --snf-font-body: 'Atkinson Hyperlegible', -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;

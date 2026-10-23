@@ -30,6 +30,36 @@ async function readTokens(page: Page): Promise<ThemeTokens> {
   });
 }
 
+// The tokens of the trace game: fixed values, the same in light and dark.
+const gameTokens: Record<string, string> = {
+  '--snf-color-choice-yellow': '#ffd83d',
+  '--snf-color-choice-purple': '#cfc3e8',
+  '--snf-color-choice-green': '#8fe3a8',
+  '--snf-color-choice-pink': '#ffb3cd',
+  '--snf-color-choice-blue': '#7cc1d8',
+  '--snf-color-choice-orange': '#ffc078',
+  '--snf-color-game-screen': '#22183a',
+  '--snf-color-game-screen-border': '#3d2d66',
+  '--snf-color-game-water': '#2b5c8a',
+  '--snf-color-game-wave': '#7cc1d8',
+  '--snf-color-game-label': '#cfc3e8',
+};
+
+async function readGameTokens(page: Page): Promise<Record<string, string>> {
+  return page.evaluate((names) => {
+    const probe = document.createElement('div');
+    document.body.append(probe);
+    const result: Record<string, string> = {};
+    for (const name of names) {
+      probe.style.color = `var(${name})`;
+      const [r, g, b] = (getComputedStyle(probe).color.match(/\d+/g) ?? []).slice(0, 3).map(Number);
+      result[name] = '#' + [r, g, b].map((c) => c.toString(16).padStart(2, '0')).join('');
+    }
+    probe.remove();
+    return result;
+  }, Object.keys(gameTokens));
+}
+
 async function setTheme(page: Page, theme: 'light' | 'dark'): Promise<void> {
   await page.evaluate((value) => document.documentElement.setAttribute('data-theme', value), theme);
 }
@@ -52,6 +82,16 @@ test.describe('design tokens', () => {
     await page.goto('/');
     await setTheme(page, 'dark');
     expect(await readTokens(page)).toEqual(dark);
+  });
+
+  test('the trace game tokens are the same in light and dark', async ({ page }) => {
+    await page.emulateMedia({ colorScheme: 'light' });
+    await page.goto('/');
+    expect(await readGameTokens(page)).toEqual(gameTokens);
+    await page.emulateMedia({ colorScheme: 'dark' });
+    expect(await readGameTokens(page)).toEqual(gameTokens);
+    await setTheme(page, 'dark');
+    expect(await readGameTokens(page)).toEqual(gameTokens);
   });
 
   test('data-theme="light" wins over a dark system', async ({ page }) => {
