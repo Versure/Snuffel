@@ -71,6 +71,9 @@ test.describe('the page of a child (/ouder/<id>)', () => {
     await expect(page.locator('main > .last-activity')).toHaveText(
       /Laatst actief: (vandaag|gisteren) om \d{1,2}:\d{2}/,
     );
+    // The moment of the last activity; the day may turn between the two pages.
+    const lastTime = (await page.locator('main > .last-activity').innerText()).split(' om ')[1];
+    expect(lastTime).toMatch(/^\d{1,2}:\d{2}$/);
     const row = childLesson(page, proeflesTitle);
     await expect(row.locator('snf-lesson-status')).toContainText(
       `Bezig: ${doneSteps} van 4 stappen klaar`,
@@ -80,9 +83,16 @@ test.describe('the page of a child (/ouder/<id>)', () => {
     expect(await detailText(row, 'Aan het water')).toBe('Aan het water: 2 van 4 afgevinkt');
     expect(await detailText(row, 'Voel de lijn')).toBe('Voel de lijn: nog niet gespeeld');
     await expect(clearButton(row)).toBeVisible();
-    // The list on /ouder counts the same lessons as completed.
+    // The list on /ouder counts the same lessons as completed, with the same last activity.
     await page.locator('a.back').click();
-    await expect(page.locator(`snf-child-card:has(a[href="/ouder/${account.id}"])`)).toBeVisible();
+    const card = page.locator(`snf-child-card:has(a[href="/ouder/${account.id}"])`);
+    await expect(card).toBeVisible();
+    await expect(card.locator('.lessons-completed')).toHaveText(
+      doneSteps === 4 ? '1 les klaar' : '0 lessen klaar',
+    );
+    await expect(card.locator('.last-activity')).toHaveText(
+      new RegExp(`^Laatst actief: (vandaag|gisteren) om ${lastTime}$`),
+    );
   });
 
   test('the parent sees the status, quiz score, checklist and latest game result of a child', async ({
