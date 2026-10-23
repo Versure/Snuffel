@@ -88,7 +88,7 @@ Lessen staan als JSON in `content/courses/<cursus-id>/`: een `course.json` met d
 
 ### Een les laten maken
 
-Start Claude Code in de repo (op `main`, werkmap schoon) en typ `/snuffel-leren <korte wens>`, bijvoorbeeld `/snuffel-leren Mijn dochter wil leren hoe ze een snoek onthaakt`. De skill maakt alleen inhoud in `content/`, nooit app-code.
+Start Claude Code in de repo (op `main`, werkmap schoon) en typ `/snuffel-leren <korte wens>`, bijvoorbeeld `/snuffel-leren Ik wil dat mijn kind leert hoe je een snoek onthaakt`. De skill maakt alleen inhoud in `content/`, nooit app-code.
 
 1. **Intake:** hoogstens zes vragen in één bericht, alleen wat de wens nog niet zegt (wie leert, waarom, wat kan diegene al, wanneer is het gelukt, hoeveel tijd, en bij huiswerk vak, niveau, methode en hoofdstuk). Namen en andere gegevens van de kinderen komen nooit in de les, een commit of de PR; de intake bepaalt alleen niveau en toon.
 2. **Bronnen:** de agent `source-researcher` zoekt minstens drie betrouwbare bronnen en opent ze echt. Claude Code vraagt toestemming voor `WebSearch` en `WebFetch`.
