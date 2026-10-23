@@ -1,0 +1,260 @@
+:host {
+  display: block;
+}
+
+/* A light card with a lot of rest and large text: homework, not a game panel. */
+.heading {
+  margin: 0 0 0.4rem;
+  font-family: var(--snf-font-display);
+  font-size: 1.35rem;
+  font-weight: 400;
+  letter-spacing: 0.03em;
+  color: var(--snf-color-heading);
+}
+
+.heading:focus,
+.say:focus,
+.hint:focus,
+.solution:focus {
+  outline: none;
+}
+
+.heading:focus-visible,
+.say:focus-visible,
+.hint:focus-visible,
+.solution:focus-visible {
+  outline: var(--snf-focus-ring);
+  outline-offset: var(--snf-focus-ring-offset);
+}
+
+.prompt {
+  margin: 0 0 0.9rem;
+  font-size: 1.3rem;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+/* The input as on the login page. */
+.answer {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.6rem;
+}
+
+.field {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.input {
+  width: 12rem;
+  max-width: 100%;
+  min-height: var(--snf-button-min-height);
+  padding: 0.4rem 0.8rem;
+  font: inherit;
+  font-size: 1.25rem;
+  color: var(--snf-color-text);
+  background: var(--snf-color-paper);
+  /* Muted text colour: a visible field edge (3:1) on the card in light and dark. */
+  border: var(--snf-border-width) solid var(--snf-color-text-muted);
+  border-radius: var(--snf-radius-md);
+}
+
+.input:focus-visible {
+  outline: var(--snf-focus-ring);
+  outline-offset: var(--snf-focus-ring-offset);
+}
+
+.input[aria-invalid='true'] {
+  border-color: var(--snf-color-error);
+}
+
+.input:disabled {
+  color: var(--snf-color-text);
+  border-color: var(--snf-color-success);
+}
+
+.unit {
+  font-size: 1.15rem;
+  font-weight: 700;
+}
+
+.notice {
+  margin: 0;
+  font-weight: 700;
+  color: var(--snf-color-error);
+}
+
+/* The options as in the quiz. */
+.options {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.option {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem 0.8rem;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  min-height: var(--snf-button-min-height);
+  padding: 0.6rem 0.9rem;
+  font: inherit;
+  font-size: 1.2rem;
+  text-align: left;
+  color: var(--snf-color-text);
+  background: var(--snf-color-surface);
+  border: var(--snf-border-width) solid var(--snf-color-ink);
+  border-radius: var(--snf-radius-md);
+  box-shadow: var(--snf-shadow-sm);
+  cursor: pointer;
+}
+
+.option:focus-visible {
+  outline: var(--snf-focus-ring);
+  outline-offset: var(--snf-focus-ring-offset);
+}
+
+.option:disabled {
+  cursor: default;
+}
+
+.option.right {
+  background: var(--snf-color-success-soft);
+  border-color: var(--snf-color-success);
+}
+
+.option.wrong {
+  background: var(--snf-color-error-soft);
+  border-color: var(--snf-color-error);
+}
+
+/* Colour is never the only sign: the chosen option also says so in words. */
+.mark {
+  padding: 0.05rem 0.5rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--snf-color-text);
+  background: var(--snf-color-surface);
+  border: 2px solid var(--snf-color-ink);
+  border-radius: var(--snf-radius-md);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .option:active:not(:disabled) {
+    transform: translate(2px, 2px);
+    box-shadow: 1px 1px 0 var(--snf-color-ink);
+  }
+}
+
+.ted {
+  margin: 0.9rem 0 0;
+}
+
+.say {
+  display: block;
+}
+
+.hints {
+  margin: 0.9rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.hint {
+  margin: 0 0 0.4rem;
+  padding: 0.5rem 0.75rem;
+  color: var(--snf-color-text);
+  background: var(--snf-color-paper);
+  border: 2px dashed var(--snf-color-ink);
+  border-radius: var(--snf-radius-md);
+}
+
+.hint-button {
+  margin-top: 0.7rem;
+}
+
+.steps {
+  display: grid;
+  gap: 0.5rem;
+  margin: 0.9rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.step-toggle {
+  display: flex;
+  gap: 0.6rem;
+  align-items: center;
+  width: 100%;
+  min-height: var(--snf-button-min-height);
+  padding: 0.5rem 0.9rem;
+  font: inherit;
+  font-weight: 700;
+  text-align: left;
+  color: var(--snf-color-text);
+  background: var(--snf-color-paper);
+  border: 2px solid var(--snf-color-text-muted);
+  border-radius: var(--snf-radius-md);
+  cursor: pointer;
+}
+
+.step-toggle:focus-visible {
+  outline: var(--snf-focus-ring);
+  outline-offset: var(--snf-focus-ring-offset);
+}
+
+.step-sign {
+  min-width: 1rem;
+  font-size: 1.2rem;
+}
+
+.step-text {
+  margin: 0.3rem 0 0;
+  padding: 0.5rem 0.9rem;
+  color: var(--snf-color-text);
+  background: var(--snf-color-paper);
+  border-left: 4px solid var(--snf-color-text-muted);
+  border-radius: var(--snf-radius-md);
+}
+
+.step-text[hidden] {
+  display: none;
+}
+
+.solution-area {
+  margin: 0.9rem 0 0;
+}
+
+.solution-later {
+  margin: 0;
+  color: var(--snf-color-text-muted);
+}
+
+.solution {
+  padding: 0.6rem 0.9rem;
+  color: var(--snf-color-text);
+  background: var(--snf-color-paper);
+  border: var(--snf-border-width) solid var(--snf-color-text-muted);
+  border-radius: var(--snf-radius-md);
+}
+
+.solution-title {
+  margin: 0 0 0.3rem;
+  font-weight: 700;
+}
+
+.solution-text {
+  margin: 0;
+}
+
+.buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: 1rem;
+}
