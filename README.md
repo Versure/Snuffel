@@ -30,6 +30,7 @@ Het beheerscherm van deze lokale PocketBase staat op http://localhost:8092/_/ (i
 | Commando                   | Wat                                                                                                                               |
 | -------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
 | `npm start`                | PocketBase met testaccounts (poort 8092), de inhoud met de proefles en de dev-server met herladen (poort 4200)                    |
+| `npm run start:lan`        | hetzelfde als `npm start`, maar bereikbaar vanaf je telefoon op de thuiswifi (zie "Een les bekijken")                             |
 | `npm run check`            | format, lint, privacycheck, tests van `tools/`, `test:pb`, `content:types:check`, `content:check`, typecheck, unit-tests en build |
 | `npm run test:pb`          | integratietests van de PocketBase-toegangsregels (`pocketbase/tests/`), tegen een echte PocketBase                                |
 | `npm run e2e`              | Playwright-tests (mobiel en desktop, plus de productiebuild via PocketBase); zie hieronder                                        |
@@ -43,6 +44,14 @@ Het beheerscherm van deze lokale PocketBase staat op http://localhost:8092/_/ (i
 | `npm run format`           | alles formatteren met Prettier                                                                                                    |
 
 Voor `npm run e2e` eenmalig `npx playwright install chromium` in `web/`. De eerste keer downloadt `npm run check` (of `npm start`, of `npm run e2e`) ook PocketBase (ongeveer 15 MB, van GitHub); daarna staat het in `pocketbase/bin/` en werkt alles zonder internet. De versie en checksums staan in `pocketbase/pocketbase.json`. Zit je achter een proxy, zet dan `NODE_USE_ENV_PROXY=1` (en zo nodig `NODE_EXTRA_CA_CERTS`).
+
+## Een les bekijken
+
+1. `npm start`, open http://localhost:4200 en log in als `kind-a` (of `ouder`).
+2. Ga naar http://localhost:4200/leren/proefcursus/proefles. Een les staat altijd op `/leren/<cursus-id>/<les-id>`; met `#stap-<stap-id>` erachter (bijv. `#stap-quiz`) opent hij bij die stap.
+3. Op je telefoon: stop `npm start` en start `npm run start:lan`. Zoek het IP-adres van je laptop (Windows: `ipconfig`) en open op je telefoon, op dezelfde wifi, `http://<ip-van-je-laptop>:4200/leren/proefcursus/proefles`. Lukt dat niet (bijvoorbeeld door de firewall van Windows), gebruik dan de telefoonweergave in Chrome (F12).
+
+Let op: `start:lan` zet de dev-server met de testaccounts open voor iedereen op je thuisnetwerk zolang hij draait. Gebruik hem alleen thuis en stop hem (Ctrl+C) als je klaar bent. De proefles staat alleen lokaal klaar; in de image voor de NAS zit hij nooit.
 
 ## Mappen
 

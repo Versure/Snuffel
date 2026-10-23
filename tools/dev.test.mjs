@@ -20,6 +20,18 @@ describe('parseDevArgs', () => {
   });
 });
 
+describe('package.json', () => {
+  test('the start:lan script passes --host 0.0.0.0 to ng serve', () => {
+    const pkg = JSON.parse(readFileSync(join(rootDir, 'package.json'), 'utf8'));
+    assert.equal(pkg.scripts['start:lan'], 'node tools/dev.mjs --host 0.0.0.0');
+    const [, script, ...argv] = pkg.scripts['start:lan'].split(' ');
+    assert.equal(script, 'tools/dev.mjs');
+    const { ngArgs } = parseDevArgs(argv);
+    const web = devSteps({ ngArgs, platform: 'linux' }).find((step) => step.name === 'web');
+    assert.deepEqual(web.args, ['run', 'start', '-w', 'web', '--', '--host', '0.0.0.0']);
+  });
+});
+
 describe('devSteps', () => {
   const steps = devSteps({ node: 'node', platform: 'linux' });
 
