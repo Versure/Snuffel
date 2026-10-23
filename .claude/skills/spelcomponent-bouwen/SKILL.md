@@ -15,12 +15,13 @@ Lees eerst: `CLAUDE.md`, hoofdstuk 2.3 van het implementatieplan, `content/schem
 1. **Ontwerp** (aan Jop voorleggen als het buiten een mijlpaal valt): wat ziet en doet het kind, hoe weet het of het goed is, wat zegt Ted, welke `config` is nodig, wat wordt opgeslagen (`score`, `total`, `detail`). Config moet generiek zijn: geen lesinhoud of vakkennis in de component.
 2. **Schema**: definitie `interaction-<kind>` in `content/schema/v1/lesson.schema.json` (met `additionalProperties: false`), types opnieuw genereren.
 3. **Component** `web/src/app/interactions/<kind>/` volgens `CLAUDE.md`:
-   - input `config` (getypt), output `completed` met `{ score, total, detail }`;
-   - Ted reageert via `snf-ted-says` met teksten uit de lesinhoud;
+   - het contract uit `interactions/interaction.ts`: inputs `config` (getypt) en `ted` (de Ted-teksten van de les), outputs `answered` (eerste antwoord in een spel; de stap wordt `started`) en `completed` met `{ score, total, detail }` (de stap wordt klaar, het resultaat komt in `interaction_results`). De component weet niets van PocketBase; `snf-interaction` regelt de opslag;
+   - Ted reageert via `snf-ted-says` met teksten uit `ted`;
+   - tijd en beweging via `REDUCED_MOTION` en `ANIMATION_FRAMES` (`core/motion/motion.ts`), willekeur via `RANDOM`, zodat unit-tests ze kunnen sturen;
    - werkt met toetsenbord en touch, tikvlakken ≥ 44 px;
    - `prefers-reduced-motion: reduce`: geen beweging, zelfde informatie;
    - geen externe assets.
-4. **Registry**: registreer `<kind>` in `web/src/app/interactions/registry.ts` (lazy geladen).
+4. **Registry**: één regel in `INTERACTIONS` in `web/src/app/interactions/registry.ts` (`'<kind>': () => import('./<kind>/<kind>').then((m) => m.<Klasse>)`); de component wordt zo een apart, lazy geladen bestand.
 5. **Opslag**: resultaat via de bestaande `interaction_results`-collectie; geen nieuwe collectie tenzij echt nodig (dan eerst `pb-collectie-toevoegen`).
 6. **Tests**: unit-tests voor de logica (scoring, rondes), e2e die de interactie in een fixture-les doorloopt, ook met reduced motion.
 7. **Fixture**: voorbeeld in de testles in `content/`.
