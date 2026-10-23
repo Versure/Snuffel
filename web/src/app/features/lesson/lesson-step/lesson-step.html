@@ -16,7 +16,7 @@
       <snf-interaction-placeholder [interaction]="data.interaction" />
     }
     @case ('quiz') {
-      <snf-quiz-preview [step]="data" />
+      <snf-quiz [step]="data" [ted]="ted()" />
     }
     @case ('practice') {
       <snf-checklist [step]="data" />

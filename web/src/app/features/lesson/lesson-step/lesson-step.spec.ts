@@ -3,7 +3,8 @@ import lessonJson from '../../../../../../content/fixtures/courses/proefcursus/l
 import type { Lesson, LessonStep as LessonStepData } from '../../../core/content/content.types';
 import { LessonStep } from './lesson-step';
 
-const steps = (lessonJson as unknown as Lesson).steps;
+const lesson = lessonJson as unknown as Lesson;
+const steps = lesson.steps;
 const stepOfType = (type: LessonStepData['type']): LessonStepData => {
   const found = steps.find((step) => step.type === type);
   if (!found) throw new Error(`no ${type} step`);
@@ -16,6 +17,7 @@ describe('LessonStep', () => {
     const fixture = TestBed.createComponent(LessonStep);
     fixture.componentRef.setInput('step', step);
     fixture.componentRef.setInput('number', number);
+    fixture.componentRef.setInput('ted', lesson.ted);
     await fixture.whenStable();
     return fixture.nativeElement as HTMLElement;
   }
@@ -47,10 +49,13 @@ describe('LessonStep', () => {
     );
   });
 
-  it('renders the quiz preview for a quiz step', async () => {
+  it('a quiz step renders snf-quiz', async () => {
     const element = await render(stepOfType('quiz'), 3);
-    expect(element.querySelector('snf-quiz-preview')).not.toBeNull();
-    expect(element.querySelectorAll('snf-quiz-preview ol.questions > li')).toHaveLength(4);
+    expect(element.querySelector('snf-quiz')).not.toBeNull();
+    expect(element.querySelectorAll('snf-quiz ol.questions > li snf-quiz-question')).toHaveLength(
+      4,
+    );
+    expect(element.querySelectorAll('snf-quiz button.option')).toHaveLength(16);
   });
 
   it('a practice step renders snf-checklist', async () => {

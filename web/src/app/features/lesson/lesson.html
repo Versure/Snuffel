@@ -26,7 +26,7 @@
       </header>
 
       @for (step of data.steps; track step.id; let index = $index) {
-        <snf-lesson-step [step]="step" [number]="index + 1" />
+        <snf-lesson-step [step]="step" [number]="index + 1" [ted]="data.ted" />
       }
 
       <snf-ted-says class="finished" mood="happy" size="small">

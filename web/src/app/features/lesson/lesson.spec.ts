@@ -107,7 +107,7 @@ describe('Lesson', () => {
     ]);
     expect(element.querySelectorAll('snf-block')).toHaveLength(8);
     expect(element.querySelector('snf-interaction-placeholder')).not.toBeNull();
-    expect(element.querySelector('snf-quiz-preview')).not.toBeNull();
+    expect(element.querySelector('snf-quiz')).not.toBeNull();
     expect(element.querySelector('snf-checklist')).not.toBeNull();
     expect(textOf(element.querySelector('.finished'))).toBe(
       'Tijd voor het echte werk aan de waterkant.',
