@@ -23,15 +23,24 @@ describe('parseDevArgs', () => {
 describe('devSteps', () => {
   const steps = devSteps({ node: 'node', platform: 'linux' });
 
-  test('starts PocketBase, then the seed, then the Angular dev server', () => {
+  test('starts PocketBase, then the seed, the content and the Angular dev server', () => {
     assert.deepEqual(
       steps.map(({ name, kind }) => [name, kind]),
       [
         ['pocketbase', 'service'],
         ['seed', 'once'],
+        ['content', 'once'],
         ['web', 'service'],
       ],
     );
+  });
+
+  test('content is built with fixtures before the web step', () => {
+    const content = steps.find((step) => step.name === 'content');
+    assert.ok(steps.indexOf(content) < steps.findIndex((step) => step.name === 'web'));
+    assert.equal(content.command, 'node');
+    assert.match(content.args[0], /tools[\\/]content[\\/]build\.mjs$/);
+    assert.deepEqual(content.args.slice(1), ['--fixtures']);
   });
 
   test('PocketBase keeps its data in pocketbase/pb_data/dev, with the dev superuser and no app', () => {
@@ -57,8 +66,8 @@ describe('devSteps', () => {
   });
 
   test('the dev server is the web workspace start script, with extra arguments after --', () => {
-    assert.deepEqual(steps[2].args, ['run', 'start', '-w', 'web']);
-    const withArgs = devSteps({ ngArgs: ['--open'], platform: 'linux' })[2];
+    assert.deepEqual(steps[3].args, ['run', 'start', '-w', 'web']);
+    const withArgs = devSteps({ ngArgs: ['--open'], platform: 'linux' })[3];
     assert.deepEqual(withArgs.args, ['run', 'start', '-w', 'web', '--', '--open']);
   });
 
@@ -70,7 +79,7 @@ describe('devSteps', () => {
   });
 
   test('uses npm.cmd on Windows', () => {
-    assert.equal(devSteps({ platform: 'win32' })[2].command, 'npm.cmd');
-    assert.equal(steps[2].command, 'npm');
+    assert.equal(devSteps({ platform: 'win32' })[3].command, 'npm.cmd');
+    assert.equal(steps[3].command, 'npm');
   });
 });

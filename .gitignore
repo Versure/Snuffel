@@ -16,6 +16,7 @@ __screenshots__/
 
 # Generated content (built from content/ by `npm run content:build`)
 web/public/content/
+web/public/.content-*/
 
 # Self-hosted fonts, copied from @fontsource by tools/copy-fonts.mjs
 web/public/fonts/

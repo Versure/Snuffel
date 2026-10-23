@@ -17,7 +17,8 @@ RUN --mount=type=secret,id=extra_ca,required=false \
     npm ci --no-audit --no-fund
 
 COPY . .
-# M6: `npm run content:build` comes here, before the app build.
+# Content first (checked, without the fixtures), then the app that ships it in pb_public.
+RUN npm run content:build
 RUN npm run build
 # NODE_USE_ENV_PROXY lets Node's fetch honour HTTPS_PROXY if one is set; without it, no effect.
 RUN --mount=type=secret,id=extra_ca,required=false \

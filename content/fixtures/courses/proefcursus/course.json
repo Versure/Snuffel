@@ -1,0 +1,65 @@
+{
+  "schemaVersion": 1,
+  "id": "proefcursus",
+  "title": "Proefcursus",
+  "audience": "Testdata voor de app en de checks, geen echte les",
+  "goal": "Elk onderdeel van het inhoudsformaat één keer laten zien",
+  "successCriterion": "De proefles laadt en elke check slaagt",
+  "kind": "course",
+  "ted": { "greeting": "Dit is een proefcursus. Hier test ik alles uit!" },
+  "lessons": [
+    {
+      "id": "proefles",
+      "title": "Proefles: aanbeet of vastzitten?",
+      "status": "published",
+      "file": "lessons/01-proefles.json"
+    },
+    {
+      "id": "proefles-later",
+      "title": "Proefles: een les die nog komt",
+      "status": "planned"
+    }
+  ],
+  "sources": [
+    {
+      "id": "svnl-roofvis-9303",
+      "title": "Roofvissen met kunstaas (publicatie rvnl 9303)",
+      "url": "https://www.sportvisserijnederland.nl/files/rvnl_9303.pdf",
+      "publisher": "Sportvisserij Nederland",
+      "type": "association",
+      "reliability": "high",
+      "accessedOn": "2026-10-19",
+      "note": "Landelijke sportvisserijbond; bron uit de referentieles. Titel nalopen in M13."
+    },
+    {
+      "id": "svnl-visblad-streetfishing",
+      "title": "Hét Visblad: streetfishing",
+      "url": "https://www.sportvisserijnederland.nl/files/rvnl_5997.pdf",
+      "publisher": "Sportvisserij Nederland",
+      "type": "association",
+      "reliability": "high",
+      "accessedOn": "2026-10-19",
+      "note": "Landelijke sportvisserijbond"
+    },
+    {
+      "id": "decathlon-snoekkunstaas",
+      "title": "Snoekkunstaas",
+      "url": "https://www.decathlon.be/nl/alle-sporten/roofvissen/snoekkunstaas",
+      "publisher": "Decathlon",
+      "type": "shop",
+      "reliability": "low",
+      "accessedOn": "2026-10-19",
+      "note": "Winkel; alleen samen met een andere bron gebruiken"
+    },
+    {
+      "id": "vispas-check",
+      "title": "VISpas-check",
+      "url": "https://www.sportvisunie.nl/nl/artikelen/vispas-contact-service-vispas-check",
+      "publisher": "Sportvisunie",
+      "type": "association",
+      "reliability": "medium",
+      "accessedOn": "2026-10-19",
+      "note": "Servicepagina over de VISpas"
+    }
+  ]
+}

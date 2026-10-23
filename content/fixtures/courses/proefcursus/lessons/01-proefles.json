@@ -1,0 +1,389 @@
+{
+  "schemaVersion": 1,
+  "id": "proefles",
+  "version": 1,
+  "title": "Proefles: aanbeet of vastzitten?",
+  "sticker": "Proefcursus · proefles",
+  "objective": "Na deze les weet je hoe een aanbeet van een roofvis voelt. Je kunt die onderscheiden van vastzitten. En je weet wat je dan doet.",
+  "concept": "aanbeet herkennen",
+  "estimatedMinutes": 11,
+  "glossary": [
+    {
+      "term": "aanbeet",
+      "definition": "het moment dat een vis je aas pakt"
+    },
+    {
+      "term": "aanslaan",
+      "definition": "kort en stevig de hengel omhoog of opzij halen, zodat de haak vast komt te zitten"
+    },
+    {
+      "term": "beetmelder",
+      "definition": "een kastje dat piept als er aan je lijn getrokken wordt"
+    },
+    {
+      "term": "gevlochten lijn",
+      "definition": "een vislijn van in elkaar gevlochten draadjes, die bijna niet rekt"
+    },
+    {
+      "term": "kunstaas",
+      "definition": "nepaas van rubber, plastic of metaal dat op een visje of beestje lijkt"
+    },
+    {
+      "term": "loodkop",
+      "definition": "een haak met een kopje van lood, waardoor je aas zinkt"
+    },
+    {
+      "term": "onderlijn",
+      "definition": "het laatste stukje lijn vlak voor je aas; van staal tegen scherpe tanden"
+    },
+    {
+      "term": "onthaaktang",
+      "definition": "een lange tang waarmee je de haak uit de bek van een vis haalt"
+    },
+    {
+      "term": "shad",
+      "definition": "kunstaas van zacht rubber in de vorm van een visje, met een staart die wappert"
+    },
+    {
+      "term": "VISpas",
+      "definition": "de pas die je nodig hebt om in Nederland te mogen vissen"
+    }
+  ],
+  "ted": {
+    "intro": {
+      "mood": "cool",
+      "text": "Yo! Ik ben Ted. Bij kunstaas is je hand de beetmelder."
+    },
+    "correct": ["Goed gevoeld!", "Strak!", "Precies!"],
+    "incorrect": ["Bijna.", "Oeps, kijk nog eens."],
+    "finished": "Tijd voor het echte werk aan de waterkant."
+  },
+  "steps": [
+    {
+      "id": "uitleg",
+      "type": "explain",
+      "title": "Wachten kost je de vis",
+      "blocks": [
+        {
+          "type": "example",
+          "text": "Je draait een [[shad]] binnen. Ineens wordt het zwaar. Bij karpervissen wacht je tot de [[beetmelder]] piept en de vis gaat lopen. Bij [[kunstaas]] is er geen dobber en geen beetmelder. Je voelt alles via de lijn in je hand en de top van je hengel. En je hebt weinig tijd. Een roofvis grijpt het aas en merkt dat het nep is. Binnen een paar tellen spuugt hij het weer uit.",
+          "sourceRefs": ["svnl-roofvis-9303"]
+        },
+        {
+          "type": "signal-cards",
+          "cards": [
+            {
+              "icon": "tick",
+              "title": "Een tik",
+              "text": "Een korte, scherpe ruk in de lijn. Vaak is het een baars, maar ook een snoek kan zo pakken.",
+              "sourceRefs": ["svnl-roofvis-9303"]
+            },
+            {
+              "icon": "shake",
+              "title": "Zwaar én levend",
+              "text": "Het voelt alsof je iets zwaars binnendraait, maar het schudt of trekt terug. Een snoek schudt vaak met zijn kop.",
+              "sourceRefs": ["svnl-roofvis-9303"]
+            },
+            {
+              "icon": "stop",
+              "title": "Het aas stopt te vroeg",
+              "text": "Je laat je shad zakken en telt hoe lang dat duurt. Wordt de lijn eerder slap, of schiet hij opzij? Dan hield iets hem onderweg tegen. Vaak is dat een vis.",
+              "sourceRefs": ["svnl-roofvis-9303", "svnl-visblad-streetfishing"]
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "text": "**En vastzitten?** Dat voelt als dood gewicht: zwaar, maar er komt niets terug. Stop je met draaien, dan blijft de lijn stil. Een plant geeft wat mee en glijdt langzaam, maar schudt niet. Hangt er een groen sliertje aan je aas? Dan was het een plant. In een vijver zijn takken en planten vaak de boosdoener.",
+          "sourceRefs": ["svnl-visblad-streetfishing"]
+        },
+        {
+          "type": "rule",
+          "title": "Twijfel? Sla aan!",
+          "text": "[[aanslaan|Aanslaan]] kost niets. Was het de bodem, dan merk je dat meteen. Was het een vis, dan zit hij nu *vast*.",
+          "sourceRefs": ["svnl-roofvis-9303"]
+        },
+        {
+          "type": "text",
+          "text": "Zit je echt vast? Blijf dan niet rukken. Loop een stukje opzij en trek vanuit een andere hoek. Of laat de lijn even slap hangen.",
+          "sourceRefs": ["svnl-visblad-streetfishing"]
+        },
+        {
+          "type": "tip",
+          "title": "Tip",
+          "text": "[[gevlochten lijn|Gevlochten lijn]] rekt bijna niet. Daardoor voel je een tik veel beter dan met gewone nylon lijn.",
+          "sourceRefs": ["decathlon-snoekkunstaas", "svnl-roofvis-9303"]
+        },
+        {
+          "type": "figure",
+          "src": "assets/hengeltop.svg",
+          "alt": "Een hengeltop die naar beneden buigt, omdat er aan de lijn getrokken wordt.",
+          "caption": "Hoe harder er aan de lijn getrokken wordt, hoe verder de top buigt.",
+          "sourceRefs": []
+        },
+        {
+          "type": "ted-says",
+          "mood": "thinking",
+          "text": "Let op je hengeltop. Die vertelt je net zo veel als je hand.",
+          "sourceRefs": []
+        }
+      ]
+    },
+    {
+      "id": "spel",
+      "type": "interaction",
+      "title": "Voel de lijn",
+      "intro": "Je ziet hoe hard er aan de lijn getrokken wordt, en de hengeltop buigt mee. Kijk goed. Is het een vis, zit je vast, is het een plant of tik je over de bodem?",
+      "interaction": {
+        "id": "voel-spel",
+        "kind": "trace-game",
+        "config": {
+          "choices": [
+            { "id": "vis", "label": "Vis!", "color": "yellow" },
+            { "id": "vast", "label": "Vast", "color": "purple" },
+            { "id": "plant", "label": "Plant", "color": "green" },
+            { "id": "bodem", "label": "Bodem", "color": "pink" }
+          ],
+          "patterns": [
+            {
+              "id": "tik",
+              "answer": "vis",
+              "shape": [
+                { "type": "base", "level": 0.22 },
+                { "type": "wobble", "amplitude": 0.015, "frequency": 6 },
+                { "type": "pulse", "at": 0.5, "width": 0.012, "height": 0.62 },
+                { "type": "pulse", "at": 0.57, "width": 0.01, "height": 0.32 }
+              ],
+              "explanation": "Eén korte, scherpe tik terwijl het verder rustig blijft: een vis pakte het aas. Meteen aanslaan!"
+            },
+            {
+              "id": "zwaar",
+              "answer": "vis",
+              "shape": [
+                { "type": "base", "level": 0.22 },
+                { "type": "ramp", "from": 0.32, "to": 0.4, "height": 0.42 },
+                { "type": "wobble", "amplitude": 0.17, "frequency": 9, "from": 0.32, "to": 1 }
+              ],
+              "explanation": "Zwaar én schokken terug: er leeft iets. Waarschijnlijk een snoek die met zijn kop schudt. Aanslaan!"
+            },
+            {
+              "id": "vast",
+              "answer": "vast",
+              "shape": [
+                { "type": "base", "level": 0.22 },
+                { "type": "ramp", "from": 0.32, "to": 0.42, "height": 0.63 },
+                { "type": "wobble", "amplitude": 0.004, "frequency": 5 }
+              ],
+              "explanation": "Zwaar en daarna helemaal vlak, er komt niets terug: je zit vast. Niet rukken, loop een stukje opzij."
+            },
+            {
+              "id": "plant",
+              "answer": "plant",
+              "shape": [
+                { "type": "base", "level": 0.22 },
+                { "type": "ramp", "from": 0.25, "to": 0.85, "height": 0.42 },
+                { "type": "wobble", "amplitude": 0.02, "frequency": 1.4 }
+              ],
+              "explanation": "Langzaam zwaarder en soepel glijdend, zonder schokken: een plant. Draai iets hoger en sneller binnen."
+            },
+            {
+              "id": "bodem",
+              "answer": "bodem",
+              "shape": [
+                { "type": "base", "level": 0.28 },
+                {
+                  "type": "pulses",
+                  "start": 0.08,
+                  "interval": 0.13,
+                  "count": 8,
+                  "width": 0.01,
+                  "height": 0.22
+                }
+              ],
+              "explanation": "Regelmatige tikjes in hetzelfde ritme: je shad hupt over de bodem. Prima, je vist laag. Dat ritme is je referentie."
+            }
+          ],
+          "rounds": 8,
+          "durationMs": 3200
+        }
+      },
+      "sourceRefs": ["svnl-roofvis-9303", "svnl-visblad-streetfishing"]
+    },
+    {
+      "id": "quiz",
+      "type": "quiz",
+      "title": "Quiz",
+      "intro": "Vier situaties aan het water. Je ziet meteen of het klopt en waarom.",
+      "questions": [
+        {
+          "id": "schokken-terug",
+          "prompt": "Je draait een shad binnen. Ineens wordt het zwaar, en je voelt een paar korte schokken terug. Wat doe je?",
+          "options": [
+            {
+              "id": "aanslaan",
+              "text": "Direct aanslaan en de lijn strak houden",
+              "feedback": "Klopt. Schokken die terugtrekken betekenen: er leeft iets aan je lijn."
+            },
+            {
+              "id": "wachten",
+              "text": "Wachten tot de vis gaat lopen met het aas",
+              "feedback": "Dat werkt bij karper. Een roofvis spuugt kunstaas binnen een paar tellen weer uit."
+            },
+            {
+              "id": "vieren",
+              "text": "Eerst lijn laten vieren en dan pas aanslaan",
+              "feedback": "Met slappe lijn voel je niets meer, en de vis heeft alle tijd om het aas los te laten."
+            },
+            {
+              "id": "afwachten",
+              "text": "Stoppen met draaien en even afwachten",
+              "feedback": "Wachten kost je de vis. Een roofvis merkt snel dat het aas nep is."
+            }
+          ],
+          "correctOptionId": "aanslaan",
+          "hints": ["Denk aan hoe snel een roofvis merkt dat het aas nep is."],
+          "sourceRefs": ["svnl-roofvis-9303"]
+        },
+        {
+          "id": "dood-gewicht",
+          "prompt": "Het wordt zwaar, maar verder gebeurt er niets. Als je stopt met draaien, blijft de lijn stil. Wat is het waarschijnlijkst?",
+          "options": [
+            {
+              "id": "vast",
+              "text": "Je zit ergens aan vast",
+              "feedback": "Klopt. Dood gewicht zonder beweging terug is vastzitten."
+            },
+            {
+              "id": "snoek",
+              "text": "Een snoek houdt het aas vast",
+              "feedback": "Een snoek schudt of trekt terug. Hier komt er niets terug."
+            },
+            {
+              "id": "baars",
+              "text": "Een baars zwemt achter je aas",
+              "feedback": "Een baars die volgt, voel je niet als zwaar gewicht."
+            },
+            {
+              "id": "zakken",
+              "text": "Je aas zakt naar de bodem",
+              "feedback": "Zakkend aas maakt je lijn juist slap, niet zwaar."
+            }
+          ],
+          "correctOptionId": "vast",
+          "hints": ["Komt er iets terug als je stopt met draaien?"],
+          "sourceRefs": ["svnl-visblad-streetfishing"]
+        },
+        {
+          "id": "te-vroeg-slap",
+          "prompt": "Je laat je shad naar de bodem zakken. Normaal duurt dat tot je vijf telt. Nu wordt de lijn al bij twee slap. Wat betekent dat?",
+          "options": [
+            {
+              "id": "vis",
+              "text": "Een vis pakte het aas onderweg",
+              "feedback": "Klopt. Iets hield het aas tegen, en vaak is dat een vis die het pakt."
+            },
+            {
+              "id": "dieper",
+              "text": "Het water is hier opeens dieper",
+              "feedback": "In dieper water duurt het zakken juist langer."
+            },
+            {
+              "id": "licht",
+              "text": "Je loodkop is veel te licht",
+              "feedback": "Met een lichtere loodkop zakt je aas juist langzamer."
+            },
+            {
+              "id": "knoop",
+              "text": "Je lijn zit in de knoop",
+              "feedback": "Een knoop verandert niets aan hoe snel je aas zakt."
+            }
+          ],
+          "correctOptionId": "vis",
+          "hints": ["Wat kan je aas onderweg tegenhouden?"],
+          "sourceRefs": ["svnl-roofvis-9303"]
+        },
+        {
+          "id": "groen-sliertje",
+          "prompt": "Je voelt een tik en slaat aan, maar er zit niets. Aan je shad hangt een groen sliertje. Wat pas je aan?",
+          "options": [
+            {
+              "id": "hoger",
+              "text": "Iets hoger en sneller binnendraaien",
+              "feedback": "Klopt. Je viste door de planten. Hoger vissen houdt je aas schoon."
+            },
+            {
+              "id": "zwaarder",
+              "text": "Een zwaardere loodkop gebruiken",
+              "feedback": "Een zwaardere loodkop trekt je aas juist dieper de planten in."
+            },
+            {
+              "id": "langer",
+              "text": "Langer wachten voor je aanslaat",
+              "feedback": "Wachten helpt niet. De tik was een plant, geen vis."
+            },
+            {
+              "id": "groter",
+              "text": "Een grotere shad aan je lijn",
+              "feedback": "Een grotere shad blijft net zo goed in de planten hangen."
+            }
+          ],
+          "correctOptionId": "hoger",
+          "hints": ["Waar komt een groen sliertje vandaan?"],
+          "sourceRefs": ["svnl-visblad-streetfishing"]
+        }
+      ]
+    },
+    {
+      "id": "zelf-doen",
+      "type": "practice",
+      "practiceKind": "do-it-yourself",
+      "title": "Aan het water",
+      "intro": "De volgende keer bij de vijver leer je samen voelen wat er aan je lijn gebeurt. Het is een spel voor twee.",
+      "items": [
+        {
+          "id": "vispas",
+          "text": "Neem je VISpas mee. Wie op 1 januari 13 of jonger was, heeft een JeugdVISpas.",
+          "links": [
+            {
+              "label": "VISpas-check",
+              "url": "https://www.sportvisunie.nl/nl/artikelen/vispas-contact-service-vispas-check"
+            }
+          ],
+          "sourceRefs": ["vispas-check"]
+        },
+        {
+          "id": "staal-en-tang",
+          "text": "Zet op beide hengels een stalen onderlijn en stop een lange onthaaktang in de tas. Een snoek heeft scherpe tanden.",
+          "sourceRefs": ["svnl-roofvis-9303"]
+        },
+        {
+          "id": "bodem-voelen",
+          "text": "Laat bij de eerste vijf worpen je shad expres de bodem raken. Vertel elkaar wat je voelt.",
+          "sourceRefs": []
+        },
+        {
+          "id": "tik-roepen",
+          "text": "Wie iets voelt, roept tik en slaat meteen aan. Tel per persoon. Het doel is tien keer aanslaan.",
+          "sourceRefs": []
+        }
+      ],
+      "successCriterion": "Gelukt als je zonder te kijken kunt zeggen: bodem, plant, vast of vis."
+    }
+  ],
+  "furtherReading": [
+    {
+      "sourceRef": "svnl-visblad-streetfishing",
+      "why": "Over roofvissen met kunstaas in stadswater, dicht bij wat jullie in de vijver doen."
+    }
+  ],
+  "faq": [
+    {
+      "q": "Wat als ik twijfel?",
+      "a": "Sla aan. Het kost niets, en als het een vis was, zit hij nu vast."
+    },
+    {
+      "q": "Waarom heet dit een proefles?",
+      "a": "Deze les test alleen of de app werkt. De echte les komt later."
+    }
+  ]
+}

@@ -1,0 +1,145 @@
+{
+  "description": "Inline markup in lesson text (format v1): input and expected tokens. tools/content/text.mjs (M6) and the renderer in the app (M7) are both tested against these cases.",
+  "cases": [
+    {
+      "name": "plain text",
+      "input": "Een gewone zin.",
+      "tokens": [{ "type": "text", "text": "Een gewone zin." }]
+    },
+    {
+      "name": "empty text",
+      "input": "",
+      "tokens": []
+    },
+    {
+      "name": "bold",
+      "input": "**Tip:** gevlochten lijn rekt bijna niet.",
+      "tokens": [
+        { "type": "strong", "children": [{ "type": "text", "text": "Tip:" }] },
+        { "type": "text", "text": " gevlochten lijn rekt bijna niet." }
+      ]
+    },
+    {
+      "name": "italic",
+      "input": "Dan zit hij *vast*.",
+      "tokens": [
+        { "type": "text", "text": "Dan zit hij " },
+        { "type": "em", "children": [{ "type": "text", "text": "vast" }] },
+        { "type": "text", "text": "." }
+      ]
+    },
+    {
+      "name": "italic inside bold",
+      "input": "**echt *heel* belangrijk**",
+      "tokens": [
+        {
+          "type": "strong",
+          "children": [
+            { "type": "text", "text": "echt " },
+            { "type": "em", "children": [{ "type": "text", "text": "heel" }] },
+            { "type": "text", "text": " belangrijk" }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "link",
+      "input": "Doe de [VISpas-check](https://www.sportvisunie.nl/nl/artikelen/vispas-contact-service-vispas-check).",
+      "tokens": [
+        { "type": "text", "text": "Doe de " },
+        {
+          "type": "link",
+          "text": "VISpas-check",
+          "url": "https://www.sportvisunie.nl/nl/artikelen/vispas-contact-service-vispas-check"
+        },
+        { "type": "text", "text": "." }
+      ]
+    },
+    {
+      "name": "link with ) in the url",
+      "input": "Zie [snoek](https://nl.wikipedia.org/wiki/Snoek_(vis)) voor meer.",
+      "tokens": [
+        { "type": "text", "text": "Zie " },
+        { "type": "link", "text": "snoek", "url": "https://nl.wikipedia.org/wiki/Snoek_(vis)" },
+        { "type": "text", "text": " voor meer." }
+      ]
+    },
+    {
+      "name": "link inside bold",
+      "input": "**Lees [dit](https://example.org/a) eerst**",
+      "tokens": [
+        {
+          "type": "strong",
+          "children": [
+            { "type": "text", "text": "Lees " },
+            { "type": "link", "text": "dit", "url": "https://example.org/a" },
+            { "type": "text", "text": " eerst" }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "term",
+      "input": "Je moet [[aanslaan]].",
+      "tokens": [
+        { "type": "text", "text": "Je moet " },
+        { "type": "term", "term": "aanslaan", "text": "aanslaan" },
+        { "type": "text", "text": "." }
+      ]
+    },
+    {
+      "name": "term with a shown form",
+      "input": "Hij [[aanslaan|slaat aan]] en wacht.",
+      "tokens": [
+        { "type": "text", "text": "Hij " },
+        { "type": "term", "term": "aanslaan", "text": "slaat aan" },
+        { "type": "text", "text": " en wacht." }
+      ]
+    },
+    {
+      "name": "loose asterisk",
+      "input": "3 * 4 = 12",
+      "tokens": [{ "type": "text", "text": "3 * 4 = 12" }]
+    },
+    {
+      "name": "two loose asterisks",
+      "input": "3 * 4 * 5 = 60",
+      "tokens": [{ "type": "text", "text": "3 * 4 * 5 = 60" }]
+    },
+    {
+      "name": "bold without closing",
+      "input": "**let op dit",
+      "tokens": [{ "type": "text", "text": "**let op dit" }]
+    },
+    {
+      "name": "empty bold",
+      "input": "****",
+      "tokens": [{ "type": "text", "text": "****" }]
+    },
+    {
+      "name": "brackets without a url",
+      "input": "Kies [a] of [b].",
+      "tokens": [{ "type": "text", "text": "Kies [a] of [b]." }]
+    },
+    {
+      "name": "link without closing bracket",
+      "input": "[label](https://example.org/a",
+      "tokens": [{ "type": "text", "text": "[label](https://example.org/a" }]
+    },
+    {
+      "name": "unfinished term",
+      "input": "Een [[term zonder einde.",
+      "tokens": [{ "type": "text", "text": "Een [[term zonder einde." }]
+    },
+    {
+      "name": "html stays plain text",
+      "input": "Dit is <b>vet</b>.",
+      "tokens": [{ "type": "text", "text": "Dit is <b>vet</b>." }]
+    },
+    {
+      "name": "abbreviations, decimals and an ellipsis stay text",
+      "input": "Bijv. 1,5 m. of 3.2 cm… Klaar!",
+      "tokens": [{ "type": "text", "text": "Bijv. 1,5 m. of 3.2 cm… Klaar!" }]
+    }
+  ]
+}

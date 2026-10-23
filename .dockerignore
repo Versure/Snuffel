@@ -10,6 +10,7 @@ pocketbase/pb_data
 pocketbase/seed
 web/public/fonts
 web/public/content
+web/public/.content-*
 test-results
 **/test-results
 playwright-report
