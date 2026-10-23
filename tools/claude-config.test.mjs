@@ -212,6 +212,14 @@ describe('content agents', () => {
     }
   });
 
+  test('snuffel-leren tells Jop that photos are sent to Anthropic', () => {
+    const text = readFileSync(skillFile('snuffel-leren'), 'utf8');
+    assert.ok(
+      text.includes('Claude stuurt ze wel naar Anthropic'),
+      'snuffel-leren does not say that photos are sent to Anthropic',
+    );
+  });
+
   test('snuffel-leren names its agents, the catalogue, content:check and the content branch', () => {
     const text = readFileSync(skillFile('snuffel-leren'), 'utf8');
     for (const needle of [

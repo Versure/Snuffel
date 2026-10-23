@@ -32,7 +32,7 @@ Kies daarna `kind`: `course` (leertraject) of `practice` (huiswerk-oefenles; dan
 
 ### Huiswerk met foto's van het werkboek
 
-Gaat de wens over huiswerk (`kind: practice`), vraag dan in hetzelfde intakebericht om **foto's van de pagina's** uit het werkboek: het pad naar de bestanden of een map, bij voorkeur onder `huiswerk-fotos/` in de repo (die map staat in `.gitignore`); slepen in het gesprek mag ook. Dat telt als één van de zes vragen. Heeft Jop geen foto's, dan werkt de huiswerkmodus zoals hieronder zonder foto's.
+Gaat de wens over huiswerk (`kind: practice`), vraag dan in hetzelfde intakebericht om **foto's van de pagina's** uit het werkboek: het pad naar de bestanden of een map, bij voorkeur onder `huiswerk-fotos/` in de repo (die map staat in `.gitignore`); slepen in het gesprek mag ook. Dat telt als één van de zes vragen. Zeg er in dat bericht bij: "Maak de foto zonder naam, klas, cijfers of ander persoonlijks erop (afdekken of bijsnijden); de foto's blijven buiten git en de image, maar Claude stuurt ze wel naar Anthropic om ze te lezen." Heeft Jop geen foto's, dan werkt de huiswerkmodus zoals hieronder zonder foto's.
 
 Lees elke foto met `Read` (een map: eerst `Glob` op de afbeeldingen erin). Haal eruit:
 
