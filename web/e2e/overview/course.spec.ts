@@ -10,7 +10,7 @@ import {
   startedProefles,
   wholeProefles,
 } from './pages';
-import { checkbox } from '../lesson/actions';
+import { checkbox, navLink } from '../lesson/actions';
 import { fixtureLesson, openLesson } from '../lesson/fixture';
 import type { PracticeStep } from '../../src/app/core/content/content.types';
 
@@ -120,7 +120,8 @@ test.describe('the course overview', () => {
     await openLesson(page);
     for (const item of practice.items) await checkbox(page, item.id).check();
     for (const item of practice.items) await expect(checkbox(page, item.id)).toBeChecked();
-    await page.waitForLoadState('networkidle');
+    // The circle of the step fills once PocketBase has stored the step as completed.
+    await expect(navLink(page, 4, 'Zelf doen', true)).toBeVisible();
     await page.getByRole('link', { name: 'Naar de lessen' }).first().click();
     await expect(page).toHaveURL(/\/leren\/proefcursus$/);
     await expect(lessonRow(page, proeflesTitle).locator('.label')).toHaveText(
