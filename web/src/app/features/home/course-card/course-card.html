@@ -1,0 +1,6 @@
+<a class="card" [routerLink]="link()">
+  <h3 class="title">{{ course().title }}</h3>
+  @if (progress(); as current) {
+    <snf-progress-bar [value]="current.completed" [max]="current.total" [label]="label()" />
+  }
+</a>
