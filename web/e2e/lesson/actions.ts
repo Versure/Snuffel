@@ -24,21 +24,35 @@ export const gameStep = fixtureLesson.steps.find(
 )!;
 export const game = gameStep.interaction.config as TraceGameConfig;
 
+/** The trace game (config) of a game step; the helpers below use it for any lesson. */
+export function gameConfig(step: InteractionStep): TraceGameConfig {
+  if (step.interaction.kind !== 'trace-game') throw new Error(`${step.id} is not a trace game`);
+  return step.interaction.config;
+}
+
 export function section(page: Page, stepId: string): Locator {
   return page.locator(`section#stap-${stepId}`);
 }
 
-/** The question block (`snf-quiz-question`) of a question of the fixture quiz. */
-export function questionBlock(page: Page, question: QuizQuestion): Locator {
-  return section(page, quiz.id)
+// Every helper below takes the step it works on as its last parameter (the quiz, checklist or
+// game step of any lesson) and works on the proefles by default.
+
+/** The question block (`snf-quiz-question`) of a question of the quiz (default: the proefles). */
+export function questionBlock(page: Page, question: QuizQuestion, step: QuizStep = quiz): Locator {
+  return section(page, step.id)
     .locator('snf-quiz-question')
     .filter({ has: page.getByRole('group', { name: plainText(question.prompt) }) });
 }
 
 /** The button of an option of a question. */
-export function optionButton(page: Page, question: QuizQuestion, optionId: string): Locator {
+export function optionButton(
+  page: Page,
+  question: QuizQuestion,
+  optionId: string,
+  step: QuizStep = quiz,
+): Locator {
   const option = question.options.find((candidate) => candidate.id === optionId)!;
-  return questionBlock(page, question)
+  return questionBlock(page, question, step)
     .locator('button.option')
     .filter({ has: page.locator('.option-text', { hasText: plainText(option.text) }) });
 }
@@ -52,26 +66,36 @@ export function wrongOption(question: QuizQuestion): string {
 }
 
 /** Answers a question and waits until its feedback is shown. */
-export async function answer(page: Page, question: QuizQuestion, optionId: string): Promise<void> {
-  await optionButton(page, question, optionId).click();
-  await expect(questionBlock(page, question).locator('.feedback')).toBeVisible();
+export async function answer(
+  page: Page,
+  question: QuizQuestion,
+  optionId: string,
+  step: QuizStep = quiz,
+): Promise<void> {
+  await optionButton(page, question, optionId, step).click();
+  await expect(questionBlock(page, question, step).locator('.feedback')).toBeVisible();
 }
 
 /** Answers every question: right ones by default, or wrong where `wrong` says so. */
-export async function answerAll(page: Page, wrong: readonly string[] = []): Promise<void> {
-  for (const question of quiz.questions) {
+export async function answerAll(
+  page: Page,
+  wrong: readonly string[] = [],
+  step: QuizStep = quiz,
+): Promise<void> {
+  for (const question of step.questions) {
     await answer(
       page,
       question,
       wrong.includes(question.id) ? wrongOption(question) : rightOption(question),
+      step,
     );
   }
 }
 
-/** The checkbox of an item of the fixture checklist. */
-export function checkbox(page: Page, itemId: string): Locator {
-  const item = practice.items.find((candidate) => candidate.id === itemId)!;
-  return section(page, practice.id).getByRole('checkbox', { name: plainText(item.text) });
+/** The checkbox of an item of a checklist (default: the proefles). */
+export function checkbox(page: Page, itemId: string, step: PracticeStep = practice): Locator {
+  const item = step.items.find((candidate) => candidate.id === itemId)!;
+  return section(page, step.id).getByRole('checkbox', { name: plainText(item.text) });
 }
 
 /** The link of a step in the step navigation, with or without " (klaar)". */
@@ -84,10 +108,10 @@ export function navLink(page: Page, number: number, label: string, done: boolean
 /**
  * Scrolls the end of the explanation into the middle of the screen, the way a reader gets there,
  * and stays until its circle fills. Scrolls again when the end moved away (the figure above it
- * can still be loading and push it down).
+ * can still be loading and push it down). `stepId` is the explanation step (default `uitleg`).
  */
-export async function readExplanation(page: Page): Promise<void> {
-  const marker = section(page, 'uitleg').locator('.end-marker');
+export async function readExplanation(page: Page, stepId = 'uitleg'): Promise<void> {
+  const marker = section(page, stepId).locator('.end-marker');
   await expect(async () => {
     await marker.evaluate((element) =>
       element.scrollIntoView({ block: 'center', behavior: 'instant' }),
@@ -133,61 +157,69 @@ export async function storedRecords(page: Page): Promise<StoredRecords> {
 }
 
 /** The visible text of the feedback of a question. */
-export async function feedbackText(page: Page, question: QuizQuestion): Promise<string> {
-  return normalize(await questionBlock(page, question).locator('.feedback').innerText());
+export async function feedbackText(
+  page: Page,
+  question: QuizQuestion,
+  step: QuizStep = quiz,
+): Promise<string> {
+  return normalize(await questionBlock(page, question, step).locator('.feedback').innerText());
 }
 
 // The trace game (voel-spel) of the fixture.
 
 /** The game in the lesson (`snf-trace-game`). */
-export function gameBlock(page: Page): Locator {
-  return section(page, gameStep.id).locator('snf-trace-game');
+export function gameBlock(page: Page, step: InteractionStep = gameStep): Locator {
+  return section(page, step.id).locator('snf-trace-game');
 }
 
 /** The screen of the game; `data-pattern` is the pattern on it (plan M9, question 7). */
-export function gameScreen(page: Page): Locator {
-  return gameBlock(page).getByRole('img', {
+export function gameScreen(page: Page, step: InteractionStep = gameStep): Locator {
+  return gameBlock(page, step).getByRole('img', {
     name: 'Hengel en een lijn die laat zien hoe hard er getrokken wordt',
   });
 }
 
 /** The button of a choice of the game. */
-export function choiceButton(page: Page, choiceId: string): Locator {
-  return gameBlock(page).locator(`button.choice[data-choice="${choiceId}"]`);
+export function choiceButton(
+  page: Page,
+  choiceId: string,
+  step: InteractionStep = gameStep,
+): Locator {
+  return gameBlock(page, step).locator(`button.choice[data-choice="${choiceId}"]`);
 }
 
 /** What Ted says in the game, whitespace collapsed. */
-export async function gameTedText(page: Page): Promise<string> {
-  return normalize(await gameBlock(page).locator('.say').innerText());
+export async function gameTedText(page: Page, step: InteractionStep = gameStep): Promise<string> {
+  return normalize(await gameBlock(page, step).locator('.say').innerText());
 }
 
 /** Taps Start and waits until the choices are open. */
-export async function startGame(page: Page): Promise<void> {
-  await gameBlock(page).getByRole('button', { name: 'Start', exact: true }).click();
-  await expect(choiceButton(page, game.choices[0].id)).toBeEnabled();
+export async function startGame(page: Page, step: InteractionStep = gameStep): Promise<void> {
+  await gameBlock(page, step).getByRole('button', { name: 'Start', exact: true }).click();
+  await expect(choiceButton(page, gameConfig(step).choices[0].id, step)).toBeEnabled();
 }
 
 /** The pattern on the screen and the id of its right choice. */
-export async function currentPattern(page: Page) {
-  const id = await gameScreen(page).getAttribute('data-pattern');
-  const pattern = game.patterns.find((candidate) => candidate.id === id);
+export async function currentPattern(page: Page, step: InteractionStep = gameStep) {
+  const id = await gameScreen(page, step).getAttribute('data-pattern');
+  const pattern = gameConfig(step).patterns.find((candidate) => candidate.id === id);
   if (!pattern) throw new Error(`unknown pattern "${id}"`);
   return pattern;
 }
 
 /** Chooses the right answer for the pattern on the screen. */
-export async function chooseRight(page: Page): Promise<void> {
-  const pattern = await currentPattern(page);
-  await choiceButton(page, pattern.answer).click();
-  await expect(choiceButton(page, pattern.answer)).toContainText('Jouw keuze');
+export async function chooseRight(page: Page, step: InteractionStep = gameStep): Promise<void> {
+  const pattern = await currentPattern(page, step);
+  await choiceButton(page, pattern.answer, step).click();
+  await expect(choiceButton(page, pattern.answer, step)).toContainText('Jouw keuze');
 }
 
 /** Chooses a wrong answer for the pattern on the screen; returns its id. */
-export async function chooseWrong(page: Page): Promise<string> {
-  const pattern = await currentPattern(page);
-  const wrong = game.choices.find((choice) => choice.id !== pattern.answer)!.id;
-  await choiceButton(page, wrong).click();
-  await expect(choiceButton(page, wrong)).toContainText('Jouw keuze');
+export async function chooseWrong(page: Page, step: InteractionStep = gameStep): Promise<string> {
+  const pattern = await currentPattern(page, step);
+  const wrong = gameConfig(step).choices.find((choice) => choice.id !== pattern.answer)!.id;
+  await choiceButton(page, wrong, step).click();
+  await expect(choiceButton(page, wrong, step)).toContainText('Jouw keuze');
   return wrong;
 }
 
@@ -195,17 +227,22 @@ export async function chooseWrong(page: Page): Promise<string> {
  * Plays a whole game from Start (or Nog een potje): right answers, except the rounds (0-based)
  * in `wrong`. Fast with reduced motion; also works without, by waiting for each line.
  */
-export async function playWholeGame(page: Page, wrong: readonly number[] = []): Promise<void> {
-  const block = gameBlock(page);
+export async function playWholeGame(
+  page: Page,
+  wrong: readonly number[] = [],
+  step: InteractionStep = gameStep,
+): Promise<void> {
+  const config = gameConfig(step);
+  const block = gameBlock(page, step);
   const again = block.getByRole('button', { name: 'Nog een potje', exact: true });
   if (await again.isVisible()) await again.click();
   else await block.getByRole('button', { name: 'Start', exact: true }).click();
-  for (let round = 0; round < game.rounds; round += 1) {
+  for (let round = 0; round < config.rounds; round += 1) {
     if (round > 0) await block.getByRole('button', { name: 'Volgende', exact: true }).click();
-    await expect(block.locator('.rounds')).toHaveText(`Ronde ${round + 1} van ${game.rounds}`);
-    await expect(choiceButton(page, game.choices[0].id)).toBeEnabled();
-    if (wrong.includes(round)) await chooseWrong(page);
-    else await chooseRight(page);
+    await expect(block.locator('.rounds')).toHaveText(`Ronde ${round + 1} van ${config.rounds}`);
+    await expect(choiceButton(page, config.choices[0].id, step)).toBeEnabled();
+    if (wrong.includes(round)) await chooseWrong(page, step);
+    else await chooseRight(page, step);
   }
   await expect(block.getByRole('button', { name: 'Nog een potje', exact: true })).toBeVisible();
 }
