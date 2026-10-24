@@ -119,7 +119,7 @@
         },
         {
           "type": "text",
-          "text": "Zit je echt vast? Blijf dan niet rukken. Daardoor kan je aas juist dieper vast raken. Loop een stukje opzij en trek vanuit een andere hoek. Of houd de lijn met je vinger vast en open de [[beugel]]. Trek de lijn rustig strak en laat dan ineens je vinger los. Die schok kan je aas losmaken.",
+          "text": "Zit je echt vast? Blijf dan niet rukken. Daardoor kan je aas juist dieper vast raken. Loop een stukje opzij en trek vanuit een andere hoek. Of houd de lijn met je vinger vast en open de [[beugel]]. Trek je hengel rustig naar achteren en laat dan ineens je vinger los. Die schok kan je aas losmaken.",
           "sourceRefs": [
             "outdoorlife-unsnag-lures",
             "wired2fish-unsnag-lure",
@@ -339,7 +339,7 @@
             {
               "id": "hoger",
               "text": "Iets hoger door het water vissen",
-              "feedback": "Klopt. Vis hoog door het water en over de planten heen. Dan blijft je aas minder hangen."
+              "feedback": "Klopt. Houd je aas boven de planten, dan haakt het er minder vaak in."
             },
             {
               "id": "zwaarder",
@@ -426,7 +426,7 @@
     },
     {
       "q": "Wat doe ik als ik echt vastzit?",
-      "a": "Blijf rustig en ruk niet. Loop een stukje opzij en trek vanuit een andere hoek. Of houd de lijn met je vinger vast en open de beugel. Trek de lijn rustig strak en laat dan ineens je vinger los."
+      "a": "Blijf rustig en ruk niet. Loop een stukje opzij en trek vanuit een andere hoek. Of houd de lijn met je vinger vast en open de beugel. Trek je hengel rustig naar achteren en laat dan ineens je vinger los."
     },
     {
       "q": "Heb ik altijd een eigen VISpas nodig?",
