@@ -1,6 +1,35 @@
-<main>
-  <h1>Ouderoverzicht</h1>
-  <snf-ted-says class="ted" mood="thinking" size="small">
-    <p>Hier zie je straks hoe het met de kinderen gaat.</p>
+@let current = state();
+<main [attr.aria-busy]="current.kind === 'loading' ? 'true' : null">
+  <h1>{{ text.heading }}</h1>
+  <snf-ted-says class="ted" mood="happy" size="small">
+    <p>{{ text.intro }}</p>
   </snf-ted-says>
+
+  @switch (current.kind) {
+    @case ('loading') {
+      <snf-ted-says class="state-ted" mood="thinking" size="small">{{ text.loading }}</snf-ted-says>
+    }
+    @case ('ready') {
+      @if (activityState().kind === 'unavailable') {
+        <div class="activity-error">
+          <snf-ted-says mood="oops" size="small">{{ text.activityUnavailable }}</snf-ted-says>
+          <button snf-button type="button" (click)="retryActivity()">{{ text.retry }}</button>
+        </div>
+      }
+      <ul class="cards">
+        @for (child of current.children; track child.id) {
+          <li><snf-child-card [child]="child" [activity]="activityOf(child)" [now]="now" /></li>
+        }
+      </ul>
+    }
+    @case ('empty') {
+      <snf-ted-says class="state-ted" mood="thinking" size="small">{{
+        text.noChildren
+      }}</snf-ted-says>
+    }
+    @case ('unavailable') {
+      <snf-ted-says class="state-ted" mood="oops" size="small">{{ text.unavailable }}</snf-ted-says>
+      <button snf-button type="button" (click)="retry()">{{ text.retry }}</button>
+    }
+  }
 </main>

@@ -15,6 +15,7 @@ interface FakeCollection {
   getFirstListItem: ReturnType<typeof vi.fn>;
   create: ReturnType<typeof vi.fn>;
   update: ReturnType<typeof vi.fn>;
+  delete: ReturnType<typeof vi.fn>;
 }
 
 function fakeCollection(): FakeCollection {
@@ -23,6 +24,7 @@ function fakeCollection(): FakeCollection {
     getFirstListItem: vi.fn(),
     create: vi.fn(async (body: Record<string, unknown>) => ({ id: 'new', ...body })),
     update: vi.fn(async (id: string, body: Record<string, unknown>) => ({ id, ...body })),
+    delete: vi.fn(async () => true),
   };
 }
 
@@ -473,5 +475,158 @@ describe('ProgressService', () => {
     await expect(
       service.setStepStatus('kind-a', 'proefcursus', 'proefles', 'quiz', 'started', 1),
     ).rejects.toMatchObject({ reason: 'refused' });
+  });
+
+  const allCollections = [
+    'lesson_progress',
+    'quiz_attempts',
+    'checklist_states',
+    'interaction_results',
+  ] as const;
+
+  it('loadActivity asks the four collections with only the needed fields', async () => {
+    await service.loadActivity();
+    expect(collections['lesson_progress'].getFullList).toHaveBeenCalledWith(
+      expect.objectContaining({
+        fields: 'user,lesson_id,step_id,status,updated',
+        requestKey: null,
+      }),
+    );
+    for (const name of ['quiz_attempts', 'checklist_states', 'interaction_results']) {
+      expect(collections[name].getFullList).toHaveBeenCalledWith(
+        expect.objectContaining({ fields: 'user,updated', requestKey: null }),
+      );
+    }
+  });
+
+  it('loadActivity groups statuses and the last activity per user', async () => {
+    collections['lesson_progress'].getFullList.mockResolvedValue([
+      {
+        user: 'a',
+        lesson_id: 'proefles',
+        step_id: 'uitleg',
+        status: 'completed',
+        updated: '2026-01-02 10:00:00.000Z',
+      },
+      {
+        user: 'b',
+        lesson_id: 'proefles',
+        step_id: 'quiz',
+        status: 'started',
+        updated: '2026-01-01 10:00:00.000Z',
+      },
+    ]);
+    collections['quiz_attempts'].getFullList.mockResolvedValue([
+      { user: 'a', updated: '2026-01-05 10:00:00.000Z' },
+    ]);
+    collections['interaction_results'].getFullList.mockResolvedValue([
+      { user: 'c', updated: '2026-01-03 10:00:00.000Z' },
+    ]);
+    const activity = await service.loadActivity();
+    expect([...activity.keys()].sort()).toEqual(['a', 'b', 'c']);
+    expect(activity.get('a')?.lastActivity).toBe('2026-01-05 10:00:00.000Z');
+    expect([...(activity.get('a')?.statuses.get('proefles') ?? [])]).toEqual([
+      ['uitleg', 'completed'],
+    ]);
+    expect([...(activity.get('b')?.statuses.get('proefles') ?? [])]).toEqual([['quiz', 'started']]);
+    expect(activity.get('c')?.statuses.size).toBe(0);
+    expect(activity.get('c')?.lastActivity).toBe('2026-01-03 10:00:00.000Z');
+  });
+
+  it('loadUserProgress filters every collection on the user with parameters', async () => {
+    await service.loadUserProgress('kind"a');
+    const expectedFilter = client.filter('user = {:userId}', { userId: 'kind"a' });
+    expect(expectedFilter).toContain('\\"');
+    for (const name of allCollections) {
+      expect(collections[name].getFullList).toHaveBeenCalledWith(
+        expect.objectContaining({ filter: expectedFilter, requestKey: null }),
+      );
+    }
+  });
+
+  it('loadUserProgress groups the records per lesson, newest first', async () => {
+    collections['lesson_progress'].getFullList.mockResolvedValue([
+      step('uitleg', 'completed'),
+      { ...step('oefenen', 'started'), lesson_id: 'proefles-breuken' },
+    ]);
+    collections['quiz_attempts'].getFullList.mockResolvedValue([
+      attempt('oud', '2026-01-01 10:00:00.000Z'),
+      attempt('nieuw', '2026-01-02 10:00:00.000Z'),
+    ]);
+    collections['interaction_results'].getFullList.mockResolvedValue([
+      { ...result('r1', '2026-01-01 10:00:00.000Z'), lesson_id: 'andere-les' },
+    ]);
+    const snapshot = await service.loadUserProgress('kind-a');
+    expect([...snapshot.lessons.keys()].sort()).toEqual([
+      'andere-les',
+      'proefles',
+      'proefles-breuken',
+    ]);
+    const proefles = snapshot.lessons.get('proefles');
+    expect(proefles?.steps.map((item) => item.step_id)).toEqual(['uitleg']);
+    expect(proefles?.attempts.map((item) => item.id)).toEqual(['nieuw', 'oud']);
+    expect(proefles?.results).toEqual([]);
+    expect(snapshot.lessons.get('andere-les')?.results.map((item) => item.id)).toEqual(['r1']);
+    expect([...(snapshot.statuses.get('proefles-breuken') ?? [])]).toEqual([
+      ['oefenen', 'started'],
+    ]);
+  });
+
+  it('clearLesson filters on user and lesson_id with parameters in all four collections', async () => {
+    await service.clearLesson('kind"a', 'proef"les');
+    const expectedFilter = client.filter('user = {:userId} && lesson_id = {:lessonId}', {
+      userId: 'kind"a',
+      lessonId: 'proef"les',
+    });
+    expect(expectedFilter).toContain('\\"');
+    for (const name of allCollections) {
+      expect(collections[name].getFullList).toHaveBeenCalledWith(
+        expect.objectContaining({ filter: expectedFilter, fields: 'id', requestKey: null }),
+      );
+    }
+  });
+
+  it('clearLesson deletes every record it finds', async () => {
+    for (const name of allCollections) {
+      collections[name].getFullList.mockResolvedValue([{ id: `${name}-1` }, { id: `${name}-2` }]);
+    }
+    await service.clearLesson('kind-a', 'proefles');
+    for (const name of allCollections) {
+      expect(collections[name].delete.mock.calls).toEqual([
+        [`${name}-1`, { requestKey: null }],
+        [`${name}-2`, { requestKey: null }],
+      ]);
+    }
+  });
+
+  it('clearLesson treats a 404 on delete as deleted', async () => {
+    collections['quiz_attempts'].getFullList.mockResolvedValue([{ id: 'weg' }, { id: 'er' }]);
+    collections['quiz_attempts'].delete.mockRejectedValueOnce(error(404));
+    await expect(service.clearLesson('kind-a', 'proefles')).resolves.toBeUndefined();
+    expect(collections['quiz_attempts'].delete).toHaveBeenCalledTimes(2);
+  });
+
+  it('clearLesson becomes ProgressError when a delete fails, after deleting what it could', async () => {
+    collections['lesson_progress'].getFullList.mockResolvedValue([{ id: 'p1' }]);
+    collections['quiz_attempts'].getFullList.mockResolvedValue([{ id: 'q1' }, { id: 'q2' }]);
+    collections['quiz_attempts'].delete.mockRejectedValueOnce(error(503));
+    collections['interaction_results'].getFullList.mockResolvedValue([{ id: 'r1' }]);
+    const clear = service.clearLesson('kind-a', 'proefles');
+    await expect(clear).rejects.toBeInstanceOf(ProgressError);
+    await expect(clear).rejects.toMatchObject({ reason: 'unavailable' });
+    expect(collections['lesson_progress'].delete).toHaveBeenCalledWith('p1', { requestKey: null });
+    expect(collections['quiz_attempts'].delete).toHaveBeenCalledWith('q2', { requestKey: null });
+    expect(collections['interaction_results'].delete).toHaveBeenCalledWith('r1', {
+      requestKey: null,
+    });
+  });
+
+  it('clearLesson never deletes without a lesson id or a user id', async () => {
+    await expect(service.clearLesson('kind-a', '')).rejects.toThrow();
+    await expect(service.clearLesson('', 'proefles')).rejects.toThrow();
+    for (const name of allCollections) {
+      expect(collections[name].getFullList).not.toHaveBeenCalled();
+      expect(collections[name].delete).not.toHaveBeenCalled();
+    }
   });
 });

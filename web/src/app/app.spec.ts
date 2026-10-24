@@ -130,6 +130,20 @@ describe('App routes', () => {
     expect(await open('/ouder')).toBe('/ouder');
   });
 
+  it('protects the page of a child with authGuard and the parent role', async () => {
+    const route = routes.find((candidate) => candidate.path === 'ouder/:childId');
+    expect(route?.canActivate).toHaveLength(2);
+    expect(route?.canActivate?.[0]).toBe(authGuard);
+    expect(route?.title).toBe('Ouderoverzicht · Snuffel');
+    const harness = await RouterTestingHarness.create();
+    const router = TestBed.inject(Router);
+    await harness.navigateByUrl('/ouder/a1');
+    expect(router.url).toBe('/login?terug=%2Fouder%2Fa1');
+    loginAs('child');
+    await harness.navigateByUrl('/ouder/a1');
+    expect(router.url).toBe('/');
+  });
+
   it('sends someone who is logged in from /login to /', async () => {
     loginAs('child');
     expect(await open('/login')).toBe('/');

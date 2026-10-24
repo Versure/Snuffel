@@ -1,0 +1,86 @@
+:host {
+  display: grid;
+  justify-items: start;
+  gap: 0.4rem;
+  padding: 0.75rem 1rem;
+  background: var(--snf-color-surface);
+  border: var(--snf-border-width) solid var(--snf-color-ink);
+  border-radius: var(--snf-radius-lg);
+  box-shadow: var(--snf-shadow-md);
+}
+
+.title {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.last-activity {
+  margin: 0;
+  color: var(--snf-color-text-muted);
+}
+
+.details {
+  display: grid;
+  gap: 0.35rem;
+  margin: 0;
+  color: var(--snf-color-text-muted);
+}
+
+.detail dt {
+  display: inline;
+  font-weight: 700;
+}
+
+.detail dd {
+  display: inline;
+  margin: 0;
+}
+
+/* The first line follows the title; every next line starts on its own row. */
+.detail dd + dd {
+  display: block;
+}
+
+.content-error {
+  display: grid;
+  justify-items: start;
+  gap: 0.4rem;
+}
+
+.content-error p {
+  margin: 0;
+}
+
+/* The question before clearing, in the row itself; the text says what happens, not only the colour. */
+.question {
+  display: grid;
+  gap: 0.6rem;
+  justify-self: stretch;
+  padding: 0.75rem 1rem;
+  color: var(--snf-color-text);
+  background: var(--snf-color-error-soft);
+  border: var(--snf-border-width) solid var(--snf-color-error);
+  border-radius: var(--snf-radius-md);
+}
+
+.question:focus-visible {
+  outline: var(--snf-focus-ring);
+  outline-offset: var(--snf-focus-ring-offset);
+}
+
+.question-text,
+.clear-status {
+  margin: 0;
+}
+
+.clear-status {
+  font-weight: 700;
+}
+
+.question-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}

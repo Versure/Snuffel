@@ -9,6 +9,7 @@ import type {
   QuizAttemptRecord,
   StepStatus,
 } from '../pocketbase/types';
+import { lastActivity } from './child-progress';
 import { groupStepStatuses, type StepStatuses, type StepStatusRecord } from './course-progress';
 import { toProgressError } from './progress-error';
 
@@ -35,6 +36,35 @@ export interface LessonProgressSnapshot {
   /** Every interaction result (finished game) of this lesson, newest first. */
   readonly results: readonly InteractionResultRecord[];
 }
+
+/** What the parent overview shows of one user: the step statuses and the last activity. */
+export interface ChildActivity {
+  readonly statuses: StepStatuses;
+  /** The newest `updated` of every record of the user, or null without records. */
+  readonly lastActivity: string | null;
+}
+
+/** Every record of one user for one lesson; attempts and results newest first. */
+export interface LessonRecords {
+  readonly steps: readonly LessonProgressRecord[];
+  readonly checklists: readonly ChecklistStateRecord[];
+  readonly attempts: readonly QuizAttemptRecord[];
+  readonly results: readonly InteractionResultRecord[];
+}
+
+/** Everything one user stored, by lesson id. */
+export interface UserProgressSnapshot {
+  readonly statuses: StepStatuses;
+  readonly lessons: ReadonlyMap<string, LessonRecords>;
+}
+
+/** The four progress collections; clearing a lesson empties all of them. */
+const progressCollections = [
+  'lesson_progress',
+  'quiz_attempts',
+  'checklist_states',
+  'interaction_results',
+] as const;
 
 /**
  * Never cancel a request because another one to the same path starts (the SDK does that by
@@ -109,6 +139,131 @@ export class ProgressService {
     } catch (error) {
       throw toProgressError(error, 'Loading progress');
     }
+  }
+
+  /**
+   * Loads, for the parent overview, the step statuses and the last activity of every user, in
+   * four requests with only the fields needed. Grouped by `user`; the caller keeps the children.
+   */
+  async loadActivity(): Promise<ReadonlyMap<string, ChildActivity>> {
+    try {
+      const [steps, attempts, checklists, results] = await Promise.all([
+        this.pb
+          .collection('lesson_progress')
+          .getFullList<StepStatusRecord & { user: string; updated: string }>({
+            fields: 'user,lesson_id,step_id,status,updated',
+            ...noCancel,
+          }),
+        ...(['quiz_attempts', 'checklist_states', 'interaction_results'] as const).map((name) =>
+          this.pb.collection(name).getFullList<{ user: string; updated: string }>({
+            fields: 'user,updated',
+            ...noCancel,
+          }),
+        ),
+      ]);
+      const stepsByUser = groupBy(steps, (record) => record.user);
+      const updatedByUser = groupBy(
+        [...steps, ...attempts, ...checklists, ...results],
+        (record) => record.user,
+      );
+      const activity = new Map<string, ChildActivity>();
+      for (const [userId, records] of updatedByUser) {
+        activity.set(userId, {
+          statuses: groupStepStatuses(stepsByUser.get(userId) ?? []),
+          lastActivity: lastActivity(records),
+        });
+      }
+      return activity;
+    } catch (error) {
+      throw toProgressError(error, 'Loading the activity');
+    }
+  }
+
+  /**
+   * Loads every record of one user in the four collections, grouped by lesson (attempts and
+   * results newest first). The filter on `user` is essential: a parent may read every record.
+   */
+  async loadUserProgress(userId: string): Promise<UserProgressSnapshot> {
+    const filter = this.pb.filter('user = {:userId}', { userId });
+    try {
+      const [steps, checklists, attempts, results] = await Promise.all([
+        this.pb
+          .collection('lesson_progress')
+          .getFullList<LessonProgressRecord>({ filter, ...noCancel }),
+        this.pb
+          .collection('checklist_states')
+          .getFullList<ChecklistStateRecord>({ filter, ...noCancel }),
+        this.pb
+          .collection('quiz_attempts')
+          .getFullList<QuizAttemptRecord>({ filter, sort: '-created', ...noCancel }),
+        this.pb
+          .collection('interaction_results')
+          .getFullList<InteractionResultRecord>({ filter, sort: '-created', ...noCancel }),
+      ]);
+      const byLesson = (record: { lesson_id: string }) => record.lesson_id;
+      const stepsByLesson = groupBy(steps, byLesson);
+      const checklistsByLesson = groupBy(checklists, byLesson);
+      const attemptsByLesson = groupBy([...attempts].sort(newestFirst), byLesson);
+      const resultsByLesson = groupBy([...results].sort(newestFirst), byLesson);
+      const lessonIds = new Set([
+        ...stepsByLesson.keys(),
+        ...checklistsByLesson.keys(),
+        ...attemptsByLesson.keys(),
+        ...resultsByLesson.keys(),
+      ]);
+      const lessons = new Map<string, LessonRecords>();
+      for (const lessonId of lessonIds) {
+        lessons.set(lessonId, {
+          steps: stepsByLesson.get(lessonId) ?? [],
+          checklists: checklistsByLesson.get(lessonId) ?? [],
+          attempts: attemptsByLesson.get(lessonId) ?? [],
+          results: resultsByLesson.get(lessonId) ?? [],
+        });
+      }
+      return { statuses: groupStepStatuses(steps), lessons };
+    } catch (error) {
+      throw toProgressError(error, 'Loading progress');
+    }
+  }
+
+  /**
+   * Deletes every record of one user for one lesson, in all four collections, one by one (the
+   * batch API is off). Safe to repeat: a record that is already gone (404) counts as deleted.
+   * Any other failure becomes a ProgressError, after deleting what could be deleted.
+   */
+  async clearLesson(userId: string, lessonId: string): Promise<void> {
+    if (userId === '' || lessonId === '') {
+      throw new Error('Clearing a lesson needs a user id and a lesson id.');
+    }
+    const filter = this.pb.filter('user = {:userId} && lesson_id = {:lessonId}', {
+      userId,
+      lessonId,
+    });
+    let failure: unknown = null;
+    for (const name of progressCollections) {
+      const collection = this.pb.collection(name);
+      let ids: string[];
+      try {
+        const records = await collection.getFullList<{ id: string }>({
+          filter,
+          fields: 'id',
+          ...noCancel,
+        });
+        ids = records.map((record) => record.id);
+      } catch (error) {
+        failure ??= error;
+        continue;
+      }
+      for (const id of ids) {
+        try {
+          await collection.delete(id, noCancel);
+        } catch (error) {
+          if (error instanceof ClientResponseError && error.status === 404) continue;
+          failure ??= error;
+        }
+      }
+    }
+    if (failure !== null) throw toProgressError(failure, 'Clearing the lesson');
   }
 
   /**
@@ -278,6 +433,16 @@ function toChecklistProgress(record: ChecklistStateRecord): ChecklistProgress {
     ? record.checked.filter((id): id is string => typeof id === 'string')
     : [];
   return { id: record.id, checked };
+}
+
+function groupBy<T>(records: readonly T[], key: (record: T) => string): Map<string, T[]> {
+  const groups = new Map<string, T[]>();
+  for (const record of records) {
+    const group = groups.get(key(record));
+    if (group) group.push(record);
+    else groups.set(key(record), [record]);
+  }
+  return groups;
 }
 
 function newestFirst(a: { created: string }, b: { created: string }): number {

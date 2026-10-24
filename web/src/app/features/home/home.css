@@ -10,6 +10,10 @@
   margin: 0;
 }
 
+.parent-link {
+  margin: 0 0 1.25rem;
+}
+
 .state-ted {
   margin: 1rem 0 1.5rem;
 }

@@ -1,8 +1,9 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import type { ManifestLesson } from '../../../core/content/content.types';
-import type { LessonProgressSummary } from '../../../core/progress/course-progress';
+import type { LessonProgressSummary, LessonStatus } from '../../../core/progress/course-progress';
 import { plainText } from '../../../shared/inline-text/inline-markup';
+import { LessonStatusLabel } from '../../../shared/ui/lesson-status/lesson-status';
 import { COURSE_TEXT } from '../course-text';
 
 /**
@@ -12,7 +13,7 @@ import { COURSE_TEXT } from '../course-text';
  */
 @Component({
   selector: 'snf-lesson-item',
-  imports: [RouterLink],
+  imports: [RouterLink, LessonStatusLabel],
   templateUrl: './lesson-item.html',
   styleUrl: './lesson-item.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -27,7 +28,7 @@ export class LessonItem {
   protected readonly title = computed(() => plainText(this.lesson().title));
   protected readonly planned = computed(() => this.lesson().status !== 'published');
   protected readonly link = computed(() => ['/leren', this.courseId(), this.lesson().id]);
-  protected readonly status = computed(() =>
+  protected readonly status = computed<LessonStatus | null>(() =>
     this.planned() ? 'planned' : (this.progress()?.status ?? null),
   );
 }

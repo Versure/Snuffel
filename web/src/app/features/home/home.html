@@ -5,6 +5,9 @@
     <p class="greeting">{{ text.greeting(user()?.name ?? '') }}</p>
     <p>{{ text.question }}</p>
   </snf-ted-says>
+  @if (isParent()) {
+    <a snf-button class="parent-link" routerLink="/ouder">{{ text.parentOverview }}</a>
+  }
 
   @switch (content.kind) {
     @case ('loading') {

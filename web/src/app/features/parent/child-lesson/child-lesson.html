@@ -1,0 +1,62 @@
+<h4 class="title" [id]="headingId()">{{ title() }}</h4>
+@if (summary(); as current) {
+  <snf-lesson-status [status]="current.status" [done]="current.done" [total]="current.total" />
+}
+@if (lastActivity(); as last) {
+  <p class="last-activity">{{ last }}</p>
+}
+@if (details(); as list) {
+  @if (list.length > 0) {
+    <dl class="details">
+      @for (detail of list; track detail.stepId) {
+        <div class="detail">
+          <dt>{{ detail.title }}:</dt>
+          @for (line of detail.lines; track $index) {
+            {{ ' ' }}
+            <dd>{{ line }}</dd>
+          }
+        </div>
+      }
+    </dl>
+  }
+}
+@if (contentUnavailable()) {
+  <div class="content-error">
+    <p>{{ text.lessonUnavailable }}</p>
+    <button snf-button type="button" variant="light" (click)="retry.emit()">
+      {{ text.retry }}
+    </button>
+  </div>
+}
+@if (asking()) {
+  <div
+    #question
+    class="question"
+    role="group"
+    tabindex="-1"
+    [attr.aria-labelledby]="questionId()"
+    (keydown.escape)="cancel()"
+  >
+    <p class="question-text" [id]="questionId()">{{ questionText() }}</p>
+    @switch (clearState()) {
+      @case ('clearing') {
+        <p class="clear-status" role="status">{{ text.clearing }}</p>
+      }
+      @case ('failed') {
+        <p class="clear-status" role="alert">{{ text.clearFailed }}</p>
+      }
+    }
+    <div class="question-actions">
+      <button snf-button type="button" variant="pink" [disabled]="busy()" (click)="confirm()">
+        {{ clearState() === 'failed' ? text.retry : text.clearConfirm }}
+      </button>
+      <button snf-button type="button" variant="light" [disabled]="busy()" (click)="cancel()">
+        {{ text.clearCancel }}
+      </button>
+    </div>
+  </div>
+} @else if (hasRecords()) {
+  <button #clearButton snf-button type="button" variant="light" class="clear" (click)="ask()">
+    {{ text.clear }}
+  </button>
+}

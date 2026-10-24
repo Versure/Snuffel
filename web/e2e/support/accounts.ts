@@ -9,6 +9,7 @@ import { loginAs, testPassword } from './login';
 export interface TestAccount {
   readonly id: string;
   readonly username: string;
+  readonly name: string;
 }
 
 interface Seed {
@@ -37,8 +38,13 @@ async function call<T>(url: string, init: RequestInit): Promise<T> {
  * Creates a new child account (`e2e-<8 characters>`, password `snuffel-test`) as the dev
  * superuser from pocketbase/seed/dev-accounts.json, through the REST API. Every test that writes
  * progress gets its own child, so tests running at the same time never see each other's ticks.
+ * The parent sees every test child, so a test that looks one up on /ouder passes a unique `name`
+ * (see `uniqueName`); the default is "Testkind".
  */
-export async function createChild(baseURL: string): Promise<TestAccount> {
+export async function createChild(
+  baseURL: string,
+  { name = 'Testkind' }: { name?: string } = {},
+): Promise<TestAccount> {
   assertLocal(baseURL);
   const { superuser } = JSON.parse(readFileSync(seedFile, 'utf8')) as Seed;
   const json = { 'Content-Type': 'application/json' };
@@ -58,14 +64,19 @@ export async function createChild(baseURL: string): Promise<TestAccount> {
       headers: { ...json, Authorization: token },
       body: JSON.stringify({
         username,
-        name: 'Testkind',
+        name,
         role: 'child',
         password: testPassword,
         passwordConfirm: testPassword,
       }),
     },
   );
-  return { id: record.id, username };
+  return { id: record.id, username, name };
+}
+
+/** A name no other test child has, for tests that find their child on /ouder. */
+export function uniqueName(prefix = 'Testkind'): string {
+  return `${prefix} ${randomBytes(4).toString('hex')}`;
 }
 
 /** The base URL of the running test's project (the PocketBase server for lesson tests). */
