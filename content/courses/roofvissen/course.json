@@ -1,0 +1,192 @@
+{
+  "schemaVersion": 1,
+  "id": "roofvissen",
+  "title": "Roofvissen met kunstaas",
+  "audience": "Ouder en kind, beginners",
+  "goal": "Zelfstandig met kunstaas op snoek en baars vissen in de vijver",
+  "successCriterion": "Een roofvis zelf vangen, onthaken en terugzetten",
+  "kind": "course",
+  "ted": {
+    "greeting": "Klaar om te snuffelen?"
+  },
+  "lessons": [
+    {
+      "id": "aanbeet-of-vastzitten",
+      "title": "Aanbeet of vastzitten?",
+      "status": "published",
+      "file": "lessons/01-aanbeet-of-vastzitten.json"
+    }
+  ],
+  "sources": [
+    {
+      "id": "rijksoverheid-vispas-aanvragen",
+      "title": "Waar vraag ik een VISpas aan?",
+      "url": "https://www.rijksoverheid.nl/documenten/vraag-en-antwoord/visserij/vispas-aanvragen",
+      "publisher": "Rijksoverheid",
+      "type": "government",
+      "reliability": "high",
+      "accessedOn": "2026-10-24",
+      "note": "Vraag en antwoord van de Rijksoverheid, onderwerp Visserij (ministerie van LVVN)"
+    },
+    {
+      "id": "vispas-check",
+      "title": "VISpas check: welke pas past bij jou?",
+      "url": "https://www.sportvisunie.nl/nl/artikelen/vispas-contact-service-vispas-check",
+      "publisher": "Sportvisunie",
+      "type": "association",
+      "reliability": "high",
+      "accessedOn": "2026-10-24",
+      "note": "Landelijke sportvisserijorganisatie (voorheen Sportvisserij Nederland); servicepagina over de visdocumenten"
+    },
+    {
+      "id": "svu-jeugdvispas",
+      "title": "JeugdVISpas",
+      "url": "https://www.sportvisunie.nl/nl/artikelen/vispas-jeugdvispas",
+      "publisher": "Sportvisunie",
+      "type": "association",
+      "reliability": "high",
+      "accessedOn": "2026-10-24",
+      "note": "Landelijke sportvisserijorganisatie; uitleg wie een JeugdVISpas nodig heeft"
+    },
+    {
+      "id": "svu-uitrusting-kunstaasvissen",
+      "title": "Uitrusting kunstaasvissen",
+      "url": "https://www.sportvisunie.nl/nl/artikelen/roofvissen-dit-heb-je-nodig",
+      "publisher": "Sportvisunie",
+      "type": "association",
+      "reliability": "high",
+      "accessedOn": "2026-10-24",
+      "note": "Landelijke sportvisserijorganisatie; uitleg over materiaal voor roofvissen met kunstaas"
+    },
+    {
+      "id": "svu-kunstaasvissen-vanaf-de-kant",
+      "title": "Kunstaasvissen vanaf de kant",
+      "url": "https://www.sportvisunie.nl/nl/artikelen/roofvissen-vissen-en-vangen-video",
+      "publisher": "Sportvisunie",
+      "type": "association",
+      "reliability": "high",
+      "accessedOn": "2026-10-24",
+      "note": "Landelijke sportvisserijorganisatie; uitleg met roofvisdocent Ed Stoop"
+    },
+    {
+      "id": "svu-kunstaas-waterplanten",
+      "title": "VIStip: kunstaasvissen tussen de waterplanten",
+      "url": "https://www.sportvisunie.nl/nl/nieuws-media/actualiteiten/vistip-kunstaasvissen-tussen-de-waterplanten",
+      "publisher": "Sportvisunie",
+      "type": "association",
+      "reliability": "high",
+      "accessedOn": "2026-10-24",
+      "note": "Landelijke sportvisserijorganisatie; vistip over kunstaas in begroeid water"
+    },
+    {
+      "id": "svu-verantwoord-omgaan-roofvis",
+      "title": "Verantwoord omgaan met roofvis: zo behandel je je vangst zorgvuldig en respectvol",
+      "url": "https://www.sportvisunie.nl/nl/nieuws-media/actualiteiten/verantwoord-omgaan-met-roofvis-zo-behandel-je-je-vangst-zorgvuldig-en-respectvol",
+      "publisher": "Sportvisunie",
+      "type": "association",
+      "reliability": "high",
+      "accessedOn": "2026-10-24",
+      "note": "Landelijke sportvisserijorganisatie; regels en tips voor het behandelen van roofvis"
+    },
+    {
+      "id": "svu-baars-jachthavens",
+      "title": "Baarsvissen in jachthavens: tips en techniek",
+      "url": "https://www.sportvisunie.nl/nl/nieuws-media/actualiteiten/vistip-baarsvissen-in-jachthavens",
+      "publisher": "Sportvisunie",
+      "type": "association",
+      "reliability": "high",
+      "accessedOn": "2026-10-24",
+      "note": "Landelijke sportvisserijorganisatie; vistip over baars met kleine shads"
+    },
+    {
+      "id": "svu-vistips-per-watertype",
+      "title": "Roofvissen: vistips per watertype",
+      "url": "https://www.sportvisunie.nl/nl/nieuws-media/actualiteiten/roofvissen-vistips-per-watertype",
+      "publisher": "Sportvisunie",
+      "type": "association",
+      "reliability": "high",
+      "accessedOn": "2026-10-24",
+      "note": "Landelijke sportvisserijorganisatie; tips voor roofvissen in stad, polder, plas en rivier"
+    },
+    {
+      "id": "svu-25-tips-roofvisseizoen",
+      "title": "25 tips voor de start van het roofvisseizoen",
+      "url": "https://www.sportvisunie.nl/nl/nieuws-media/actualiteiten/vistip-25-tips-voor-de-start-van-het-roofvisseizoen",
+      "publisher": "Sportvisunie",
+      "type": "association",
+      "reliability": "high",
+      "accessedOn": "2026-10-24",
+      "note": "Landelijke sportvisserijorganisatie; tips per vissoort"
+    },
+    {
+      "id": "svu-nylon-of-gevlochten",
+      "title": "Wat gebruik je op de rivier: nylon of gevlochten lijn?",
+      "url": "https://www.sportvisunie.nl/nl/nieuws-media/actualiteiten/wat-gebruik-je-op-de-rivier-nylon-of-gevlochten-lijn",
+      "publisher": "Sportvisunie",
+      "type": "association",
+      "reliability": "high",
+      "accessedOn": "2026-10-24",
+      "note": "Landelijke sportvisserijorganisatie; vistip over lijnkeuze (feedervissen op de rivier)"
+    },
+    {
+      "id": "svu-gesloten-tijd-snoek",
+      "title": "Gesloten tijd voor snoek vanaf 1 maart",
+      "url": "https://www.sportvisunie.nl/nl/nieuws-media/actualiteiten/gesloten-tijd-voor-snoek-vanaf-1-maart",
+      "publisher": "Sportvisunie",
+      "type": "association",
+      "reliability": "high",
+      "accessedOn": "2026-10-24",
+      "note": "Landelijke sportvisserijorganisatie; uitleg over gesloten tijden"
+    },
+    {
+      "id": "nzffa-jig-head-weights",
+      "title": "Soft Baiting – Jig Head Weights Very Important",
+      "url": "https://nzffa.com/soft-baiting-jig-head-weights-very-important/",
+      "publisher": "New Zealand Federation of Freshwater Anglers",
+      "type": "association",
+      "reliability": "high",
+      "accessedOn": "2026-10-24",
+      "note": "Landelijke federatie van zoetwatervissers in Nieuw-Zeeland; artikel over het gewicht van jigkoppen"
+    },
+    {
+      "id": "tpw-ready-set-hook",
+      "title": "Skill Builder: Ready, Set, Hook",
+      "url": "https://tpwmagazine.com/archive/2009/oct/skillbuilder/",
+      "publisher": "Texas Parks and Wildlife magazine",
+      "type": "media",
+      "reliability": "medium",
+      "accessedOn": "2026-10-24",
+      "note": "Tijdschrift van Texas Parks and Wildlife; rubriek over aanslaan (oktober 2009)"
+    },
+    {
+      "id": "wired2fish-detecting-bites",
+      "title": "5 Tips for Detecting Bites While Fishing",
+      "url": "https://www.wired2fish.com/fishing-tips/5-tips-for-detecting-bites-while-fishing",
+      "publisher": "Wired2Fish",
+      "type": "media",
+      "reliability": "medium",
+      "accessedOn": "2026-10-24",
+      "note": "Amerikaans vakmedium over sportvissen (vooral bass); artikel van Jason Sealock, 2013"
+    },
+    {
+      "id": "wired2fish-unsnag-lure",
+      "title": "Four Easy Ways to Unsnag Your Lure",
+      "url": "https://www.wired2fish.com/fishing-tips/how-to-reduce-lure-snags",
+      "publisher": "Wired2Fish",
+      "type": "media",
+      "reliability": "medium",
+      "accessedOn": "2026-10-24",
+      "note": "Amerikaans vakmedium over sportvissen; artikel van Shaye Baker, 2026"
+    },
+    {
+      "id": "outdoorlife-unsnag-lures",
+      "title": "Use This Clever Trick to Unsnag Your Lures",
+      "url": "https://www.outdoorlife.com/fishing/how-to-unsag-lures/",
+      "publisher": "Outdoor Life",
+      "type": "media",
+      "reliability": "medium",
+      "accessedOn": "2026-10-24",
+      "note": "Amerikaans tijdschrift over buitensport; artikel van fishing editor Joe Cermele, 2026"
+    }
+  ]
+}

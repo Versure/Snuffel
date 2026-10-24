@@ -13,6 +13,30 @@ test.describe('content in the image', () => {
     expect(manifest.courses.map((course) => course.id)).not.toContain('proefhuiswerk');
   });
 
+  test('the image has les 1 of roofvissen', async ({ request }) => {
+    const manifest = (await (
+      await request.get('/content/manifest.json')
+    ).json()) as ContentManifest;
+    const course = manifest.courses.find((candidate) => candidate.id === 'roofvissen');
+    expect(course, 'course roofvissen in the manifest').toBeDefined();
+    expect(course!.kind).toBe('course');
+    expect(course!.file).toBe('roofvissen/course.json');
+    const entry = course!.lessons.find((candidate) => candidate.id === 'aanbeet-of-vastzitten');
+    expect(entry, 'lesson aanbeet-of-vastzitten').toBeDefined();
+    expect(entry!.status).toBe('published');
+    expect(entry!.file).toBe('roofvissen/lessons/aanbeet-of-vastzitten.json');
+    // The lesson file loads with the hash from the manifest, and is the lesson.
+    const response = await request.get(`/content/${entry!.file}?v=${entry!.hash}`);
+    expect(response.status()).toBe(200);
+    const lesson = (await response.json()) as { id: string; steps: { id: string }[] };
+    expect(lesson.id).toBe('aanbeet-of-vastzitten');
+    expect(lesson.steps.map((step) => step.id)).toEqual(['uitleg', 'spel', 'quiz', 'water']);
+    // The course file is there too.
+    const courseFile = await request.get('/content/roofvissen/course.json');
+    expect(courseFile.status()).toBe(200);
+    expect(((await courseFile.json()) as { id: string }).id).toBe('roofvissen');
+  });
+
   for (const id of ['proefcursus', 'proefhuiswerk']) {
     test(`the fixture course file ${id} is not in the image`, async ({ request }) => {
       await expectNoCourseFile(request, id);

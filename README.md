@@ -49,11 +49,22 @@ Voor `npm run e2e` eenmalig `npx playwright install chromium` in `web/`. De eers
 
 1. `npm start`, open http://localhost:4200 en log in als `kind-a` (of `ouder`).
 2. Je ziet de startpagina: Ted begroet je, en elke cursus staat er als kaart met een voortgangsbalk. Tik op "Proefcursus": het cursusoverzicht (`/leren/proefcursus`) toont het doel, een knop naar de volgende les en alle lessen met hun status. Tik op de proefles (of ga meteen naar http://localhost:4200/leren/proefcursus/proefles); bovenaan de les brengt "Naar de lessen" je terug naar het overzicht. Een les staat altijd op `/leren/<cursus-id>/<les-id>`; met `#stap-<stap-id>` erachter (bijv. `#stap-quiz`) opent hij bij die stap.
-3. Op je telefoon: stop `npm start` en start `npm run start:lan`. Zoek het IP-adres van je laptop (Windows: `ipconfig`) en open op je telefoon, op dezelfde wifi, `http://<ip-van-je-laptop>:4200/leren/proefcursus/proefles`. Lukt dat niet (bijvoorbeeld door de firewall van Windows), gebruik dan de telefoonweergave in Chrome (F12).
+3. **Les 1 van Roofvissen met kunstaas** ("Aanbeet of vastzitten?"), de eerste echte les: http://localhost:4200/leren/roofvissen/aanbeet-of-vastzitten, of via de kaart "Roofvissen met kunstaas" op de startpagina. Lokaal staat hij naast de proefcursus en het proefhuiswerk; op de NAS staat alleen de echte les.
+4. Op je telefoon: stop `npm start` en start `npm run start:lan`. Zoek het IP-adres van je laptop (Windows: `ipconfig`) en open op je telefoon, op dezelfde wifi, `http://<ip-van-je-laptop>:4200/leren/proefcursus/proefles`. Lukt dat niet (bijvoorbeeld door de firewall van Windows), gebruik dan de telefoonweergave in Chrome (F12).
 
 Wat je in een les doet, wordt bewaard in PocketBase, per account: welke stappen klaar zijn (het gevulde rondje bovenaan), elk antwoord in de quiz (met het aantal hints) en de vinkjes van de praktijkopdracht. Na herladen, uitloggen en weer inloggen of op een ander apparaat staat het er nog; een ander kind ziet het niet. Opnieuw beginnen kan op twee manieren: stop `npm start` en gooi de map `pocketbase/pb_data/dev` weg (dan zijn ook de testaccounts weg; `npm start` maakt ze opnieuw), of open http://localhost:8092/_/ (dev-superuser `dev@snuffel.test`, wachtwoord `snuffel-dev-admin`) en wis de records in `lesson_progress`, `quiz_attempts`, `checklist_states` en `interaction_results`. Eén les van één kind opnieuw beginnen kan ook in de app: log in als `ouder` en gebruik "Voortgang wissen" in het ouderoverzicht (zie hieronder).
 
 Let op: `start:lan` zet de dev-server met de testaccounts open voor iedereen op je thuisnetwerk zolang hij draait. Gebruik hem alleen thuis en stop hem (Ctrl+C) als je klaar bent. De proefles staat alleen lokaal klaar; in de image voor de NAS zit hij nooit.
+
+## Vergelijken met de referentieles
+
+De referentieles (`docs/start/reference/les-01-roofvissen.html`, blijft ongewijzigd) en les 1 in de app worden door een e2e-test naast elkaar gezet. De test leest de referentie van schijf en serveert hem op de testserver zelf, met onze eigen fonts in plaats van Google Fonts: er gaat geen verzoek naar buiten.
+
+1. Draai `npm run e2e` (of alleen de vergelijking: `npx playwright test e2e/lesson/reference.spec.ts` in `web/`).
+2. Open `web/test-results/reference/server-mobile/index.html` (telefoon) en `web/test-results/reference/server-desktop/index.html` (laptop), of het Playwright-rapport (`npx playwright show-report` in `web/`, de afbeeldingen staan als bijlage bij de test "writes the side-by-side comparison of the reference and les 1"). Per deel (kop, uitleg, voel-spel, quiz, aan het water, en quiz en briefje met een paar antwoorden) staan de referentie en de app naast elkaar, licht en donker, met een tabel van de gemeten stijlwaarden ("gelijk" of "anders") en de lijst met bekende verschillen.
+3. De tests zelf controleren automatisch de opbouw (sticker, titel, vier stappen, drie signaalkaarten, de regel "Twijfel? Sla aan!", vier quizvragen met vier opties, het plakbriefje) en de huisstijl (lettertypen, kleuren, rand en schaduw, licht en donker). Er is geen pixeltest: de tekst verschilt bewust (les 1 is herschreven omdat de referentie geen bronnen had voor de kern), en de app heeft bronregels en een woordenlijst.
+
+De afbeeldingen komen niet in git (`web/test-results/` staat in `.gitignore`) en worden bij elke run opnieuw gemaakt.
 
 ## Ouderoverzicht
 
@@ -185,7 +196,7 @@ Na elke merge naar `main` bouwt GitHub Actions de image en zet hem op `ghcr.io/v
 
    Collecties, velden en toegangsregels wijzig je **nooit** in `/_/` op de NAS, alleen via een migratie in de repo (de volgende update zou het anders terugdraaien of laten botsen). Records aanmaken en wijzigen in `/_/`, zoals accounts, mag wel.
 
-8. **Bijwerken.** Na een merge: Container Manager → Project → `snuffel` → Actie → Bouwen (of Image → `ghcr.io/versure/snuffel` → Bijwerken) en het project opnieuw starten. Nieuwe migraties worden bij de start automatisch toegepast.
+8. **Bijwerken.** Na een merge: Container Manager → Project → `snuffel` → Actie → Bouwen (of Image → `ghcr.io/versure/snuffel` → Bijwerken) en het project opnieuw starten. Nieuwe migraties worden bij de start automatisch toegepast. Nieuwe lessen zitten in de image; daarvoor is geen migratie nodig. Na de update van M13 ziet een kind op de startpagina "Roofvissen met kunstaas" met les 1, "Aanbeet of vastzitten?".
 
 9. **Terugzetten.** Zet in de compose van het project `image: ghcr.io/versure/snuffel:sha-<kort>` met de tag van een eerdere versie (zie GitHub → Packages → snuffel) en bouw en start opnieuw. Terug naar de nieuwste: weer `:latest`. Let op: PocketBase-migraties lopen alleen vooruit. Heeft de update het datamodel gewijzigd, zet dan ook de back-up van `pb_data` van vóór de update terug.
 

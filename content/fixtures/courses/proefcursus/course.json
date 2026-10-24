@@ -29,7 +29,7 @@
       "type": "association",
       "reliability": "high",
       "accessedOn": "2026-10-19",
-      "note": "Landelijke sportvisserijbond; bron uit de referentieles. Titel nalopen in M13."
+      "note": "Testdata, geen nagelopen bron: de link werkt niet meer (M13). De echte les gebruikt andere bronnen."
     },
     {
       "id": "svnl-visblad-streetfishing",
@@ -39,7 +39,7 @@
       "type": "association",
       "reliability": "high",
       "accessedOn": "2026-10-19",
-      "note": "Landelijke sportvisserijbond"
+      "note": "Testdata, geen nagelopen bron: de link werkt niet meer (M13). De echte les gebruikt andere bronnen."
     },
     {
       "id": "decathlon-snoekkunstaas",
@@ -49,7 +49,7 @@
       "type": "shop",
       "reliability": "low",
       "accessedOn": "2026-10-19",
-      "note": "Winkel; alleen samen met een andere bron gebruiken"
+      "note": "Testdata voor de check op low-bronnen; de link is niet te openen (HTTP 403, M13). Winkel; alleen samen met een andere bron gebruiken"
     },
     {
       "id": "vispas-check",

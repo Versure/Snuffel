@@ -5,6 +5,7 @@ import {
   cpSync,
   mkdirSync,
   mkdtempSync,
+  readdirSync,
   readFileSync,
   rmSync,
   unlinkSync,
@@ -19,7 +20,22 @@ const execFileAsync = promisify(execFile);
 
 export const fixtureCourseDir = join(repoRoot, 'content', 'fixtures', 'courses', 'proefcursus');
 export const fixtureLessonName = 'lessons/01-proefles.json';
-export const fixtureToday = '2026-10-22';
+// "Today" for the checks on the repository: the newest accessedOn in content/, so the tests stay
+// deterministic and a new lesson with a later source never fails with source-date-future.
+export const fixtureToday = newestAccessedOn(join(repoRoot, 'content'));
+
+function newestAccessedOn(dir) {
+  let newest = '';
+  for (const name of readdirSync(dir, { recursive: true })) {
+    if (!String(name).endsWith('course.json')) continue;
+    const course = JSON.parse(readFileSync(join(dir, String(name)), 'utf8'));
+    for (const source of course.sources ?? []) {
+      if (source.accessedOn > newest) newest = source.accessedOn;
+    }
+  }
+  if (!newest) throw new Error(`No accessedOn in any course.json under ${dir}`);
+  return newest;
+}
 
 /**
  * Copies the fixture course and content/terms.json to a temporary content root.

@@ -1,0 +1,436 @@
+{
+  "schemaVersion": 1,
+  "id": "aanbeet-of-vastzitten",
+  "version": 1,
+  "title": "Aanbeet of vastzitten?",
+  "sticker": "Roofvissen · les 1",
+  "objective": "Na deze les weet je hoe een aanbeet van een roofvis kan voelen. Je leert die te onderscheiden van vastzitten. En je weet wat je dan doet.",
+  "concept": "aanbeet herkennen",
+  "estimatedMinutes": 12,
+  "glossary": [
+    {
+      "term": "aanbeet",
+      "definition": "het moment dat een vis je aas pakt"
+    },
+    {
+      "term": "aanslaan",
+      "definition": "je lijn zo snel mogelijk strak trekken als een vis je aas pakt, zodat de haak vast komt te zitten"
+    },
+    {
+      "term": "beugel",
+      "definition": "het deel van je molen dat je openklapt, zodat je lijn vrij kan aflopen"
+    },
+    {
+      "term": "gesloten tijd",
+      "definition": "de weken waarin je sommige vissen met rust moet laten; dan mag je niet op ze vissen, of niet met bepaald aas"
+    },
+    {
+      "term": "gevlochten lijn",
+      "definition": "een vislijn van in elkaar gevlochten draadjes, die bijna niet rekt"
+    },
+    {
+      "term": "kunstaas",
+      "definition": "nepaas van rubber, plastic of metaal dat op een visje of beestje lijkt"
+    },
+    {
+      "term": "loodkop",
+      "definition": "een haak met een kopje van lood, waardoor je aas zinkt"
+    },
+    {
+      "term": "onderlijn",
+      "definition": "het laatste stukje lijn vlak voor je aas; vaak van staal, tegen scherpe tanden"
+    },
+    {
+      "term": "onthaaktang",
+      "definition": "een lange tang waarmee je de haak uit de bek van een vis haalt"
+    },
+    {
+      "term": "shad",
+      "definition": "kunstaas van zacht rubber in de vorm van een visje, met een staart die wappert"
+    },
+    {
+      "term": "VISpas",
+      "definition": "de pas die je bijna overal in Nederland nodig hebt om in sloten, plassen en rivieren te mogen vissen"
+    }
+  ],
+  "ted": {
+    "intro": {
+      "mood": "cool",
+      "text": "Yo! Ik ben Ted. Bij kunstaas voel je de beet met je eigen hand."
+    },
+    "correct": ["Goed gevoeld!", "Strak!", "Precies!"],
+    "incorrect": ["Bijna.", "Oeps, kijk nog eens."],
+    "finished": "Tijd voor het echte werk aan de waterkant."
+  },
+  "steps": [
+    {
+      "id": "uitleg",
+      "type": "explain",
+      "title": "Leer je lijn kennen",
+      "blocks": [
+        {
+          "type": "example",
+          "text": "Je draait een [[shad]] binnen, een rubberen visje. Ineens voelt het anders. Is dat een vis, of zit je ergens aan vast? Met [[kunstaas]] vis je actief. Een [[aanbeet]] voel je via de lijn in je hand en je hengel. Daarom leer je eerst hoe je aas voelt als er niets aan zit. Voelt het daarna ineens anders? Dan kan dat een vis zijn.",
+          "sourceRefs": ["svu-uitrusting-kunstaasvissen", "wired2fish-detecting-bites"]
+        },
+        {
+          "type": "signal-cards",
+          "cards": [
+            {
+              "icon": "tick",
+              "title": "Een tik",
+              "text": "Je voelt een paar korte tikjes in je lijn. Het is alsof iets op je aas pikt. Dat kan een vis zijn.",
+              "sourceRefs": ["wired2fish-detecting-bites"]
+            },
+            {
+              "icon": "shake",
+              "title": "Zwaar én levend",
+              "text": "Je aas wordt ineens zwaarder, en er beweegt iets terug. Dan zit er waarschijnlijk een vis aan.",
+              "sourceRefs": ["wired2fish-detecting-bites"]
+            },
+            {
+              "icon": "stop",
+              "title": "Het aas stopt te vroeg",
+              "text": "Veel vissen pakken je shad terwijl hij zakt. Laat hem daarom aan een strakke lijn zakken. Springt je lijn ineens strakker? Of zit hij ineens vast als je na het zakken weer gaat draaien? Dan heeft vaak een vis je aas gepakt.",
+              "sourceRefs": ["wired2fish-detecting-bites", "svu-baars-jachthavens"]
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "text": "**En vastzitten?** Tussen waterplanten, takken en andere obstakels blijft je aas makkelijk haken. Een vis tussen de planten voelt soms net als vastzitten. Voel daarom goed hoe je aas over de bodem en door de planten gaat. Blijft je shad steeds hangen? Vis dan hoger, over de planten heen. Een zware [[loodkop]] trekt hem juist dieper de planten in.",
+          "sourceRefs": [
+            "svu-vistips-per-watertype",
+            "wired2fish-detecting-bites",
+            "svu-25-tips-roofvisseizoen",
+            "nzffa-jig-head-weights"
+          ]
+        },
+        {
+          "type": "rule",
+          "title": "Twijfel? Sla aan!",
+          "text": "Veel vissers zeggen: twijfel je, [[aanslaan|sla dan aan]]. Trek je lijn zo snel mogelijk strak. Met [[gevlochten lijn]] hoef je niet hard te rukken. Til je hengel op en draai de lijn strak.",
+          "sourceRefs": ["tpw-ready-set-hook", "svu-nylon-of-gevlochten"]
+        },
+        {
+          "type": "text",
+          "text": "Niet iedereen doet het zo. Sommige vissers wachten bij twijfel eerst even stil. Ze voelen of er iets beweegt. Een vis doet dan meestal iets.",
+          "sourceRefs": ["wired2fish-detecting-bites"]
+        },
+        {
+          "type": "text",
+          "text": "Zit je echt vast? Blijf dan niet rukken. Daardoor kan je aas juist dieper vast raken. Loop een stukje opzij en trek vanuit een andere hoek. Of houd de lijn met je vinger vast en open de [[beugel]]. Trek je hengel rustig naar achteren en laat dan ineens je vinger los. Die schok kan je aas losmaken.",
+          "sourceRefs": [
+            "outdoorlife-unsnag-lures",
+            "wired2fish-unsnag-lure",
+            "svu-baars-jachthavens"
+          ]
+        },
+        {
+          "type": "tip",
+          "title": "Tip",
+          "text": "[[gevlochten lijn|Gevlochten lijn]] rekt bijna niet. Daardoor voel je een aanbeet veel beter dan met gewone nylon lijn.",
+          "sourceRefs": ["svu-uitrusting-kunstaasvissen", "svu-nylon-of-gevlochten"]
+        }
+      ]
+    },
+    {
+      "id": "spel",
+      "type": "interaction",
+      "title": "Voel de lijn",
+      "intro": "Je ziet hoe hard er aan de lijn getrokken wordt, en de hengeltop buigt mee. Kijk goed. Is het een vis, zit je vast, of tik je over de bodem?",
+      "interaction": {
+        "id": "voel-spel",
+        "kind": "trace-game",
+        "config": {
+          "choices": [
+            { "id": "vis", "label": "Vis!", "color": "yellow" },
+            { "id": "vast", "label": "Vast", "color": "purple" },
+            { "id": "bodem", "label": "Bodem", "color": "pink" }
+          ],
+          "patterns": [
+            {
+              "id": "tik",
+              "answer": "vis",
+              "shape": [
+                { "type": "base", "level": 0.22 },
+                { "type": "wobble", "amplitude": 0.015, "frequency": 6.3662 },
+                { "type": "pulse", "at": 0.5, "width": 0.012, "height": 0.62 },
+                { "type": "pulse", "at": 0.57, "width": 0.01, "height": 0.32 }
+              ],
+              "explanation": "Een paar korte tikjes terwijl het verder rustig blijft: iets pikt op je aas. Dat kan een vis zijn. Twijfel? Sla aan!"
+            },
+            {
+              "id": "zwaar",
+              "answer": "vis",
+              "shape": [
+                { "type": "base", "level": 0.22 },
+                { "type": "ramp", "from": 0.32, "to": 0.4, "height": 0.42 },
+                {
+                  "type": "wobble",
+                  "amplitude": 0.085,
+                  "frequency": 6.6845,
+                  "phase": 0.0908,
+                  "from": 0.32,
+                  "fadeIn": 0.08
+                },
+                {
+                  "type": "wobble",
+                  "amplitude": 0.085,
+                  "frequency": 10.8225,
+                  "phase": 0.9092,
+                  "from": 0.32,
+                  "fadeIn": 0.08
+                },
+                {
+                  "type": "wobble",
+                  "amplitude": 0.05,
+                  "frequency": 14.3239,
+                  "from": 0.32,
+                  "fadeIn": 0.08
+                }
+              ],
+              "explanation": "Zwaarder, en er beweegt iets terug: er zit waarschijnlijk een vis aan. Aanslaan!"
+            },
+            {
+              "id": "vast",
+              "answer": "vast",
+              "shape": [
+                { "type": "base", "level": 0.22 },
+                { "type": "ramp", "from": 0.32, "to": 0.42, "height": 0.63 },
+                { "type": "wobble", "amplitude": 0.004, "frequency": 4.7746 }
+              ],
+              "explanation": "Zwaar, en daarna beweegt er niets meer terug: waarschijnlijk zit je vast. Niet rukken, loop een stukje opzij."
+            },
+            {
+              "id": "bodem",
+              "answer": "bodem",
+              "shape": [
+                { "type": "base", "level": 0.28 },
+                {
+                  "type": "pulses",
+                  "start": 0.08,
+                  "interval": 0.13,
+                  "count": 8,
+                  "width": 0.01,
+                  "height": 0.22
+                }
+              ],
+              "explanation": "Regelmatige tikjes in hetzelfde ritme: je shad raakt steeds de bodem. Dat ritme is je referentie. Voelt het ineens anders, dan kan het een vis zijn."
+            }
+          ],
+          "rounds": 8,
+          "durationMs": 3200
+        }
+      },
+      "sourceRefs": [
+        "wired2fish-detecting-bites",
+        "svu-baars-jachthavens",
+        "outdoorlife-unsnag-lures",
+        "wired2fish-unsnag-lure"
+      ]
+    },
+    {
+      "id": "quiz",
+      "type": "quiz",
+      "title": "Quiz",
+      "intro": "Vier situaties aan het water. Je ziet meteen of het klopt en waarom.",
+      "questions": [
+        {
+          "id": "schokken-terug",
+          "prompt": "Je draait een shad binnen. Ineens wordt het zwaar, en je voelt iets terug bewegen. Wat doe je?",
+          "options": [
+            {
+              "id": "aanslaan",
+              "text": "Direct aanslaan en de lijn strak houden",
+              "feedback": "Klopt. Zwaar en beweging terug: er zit waarschijnlijk een vis aan. Trek je lijn snel strak."
+            },
+            {
+              "id": "wachten",
+              "text": "Wachten tot de vis gaat lopen met het aas",
+              "feedback": "Je voelt de vis al. Dan is het tijd om aan te slaan, niet om te wachten."
+            },
+            {
+              "id": "vieren",
+              "text": "Eerst lijn laten vieren en dan pas aanslaan",
+              "feedback": "Met slappe lijn voel je minder. Een strakke lijn laat je juist voelen wat de vis doet."
+            },
+            {
+              "id": "afwachten",
+              "text": "Stoppen met draaien en even afwachten",
+              "feedback": "Even stil wachten helpt als je twijfelt. Maar hier voel je al iets terug bewegen. Sla aan!"
+            }
+          ],
+          "correctOptionId": "aanslaan",
+          "hints": ["Wat betekent het als er iets terug beweegt?"],
+          "sourceRefs": [
+            "tpw-ready-set-hook",
+            "wired2fish-detecting-bites",
+            "svu-kunstaasvissen-vanaf-de-kant"
+          ]
+        },
+        {
+          "id": "dood-gewicht",
+          "prompt": "Het wordt zwaar, maar verder gebeurt er niets. Je wacht even stil, en er beweegt niets terug. Wat is het waarschijnlijkst?",
+          "options": [
+            {
+              "id": "vast",
+              "text": "Je zit ergens aan vast",
+              "feedback": "Klopt. Een vis doet meestal iets als je even stil wacht. Twijfel je toch? Sla dan aan."
+            },
+            {
+              "id": "snoek",
+              "text": "Een snoek houdt het aas vast",
+              "feedback": "Dat kan, maar meestal beweegt een vis als je even stil wacht. Hier komt er niets terug."
+            },
+            {
+              "id": "bodem",
+              "text": "Je aas tikt over de bodem",
+              "feedback": "Over de bodem voel je steeds weer tikjes in een ritme. Hier is het zwaar en stil."
+            },
+            {
+              "id": "zwemt-weg",
+              "text": "Een vis zwemt met je aas weg",
+              "feedback": "Dan voel je iets terug bewegen. Hier is het stil."
+            }
+          ],
+          "correctOptionId": "vast",
+          "hints": ["Wat doet een vis meestal als je even stil wacht?"],
+          "sourceRefs": ["wired2fish-detecting-bites", "svu-baars-jachthavens"]
+        },
+        {
+          "id": "lijn-springt",
+          "prompt": "Je laat je shad aan een strakke lijn zakken. Ineens springt je lijn even strakker. Wat is er waarschijnlijk gebeurd?",
+          "options": [
+            {
+              "id": "vis",
+              "text": "Een vis pakte je aas onderweg",
+              "feedback": "Klopt. Veel vissen pakken je aas terwijl het zakt. Je lijn springt dan even strakker. Sla aan!"
+            },
+            {
+              "id": "bodem",
+              "text": "Je aas raakte net de bodem",
+              "feedback": "Waarschijnlijk niet. Een vis zuigt je aas naar binnen en trekt het even mee. Daardoor springt je lijn strakker. Twijfel? Sla aan!"
+            },
+            {
+              "id": "licht",
+              "text": "Je loodkop is veel te licht",
+              "feedback": "Met een te lichte loodkop zakt je aas misschien niet diep genoeg. Maar een lijn die ineens strakker springt, wijst op een vis."
+            },
+            {
+              "id": "plant",
+              "text": "Je aas raakte een waterplant",
+              "feedback": "Dat kan, maar een vis zuigt je aas naar binnen en trekt het even mee. Daardoor springt je lijn strakker. Twijfel? Sla aan!"
+            }
+          ],
+          "correctOptionId": "vis",
+          "hints": ["Wat kan er tijdens het zakken aan je aas trekken?"],
+          "sourceRefs": [
+            "wired2fish-detecting-bites",
+            "svu-baars-jachthavens",
+            "nzffa-jig-head-weights",
+            "tpw-ready-set-hook"
+          ]
+        },
+        {
+          "id": "veel-planten",
+          "prompt": "Je vist in water vol waterplanten. Bij bijna elke worp blijft je shad in de planten hangen. Wat pas je aan?",
+          "options": [
+            {
+              "id": "hoger",
+              "text": "Iets hoger door het water vissen",
+              "feedback": "Klopt. Houd je aas boven de planten, dan haakt het er minder vaak in."
+            },
+            {
+              "id": "zwaarder",
+              "text": "Een zwaardere loodkop gebruiken",
+              "feedback": "Met meer gewicht zakt je aas juist dieper. Dan vang je vooral planten."
+            },
+            {
+              "id": "langer",
+              "text": "Langer wachten voor je aanslaat",
+              "feedback": "Wachten helpt hier niet. Je aas hangt in de planten. Vis er liever hoog overheen."
+            },
+            {
+              "id": "bodem",
+              "text": "Je shad laten zakken tot de bodem",
+              "feedback": "Dan gaat hij juist dwars door de planten. Vis liever hoog over de planten heen."
+            }
+          ],
+          "correctOptionId": "hoger",
+          "hints": ["Waar zit je aas als het steeds blijft hangen?"],
+          "sourceRefs": [
+            "svu-25-tips-roofvisseizoen",
+            "nzffa-jig-head-weights",
+            "svu-kunstaasvissen-vanaf-de-kant"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "water",
+      "type": "practice",
+      "practiceKind": "at-the-water",
+      "title": "Aan het water",
+      "intro": "De volgende keer bij de vijver leer je samen voelen wat er aan je lijn gebeurt. Het is een spel voor twee.",
+      "items": [
+        {
+          "id": "vispas",
+          "text": "Neem je VISpas mee. Was je op 1 januari van dit jaar 13 jaar of jonger? Dan heb je een JeugdVISpas. Met een Kleine VISpas mag je niet met kunstaas vissen.",
+          "links": [
+            {
+              "label": "VISpas-check",
+              "url": "https://www.sportvisunie.nl/nl/artikelen/vispas-contact-service-vispas-check"
+            }
+          ],
+          "sourceRefs": ["vispas-check", "svu-jeugdvispas", "rijksoverheid-vispas-aanvragen"]
+        },
+        {
+          "id": "gesloten-tijd",
+          "text": "Kijk of het geen [[gesloten tijd]] is. Van 1 april tot de laatste zaterdag van mei mag je in binnenwater bijna niet met kunstaas vissen.",
+          "sourceRefs": ["svu-gesloten-tijd-snoek", "svu-baars-jachthavens"]
+        },
+        {
+          "id": "staal-en-tang",
+          "text": "Zet een stalen [[onderlijn]] van minstens 30 cm aan je lijn. Stop een lange [[onthaaktang]] in de tas. Een snoek heeft scherpe tanden.",
+          "sourceRefs": [
+            "svu-uitrusting-kunstaasvissen",
+            "svu-kunstaas-waterplanten",
+            "svu-verantwoord-omgaan-roofvis"
+          ]
+        },
+        {
+          "id": "bodem-voelen",
+          "text": "Laat bij de eerste vijf worpen je shad expres de bodem raken. Vertel elkaar wat je voelt.",
+          "sourceRefs": ["wired2fish-detecting-bites"]
+        },
+        {
+          "id": "tik-roepen",
+          "text": "Wie iets anders voelt dan net, roept tik en slaat meteen aan. Tel per persoon. Het doel is tien keer aanslaan.",
+          "sourceRefs": ["tpw-ready-set-hook"]
+        }
+      ],
+      "successCriterion": "Gelukt als je bij drie worpen achter elkaar goed zegt: bodem, vast of vis."
+    }
+  ],
+  "furtherReading": [
+    {
+      "sourceRef": "svu-vistips-per-watertype",
+      "why": "Waar je roofvis vindt in stadswater, sloten, plassen en rivieren, en hoe je minder vaak vastloopt."
+    }
+  ],
+  "faq": [
+    {
+      "q": "Wat als ik twijfel?",
+      "a": "Veel vissers zeggen: sla dan aan. Anderen wachten eerst even stil en voelen of er iets beweegt. Allebei kan. Door veel te vissen leer je het verschil steeds beter voelen."
+    },
+    {
+      "q": "Wat doe ik als ik echt vastzit?",
+      "a": "Blijf rustig en ruk niet. Loop een stukje opzij en trek vanuit een andere hoek. Of houd de lijn met je vinger vast en open de beugel. Trek je hengel rustig naar achteren en laat dan ineens je vinger los."
+    },
+    {
+      "q": "Heb ik altijd een eigen VISpas nodig?",
+      "a": "Niet altijd. Was je op 1 januari van dit jaar 13 jaar of jonger? Dan mag je zonder eigen pas met één hengel vissen, samen met een volwassene (18+) die een VISpas heeft. Heeft die volwassene een Kleine VISpas? Dan mag jij ook niet met kunstaas vissen. Vis je alleen of met twee hengels? Dan heb je een eigen JeugdVISpas nodig. Twijfel je? Doe de VISpas-check."
+    }
+  ]
+}

@@ -77,6 +77,33 @@ describe('content:build', () => {
     }
   });
 
+  test('without --fixtures the manifest has the roofvissen course with aanbeet-of-vastzitten', (t) => {
+    // The real repository: les 1 of roofvissen goes into the image build.
+    const out = mkdtempSync(join(tmpdir(), 'snuffel-build-'));
+    t.after(() => rmSync(out, { recursive: true, force: true }));
+    const result = buildContent({ root: repoRoot, out: join(out, 'content') });
+    assert.equal(result.ok, true);
+    const manifest = JSON.parse(readFileSync(join(out, 'content', 'manifest.json'), 'utf8'));
+    const course = manifest.courses.find((candidate) => candidate.id === 'roofvissen');
+    assert.ok(course, 'roofvissen is not in the manifest');
+    assert.equal(course.kind, 'course');
+    assert.equal(course.file, 'roofvissen/course.json');
+    const lesson = course.lessons.find((candidate) => candidate.id === 'aanbeet-of-vastzitten');
+    assert.ok(lesson, 'aanbeet-of-vastzitten is not in the manifest');
+    assert.equal(lesson.status, 'published');
+    assert.equal(lesson.file, 'roofvissen/lessons/aanbeet-of-vastzitten.json');
+    assert.deepEqual(lesson.stepIds, ['uitleg', 'spel', 'quiz', 'water']);
+    assert.ok(result.files.includes('roofvissen/course.json'));
+    assert.ok(result.files.includes('roofvissen/lessons/aanbeet-of-vastzitten.json'));
+    const built = JSON.parse(
+      readFileSync(
+        join(out, 'content', 'roofvissen', 'lessons', 'aanbeet-of-vastzitten.json'),
+        'utf8',
+      ),
+    );
+    assert.equal(built.id, 'aanbeet-of-vastzitten');
+  });
+
   test('with --fixtures the lesson and asset are written', (t) => {
     const fixture = fixtureRoot(t);
     const { out, result } = build(fixture, { fixtures: true });
