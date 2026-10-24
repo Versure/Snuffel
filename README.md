@@ -56,6 +56,16 @@ Wat je in een les doet, wordt bewaard in PocketBase, per account: welke stappen 
 
 Let op: `start:lan` zet de dev-server met de testaccounts open voor iedereen op je thuisnetwerk zolang hij draait. Gebruik hem alleen thuis en stop hem (Ctrl+C) als je klaar bent. De proefles staat alleen lokaal klaar; in de image voor de NAS zit hij nooit.
 
+## Vergelijken met de referentieles
+
+De referentieles (`docs/start/reference/les-01-roofvissen.html`, blijft ongewijzigd) en les 1 in de app worden door een e2e-test naast elkaar gezet. De test leest de referentie van schijf en serveert hem op de testserver zelf, met onze eigen fonts in plaats van Google Fonts: er gaat geen verzoek naar buiten.
+
+1. Draai `npm run e2e` (of alleen de vergelijking: `npx playwright test e2e/lesson/reference.spec.ts` in `web/`).
+2. Open `web/test-results/reference/server-mobile/index.html` (telefoon) en `web/test-results/reference/server-desktop/index.html` (laptop), of het Playwright-rapport (`npx playwright show-report` in `web/`, de afbeeldingen staan als bijlage bij de test "writes the side-by-side comparison of the reference and les 1"). Per deel (kop, uitleg, voel-spel, quiz, aan het water, en quiz en briefje met een paar antwoorden) staan de referentie en de app naast elkaar, licht en donker, met een tabel van de gemeten stijlwaarden ("gelijk" of "anders") en de lijst met bekende verschillen.
+3. De tests zelf controleren automatisch de opbouw (sticker, titel, vier stappen, drie signaalkaarten, de regel "Twijfel? Sla aan!", vier quizvragen met vier opties, het plakbriefje) en de huisstijl (lettertypen, kleuren, rand en schaduw, licht en donker). Er is geen pixeltest: de tekst verschilt bewust (les 1 is herschreven omdat de referentie geen bronnen had voor de kern), en de app heeft bronregels en een woordenlijst.
+
+De afbeeldingen komen niet in git (`web/test-results/` staat in `.gitignore`) en worden bij elke run opnieuw gemaakt.
+
 ## Ouderoverzicht
 
 Log in als ouder (lokaal: `ouder`) en tik op de startpagina op "Naar het ouderoverzicht" (of ga naar `/ouder`). Een kind komt niet op deze pagina's.
