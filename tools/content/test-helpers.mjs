@@ -19,7 +19,8 @@ const execFileAsync = promisify(execFile);
 
 export const fixtureCourseDir = join(repoRoot, 'content', 'fixtures', 'courses', 'proefcursus');
 export const fixtureLessonName = 'lessons/01-proefles.json';
-export const fixtureToday = '2026-10-22';
+// Pinned "today" for the checks on the repository: never before the newest accessedOn in content/.
+export const fixtureToday = '2026-10-24';
 
 /**
  * Copies the fixture course and content/terms.json to a temporary content root.

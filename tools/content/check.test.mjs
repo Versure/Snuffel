@@ -18,7 +18,7 @@ describe('content:check on the repository', () => {
     assertClean(result);
     assert.deepEqual(
       result.courses.map((course) => course.data.id),
-      ['proefcursus', 'proefhuiswerk'],
+      ['roofvissen', 'proefcursus', 'proefhuiswerk'],
     );
   });
 
@@ -89,7 +89,10 @@ describe('content:check on the repository', () => {
   test('without fixtures only content/courses is checked', () => {
     const result = checkContent({ fixtures: false, today: fixtureToday });
     assertClean(result);
-    assert.deepEqual(result.courses, []);
+    assert.deepEqual(
+      result.courses.map((course) => course.data.id),
+      ['roofvissen'],
+    );
   });
 
   test('the CLI prints "geen fouten" and exits with 0', async () => {
