@@ -13,7 +13,7 @@ Je maakt **alleen inhoud**: bestanden onder `content/`. Geen app-code, geen sche
 ## Vooraf
 
 1. Lees `CLAUDE.md`, `content/schema/v1/catalogus.md` (bij twijfel het schema in `content/schema/v1/`) en `content/terms.json`.
-2. Bekijk de bestaande cursussen in `content/courses/` en `content/fixtures/courses/`. Past de wens in een bestaande cursus, vul die dan aan in plaats van een dubbele te maken. Cursus-id's zijn uniek; les-id's zijn uniek over **alle** cursussen samen, ook de fixtures. Id's beginnend met `voorbeeld-` zijn alleen voor de voorbeeldmodus.
+2. Bekijk de bestaande cursussen in `content/courses/` en `content/fixtures/courses/`. Past de wens in een bestaande cursus, vul die dan aan in plaats van een dubbele te maken. Cursus-id's zijn uniek; les-id's zijn uniek over **alle** cursussen samen, ook de fixtures. Id's beginnend met `voorbeeld-` zijn alleen voor de voorbeeldmodus. De cursus `roofvissen` ("Roofvissen met kunstaas") bestaat al: een nieuwe les over roofvissen hoort daarin, als volgende in `lessons`.
 3. `git status`: de werkmap moet schoon zijn. Behalve in de voorbeeldmodus: `git switch main && git pull --ff-only`.
 4. `node tools/check-node.mjs`; is Node te oud, gebruik de versie uit `.nvmrc`.
 
