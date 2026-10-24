@@ -33,6 +33,7 @@ function newestAccessedOn(dir) {
       if (source.accessedOn > newest) newest = source.accessedOn;
     }
   }
+  if (!newest) throw new Error(`No accessedOn in any course.json under ${dir}`);
   return newest;
 }
 
