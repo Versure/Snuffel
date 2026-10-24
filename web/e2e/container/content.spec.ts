@@ -20,10 +20,11 @@ test.describe('content in the image', () => {
     const course = manifest.courses.find((candidate) => candidate.id === 'roofvissen');
     expect(course, 'course roofvissen in the manifest').toBeDefined();
     expect(course!.kind).toBe('course');
+    expect(course!.file).toBe('roofvissen/course.json');
     const entry = course!.lessons.find((candidate) => candidate.id === 'aanbeet-of-vastzitten');
     expect(entry, 'lesson aanbeet-of-vastzitten').toBeDefined();
     expect(entry!.status).toBe('published');
-    expect(entry!.file).toBeTruthy();
+    expect(entry!.file).toBe('roofvissen/lessons/aanbeet-of-vastzitten.json');
     // The lesson file loads with the hash from the manifest, and is the lesson.
     const response = await request.get(`/content/${entry!.file}?v=${entry!.hash}`);
     expect(response.status()).toBe(200);
