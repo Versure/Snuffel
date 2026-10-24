@@ -7,6 +7,7 @@
       "forms": ["sla aan", "slaat aan", "sloeg aan", "sloegen aan", "aangeslagen", "aanslaat"]
     },
     { "term": "beetmelder", "forms": ["beetmelders"] },
+    { "term": "gesloten tijd", "forms": ["gesloten tijden"] },
     { "term": "gevlochten lijn", "forms": ["gevlochten lijnen"] },
     { "term": "kunstaas" },
     { "term": "loodkop", "forms": ["loodkoppen"] },

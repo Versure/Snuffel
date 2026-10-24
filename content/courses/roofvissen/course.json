@@ -13,7 +13,8 @@
     {
       "id": "aanbeet-of-vastzitten",
       "title": "Aanbeet of vastzitten?",
-      "status": "planned"
+      "status": "published",
+      "file": "lessons/01-aanbeet-of-vastzitten.json"
     }
   ],
   "sources": [
