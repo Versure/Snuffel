@@ -128,9 +128,19 @@ test.describe('the page of a child (/ouder/<id>)', () => {
     const sections = page.locator('section.section');
     await expect(sections.nth(0).getByRole('heading', { level: 2 })).toHaveText('Leertrajecten');
     await expect(sections.nth(1).getByRole('heading', { level: 2 })).toHaveText('Huiswerk oefenen');
-    await expect(sections.nth(0).getByRole('heading', { level: 3 })).toHaveText(/Proefcursus/);
-    await expect(sections.nth(0).getByRole('progressbar')).toBeVisible();
-    await expect(sections.nth(0)).toContainText('0 van 2 lessen klaar');
+    await expect(sections.nth(0).getByRole('heading', { level: 3 })).toHaveText([
+      'Proefcursus',
+      'Roofvissen met kunstaas',
+    ]);
+    const proefcursus = sections
+      .nth(0)
+      .locator('section.course')
+      .filter({
+        has: page.getByRole('heading', { level: 3, name: 'Proefcursus', exact: true }),
+      });
+    await expect(proefcursus).toHaveCount(1);
+    await expect(proefcursus.getByRole('progressbar')).toBeVisible();
+    await expect(proefcursus).toContainText('0 van 2 lessen klaar');
 
     const row = childLesson(page, proeflesTitle);
     await expect(row.locator('snf-lesson-status')).toContainText('Bezig: 1 van 4 stappen klaar');
@@ -144,7 +154,7 @@ test.describe('the page of a child (/ouder/<id>)', () => {
     );
 
     // Lessons are listed in course order, a planned lesson says Komt nog.
-    const lessons = sections.nth(0).locator('snf-child-lesson h4');
+    const lessons = proefcursus.locator('snf-child-lesson h4');
     await expect(lessons).toHaveText([proeflesTitle, laterTitle]);
     await expect(childLesson(page, laterTitle).locator('snf-lesson-status')).toContainText(
       'Komt nog',
