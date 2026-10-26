@@ -20,11 +20,13 @@ import { TedSays } from '../../shared/ui/ted-says/ted-says';
 import type { InteractionResult } from '../interaction';
 import { InteractionPlaceholder } from '../interaction-placeholder/interaction-placeholder';
 import { INTERACTION_REGISTRY } from '../registry';
+import { accuracy } from '../../core/typing/accuracy';
 
 /** What the host says per kind of interaction when its component cannot be loaded. */
 const LOAD_ERRORS: Record<Interaction['kind'], string> = {
   'trace-game': 'Dit spel kan ik nu niet laden.',
   'stepped-exercise': 'Deze oefening kan ik nu niet laden.',
+  'typing-drill': 'Deze typoefening kan ik nu niet laden.',
 };
 
 /**
@@ -72,14 +74,26 @@ export class InteractionHost {
   });
 
   protected readonly loadError = computed(() => LOAD_ERRORS[this.step().interaction.kind]);
-  /** A stepped exercise is a light card, a game a dark panel (also while loading). */
-  protected readonly light = computed(() => this.step().interaction.kind === 'stepped-exercise');
+  /** An exercise or typing drill is a light card, a game a dark panel (also while loading). */
+  protected readonly light = computed(() => this.step().interaction.kind !== 'trace-game');
 
   protected readonly unavailable = computed(() => this.progress?.state() === 'unavailable');
   protected readonly error = computed(() => this.progress?.saveError(this.step().id) ?? null);
   protected readonly previous = computed(
     () => this.progress?.latestResult(this.step().interaction.id) ?? null,
   );
+  /**
+   * "Vorige keer: 92% goed." for a typing drill (right keys of all keys, rounded down as in the
+   * drill), "<score> van <totaal> goed." for the others.
+   */
+  protected readonly previousText = computed(() => {
+    const result = this.previous();
+    if (!result) return '';
+    if (this.step().interaction.kind === 'typing-drill') {
+      return `Vorige keer: ${accuracy(result.score, result.total)}% goed.`;
+    }
+    return `Vorige keer: ${result.score} van ${result.total} goed.`;
+  });
 
   private created: ComponentRef<unknown> | null = null;
 

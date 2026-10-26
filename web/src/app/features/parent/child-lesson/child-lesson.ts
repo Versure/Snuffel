@@ -11,16 +11,23 @@ import {
   output,
   viewChild,
 } from '@angular/core';
-import type { Lesson, LessonStep, ManifestLesson } from '../../../core/content/content.types';
+import type {
+  InteractionStep,
+  Lesson,
+  LessonStep,
+  ManifestLesson,
+} from '../../../core/content/content.types';
 import {
   checklistSummary,
   exerciseHelp,
   interactionSummary,
   lastActivity,
   quizSummary,
+  typingSummary,
 } from '../../../core/progress/child-progress';
 import { groupStepStatuses, lessonProgress } from '../../../core/progress/course-progress';
 import type { LessonRecords } from '../../../core/progress/progress.service';
+import { accuracy } from '../../../core/typing/accuracy';
 import { plainText } from '../../../shared/inline-text/inline-markup';
 import { Button } from '../../../shared/ui/button/button';
 import { LessonStatusLabel } from '../../../shared/ui/lesson-status/lesson-status';
@@ -47,6 +54,29 @@ function hasRecords(records: LessonRecords): boolean {
     records.attempts.length > 0 ||
     records.results.length > 0
   );
+}
+
+/** The newest result of the interaction of a step with the current version (newest first). */
+function newestResult(step: InteractionStep, lesson: Lesson, records: LessonRecords) {
+  return records.results.find(
+    (result) =>
+      result.interaction_id === step.interaction.id && result.content_version === lesson.version,
+  );
+}
+
+/** A typing drill: accuracy and speed, the most missed keys, and how often it was done. */
+function typingDetail(step: InteractionStep, lesson: Lesson, records: LessonRecords): LessonDetail {
+  const title = plainText(step.title);
+  const summary = interactionSummary(step, lesson.version, records.results);
+  if (!summary.latest) return { stepId: step.id, title, lines: [CHILD_TEXT.typingNotDone] };
+  const typing = typingSummary(newestResult(step, lesson, records)?.detail);
+  const percent = accuracy(summary.latest.score, summary.latest.total);
+  const lines = [CHILD_TEXT.typingScore(percent, typing?.keysPerMinute ?? null)];
+  if (typing && typing.mistakes.length > 0) {
+    lines.push(CHILD_TEXT.typingMistakes(typing.mistakes));
+  }
+  lines.push(CHILD_TEXT.typingPlays(summary.plays));
+  return { stepId: step.id, title, lines };
 }
 
 function detailOf(step: LessonStep, lesson: Lesson, records: LessonRecords): LessonDetail | null {
@@ -78,6 +108,7 @@ function detailOf(step: LessonStep, lesson: Lesson, records: LessonRecords): Les
       };
     }
     case 'interaction': {
+      if (step.interaction.kind === 'typing-drill') return typingDetail(step, lesson, records);
       const exercise = step.interaction.kind === 'stepped-exercise';
       const summary = interactionSummary(step, lesson.version, records.results);
       if (!summary.latest) {
@@ -92,13 +123,7 @@ function detailOf(step: LessonStep, lesson: Lesson, records: LessonRecords): Les
         ? [CHILD_TEXT.exerciseScore(score, total), CHILD_TEXT.exercisePlays(summary.plays)]
         : [CHILD_TEXT.gameScore(score, total), CHILD_TEXT.gamePlays(summary.plays)];
       if (exercise) {
-        // The newest result of this interaction with the current version (records are newest first).
-        const newest = records.results.find(
-          (result) =>
-            result.interaction_id === step.interaction.id &&
-            result.content_version === lesson.version,
-        );
-        const help = exerciseHelp(newest?.detail);
+        const help = exerciseHelp(newestResult(step, lesson, records)?.detail);
         if (help) lines.push(CHILD_TEXT.exerciseHelp(help.hints, help.solutions, help.exercises));
       }
       return { stepId: step.id, title, lines };

@@ -11,6 +11,7 @@ test.describe('content in the image', () => {
     expect(manifest.schemaVersion).toBe(1);
     expect(manifest.courses.map((course) => course.id)).not.toContain('proefcursus');
     expect(manifest.courses.map((course) => course.id)).not.toContain('proefhuiswerk');
+    expect(manifest.courses.map((course) => course.id)).not.toContain('proeftypen');
   });
 
   test('the image has les 1 of roofvissen', async ({ request }) => {
@@ -37,7 +38,7 @@ test.describe('content in the image', () => {
     expect(((await courseFile.json()) as { id: string }).id).toBe('roofvissen');
   });
 
-  for (const id of ['proefcursus', 'proefhuiswerk']) {
+  for (const id of ['proefcursus', 'proefhuiswerk', 'proeftypen']) {
     test(`the fixture course file ${id} is not in the image`, async ({ request }) => {
       await expectNoCourseFile(request, id);
     });

@@ -6,10 +6,11 @@ import type {
   QuizStep,
   SteppedExerciseConfig,
   TraceGameConfig,
+  TypingDrillConfig,
 } from '../../src/app/core/content/content.types';
 import { expect } from '../fixtures';
 import { readableText, spokenText } from '../support/readable-text';
-import { exerciseLesson, fixtureLesson, normalize } from './fixture';
+import { exerciseLesson, fixtureLesson, normalize, typingLesson } from './fixture';
 
 // Shared steps of the progress, quiz and checklist tests.
 
@@ -340,4 +341,54 @@ export async function finishSeries(page: Page): Promise<void> {
     await nextExercise(page);
   }
   await expect(block.getByRole('heading', { name: 'Klaar!' })).toBeVisible();
+}
+
+// The typing drill (blind typen) of the typing fixture.
+
+export const typingStep = typingLesson.steps.find(
+  (step): step is InteractionStep =>
+    step.type === 'interaction' && step.interaction.kind === 'typing-drill',
+)!;
+export const typing = typingStep.interaction.config as TypingDrillConfig;
+/** Every char of every line: what a whole drill counts as total. */
+export const typingTotal = typing.lines.join('').length;
+
+/** The typing drill (`snf-typing-drill`) in the lesson. */
+export function drillBlock(page: Page): Locator {
+  return section(page, typingStep.id).locator('snf-typing-drill');
+}
+
+/** The chars of the line on screen. */
+export function drillChars(page: Page): Locator {
+  return drillBlock(page).locator('.line .char');
+}
+
+/** Taps Start and waits until the first line is there with the focus in the typing field. */
+export async function startDrill(page: Page): Promise<void> {
+  await drillBlock(page).getByRole('button', { name: 'Start', exact: true }).click();
+  await expect(drillBlock(page).locator('.counter')).toHaveText(
+    `Regel 1 van ${typing.lines.length}`,
+  );
+  await expect(drillBlock(page).getByLabel('Typvak')).toBeFocused();
+}
+
+/**
+ * Types text char by char. With `gap` the (fake) clock of `page.clock` advances that many
+ * milliseconds after every key, so the speed of a drill is exact; without it, at full speed.
+ */
+export async function typeLine(page: Page, text: string, gap?: number): Promise<void> {
+  if (gap === undefined) {
+    await page.keyboard.type(text);
+    return;
+  }
+  for (const char of text) {
+    await page.keyboard.type(char);
+    await page.clock.runFor(gap);
+  }
+}
+
+/** Types every line of the drill, right; `gap` as in `typeLine`. */
+export async function typeAll(page: Page, gap?: number): Promise<void> {
+  for (const line of typing.lines) await typeLine(page, line, gap);
+  await expect(drillBlock(page).getByRole('heading', { name: 'Klaar!' })).toBeVisible();
 }

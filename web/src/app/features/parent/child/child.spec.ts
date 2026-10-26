@@ -165,7 +165,7 @@ describe('ChildOverview', () => {
         textOf(lesson.querySelector('snf-lesson-status')),
       ]),
     ).toEqual([
-      ['Proefles', 'Bezig: 1 van 5 stappen klaar'],
+      ['Proefles', 'Bezig: 1 van 6 stappen klaar'],
       ['Tweede les', 'Nieuw'],
       ['Later', 'Komt nog'],
       ['Breuken', 'Nieuw'],
@@ -455,7 +455,7 @@ describe('ChildOverview', () => {
     loadChild.mockImplementation(async (id) => (id === 'a1' ? kindA : id === 'b1' ? kindB : null));
     const { fixture, element, lesson } = await render();
     expect(textOf(lesson('Proefles')?.querySelector('snf-lesson-status'))).toBe(
-      'Bezig: 1 van 5 stappen klaar',
+      'Bezig: 1 van 6 stappen klaar',
     );
     let finish: (value: UserProgressSnapshot) => void = () => undefined;
     loadUserProgress.mockImplementationOnce(

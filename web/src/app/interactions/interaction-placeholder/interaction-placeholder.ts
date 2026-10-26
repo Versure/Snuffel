@@ -6,6 +6,7 @@ import { Ted } from '../../shared/ui/ted/ted';
 const MESSAGES: Record<Interaction['kind'], string> = {
   'trace-game': 'Dit spel komt binnenkort.',
   'stepped-exercise': 'Deze oefening komt binnenkort.',
+  'typing-drill': 'Deze typoefening komt binnenkort.',
 };
 
 /**

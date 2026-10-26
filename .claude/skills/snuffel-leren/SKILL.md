@@ -88,11 +88,19 @@ Bestand `content/courses/<cursus-id>/lessons/NN-<les-id>.json` (`NN` is het volg
 - **Praktijkopdracht:** een `practice`-stap (`at-the-water` of `do-it-yourself`) met een `successCriterion` dat begint met "Gelukt als …", concreet en zichtbaar.
 - **Bronnen:** `sourceRefs` bij elke bewering (blok, kaart, quizvraag, checklist-item, interactiestap). Een lege lijst alleen bij tekst zonder feitelijke bewering.
 - **Ted:** `ted.intro` (met `mood`), `ted.correct`, `ted.incorrect`, `ted.finished`; kort, in Teds toon (stoer, vrolijk, nooit betuttelend).
-- **Interacties alleen uit de catalogus** (`trace-game`, `stepped-exercise`, of wat daar later bij komt).
+- **Interacties alleen uit de catalogus** (`trace-game`, `stepped-exercise`, `typing-drill`, of wat daar later bij komt).
 - **Afbeeldingen:** alleen als een afbeelding iets uitlegt wat tekst niet goed kan. Maak dan zelf een eenvoudige svg in `assets/` van de cursus: alleen `currentColor`, niets van buiten, een `alt` die beschrijft wat je ziet. Geen foto's, geen afbeeldingen van internet.
 - **Parafraseren, nooit kopiëren** uit een bron.
 - **Nieuwe vaktermen** (met hun `forms`) voeg je toe aan `content/terms.json`, in dezelfde PR als de les, zodat de check ze daarna in elke les afdwingt.
 - **Id's van een gepubliceerde les nooit wijzigen** (zie "Nooit wijzigen" in de catalogus). Een les aanpassen die al op `main` staat: `version` één omhoog.
+
+**Typlessen** (blind typen met `typing-drill`, details en valkuilen in de catalogus, sectie `typing-drill`):
+
+- Een leerpad van de thuisrij (`asdf jkl;`) via de andere letters naar hoofdletters (Shift met de **andere** hand) en leestekens; elke les 2 tot 4 nieuwe toetsen in `newKeys`.
+- Regels alleen met toetsen die in deze les of de lessen ervoor geleerd zijn; korte regels (een teken te veel maakt de rest van de regel fout).
+- Dode toetsen (`'`, `"`, `` ` ``, `~`, `^`) nooit direct voor een letter die US-International samenstelt (`'en` wordt `én`); zie de catalogus. Geen accenten.
+- De quiz gaat over vingers en houding; de praktijkopdracht is typen op een echt toetsenbord zonder te kijken (bijv. "typ een berichtje aan opa").
+- `content:check` meldt `typing-new-key-unused` (een toets in `newKeys` die geen regel gebruikt), `typing-dead-key-sequence` (ook van het eind van een regel naar het begin van de volgende) en `typing-dead-key-at-end` (de laatste regel eindigt op een dode toets, dan blijft de oefening wachten). Een typoefening telt 1 minuut plus 1 minuut per 60 tekens.
 
 ## 5. Huiswerkmodus (`kind: practice`)
 
@@ -160,7 +168,7 @@ Zet de agent `content-reviewer` in met het pad van `course.json` en van de les; 
 
 ## Nog niet te zien
 
-De quiz (gehusseld, hints op verzoek, feedback per gekozen optie, score met Ted) en de checklist met vinkjes werken sinds M8 en bewaren de voortgang per kind; het voel-spel (`trace-game`) werkt sinds M9 en bewaart elk uitgespeeld spel; de oefening (`stepped-exercise`) werkt sinds M10 en bewaart elke afgeronde reeks. Sinds M11 staat elke cursus als kaart op de startpagina en heeft hij een cursusoverzicht (`/leren/<cursus-id>`) met het doel en de status van elke les (klaar, bezig, nieuw, komt nog). Een stap toevoegen aan een gepubliceerde les zet hem voor wie hem af had weer op "bezig"; maak voor nieuwe stof liever een nieuwe les.
+De quiz (gehusseld, hints op verzoek, feedback per gekozen optie, score met Ted) en de checklist met vinkjes werken sinds M8 en bewaren de voortgang per kind; het voel-spel (`trace-game`) werkt sinds M9 en bewaart elk uitgespeeld spel; de oefening (`stepped-exercise`) werkt sinds M10 en bewaart elke afgeronde reeks; de typoefening (`typing-drill`) werkt sinds M15 en bewaart elke afgeronde oefening (zonder de getypte tekst). Sinds M11 staat elke cursus als kaart op de startpagina en heeft hij een cursusoverzicht (`/leren/<cursus-id>`) met het doel en de status van elke les (klaar, bezig, nieuw, komt nog). Een stap toevoegen aan een gepubliceerde les zet hem voor wie hem af had weer op "bezig"; maak voor nieuwe stof liever een nieuwe les.
 ```
 
 Zijn er na twee reviewrondes nog blokkerende punten: open de PR toch, maar als **draft**, met die punten bovenaan.

@@ -19,9 +19,67 @@ describe('reading time', () => {
     assertClean(fixture.check());
   });
 
-  test('every interaction in the catalogue counts 2 minutes', () => {
-    assert.deepEqual(Object.keys(interactionCatalog).sort(), ['stepped-exercise', 'trace-game']);
-    for (const { minutes } of Object.values(interactionCatalog)) assert.equal(minutes, 2);
+  test('a game and an exercise count 2 minutes', () => {
+    assert.deepEqual(Object.keys(interactionCatalog).sort(), [
+      'stepped-exercise',
+      'trace-game',
+      'typing-drill',
+    ]);
+    assert.equal(interactionCatalog['trace-game'].minutes({}), 2);
+    assert.equal(interactionCatalog['stepped-exercise'].minutes({ exercises: [] }), 2);
+  });
+
+  test('a typing drill counts one minute plus its characters at 60 per minute', (t) => {
+    const drill = (lines) => interactionCatalog['typing-drill'].minutes({ lines, newKeys: [] });
+    assert.equal(drill(['a'.repeat(30)]), 1.5);
+    assert.equal(drill(['a'.repeat(40), 'b'.repeat(40), 'c'.repeat(40)]), 3);
+    assert.equal(drill(['asdf jkl;']), 1.2);
+    assert.equal(drill(Array.from({ length: 12 }, () => 'a'.repeat(40))), 9);
+
+    const fixture = fixtureRoot(t);
+    const before = computeMinutes(fixture.readLesson());
+    fixture.mutateLesson((lesson) => {
+      lesson.steps.splice(1, 0, {
+        id: 'typen',
+        type: 'interaction',
+        title: 'Typen',
+        intro: 'Typ de regels over.',
+        interaction: {
+          id: 'thuisrij',
+          kind: 'typing-drill',
+          // 9 + 9 + 2 = 20 chars: 1 + 20 / 60 = 1.33, so 1.3 minutes.
+          config: { lines: ['asdf jkl;', 'fdsa ;lkj', 'ff'], newKeys: [] },
+        },
+        sourceRefs: [],
+      });
+    });
+    const after = computeMinutes(fixture.readLesson());
+    assert.equal(after.interactionMinutes, before.interactionMinutes + 1.3);
+    assert.equal(after.minutes, Math.round((after.words / 130 + 2 + 1.3 + 4) * 10) / 10);
+  });
+
+  test('a long typing drill gives duration-out-of-range with its minutes', (t) => {
+    const fixture = fixtureRoot(t);
+    fixture.mutateLesson((lesson) => {
+      lesson.steps.splice(1, 0, {
+        id: 'typen',
+        type: 'interaction',
+        title: 'Typen',
+        intro: 'Typ de regels over.',
+        interaction: {
+          id: 'thuisrij',
+          kind: 'typing-drill',
+          config: {
+            lines: Array.from({ length: 9 }, () => 'asdf jkl; '.repeat(4).trim()),
+            newKeys: [],
+          },
+        },
+        sourceRefs: [],
+      });
+    });
+    // 9 lines of 39 chars: 1 + 351 / 60 = 6.85, so 6.9 minutes, plus 2 for the game.
+    const error = assertIssue(fixture.check(), 'duration-out-of-range', 'estimatedMinutes');
+    assert.match(error.message, /\+ 8,9 min interactie/);
   });
 
   test('feedback, hints and the FAQ do not count', (t) => {

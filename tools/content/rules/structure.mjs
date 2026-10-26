@@ -1,5 +1,6 @@
 // Structure: lesson files match course.json, and ids are unique where they must be.
 import { checkAnswer, parseNumber } from '../answer.mjs';
+import { composedChar, DEAD_KEYS, deadKeySequences, keysOfLine } from '../typing.mjs';
 import { interactionConfigIds, lessonIds } from '../walk.mjs';
 
 function issue(code, file, path, message) {
@@ -143,6 +144,68 @@ function checkLessonIds({ file, data }, issues) {
       config.exercises.forEach((exercise, e) => {
         checkExercise(exercise, `${base}.exercises[${e}]`, file, issues);
       });
+    }
+    if (kind === 'typing-drill') {
+      checkTypingDrill(config, base, file, issues);
+    }
+  });
+}
+
+/** New keys that no line uses, and dead keys that US-International composes (typing.mjs). */
+function checkTypingDrill(config, base, file, issues) {
+  const used = new Set(config.lines.flatMap((line) => keysOfLine(line)));
+  config.newKeys.forEach((key, k) => {
+    if (!used.has(key)) {
+      issues.push(
+        issue(
+          'typing-new-key-unused',
+          file,
+          `${base}.newKeys[${k}]`,
+          `toets "${key}" staat in newKeys maar in geen enkele regel`,
+        ),
+      );
+    }
+  });
+  config.lines.forEach((line, l) => {
+    for (const { sequence } of deadKeySequences(line)) {
+      issues.push(
+        issue(
+          'typing-dead-key-sequence',
+          file,
+          `${base}.lines[${l}]`,
+          `${sequence} wordt op een US-International-toetsenbord ${composedChar(sequence)}; zet er een spatie of een andere letter achter`,
+        ),
+      );
+    }
+    // The app types the lines one after another without Enter, so the last char of a line and
+    // the first char of the next line follow each other as well.
+    const next = config.lines[l + 1];
+    if (!next) {
+      // A dead key shows nothing until the next key, so the drill would wait after the last char.
+      const last = [...line].at(-1);
+      if (last !== undefined && Object.hasOwn(DEAD_KEYS, last)) {
+        issues.push(
+          issue(
+            'typing-dead-key-at-end',
+            file,
+            `${base}.lines[${l}]`,
+            `de laatste regel eindigt op de dode toets ${last}; die verschijnt pas na nog een toets, dus de oefening wacht; zet er nog een letter of leesteken achter`,
+          ),
+        );
+      }
+      return;
+    }
+    if (!line) return;
+    const join = [...line].at(-1) + [...next][0];
+    for (const { sequence } of deadKeySequences(join)) {
+      issues.push(
+        issue(
+          'typing-dead-key-sequence',
+          file,
+          `${base}.lines[${l + 1}]`,
+          `${sequence[0]} aan het eind van de vorige regel en ${sequence.slice(1)} aan het begin van deze regel worden op een US-International-toetsenbord ${composedChar(sequence)}; laat deze regel met een spatie of een andere letter beginnen`,
+        ),
+      );
     }
   });
 }

@@ -65,6 +65,15 @@ const exerciseStep = {
   interaction: { id: 'breuken', kind: 'stepped-exercise', config: { exercises: [] } },
 } as unknown as InteractionStep;
 
+const typingStep = {
+  ...traceStep,
+  interaction: {
+    id: 'thuisrij',
+    kind: 'typing-drill',
+    config: { lines: ['asdf jkl;'], newKeys: [] },
+  },
+} as unknown as InteractionStep;
+
 const ted: LessonTed = {
   intro: { mood: 'cool', text: 'Hoi.' },
   correct: ['Goed gevoeld!'],
@@ -211,6 +220,13 @@ describe('InteractionHost', () => {
     expect(element.querySelector('snf-fake-game')).not.toBeNull();
   });
 
+  it('a typing drill loads in a light panel', async () => {
+    const load = vi.fn<() => Promise<Type<unknown>>>().mockRejectedValue(new Error('offline'));
+    const { element } = await render(typingStep, { registry: { 'typing-drill': load } });
+    // The same light card as an exercise, not the dark game panel.
+    expect(element.querySelector('.panel.failed')?.classList.contains('light')).toBe(true);
+  });
+
   it('a game that cannot be loaded keeps the dark panel', async () => {
     const load = vi.fn<() => Promise<Type<unknown>>>().mockRejectedValue(new Error('offline'));
     const { element } = await render(traceStep, { registry: { 'trace-game': load } });
@@ -261,6 +277,59 @@ describe('InteractionHost', () => {
     expect(element.querySelector('.previous')?.textContent?.trim()).toBe(
       'Vorige keer: 6 van 8 goed.',
     );
+  });
+
+  it('the previous result of a typing drill is a percentage', async () => {
+    const progress = fakeProgress();
+    const { fixture, element } = await render(typingStep, {
+      progress,
+      registry: { 'typing-drill': async () => FakeGame },
+    });
+    progress.latest.set({
+      ...resultRecord(442),
+      interaction_id: 'thuisrij',
+      kind: 'typing-drill',
+      total: 480,
+    });
+    await fixture.whenStable();
+    expect(progress.value.latestResult).toHaveBeenCalledWith('thuisrij');
+    // 442 / 480 is 92.08…%: rounded down.
+    expect(element.querySelector('.previous')?.textContent?.trim()).toBe('Vorige keer: 92% goed.');
+    progress.latest.set({ ...resultRecord(479), kind: 'typing-drill', total: 480 });
+    await fixture.whenStable();
+    expect(element.querySelector('.previous')?.textContent?.trim()).toBe('Vorige keer: 99% goed.');
+  });
+
+  it('completed of a typing drill records the result through LessonProgress', async () => {
+    const progress = fakeProgress();
+    const { fixture } = await render(typingStep, {
+      progress,
+      registry: { 'typing-drill': async () => FakeGame },
+    });
+    await click(fixture, 'snf-fake-game .answer');
+    expect(progress.value.markStep).toHaveBeenCalledWith('spel', 'started');
+    await click(fixture, 'snf-fake-game .finish');
+    expect(progress.value.recordInteraction).toHaveBeenCalledWith(
+      'spel',
+      typingStep.interaction,
+      result,
+    );
+  });
+
+  it('says Deze typoefening kan ik nu niet laden when it cannot be loaded', async () => {
+    const load = vi
+      .fn<() => Promise<Type<unknown>>>()
+      .mockRejectedValueOnce(new Error('offline'))
+      .mockResolvedValueOnce(FakeGame);
+    const { fixture, element } = await render(typingStep, { registry: { 'typing-drill': load } });
+    const panel = element.querySelector('.panel.failed');
+    expect(panel?.textContent).toContain('Deze typoefening kan ik nu niet laden.');
+    expect(panel?.textContent).not.toContain('Dit spel');
+    buttonWith(element, 'Opnieuw')?.click();
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    await fixture.whenStable();
+    expect(load).toHaveBeenCalledTimes(2);
+    expect(element.querySelector('snf-fake-game')).not.toBeNull();
   });
 
   it('shows the save error as an alert', async () => {

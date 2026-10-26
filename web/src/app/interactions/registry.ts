@@ -15,6 +15,7 @@ export const INTERACTIONS: InteractionRegistry = {
   'trace-game': () => import('./trace-game/trace-game').then((module) => module.TraceGame),
   'stepped-exercise': () =>
     import('./stepped-exercise/stepped-exercise').then((module) => module.SteppedExercise),
+  'typing-drill': () => import('./typing-drill/typing-drill').then((module) => module.TypingDrill),
 };
 
 /** The registry of snf-interaction; a unit test can provide fake components. */

@@ -313,7 +313,7 @@ Alleen de stappen die de les nu heeft tellen; voortgang van een stap of les die 
 Een les staat in de app op `/leren/<cursus-id>/<les-id>`, voor wie ingelogd is (kind en ouder). Het is één doorlopende pagina; `#stap-<stap-id>` achter het adres opent hem bij die stap.
 
 - **Kop:** een link "Naar de lessen" (naar het overzicht van de cursus), de `sticker`, "Ongeveer `estimatedMinutes` minuten", de `title` (het laatste woord op een paarse band), Ted (`ted.intro.mood`) met `ted.intro.text` in een ballon, en het `objective` op een papieren kader.
-- **Stappen-navigatie:** een genummerd rondje per stap met een kort label: `explain` "Uitleg", `trace-game` "Spel", `stepped-exercise` "Oefenen", `quiz` "Quiz", `at-the-water` "Aan het water", `do-it-yourself` "Zelf doen". Een tik springt naar de stap.
+- **Stappen-navigatie:** een genummerd rondje per stap met een kort label: `explain` "Uitleg", `trace-game` "Spel", `stepped-exercise` "Oefenen", `typing-drill` "Typen", `quiz` "Quiz", `at-the-water` "Aan het water", `do-it-yourself` "Zelf doen". Een tik springt naar de stap.
 - **Stap:** de `title` als kop met een roze rondje met het nummer.
 - **Blokken:** `text` is een alinea; `example` staat in een kaart; `signal-cards` zijn kaarten met het icoon, de titel en de tekst; `rule` is een roze blok met de titel groot; `tip` is een kaart met de titel (zonder titel: "Tip"); `figure` is de afbeelding met het onderschrift eronder; `ted-says` is een kleine Ted in de gekozen stemming met een ballon.
 - **Bronnen:** onder elk blok en elke kaart met `sourceRefs` staat "Bron:" met per bron de uitgever als link. Een blok zonder bronnen toont niets. Bij quizvragen, praktijkpunten en de interactiestap toont de app (nog) geen bronnen.
@@ -323,15 +323,16 @@ Een les staat in de app op `/leren/<cursus-id>/<les-id>`, voor wie ingelogd is (
 - **Einde:** Ted (blij) met `ted.finished`, dan "Woordenlijst", "Verder lezen" (titel van de bron als link, de uitgever en `why`) en "Vragen" (elke vraag met het antwoord eronder). Een lege lijst geeft geen kopje.
 - **Quiz:** alle vragen onder elkaar, genummerd, met de opties als knoppen in een **gehusselde volgorde** (elke ronde anders). Per ronde mag een vraag **één keer** beantwoord worden: na een tik gaan de opties dicht, de gekozen optie wordt groen (goed) of rood (fout) met "Jouw antwoord" erbij, en bij een fout antwoord wordt ook de goede optie groen met "Goede antwoord". Daaronder staat een kleine Ted (blij bij goed, geschrokken bij fout) met een willekeurige regel uit `ted.correct` of `ted.incorrect`, en de `feedback` van de **gekozen** optie. Schrijf dus bij elke optie een `feedback` die zonder de andere opties te begrijpen is. `hints` verschijnen alleen op verzoek, één voor één ("Hint", "Nog een hint"), zolang de vraag open is; hoeveel hints iemand vroeg, wordt bewaard. Na de laatste vraag: "<goed> van <totaal> goed." met Ted (stoer met een regel uit `ted.correct` als alles goed is, anders blij met "Lees de uitleg bij de rode vragen nog eens.") en een knop "Opnieuw" voor een nieuwe ronde.
 - **Praktijk:** een plakbriefje met per `item` een vinkje; de hele regel is het tikvlak, een link in een item staat ernaast (een tik op de link vinkt niets aan). `successCriterion` staat vet onder de lijst, zonder vinkje. Vinkjes worden bewaard, per kind.
-- **Wanneer een stap klaar is** (een gevuld rondje in de stappen-navigatie): een `explain`-stap als het einde van de stap een seconde in beeld is geweest (lezen tot het eind; wie met de navigatie over de uitleg heen springt, heeft hem niet gelezen); een `quiz` als elke vraag beantwoord is, goed of fout; een `practice`-stap als alle items aangevinkt zijn; een `trace-game` als een spel **uitgespeeld** is (alle rondes, welke score ook); een `stepped-exercise` als een reeks **afgerond** is ("Klaar" na de laatste opgave, welke score ook). Een stap die klaar is, blijft klaar, ook als je daarna een vinkje weghaalt. Een les openen bewaart niets.
+- **Wanneer een stap klaar is** (een gevuld rondje in de stappen-navigatie): een `explain`-stap als het einde van de stap een seconde in beeld is geweest (lezen tot het eind; wie met de navigatie over de uitleg heen springt, heeft hem niet gelezen); een `quiz` als elke vraag beantwoord is, goed of fout; een `practice`-stap als alle items aangevinkt zijn; een `trace-game` als een spel **uitgespeeld** is (alle rondes, welke score ook); een `stepped-exercise` als een reeks **afgerond** is ("Klaar" na de laatste opgave, welke score ook); een `typing-drill` als een oefening **afgerond** is (alle regels getypt, welke score ook). Een stap die klaar is, blijft klaar, ook als je daarna een vinkje weghaalt. Een les openen bewaart niets.
 - **`version` en bewaarde antwoorden:** bij elk antwoord bewaart de app de `version` van de les. Na herladen toont de quiz alleen antwoorden met dezelfde `version` als de les nu. Verander je een quizvraag of een optie zonder `version` op te hogen, dan ziet een kind zijn oude antwoord bij een veranderde vraag. Daarom moet `version` omhoog bij elke wijziging (`content:check` dwingt dat af).
 - **Spel:** zie `trace-game` hieronder. Elk uitgespeeld spel wordt bewaard (score, aantal rondes en per ronde patroon en keuze); na herladen staat onder het spel "Vorige keer: <goed> van <totaal> goed." (alleen met dezelfde `version`). Een half gespeeld spel wordt niet onthouden.
 - **Oefening:** zie `stepped-exercise` hieronder. Elke afgeronde reeks wordt bewaard; na herladen staat eronder "Vorige keer: <zelf goed> van <totaal> goed.". Een half gemaakte reeks wordt niet onthouden.
+- **Typoefening:** zie `typing-drill` hieronder. Elke afgeronde oefening wordt bewaard (goede en alle aanslagen, snelheid en de vaakst foute toetsen, nooit de getypte tekst); na herladen staat eronder "Vorige keer: <n>% goed.". Een half getypte oefening wordt niet onthouden.
 - **Wat nog komt:** bronnen bij een quizvraag, een praktijkpunt of een interactiestap toont de app (nog) niet.
 
 ## Interacties
 
-Een interactie is data voor een bestaand onderdeel van de app. Alleen deze twee soorten bestaan; een nieuwe soort vraagt code (skill `spelcomponent-bouwen`). Elke interactiestap telt **2 minuten** in de berekende tijd.
+Een interactie is data voor een bestaand onderdeel van de app. Alleen deze drie soorten bestaan; een nieuwe soort vraagt code (skill `spelcomponent-bouwen`). Een `trace-game` of `stepped-exercise` telt **2 minuten** in de berekende tijd, een `typing-drill` 1 minuut plus 1 minuut per 60 tekens.
 
 ### `trace-game` (het voel-spel)
 
@@ -550,6 +551,82 @@ Voorbeeld (uit `content/fixtures/courses/proefhuiswerk/`, ingekort):
 - **Een `commonMistake` die eigenlijk goed is.** Ligt een fout antwoord binnen `tolerance` of is het een vorm uit `accepted`, dan zou het kind een "fout" krijgen voor een goed antwoord. `content:check` vangt dat (`exercise-mistake-accepted`).
 - **`version` omhoog bij een gewijzigde opgave.** Bewaarde resultaten horen bij één `version`; verander je een opgave, een antwoord of het aantal opgaven, hoog dan `version` op (`content:check` dwingt dat af).
 
+### `typing-drill` (blind typen)
+
+Blind typen met tien vingers op een laptop of computer: het kind typt korte regels over, met een toetsenbord eronder dat laat zien welke toets en welke vinger aan de beurt is. Werkt in de app sinds M15.
+
+**Wanneer past het:** om **blind typen** te leren en te oefenen op een echt toetsenbord: de thuisrij, nieuwe toetsen, hoofdletters en leestekens. Niet om spelling of woordjes te leren (daarvoor is `stepped-exercise` met een `text`-antwoord beter) en niet voor een les op een telefoon of tablet: zonder toetsenbord ziet een kind alleen een melding.
+
+**Zo werkt het in de app:**
+
+- **Begin:** een licht kaartje met "<n> regels", "Nieuw: g en h" (de `newKeys`, met een ster), Ted stoer met "Zet je vingers klaar en kijk naar het scherm, niet naar je handen." en een knop "Start".
+- **Typen:** "Regel <n> van <totaal>", de regel groot, de volgende regel klein eronder ("Daarna: …"). Elk teken dat het kind typt is **één aanslag** op de plek van de cursor (het gele teken): goed wordt groen; fout wordt rood met een golvende streep en een `✗`, en de cursor gaat **gewoon door** (doortypen, het kind gaat niet terug). Een spatie staat er als een kleine `·`. Aan het eind van een regel komt vanzelf de volgende, zonder Enter. **Backspace, Delete, Enter, pijltjes, plakken en sneltoetsen** doen niets en tellen niet; Tab en Escape werken gewoon. Staat Caps Lock aan, dan staat er "Caps Lock staat aan". Klikt het kind ergens anders, dan staat er "Klik op de regel om verder te typen.". "Opnieuw beginnen" begint bij regel 1 en bewaart niets.
+- **Toetsenbord en vingergids:** een Amerikaans QWERTY-toetsenbord (de indeling die in Nederland standaard is; US-International heeft dezelfde toetsen) op een vaste lichte achtergrond, ook in de donkere modus. Elke toets heeft de kleur van zijn vinger (links en rechts dezelfde kleur): pink roze, ringvinger oranje, middelvinger groen, wijsvinger geel, duim (spatiebalk) paars. De toets voor het volgende teken heeft een dikke paarse rand en springt iets omhoog (niet bij "beweging beperken"); bij een hoofdletter of een Shift-teken ook de Shift aan de **andere** hand. Nieuwe toetsen hebben een ster en een gestippelde rand. Eronder een legenda (de vinger die nu moet staat vet met "← nu") en de regel "Volgende toets: f, linkerwijsvinger" (bij een hoofdletter: "Volgende toets: Shift rechts + a, rechterpink en linkerpink"). Niets hangt af van de muis.
+- **Klaar:** "Nauwkeurigheid: 92% goed (442 van 480 aanslagen)" (goede aanslagen van alle aanslagen, **naar beneden** afgerond: 100% alleen zonder fouten), "Snelheid: 85 aanslagen per minuut" en "Vaakst fout: f (3×), j (2×) en spatie (1×)" (hoogstens drie toetsen) of "Geen fouten!". Ted reageert op de `goals`: doel gehaald, Ted stoer met een regel uit `ted.correct` en "Doel gehaald: 90% goed."; niet gehaald, Ted nadenkend met een regel uit `ted.incorrect` en "Je doel is 90% goed. Typ rustig; snelheid komt vanzelf."; zonder `goals` Ted blij met een regel uit `ted.correct`. Daarna "Nog een keer". De stap is klaar na elke afgeronde oefening, **welke score ook**; de doelen veranderen alleen wat Ted zegt.
+- **Snelheid** is het aantal **goede** aanslagen per minuut. De tijd loopt van de eerste tot de laatste aanslag (lezen vóór de eerste toets telt niet); een pauze tussen twee aanslagen telt hoogstens 5 seconden.
+- **Telefoon of tablet zonder toetsenbord:** in plaats van de oefening staat Ted nadenkend met "Voor deze oefening heb je een toetsenbord nodig. Doe hem op een laptop of computer." Een laptop met aanraakscherm of een tablet met trackpad krijgt gewoon de oefening. Drukt iemand toch een echte toets in (een los toetsenbord), dan verschijnt de oefening.
+- **Schermlezer:** het typvak heet "Typvak"; bij het begin van elke regel zegt de app "Regel 2 van 6: jjj fff", en aan het eind de uitslag. Niet bij elke aanslag. Het getekende toetsenbord is verborgen; de regel "Volgende toets: …" is het tekstalternatief.
+- Alle teksten hierboven zijn vast in de app; de config heeft geen lestekst.
+
+**Velden** (`typingDrillConfig`, voorbeeld uit de proefcursus typen):
+
+```json
+{
+  "id": "thuisrij",
+  "kind": "typing-drill",
+  "config": {
+    "lines": ["asdf jkl;", "fdsa ;lkj", "ff jj dd kk", "als las kas", "jas dak sla", "alfa kaal"],
+    "newKeys": ["a", "s", "d", "f", "j", "k", "l", ";", "space"],
+    "goals": { "accuracy": 90 }
+  }
+}
+```
+
+| Veld      | Wat                                                                                                                                                                                                                                                                                                          |
+| --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `lines`   | 1 tot **12** regels, na elkaar in één oefening. Elke regel 1 tot **40** tekens, alleen tekens van het toetsenbord (`!` tot `~` en de spatie), niet beginnend of eindigend met een spatie en zonder twee spaties naast elkaar. Geen accenten (`é`, `ë`), geen `€`, geen tab of nieuwe regel.                  |
+| `newKeys` | de toetsen die in deze les **nieuw** zijn (mag leeg, hoogstens 10, elk één keer): `a`–`z`, `0`–`9`, `` ` ``, `-`, `=`, `[`, `]`, `\`, `;`, `'`, `,`, `.`, `/`, `space`, `shift`. Een **toets**, geen teken: `A` is de toets `a` met `shift`, `:` is `;` met `shift`. Elke toets moet in een regel voorkomen. |
+| `goals`   | mag; `{ "accuracy": 90 }` (heel getal 50–100, procent goed) en/of `{ "keysPerMinute": 60 }` (heel getal 10–300); minstens één van de twee.                                                                                                                                                                   |
+
+De regels zijn wat het kind typt, geen lestekst: geen opmaak, geen `[[term]]`, en ze tellen niet als woorden in de leestijd.
+
+**Toetsen en vingers** (standaard tien-vingersysteem; Shift altijd met de **andere** hand dan de letter: `A` is rechter-Shift, `L` linker-Shift):
+
+| Vinger              | Toetsen                                                  |
+| ------------------- | -------------------------------------------------------- |
+| linkerpink          | `` ` `` `1` `q` `a` `z` en linker-Shift                  |
+| linkerringvinger    | `2` `w` `s` `x`                                          |
+| linkermiddelvinger  | `3` `e` `d` `c`                                          |
+| linkerwijsvinger    | `4` `5` `r` `t` `f` `g` `v` `b`                          |
+| rechterwijsvinger   | `6` `7` `y` `u` `h` `j` `n` `m`                          |
+| rechtermiddelvinger | `8` `i` `k` `,`                                          |
+| rechterringvinger   | `9` `o` `l` `.`                                          |
+| rechterpink         | `0` `-` `=` `p` `[` `]` `\` `;` `'` `/` en rechter-Shift |
+| duimen              | spatiebalk                                               |
+
+De kaart staat in `content/schema/v1/typing-keyboard.cases.json`; app en `content:check` gebruiken dezelfde.
+
+**Dode toetsen (belangrijk voor leestekenlessen):** op een US-International-toetsenbord (veel gebruikt in Nederland) zijn `'`, `"`, `` ` ``, `~` en `^` **dode toetsen**: het teken verschijnt pas na de volgende toets, en met een klinker wordt het één letter met een accent (`'` + `e` wordt `é`). Een spatie na de dode toets geeft het teken zelf; een letter die geen accent krijgt geeft beide tekens (`'` + `t` wordt `'t`). Daarom:
+
+- zet een dode toets in een regel **nooit direct voor** een letter die hij samenstelt: `'` voor `a e i o u y c`, `"` voor `a e i o u y`, `` ` `` voor `a e i o u`, `~` voor `a o n`, `^` voor `a e i o u` (ook hoofdletters). `auto's`, `zo'n` en `'t` mogen; `'en`, `"oei"` en `l'Avenue` niet. Dat geldt ook **over de regelgrens**: de regels worden zonder Enter na elkaar getypt, dus eindigt een regel op `"` en begint de volgende met `a`, dan wordt het `ä`. `content:check` meldt het (`typing-dead-key-sequence`);
+- laat de **laatste regel niet eindigen** op een dode toets: die verschijnt pas na nog een toets, dus de oefening blijft wachten. `content:check` meldt het (`typing-dead-key-at-end`);
+- **Linux** (indeling "US international with dead keys") stelt meer samen dan Windows en macOS: `'` + `s` wordt `ś` en `'` + `n` wordt `ń`, dus `auto's` en `zo'n` gaan daar mis. `content:check` volgt Windows en macOS; zet in een les over `'` een tip voor wie op Linux typt;
+- leg in een leestekenles uit dat je na `'` of `"` soms een spatie typt om het teken zelf te krijgen;
+- geen accenten in regels: die vragen twee toetsen na elkaar en komen later, als een les ze nodig heeft.
+
+**Wat er bewaard wordt** (één record in `interaction_results` per afgeronde oefening): `score` = goede aanslagen, `total` = alle aanslagen (precies het aantal tekens van alle regels), en `detail` = `{ "keysPerMinute", "durationMs", "mistakes": [{ "key", "count" }] }` met hoogstens 10 toetsen, de vaakst foute eerst. Een fout telt bij de toets die het kind **had moeten** indrukken. De getypte tekst wordt **nooit** bewaard. In `/ouder` staat "92% goed, 85 aanslagen per minuut", "Vaakst fout: f, j en spatie" en "3 keer gedaan".
+
+**Tijd:** een `typing-drill`-stap telt 1 minuut plus 1 minuut per 60 tekens van alle regels samen (afgerond op één decimaal): een beginner typt ongeveer 60 aanslagen per minuut, plus een minuut voor start en uitslag. Een les van 10 minuten heeft dus ruimte voor ongeveer 300 tot 400 tekens typen met wat uitleg en een quiz.
+
+**Valkuilen:**
+
+- **Lange regels.** Typt het kind één teken te veel (twee spaties), dan schuift alles één plek en is de rest van de regel fout. Houd regels kort (rond 10 tot 25 tekens is prettig).
+- **Te veel nieuwe toetsen per les.** 2 tot 4 nieuwe toetsen per les is genoeg; de rest van de regels herhaalt wat al geleerd is.
+- **Regels met toetsen die nog niet geleerd zijn.** Gebruik alleen toetsen uit deze les en de lessen ervoor in de cursus. `content:check` ziet dat niet; de reviewer wel.
+- **`newKeys` die geen regel gebruikt.** `content:check` meldt het (`typing-new-key-unused`); `shift` telt als gebruikt bij een hoofdletter of een Shift-teken.
+- **Een dode toets voor een klinker** (`'en`): zie hierboven.
+- **`version` omhoog bij een gewijzigde regel.** Bewaarde resultaten horen bij één `version`; verander je een regel of het aantal regels, hoog dan `version` op (`content:check` dwingt dat af).
+
 ## Vaktermen (`content/terms.json`)
 
 ```json
@@ -570,52 +647,55 @@ FOUT content/fixtures/courses/proefcursus/lessons/01-proefles.json
 
 Zijn er schemafouten in een cursus, dan worden eerst alleen die gemeld; de andere checks lopen pas als het schema klopt.
 
-| Code                          | Wanneer                                                                                          |
-| ----------------------------- | ------------------------------------------------------------------------------------------------ |
-| `json-invalid`                | het bestand is geen geldige JSON (met regel en kolom)                                            |
-| `schema`                      | het bestand past niet bij het schema (ontbrekend of onbekend veld, verkeerde waarde, fout id)    |
-| `course-file-missing`         | een cursusmap zonder `course.json`                                                               |
-| `terms-file-missing`          | `content/terms.json` ontbreekt                                                                   |
-| `course-id-mismatch`          | het cursus-id is niet gelijk aan de mapnaam                                                      |
-| `lesson-file-missing`         | een `published` les zonder bestand                                                               |
-| `lesson-id-mismatch`          | het id in het lesbestand is anders dan in `course.json`                                          |
-| `lesson-file-orphan`          | een lesbestand dat niet als `published` les in `course.json` staat                               |
-| `id-duplicate`                | een id komt dubbel voor (zie "Id's"), met beide plekken                                          |
-| `interaction-answer-unknown`  | een antwoord in een interactie (ook een fout antwoord bij `choice`) is geen keuze of optie       |
-| `exercise-mistake-unreadable` | een fout antwoord bij een `number`-opgave is geen getal: de app herkent het nooit                |
-| `exercise-mistake-accepted`   | een fout antwoord telt als goed (binnen `tolerance`, in `accepted` of de juiste optie)           |
-| `source-ref-missing`          | een `sourceRef` (ook in `furtherReading`) staat niet in `sources`                                |
-| `source-only-low`             | een niet-lege `sourceRefs` met alleen `low`-bronnen                                              |
-| `source-date-invalid`         | `accessedOn` is geen bestaande datum (bijv. `2026-02-30`)                                        |
-| `source-date-future`          | `accessedOn` ligt na vandaag                                                                     |
-| `glossary-term-unknown`       | een `[[term]]` die niet in de `glossary` van de les staat                                        |
-| `term-not-in-glossary`        | een vakterm uit `terms.json` staat in de tekst, maar niet in de `glossary`                       |
-| `quiz-step-count`             | een leertrajectles zonder of met meer dan één quizstap (oefenles: meer dan één)                  |
-| `quiz-question-count`         | een quiz met minder dan 3 of meer dan 5 vragen                                                   |
-| `quiz-option-count`           | een vraag met minder dan 3 of meer dan 4 opties                                                  |
-| `quiz-correct-option-missing` | `correctOptionId` is geen van de opties                                                          |
-| `quiz-option-length`          | de langste optie is meer dan 1,5 × de kortste (in tekens, zonder opmaak en spaties eromheen)     |
-| `duration-out-of-range`       | de berekende tijd ligt niet tussen 8 en 12 minuten                                               |
-| `duration-mismatch`           | `estimatedMinutes` ligt meer dan 2 minuten naast de berekende tijd                               |
-| `sentence-length`             | gemiddeld meer dan 15 woorden per zin                                                            |
-| `link-not-https`              | een link die niet met `https://` begint (ook `http:`, `javascript:`, `data:` en relatieve links) |
-| `link-tracker`                | een link naar een tracker of linkverkorter, of met een trackingparameter                         |
-| `markup-html`                 | HTML in tekst                                                                                    |
-| `markup-fraction-invalid`     | een `{{` of `}}` die geen geldige breuk vormt (bijv. `{{1/0}}`, `{{1,5/2}}`, `{{-1/2}}`)         |
-| `course-term-not-allowed`     | een `[[term]]` in `course.json` (een cursus heeft geen `glossary`)                               |
-| `asset-path-invalid`          | `figure.src` is geen `.svg` onder `assets/`, bevat `..`, of is (of ligt in) een symlink          |
-| `asset-missing`               | de afbeelding bestaat niet                                                                       |
-| `asset-external-ref`          | de svg verwijst naar een andere site                                                             |
-| `figure-alt-missing`          | `alt` is leeg of alleen spaties                                                                  |
-| `id-removed`                  | een gepubliceerd id (cursus, les, stap, vraag, optie, interactie, item) is weg                   |
-| `id-moved`                    | een gepubliceerd id staat onder een andere ouder, of is hergebruikt voor iets anders             |
-| `lesson-unpublished`          | een les die op `main` `published` is, is dat niet meer                                           |
-| `version-not-bumped`          | een gepubliceerde les is gewijzigd zonder hogere `version` (of `version` is lager)               |
-| `base-not-found`              | de ref van `--base` bestaat niet                                                                 |
+| Code                          | Wanneer                                                                                                                                                                                                                    |
+| ----------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `json-invalid`                | het bestand is geen geldige JSON (met regel en kolom)                                                                                                                                                                      |
+| `schema`                      | het bestand past niet bij het schema (ontbrekend of onbekend veld, verkeerde waarde, fout id)                                                                                                                              |
+| `course-file-missing`         | een cursusmap zonder `course.json`                                                                                                                                                                                         |
+| `terms-file-missing`          | `content/terms.json` ontbreekt                                                                                                                                                                                             |
+| `course-id-mismatch`          | het cursus-id is niet gelijk aan de mapnaam                                                                                                                                                                                |
+| `lesson-file-missing`         | een `published` les zonder bestand                                                                                                                                                                                         |
+| `lesson-id-mismatch`          | het id in het lesbestand is anders dan in `course.json`                                                                                                                                                                    |
+| `lesson-file-orphan`          | een lesbestand dat niet als `published` les in `course.json` staat                                                                                                                                                         |
+| `id-duplicate`                | een id komt dubbel voor (zie "Id's"), met beide plekken                                                                                                                                                                    |
+| `interaction-answer-unknown`  | een antwoord in een interactie (ook een fout antwoord bij `choice`) is geen keuze of optie                                                                                                                                 |
+| `exercise-mistake-unreadable` | een fout antwoord bij een `number`-opgave is geen getal: de app herkent het nooit                                                                                                                                          |
+| `exercise-mistake-accepted`   | een fout antwoord telt als goed (binnen `tolerance`, in `accepted` of de juiste optie)                                                                                                                                     |
+| `typing-new-key-unused`       | een toets in `newKeys` van een `typing-drill` komt in geen enkele regel voor (`shift` telt bij een hoofdletter of een Shift-teken)                                                                                         |
+| `typing-dead-key-sequence`    | een regel van een `typing-drill` heeft een dode toets (`'`, `"`, `` ` ``, `~`, `^`) direct voor een letter die US-International samenstelt (`'e` wordt `é`), ook van het eind van een regel naar het begin van de volgende |
+| `typing-dead-key-at-end`      | de laatste regel van een `typing-drill` eindigt op een dode toets (`'`, `"`, `` ` ``, `~`, `^`), die pas na nog een toets verschijnt                                                                                       |
+| `source-ref-missing`          | een `sourceRef` (ook in `furtherReading`) staat niet in `sources`                                                                                                                                                          |
+| `source-only-low`             | een niet-lege `sourceRefs` met alleen `low`-bronnen                                                                                                                                                                        |
+| `source-date-invalid`         | `accessedOn` is geen bestaande datum (bijv. `2026-02-30`)                                                                                                                                                                  |
+| `source-date-future`          | `accessedOn` ligt na vandaag                                                                                                                                                                                               |
+| `glossary-term-unknown`       | een `[[term]]` die niet in de `glossary` van de les staat                                                                                                                                                                  |
+| `term-not-in-glossary`        | een vakterm uit `terms.json` staat in de tekst, maar niet in de `glossary`                                                                                                                                                 |
+| `quiz-step-count`             | een leertrajectles zonder of met meer dan één quizstap (oefenles: meer dan één)                                                                                                                                            |
+| `quiz-question-count`         | een quiz met minder dan 3 of meer dan 5 vragen                                                                                                                                                                             |
+| `quiz-option-count`           | een vraag met minder dan 3 of meer dan 4 opties                                                                                                                                                                            |
+| `quiz-correct-option-missing` | `correctOptionId` is geen van de opties                                                                                                                                                                                    |
+| `quiz-option-length`          | de langste optie is meer dan 1,5 × de kortste (in tekens, zonder opmaak en spaties eromheen)                                                                                                                               |
+| `duration-out-of-range`       | de berekende tijd ligt niet tussen 8 en 12 minuten                                                                                                                                                                         |
+| `duration-mismatch`           | `estimatedMinutes` ligt meer dan 2 minuten naast de berekende tijd                                                                                                                                                         |
+| `sentence-length`             | gemiddeld meer dan 15 woorden per zin                                                                                                                                                                                      |
+| `link-not-https`              | een link die niet met `https://` begint (ook `http:`, `javascript:`, `data:` en relatieve links)                                                                                                                           |
+| `link-tracker`                | een link naar een tracker of linkverkorter, of met een trackingparameter                                                                                                                                                   |
+| `markup-html`                 | HTML in tekst                                                                                                                                                                                                              |
+| `markup-fraction-invalid`     | een `{{` of `}}` die geen geldige breuk vormt (bijv. `{{1/0}}`, `{{1,5/2}}`, `{{-1/2}}`)                                                                                                                                   |
+| `course-term-not-allowed`     | een `[[term]]` in `course.json` (een cursus heeft geen `glossary`)                                                                                                                                                         |
+| `asset-path-invalid`          | `figure.src` is geen `.svg` onder `assets/`, bevat `..`, of is (of ligt in) een symlink                                                                                                                                    |
+| `asset-missing`               | de afbeelding bestaat niet                                                                                                                                                                                                 |
+| `asset-external-ref`          | de svg verwijst naar een andere site                                                                                                                                                                                       |
+| `figure-alt-missing`          | `alt` is leeg of alleen spaties                                                                                                                                                                                            |
+| `id-removed`                  | een gepubliceerd id (cursus, les, stap, vraag, optie, interactie, item) is weg                                                                                                                                             |
+| `id-moved`                    | een gepubliceerd id staat onder een andere ouder, of is hergebruikt voor iets anders                                                                                                                                       |
+| `lesson-unpublished`          | een les die op `main` `published` is, is dat niet meer                                                                                                                                                                     |
+| `version-not-bumped`          | een gepubliceerde les is gewijzigd zonder hogere `version` (of `version` is lager)                                                                                                                                         |
+| `base-not-found`              | de ref van `--base` bestaat niet                                                                                                                                                                                           |
 
 ### Hoe de tijd wordt berekend
 
-`woorden / 130` + 2 minuten per interactiestap + 1 minuut per quizvraag, afgerond op één decimaal.
+`woorden / 130` + 2 minuten per interactiestap (een `typing-drill`: 1 minuut + 1 minuut per 60 tekens van alle regels samen, afgerond op één decimaal) + 1 minuut per quizvraag, afgerond op één decimaal.
 
 Woorden tellen in de tekst die een kind sowieso leest: `objective`, Teds intro, de titels van stappen en blokken, alle bloktekst en kaarten (ook het onderschrift van een afbeelding), de intro van een quiz-, interactie- of practice-stap, vragen en opties, checklist-items en `successCriterion`. Feedback, hints, Teds reacties, de teksten binnen een interactie, de woordenlijst, de FAQ en "verder lezen" tellen niet mee. Opmaak en losse webadressen tellen niet als woorden.
 

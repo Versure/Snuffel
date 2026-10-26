@@ -43,6 +43,14 @@ export const CHILD_TEXT = {
   exercisePlays: (plays: number) => `${plays} keer gemaakt`,
   gameNotPlayed: 'nog niet gespeeld',
   exerciseNotDone: 'nog niet gemaakt',
+  typingScore: (accuracy: number, keysPerMinute: number | null) =>
+    keysPerMinute === null
+      ? `${accuracy}% goed`
+      : `${accuracy}% goed, ${keysPerMinute} aanslagen per minuut`,
+  typingMistakes: (keys: readonly string[]) =>
+    `Vaakst fout: ${keys.length > 1 ? `${keys.slice(0, -1).join(', ')} en ${keys[keys.length - 1]}` : keys.join('')}`,
+  typingPlays: (plays: number) => `${plays} keer gedaan`,
+  typingNotDone: 'nog niet gedaan',
   clear: 'Voortgang wissen',
   clearQuestion: (lesson: string, name: string) =>
     `Alles van ${lesson} voor ${name} wissen? Stappen, quizantwoorden, vinkjes en scores gaan weg. Dit kan niet terug.`,
