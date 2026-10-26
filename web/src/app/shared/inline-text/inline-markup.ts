@@ -223,3 +223,14 @@ function tokensToText(tokens: readonly InlineToken[]): string {
     )
     .join('');
 }
+
+/** True when the text has a valid fraction `{{a/b}}`, also inside bold or italic. */
+export function hasFraction(input: string): boolean {
+  const visit = (tokens: readonly InlineToken[]): boolean =>
+    tokens.some(
+      (token) =>
+        token.type === 'fraction' ||
+        ((token.type === 'strong' || token.type === 'em') && visit(token.children)),
+    );
+  return visit(parseInline(input));
+}

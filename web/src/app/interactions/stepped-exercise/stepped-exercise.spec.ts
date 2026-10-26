@@ -537,4 +537,134 @@ describe('SteppedExercise', () => {
     await click(setup, button(setup.element, 'Nog een keer'));
     expect(document.activeElement).toBe(setup.element.querySelector('.heading'));
   });
+  describe('how a typed fraction is read', () => {
+    const unbrace = (text: string) => text.replace(/\{\{|\}\}/g, '');
+    /** The exercise without any {{a/b}}: every fraction with a slash. */
+    const plain = (exercise: Exercise): Exercise => ({
+      ...exercise,
+      prompt: unbrace(exercise.prompt),
+      hints: exercise.hints.map(unbrace),
+      steps: exercise.steps.map((part) => ({
+        ...part,
+        title: unbrace(part.title),
+        text: unbrace(part.text),
+      })),
+      commonMistakes: exercise.commonMistakes.map((mistake) => ({
+        ...mistake,
+        feedback: unbrace(mistake.feedback),
+      })),
+      workedSolution: unbrace(exercise.workedSolution),
+      answer:
+        exercise.answer.type === 'choice'
+          ? {
+              ...exercise.answer,
+              options: exercise.answer.options.map((item) => ({
+                ...item,
+                text: unbrace(item.text),
+              })),
+            }
+          : exercise.answer,
+    });
+    const stackedFractions = { ...plain(fractions), prompt: 'Hoeveel is {{1/5}} + {{2/5}}?' };
+    const stackedRecipe = {
+      ...plain(recipe),
+      hints: [...plain(recipe).hints, 'Een kwart is **{{1/4}}**.'],
+    };
+
+    const reading = (element: HTMLElement) => element.querySelector<HTMLElement>('.reading');
+    /** What a screen reader reads: without the aria-hidden MathML. */
+    const readable = (node: Element | null) => {
+      if (!node) return '';
+      const copy = node.cloneNode(true) as Element;
+      copy.querySelectorAll('[aria-hidden="true"]').forEach((hidden) => hidden.remove());
+      return clean(copy.textContent);
+    };
+    const shown = (element: HTMLElement) => {
+      const math = reading(element)?.querySelector('snf-fraction math');
+      if (!math) return null;
+      return {
+        before: [...math.children]
+          .filter((child) => child.localName !== 'mfrac')
+          .map((child) => child.textContent?.trim()),
+        fraction: [...math.querySelectorAll('mfrac > mn')].map((mn) => mn.textContent?.trim()),
+      };
+    };
+
+    it('shows how a typed fraction is read when the exercise uses {{a/b}}', async () => {
+      const setup = await render(only(stackedFractions));
+      expect(reading(setup.element)).toBeNull();
+      await type(setup, '3/5');
+      expect(readable(reading(setup.element))).toBe(`${EXERCISE_TEXT.reading} 3 vijfde`);
+      expect(shown(setup.element)).toEqual({ before: [], fraction: ['3', '5'] });
+      await type(setup, '5 / 6');
+      expect(shown(setup.element)).toEqual({ before: [], fraction: ['5', '6'] });
+    });
+
+    it('shows 1 1/4 as a mixed number and 11/4 as eleven quarters', async () => {
+      const setup = await render(only(stackedFractions));
+      await type(setup, '1 1/4');
+      expect(shown(setup.element)).toEqual({ before: ['1'], fraction: ['1', '4'] });
+      expect(readable(reading(setup.element))).toBe(`${EXERCISE_TEXT.reading} 1 en 1 vierde`);
+      await type(setup, '11/4');
+      expect(shown(setup.element)).toEqual({ before: [], fraction: ['11', '4'] });
+      expect(readable(reading(setup.element))).toBe(`${EXERCISE_TEXT.reading} 11 vierde`);
+    });
+
+    it('shows nothing for a decimal, words or an empty input', async () => {
+      const setup = await render(only(stackedFractions));
+      for (const input of ['0,6', 'drie vijfde', '', '3/0']) {
+        await type(setup, input);
+        expect(reading(setup.element), input).toBeNull();
+      }
+    });
+
+    it('drops the unit of a number answer', async () => {
+      const setup = await render(only(stackedRecipe));
+      await type(setup, '3/4 liter');
+      expect(shown(setup.element)).toEqual({ before: [], fraction: ['3', '4'] });
+      await type(setup, '-1/2');
+      expect(shown(setup.element)).toEqual({ before: ['−'], fraction: ['1', '2'] });
+      expect(readable(reading(setup.element))).toBe(`${EXERCISE_TEXT.reading} min 1 half`);
+      await type(setup, '0,75');
+      expect(reading(setup.element)).toBeNull();
+      await type(setup, '0,75 liter');
+      expect(reading(setup.element)).toBeNull();
+    });
+
+    it('the reading is in aria-describedby of the input', async () => {
+      const setup = await render(only(stackedRecipe));
+      await type(setup, '3/4');
+      const input = field(setup.element)!;
+      const unit = setup.element.querySelector('.unit')!.id;
+      const read = reading(setup.element)!.id;
+      expect(read).toBeTruthy();
+      expect(input.getAttribute('aria-describedby')).toBe(`${unit} ${read}`);
+      expect(reading(setup.element)!.hasAttribute('aria-live')).toBe(false);
+      await type(setup, '');
+      expect(input.getAttribute('aria-describedby')).toBe(unit);
+    });
+
+    it('an exercise without {{a/b}} never shows a reading', async () => {
+      const setup = await render(only(plain(fractions), plain(recipe), plain(choice)));
+      for (const input of ['3/5', '1 1/4', '11/4']) {
+        await type(setup, input);
+        expect(reading(setup.element), input).toBeNull();
+      }
+      expect(field(setup.element)!.hasAttribute('aria-describedby')).toBe(false);
+    });
+
+    it('a {{a/b}} in another exercise of the same series turns the reading on', async () => {
+      const setup = await render(only(plain(fractions), stackedRecipe));
+      await type(setup, '3/5');
+      expect(shown(setup.element)).toEqual({ before: [], fraction: ['3', '5'] });
+    });
+
+    it('the reading stays when the answer is right', async () => {
+      const setup = await render(only(stackedFractions));
+      await answer(setup, '3/5');
+      expect(mood(setup.element)).toBe('happy');
+      expect(field(setup.element)!.disabled).toBe(true);
+      expect(readable(reading(setup.element))).toBe(`${EXERCISE_TEXT.reading} 3 vijfde`);
+    });
+  });
 });
