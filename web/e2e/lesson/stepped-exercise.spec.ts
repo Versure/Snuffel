@@ -51,7 +51,9 @@ test.describe('the stepped exercise', () => {
     await openExerciseLesson(page, { hash: anchor });
     const card = exerciseCard(page, 'gelijke-noemers');
     await expect(card.locator('.heading')).toHaveText('Opgave 1 van 4');
-    expect(await readableText(card.locator('.prompt'))).toBe('Hoeveel is 1 vijfde + 2 vijfde?');
+    await expect
+      .poll(() => readableText(card.locator('.prompt')))
+      .toBe('Hoeveel is 1 vijfde + 2 vijfde?');
     await expect(card.locator('input.input')).toBeVisible();
     await expect(card.getByRole('button', { name: 'Controleer', exact: true })).toBeVisible();
     await expect(card.locator('.solution-later')).toHaveText(
@@ -150,7 +152,9 @@ test.describe('the stepped exercise', () => {
         .getByRole('button', { name: shown === 0 ? 'Hint' : 'Nog een hint', exact: true })
         .click();
       await expect(card.locator('.hint')).toHaveCount(shown + 1);
-      expect(await readableText(card.locator('.hint').nth(shown))).toContain(spokenText(hint));
+      await expect
+        .poll(() => readableText(card.locator('.hint').nth(shown)))
+        .toContain(spokenText(hint));
     }
     // After the last hint: no hint button, and the focus is on that hint.
     await expect(card.getByRole('button', { name: /hint/i })).toHaveCount(0);
@@ -167,9 +171,9 @@ test.describe('the stepped exercise', () => {
     await toggle(0).click();
     await expect(toggle(0)).toHaveAttribute('aria-expanded', 'true');
     await expect(card.locator('.step-text').nth(0)).toBeVisible();
-    expect(await readableText(card.locator('.step-text').nth(0))).toContain(
-      spokenText(steps[0].text),
-    );
+    await expect
+      .poll(() => readableText(card.locator('.step-text').nth(0)))
+      .toContain(spokenText(steps[0].text));
     await expect(toggle(1)).toHaveAttribute('aria-expanded', 'false');
     await expect(card.locator('.step-text').nth(1)).toBeHidden();
     await toggle(1).click();
@@ -203,9 +207,9 @@ test.describe('the stepped exercise', () => {
     const solution = card.locator('.solution');
     await expect(solution).toBeFocused();
     await expect(solution).toContainText('Uitwerking');
-    expect(await readableText(solution)).toContain(
-      spokenText(exercise('ongelijke-noemers').workedSolution),
-    );
+    await expect
+      .poll(() => readableText(solution))
+      .toContain(spokenText(exercise('ongelijke-noemers').workedSolution));
     // The exercise is finished with the solution.
     await expect(card.getByRole('button', { name: 'Volgende opgave' })).toBeVisible();
   });

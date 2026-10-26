@@ -129,7 +129,7 @@ test.describe('fractions in lesson text', () => {
     expectStacked(await geometry(parts.nth(0)), 'prompt 1/5');
     expectStacked(await geometry(parts.nth(1)), 'prompt 2/5');
     // A plain number next to a fraction is no fraction: "+" is text.
-    expect(await readableText(prompt)).toBe('Hoeveel is 1 vijfde + 2 vijfde?');
+    await expect.poll(() => readableText(prompt)).toBe('Hoeveel is 1 vijfde + 2 vijfde?');
   });
 
   test('{{1 1/2}} is a mixed number: the whole number left of the fraction', async ({ page }) => {
@@ -160,7 +160,9 @@ test.describe('fractions in lesson text', () => {
       'true',
     );
     const mixed = mixedParagraph(page);
-    expect(await readableText(mixed)).toContain('Anderhalve liter is 1 en 1 half liter, of 1,5');
+    await expect
+      .poll(() => readableText(mixed))
+      .toContain('Anderhalve liter is 1 en 1 half liter, of 1,5');
     await expect(mixed).toMatchAriaSnapshot(`- text: ${JSON.stringify(spokenText(mixedText))}`);
 
     const prompt = exerciseCard(page, 'gelijke-noemers').locator('.prompt');
@@ -170,7 +172,7 @@ test.describe('fractions in lesson text', () => {
     await expect(prompt).toMatchAriaSnapshot('- paragraph: Hoeveel is 1 vijfde + 2 vijfde ?');
     // Every text of the exercise reads the way the content says it, with the fractions in words.
     const first = exercises[0];
-    expect(await readableText(prompt)).toBe(spokenText(first.prompt));
+    await expect.poll(() => readableText(prompt)).toBe(spokenText(first.prompt));
   });
 
   for (const scheme of ['light', 'dark'] as const) {
@@ -241,7 +243,7 @@ test.describe('the exercise shows how a typed fraction is read', () => {
     await expect(line).toContainText(reading);
     await expect(line.locator('snf-fraction mfrac > mn')).toHaveText(['3', '5']);
     expectStacked(await geometry(line.locator('snf-fraction')), 'reading 3/5');
-    expect(await readableText(line)).toBe(`${reading} 3 vijfde`);
+    await expect.poll(() => readableText(line)).toBe(`${reading} 3 vijfde`);
     // It is the description of the input (read after its name), and not a live region.
     await expect(card.locator('input.input')).toHaveAccessibleDescription(
       /Zo lees ik jouw antwoord: 3 vijfde/,
@@ -267,12 +269,12 @@ test.describe('the exercise shows how a typed fraction is read', () => {
       mixed.fraction.left - mixed.whole!.right,
       'room between the whole number and the fraction',
     ).toBeGreaterThanOrEqual(1);
-    expect(await readableText(line)).toBe(`${reading} 1 en 1 vierde`);
+    await expect.poll(() => readableText(line)).toBe(`${reading} 1 en 1 vierde`);
 
     await card.locator('input.input').fill('11/4');
     await expect(line.locator('snf-fraction math > mn')).toHaveCount(0);
     await expect(line.locator('snf-fraction mfrac > mn')).toHaveText(['11', '4']);
-    expect(await readableText(line)).toBe(`${reading} 11 vierde`);
+    await expect.poll(() => readableText(line)).toBe(`${reading} 11 vierde`);
     // Spaces around the slash are read as the same fraction.
     await card.locator('input.input').fill('3 / 5');
     await expect(line.locator('snf-fraction mfrac > mn')).toHaveText(['3', '5']);
@@ -301,7 +303,7 @@ test.describe('the exercise shows how a typed fraction is read', () => {
     await card.locator('input.input').fill('3/4 liter');
     const line = readingLine(page);
     await expect(line.locator('snf-fraction mfrac > mn')).toHaveText(['3', '4']);
-    expect(await readableText(line)).toBe(`${reading} 3 vierde`);
+    await expect.poll(() => readableText(line)).toBe(`${reading} 3 vierde`);
     await card.locator('input.input').fill('0,75');
     await expect(line).toHaveCount(0);
     await card.locator('input.input').fill('0.75 liter');
