@@ -313,6 +313,7 @@ Een interactie is data voor een bestaande component. De catalogus staat in `cont
 
 - **`trace-game`** (het voel-spel, algemeen gemaakt): een lijn die over tijd wordt getekend, plus een buigende hengeltop of een andere "meter". De vormen worden opgebouwd uit vaste bouwstenen in plaats van code: `base`, `pulse` (piek op tijdstip t met breedte), `ramp` (geleidelijk zwaarder), `wobble` (trillen), `pulses` (regelmatige tikjes). Config: `choices` (id, label, kleur), `patterns` (id, `answer`, bouwstenen, `explanation`), `rounds`, `durationMs`. Bij `prefers-reduced-motion` wordt de lijn meteen volledig getekend.
 - **`stepped-exercise`** (huiswerk-oefenles): opgave, verwacht antwoord (`number` met tolerantie, `text` met toegestane vormen, of `choice`), oplopende hints, tussenstappen die het kind kan openen, `commonMistakes` (herkende foute antwoorden met gerichte feedback) en een uitwerking die pas zichtbaar wordt na een eigen poging én alle hints.
+- **`typing-drill`** (blind typen, M15): het kind typt regels over op een echt toetsenbord, met een vingergids, en ziet daarna nauwkeurigheid, aanslagen per minuut en de vaakst foute toetsen; config `lines`, `newKeys` en `goals` (zie de catalogus, sectie `typing-drill`).
 - Nieuwe soorten (bijvoorbeeld sorteren of volgorde leggen) vragen code en lopen via de skill `spelcomponent-bouwen`, als eigen mijlpaal.
 
 ### 2.4 Inhoudschecks (`npm run content:check`)

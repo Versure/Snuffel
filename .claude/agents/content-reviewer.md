@@ -56,6 +56,13 @@ Lees eerst `CLAUDE.md` en `content/schema/v1/catalogus.md` (vooral "Een les", "S
 - **Zonder foto's:** dezelfde notatiecontrole als hieronder, maar tegen de notatie die Jop in de intake gaf (die geeft de skill je mee). Kreeg je geen notatie mee terwijl de les getallen, breuken of bewerkingen heeft: **blokkerend** (de skill kiest de notatie nooit zelf). **Uitzondering:** een voorbeeldles (id's beginnend met `voorbeeld-`, onder `content/fixtures/`) waarbij de skill de notatie meegaf als "voorbeeldmodus, niet door Jop gegeven". Controleer dan tegen die notatie (de schuine streep `a/b` en de komma, tenzij de wens een notatie noemde); dat de notatie niet van Jop komt, is niet blokkerend. Zet het wel in je rapport.
 - In `accepted` en `commonMistakes[].answer` staat wat het kind typt (`3/5`), geen `{{…}}`.
 
+**Typoefening (`typing-drill`)**
+
+- De regels gebruiken alleen toetsen die **tot en met deze les** geleerd zijn: de `newKeys` van deze les en van de lessen ervoor in de cursus (in de volgorde van `course.json`). Een toets die nog niet geleerd is: **blokkerend**, met het JSON-pad van de regel en de toets.
+- `newKeys` klopt met het leerdoel (`objective`, `concept`): de toetsen die de les als nieuw uitlegt, 2 tot 4 per les, en geen toets die een eerdere les al nieuw noemde.
+- De regels bevatten geen persoonsgegevens (namen, woonplaats, school) en geen ongepaste woorden, ook niet als woordje van losse letters.
+- Een leestekenles legt de dode toetsen uit zoals de catalogus zegt (een spatie na `'` of `"` geeft het teken zelf).
+
 **Foto's van het werkboek (als je ze kreeg)**
 
 - De les behandelt de stof van de foto's: hetzelfde onderwerp en niveau, en dezelfde **notatie en werkwijze** als het boek (bijv. hoe een breuk, een tussenstap of een eenheid genoteerd wordt). Een andere notatie of methode dan het boek: **blokkerend** (het kind raakt in de war).
