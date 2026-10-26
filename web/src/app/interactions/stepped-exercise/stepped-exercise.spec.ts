@@ -7,6 +7,8 @@ import type {
   SteppedExerciseConfig,
 } from '../../core/content/content.types';
 import { RANDOM } from '../../core/random/random';
+import { spokenFraction } from '../../shared/inline-text/fraction/spoken-fraction';
+import { type InlineToken, parseInline } from '../../shared/inline-text/inline-markup';
 import { shuffle } from '../../shared/quiz/shuffle';
 import type { InteractionResult } from '../interaction';
 import { EXERCISE_TEXT, SteppedExercise } from './stepped-exercise';
@@ -21,6 +23,19 @@ const unlike = byId('ongelijke-noemers');
 const recipe = byId('recept');
 const choice = byId('kies-de-som');
 const ted = lesson.ted;
+
+/** What a screen reader reads of a content text: the plain text with every fraction in words. */
+const spoken = (text: string): string => {
+  const read = (tokens: readonly InlineToken[]): string =>
+    tokens
+      .map((token) => {
+        if (token.type === 'fraction') return spokenFraction(token);
+        if (token.type === 'strong' || token.type === 'em') return read(token.children);
+        return token.text;
+      })
+      .join('');
+  return read(parseInline(text));
+};
 
 interface Setup {
   fixture: ComponentFixture<SteppedExercise>;
@@ -48,13 +63,20 @@ describe('SteppedExercise', () => {
 
   const only = (...exercises: Exercise[]): SteppedExerciseConfig => ({ exercises });
   const clean = (text: string | null | undefined) => text?.replace(/\s+/g, ' ').trim() ?? '';
+  /** What a screen reader reads: the text without aria-hidden parts (the MathML of a fraction). */
+  const readable = (node: Element | null | undefined) => {
+    if (!node) return '';
+    const copy = node.cloneNode(true) as Element;
+    copy.querySelectorAll('[aria-hidden="true"]').forEach((hidden) => hidden.remove());
+    return clean(copy.textContent);
+  };
   const heading = (element: HTMLElement) => clean(element.querySelector('.heading')?.textContent);
-  const prompt = (element: HTMLElement) => clean(element.querySelector('.prompt')?.textContent);
+  const prompt = (element: HTMLElement) => readable(element.querySelector('.prompt'));
   const field = (element: HTMLElement) => element.querySelector<HTMLInputElement>('input.input');
-  const say = (element: HTMLElement) => clean(element.querySelector('.say')?.textContent);
+  const say = (element: HTMLElement) => readable(element.querySelector('.say'));
   const notice = (element: HTMLElement) => clean(element.querySelector('.notice')?.textContent);
   const hints = (element: HTMLElement) =>
-    [...element.querySelectorAll('.hint')].map((item) => clean(item.textContent));
+    [...element.querySelectorAll('.hint')].map((item) => readable(item));
   const optionButtons = (element: HTMLElement) => [
     ...element.querySelectorAll<HTMLButtonElement>('button.option'),
   ];
@@ -133,7 +155,15 @@ describe('SteppedExercise', () => {
   it('shows the first exercise with its prompt, an input and Controleer', async () => {
     const { element } = await render();
     expect(heading(element)).toBe('Opgave 1 van 4');
-    expect(prompt(element)).toBe('Hoeveel is 1/5 + 2/5?');
+    expect(prompt(element)).toBe('Hoeveel is 1 vijfde + 2 vijfde?');
+    expect(
+      [...element.querySelectorAll('.prompt snf-fraction')].map((fraction) =>
+        [...fraction.querySelectorAll('mfrac > mn')].map((mn) => mn.textContent?.trim()),
+      ),
+    ).toEqual([
+      ['1', '5'],
+      ['2', '5'],
+    ]);
     const input = field(element)!;
     expect(input.type).toBe('text');
     expect(input.getAttribute('inputmode')).toBe('text');
@@ -278,7 +308,7 @@ describe('SteppedExercise', () => {
     // The other options stay open; a known mistake gives its feedback.
     await click(setup, option(setup.element, 'los-opgeteld'));
     expect(mood(setup.element)).toBe('thinking');
-    expect(say(setup.element)).toBe(choice.commonMistakes[0].feedback);
+    expect(say(setup.element)).toBe(spoken(choice.commonMistakes[0].feedback));
     expect(option(setup.element, 'los-opgeteld').disabled).toBe(true);
     expect(option(setup.element, 'half-en-kwart').disabled).toBe(false);
     await click(setup, option(setup.element, 'half-en-kwart'));
@@ -297,9 +327,11 @@ describe('SteppedExercise', () => {
     expect(hints(setup.element)).toEqual([`Hint: ${unlike.hints[0]}`]);
     expect(button(setup.element, 'Hint')).toBeUndefined();
     await click(setup, button(setup.element, 'Nog een hint'));
-    expect(hints(setup.element)).toEqual(unlike.hints.slice(0, 2).map((hint) => `Hint: ${hint}`));
+    expect(hints(setup.element)).toEqual(
+      unlike.hints.slice(0, 2).map((hint) => `Hint: ${spoken(hint)}`),
+    );
     await click(setup, button(setup.element, 'Nog een hint'));
-    expect(hints(setup.element)).toEqual(unlike.hints.map((hint) => `Hint: ${hint}`));
+    expect(hints(setup.element)).toEqual(unlike.hints.map((hint) => `Hint: ${spoken(hint)}`));
     expect(button(setup.element, 'Nog een hint')).toBeUndefined();
     // After the last hint the focus is on that hint.
     expect(document.activeElement).toBe(setup.element.querySelector('.hint:last-child'));
@@ -363,9 +395,7 @@ describe('SteppedExercise', () => {
     await click(setup, button(setup.element, EXERCISE_TEXT.solution));
     const shown = solution(setup.element)!;
     expect(clean(shown.querySelector('.solution-title')?.textContent)).toBe('Uitwerking');
-    expect(clean(shown.querySelector('.solution-text')?.textContent)).toBe(
-      fractions.workedSolution,
-    );
+    expect(readable(shown.querySelector('.solution-text'))).toBe(spoken(fractions.workedSolution));
     expect(button(setup.element, EXERCISE_TEXT.solution)).toBeUndefined();
   });
 
@@ -397,7 +427,7 @@ describe('SteppedExercise', () => {
     expect(mood(setup.element)).toBe('happy');
     await click(setup, button(setup.element, EXERCISE_TEXT.next));
     expect(heading(setup.element)).toBe('Opgave 2 van 4');
-    expect(prompt(setup.element)).toContain('1/2 + 1/3');
+    expect(prompt(setup.element)).toContain('1 half + 1 derde');
     expect(button(setup.element, EXERCISE_TEXT.next)).toBeUndefined();
     expect(setup.element.querySelector('.say')).toBeNull();
     expect(field(setup.element)!.value).toBe('');
@@ -572,13 +602,6 @@ describe('SteppedExercise', () => {
     };
 
     const reading = (element: HTMLElement) => element.querySelector<HTMLElement>('.reading');
-    /** What a screen reader reads: without the aria-hidden MathML. */
-    const readable = (node: Element | null) => {
-      if (!node) return '';
-      const copy = node.cloneNode(true) as Element;
-      copy.querySelectorAll('[aria-hidden="true"]').forEach((hidden) => hidden.remove());
-      return clean(copy.textContent);
-    };
     const shown = (element: HTMLElement) => {
       const math = reading(element)?.querySelector('snf-fraction math');
       if (!math) return null;
