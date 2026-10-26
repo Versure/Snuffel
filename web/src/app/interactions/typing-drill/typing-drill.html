@@ -78,7 +78,13 @@
       </p>
       <snf-typing-keyboard [next]="nextPress()" [newKeys]="config().newKeys" />
       @if (confirmRestart()) {
-        <div class="confirm" role="group" [attr.aria-labelledby]="confirmId">
+        <!-- Escape is the same as Nee, verder typen; it is not prevented. -->
+        <div
+          class="confirm"
+          role="group"
+          [attr.aria-labelledby]="confirmId"
+          (keydown.escape)="keepTyping()"
+        >
           <p class="confirm-question" [id]="confirmId">{{ text.restartQuestion }}</p>
           <div class="buttons">
             <button snf-button type="button" class="keep-typing" (click)="keepTyping()">

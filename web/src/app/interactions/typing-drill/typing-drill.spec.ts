@@ -309,6 +309,22 @@ describe('TypingDrill', () => {
     expect(document.activeElement).toBe(field(setup.element));
   });
 
+  it('Escape in the question is Nee, verder typen and is not prevented', async () => {
+    const setup = await render();
+    await start(setup);
+    await type(setup, 'xx');
+    const before = lineMarks(setup.element);
+    button(setup.element, 'Opnieuw beginnen')?.click();
+    await setup.fixture.whenStable();
+    const escape = new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true });
+    button(setup.element, 'Nee, verder typen')?.dispatchEvent(escape);
+    await setup.fixture.whenStable();
+    expect(escape.defaultPrevented).toBe(false);
+    expect(setup.element.querySelector('.confirm')).toBeNull();
+    expect(lineMarks(setup.element)).toEqual(before);
+    expect(document.activeElement).toBe(field(setup.element));
+  });
+
   it('Opnieuw beginnen before the first key starts over without a question', async () => {
     const setup = await render();
     await start(setup);
