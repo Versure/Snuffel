@@ -105,13 +105,13 @@ test.describe('the typing drill on a laptop', () => {
     await openTypingLesson(page, { hash: anchor });
     await startDrill(page);
     const first = typing.lines[0];
-    expect(await currentIndex(page)).toBe(0);
+    await expect.poll(() => currentIndex(page)).toBe(0);
     await page.keyboard.type('a');
     await page.keyboard.type('x');
     await page.keyboard.type('d');
-    expect(await marks(page)).toBe('cwc' + '.'.repeat(first.length - 3));
+    await expect.poll(() => marks(page)).toBe('cwc' + '.'.repeat(first.length - 3));
     // The cursor went on to the 4th char, not back.
-    expect(await currentIndex(page)).toBe(3);
+    await expect.poll(() => currentIndex(page)).toBe(3);
     // A wrong char is more than red: a cross, and text for a screen reader.
     const wrong = drillChars(page).nth(1);
     await expect(wrong.locator('.cross')).toHaveText('✗');
@@ -217,12 +217,12 @@ test.describe('the typing drill on a laptop', () => {
     ]) {
       await page.keyboard.press(key);
     }
-    expect(await marks(page)).toBe(untouched);
-    expect(await currentIndex(page)).toBe(0);
+    await expect.poll(() => marks(page)).toBe(untouched);
+    await expect.poll(() => currentIndex(page)).toBe(0);
     // A capital A is a real key press (Shift and the letter): it counts, as a wrong "a".
     await page.keyboard.press('Shift+A');
-    expect(await marks(page)).toBe('w' + untouched.slice(1));
-    expect(await currentIndex(page)).toBe(1);
+    await expect.poll(() => marks(page)).toBe('w' + untouched.slice(1));
+    await expect.poll(() => currentIndex(page)).toBe(1);
   });
 
   test('a char that arrives without its own keydown counts, as after a dead key', async ({
@@ -234,7 +234,7 @@ test.describe('the typing drill on a laptop', () => {
     // The first char is "a": a char inserted without a key press (a dead key and a space give
     // the char itself) is one key press, and a right one.
     await page.keyboard.insertText('a');
-    expect(await marks(page)).toBe('c' + '.'.repeat(length - 1));
+    await expect.poll(() => marks(page)).toBe('c' + '.'.repeat(length - 1));
     // A composition (a dead key waiting for its letter) counts nothing until it ends...
     const client = await page.context().newCDPSession(page);
     await client.send('Input.imeSetComposition', {
@@ -242,19 +242,19 @@ test.describe('the typing drill on a laptop', () => {
       selectionStart: 1,
       selectionEnd: 1,
     });
-    expect(await marks(page)).toBe('c' + '.'.repeat(length - 1));
-    expect(await currentIndex(page)).toBe(1);
+    await expect.poll(() => marks(page)).toBe('c' + '.'.repeat(length - 1));
+    await expect.poll(() => currentIndex(page)).toBe(1);
     // ... and then counts the one char it ended in, in this case the wrong é for the "s".
     await client.send('Input.insertText', { text: 'é' });
-    expect(await marks(page)).toBe('cw' + '.'.repeat(length - 2));
-    expect(await currentIndex(page)).toBe(2);
+    await expect.poll(() => marks(page)).toBe('cw' + '.'.repeat(length - 2));
+    await expect.poll(() => currentIndex(page)).toBe(2);
     // The field is empty again: a normal key still goes to the next char.
     await expect(drillBlock(page).getByLabel('Typvak')).toHaveValue('');
     await page.keyboard.type('d');
-    expect(await marks(page)).toBe('cwc' + '.'.repeat(length - 3));
+    await expect.poll(() => marks(page)).toBe('cwc' + '.'.repeat(length - 3));
     // Two chars in one insert (as "'t" after a dead key) count as two.
     await page.keyboard.insertText('fx');
-    expect(await marks(page)).toBe('cwccw' + '.'.repeat(length - 5));
+    await expect.poll(() => marks(page)).toBe('cwccw' + '.'.repeat(length - 5));
   });
 
   test('pasting is not counted', async ({ page, context }) => {
@@ -272,12 +272,12 @@ test.describe('the typing drill on a laptop', () => {
         data.setData('text/plain', 'asdf');
         field.dispatchEvent(new DragEvent('drop', { dataTransfer: data, cancelable: true }));
       });
-    expect(await marks(page)).toBe('.'.repeat(length));
-    expect(await currentIndex(page)).toBe(0);
+    await expect.poll(() => marks(page)).toBe('.'.repeat(length));
+    await expect.poll(() => currentIndex(page)).toBe(0);
     await expect(drillBlock(page).getByLabel('Typvak')).toHaveValue('');
     // Typing still works afterwards.
     await page.keyboard.type('a');
-    expect(await marks(page)).toBe('c' + '.'.repeat(length - 1));
+    await expect.poll(() => marks(page)).toBe('c' + '.'.repeat(length - 1));
   });
 
   test('Tab leaves the typing field and Shift+Tab comes back', async ({ page }) => {
@@ -370,7 +370,7 @@ test.describe('the typing drill on a laptop', () => {
     await expect(drillBlock(page).locator('.counter')).toHaveText(
       `Regel 1 van ${typing.lines.length}`,
     );
-    expect(await marks(page)).toBe('.'.repeat(typing.lines[0].length));
+    await expect.poll(() => marks(page)).toBe('.'.repeat(typing.lines[0].length));
     await expect(drillBlock(page).getByLabel('Typvak')).toBeFocused();
     await settle(page);
     expect((await storedRecords(page)).interaction_results).toEqual([]);
@@ -380,19 +380,20 @@ test.describe('the typing drill on a laptop', () => {
     await openTypingLesson(page, { hash: anchor });
     await startDrill(page);
     await typeLine(page, typing.lines[0].slice(0, 3));
-    const before = await marks(page);
+    const before = 'ccc' + '.'.repeat(typing.lines[0].length - 3);
+    await expect.poll(() => marks(page)).toBe(before);
     await page.keyboard.press('Tab');
     await page.keyboard.press('Space');
     // Opnieuw beginnen asks first, and the safe answer has the focus: another space goes on.
     await expect(drillBlock(page).getByText('Weet je het zeker?')).toBeVisible();
     const keepTyping = drillBlock(page).getByRole('button', { name: 'Nee, verder typen' });
     await expect(keepTyping).toBeFocused();
-    expect(await marks(page)).toBe(before);
+    await expect.poll(() => marks(page)).toBe(before);
     await page.keyboard.press('Space');
     await expect(drillBlock(page).getByLabel('Typvak')).toBeFocused();
-    expect(await marks(page)).toBe(before);
+    await expect.poll(() => marks(page)).toBe(before);
     await page.keyboard.type(typing.lines[0][3] ?? '');
-    expect(await marks(page)).toBe('cccc' + '.'.repeat(typing.lines[0].length - 4));
+    await expect.poll(() => marks(page)).toBe('cccc' + '.'.repeat(typing.lines[0].length - 4));
   });
 });
 
@@ -475,7 +476,7 @@ test.describe('the typing drill: results', () => {
     await expect(drillBlock(page).locator('.counter')).toHaveText(
       `Regel 1 van ${typing.lines.length}`,
     );
-    expect(await marks(page)).toBe('.'.repeat(typing.lines[0].length));
+    await expect.poll(() => marks(page)).toBe('.'.repeat(typing.lines[0].length));
     await expect(drillBlock(page).getByLabel('Typvak')).toBeFocused();
     await typeAll(page);
     await expect.poll(async () => (await storedRecords(page)).interaction_results.length).toBe(2);
@@ -574,7 +575,7 @@ test.describe('the typing drill on a phone', () => {
     // That key was not counted: the drill has not started.
     await start.click();
     await expect(block.getByLabel('Typvak')).toBeFocused();
-    expect(await marks(page)).toBe('.'.repeat(typing.lines[0].length));
+    await expect.poll(() => marks(page)).toBe('.'.repeat(typing.lines[0].length));
     await settle(page);
     expect((await storedRecords(page)).interaction_results).toEqual([]);
   });
