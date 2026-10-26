@@ -212,7 +212,7 @@ export class TypingDrill implements InteractionComponent<TypingDrillConfig> {
   protected onDocumentKeydown(event: KeyboardEvent): void {
     if (this.phase() !== 'touch') return;
     if (event.ctrlKey || event.metaKey || event.altKey || event.isComposing) return;
-    if (NO_REAL_KEY.has(event.key)) return;
+    if (NO_REAL_KEY.has(event.key) || isTextField(event.target)) return;
     this.phase.set('start');
     this.focusAfterRender('.start');
   }
@@ -291,4 +291,17 @@ export class TypingDrill implements InteractionComponent<TypingDrillConfig> {
       injector: this.injector,
     });
   }
+}
+
+/**
+ * A key in a text field elsewhere on the page (the on-screen keyboard of a phone types there too)
+ * says nothing about a real keyboard.
+ */
+function isTextField(target: EventTarget | null): boolean {
+  if (!(target instanceof HTMLElement)) return false;
+  return (
+    target.isContentEditable ||
+    target.closest('input, textarea, select, [contenteditable]:not([contenteditable="false"])') !==
+      null
+  );
 }

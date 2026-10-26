@@ -325,6 +325,20 @@ describe('TypingDrill', () => {
     expect(setup.answered.length).toBe(0);
   });
 
+  it('a key in a text field elsewhere on a touch-only device keeps the message', async () => {
+    const setup = await render(fixtureConfig, { touchOnly: true });
+    const editable = document.createElement('div');
+    editable.setAttribute('contenteditable', 'true');
+    const fields = ['input', 'textarea', 'select'].map((tag) => document.createElement(tag));
+    for (const target of [...fields, editable]) {
+      document.body.append(target);
+      target.dispatchEvent(new KeyboardEvent('keydown', { key: 'a', bubbles: true }));
+      target.remove();
+      await setup.fixture.whenStable();
+      expect(setup.element.querySelector('.touch'), target.tagName).not.toBeNull();
+    }
+  });
+
   it('the live region says the line at the start of each line and the result at the end, not per key', async () => {
     const setup = await render();
     expect(live(setup.element)).toBe('');
