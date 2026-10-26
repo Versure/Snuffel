@@ -100,7 +100,7 @@ Bestand `content/courses/<cursus-id>/lessons/NN-<les-id>.json` (`NN` is het volg
 - Regels alleen met toetsen die in deze les of de lessen ervoor geleerd zijn; korte regels (een teken te veel maakt de rest van de regel fout).
 - Dode toetsen (`'`, `"`, `` ` ``, `~`, `^`) nooit direct voor een letter die US-International samenstelt (`'en` wordt `én`); zie de catalogus. Geen accenten.
 - De quiz gaat over vingers en houding; de praktijkopdracht is typen op een echt toetsenbord zonder te kijken (bijv. "typ een berichtje aan opa").
-- `content:check` meldt `typing-new-key-unused` (een toets in `newKeys` die geen regel gebruikt) en `typing-dead-key-sequence`. Een typoefening telt 1 minuut plus 1 minuut per 60 tekens.
+- `content:check` meldt `typing-new-key-unused` (een toets in `newKeys` die geen regel gebruikt), `typing-dead-key-sequence` (ook van het eind van een regel naar het begin van de volgende) en `typing-dead-key-at-end` (de laatste regel eindigt op een dode toets, dan blijft de oefening wachten). Een typoefening telt 1 minuut plus 1 minuut per 60 tekens.
 
 ## 5. Huiswerkmodus (`kind: practice`)
 

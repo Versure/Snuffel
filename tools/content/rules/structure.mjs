@@ -1,6 +1,6 @@
 // Structure: lesson files match course.json, and ids are unique where they must be.
 import { checkAnswer, parseNumber } from '../answer.mjs';
-import { composedChar, deadKeySequences, keysOfLine } from '../typing.mjs';
+import { composedChar, DEAD_KEYS, deadKeySequences, keysOfLine } from '../typing.mjs';
 import { interactionConfigIds, lessonIds } from '../walk.mjs';
 
 function issue(code, file, path, message) {
@@ -180,7 +180,22 @@ function checkTypingDrill(config, base, file, issues) {
     // The app types the lines one after another without Enter, so the last char of a line and
     // the first char of the next line follow each other as well.
     const next = config.lines[l + 1];
-    if (!line || !next) return;
+    if (!next) {
+      // A dead key shows nothing until the next key, so the drill would wait after the last char.
+      const last = [...line].at(-1);
+      if (last !== undefined && Object.hasOwn(DEAD_KEYS, last)) {
+        issues.push(
+          issue(
+            'typing-dead-key-at-end',
+            file,
+            `${base}.lines[${l}]`,
+            `de laatste regel eindigt op de dode toets ${last}; die verschijnt pas na nog een toets, dus de oefening wacht; zet er nog een letter of leesteken achter`,
+          ),
+        );
+      }
+      return;
+    }
+    if (!line) return;
     const join = [...line].at(-1) + [...next][0];
     for (const { sequence } of deadKeySequences(join)) {
       issues.push(

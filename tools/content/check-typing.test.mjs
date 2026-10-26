@@ -28,6 +28,7 @@ describe('typing drill checks', () => {
     }).check();
     assertNoIssue(result, 'typing-new-key-unused');
     assertNoIssue(result, 'typing-dead-key-sequence');
+    assertNoIssue(result, 'typing-dead-key-at-end');
     assertNoIssue(result, 'schema');
   });
 
@@ -86,14 +87,26 @@ describe('typing drill checks', () => {
       newKeys: [],
     }).check();
     assertNoIssue(result, 'typing-dead-key-sequence');
+    assertNoIssue(result, 'typing-dead-key-at-end');
+  });
+
+  test('a dead key as the last char of the last line gives typing-dead-key-at-end', (t) => {
+    const result = withDrill(t, { lines: ["auto'", 'zeg "hoi"'], newKeys: [] }).check();
+    const error = assertIssue(result, 'typing-dead-key-at-end', `${base}.lines[1]`);
+    assert.equal(
+      error.message,
+      'de laatste regel eindigt op de dode toets "; die verschijnt pas na nog een toets, dus de oefening wacht; zet er nog een letter of leesteken achter',
+    );
+    assert.equal(result.errors.filter((e) => e.code === 'typing-dead-key-at-end').length, 1);
   });
 
   test("auto's and zo'n are fine", (t) => {
     const result = withDrill(t, {
-      lines: ["auto's", "zo'n", "'t is", "auto' en", 'zei "ja"'],
+      lines: ["auto's", 'zei "ja"', "zo'n", "'t is", "auto' en"],
       newKeys: ["'"],
     }).check();
     assertNoIssue(result, 'typing-dead-key-sequence');
+    assertNoIssue(result, 'typing-dead-key-at-end');
     assertNoIssue(result, 'typing-new-key-unused');
   });
 
