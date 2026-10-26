@@ -40,6 +40,18 @@ describe('InlineTokens', () => {
     expect(p.textContent).toBe('shad en shad');
   });
 
+  it('renders a fraction token as a stacked fraction, also inside bold and italic', async () => {
+    const p = await render(parseInline('{{1 1/4}} en **{{1/2}}** en *{{3/4}}*'));
+    const fractions = [...p.querySelectorAll('snf-fraction')];
+    expect(fractions.length).toBe(3);
+    expect(fractions[0].querySelector('.snf-visually-hidden')?.textContent).toBe('1 en 1 vierde');
+    expect(fractions[0].querySelector('math > mn')?.textContent).toBe('1');
+    expect(p.querySelector('strong snf-fraction mfrac')?.textContent?.replace(/\s/g, '')).toBe(
+      '12',
+    );
+    expect(p.querySelector('em snf-fraction .snf-visually-hidden')?.textContent).toBe('3 vierde');
+  });
+
   it('renders nothing for no tokens', async () => {
     const p = await render([]);
     expect(p.textContent).toBe('');

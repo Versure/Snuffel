@@ -16,6 +16,13 @@
         <ng-container>{{ token.text }}</ng-container>
       }
     }
+    @case ('fraction') {
+      <snf-fraction
+        [numerator]="token.numerator"
+        [denominator]="token.denominator"
+        [whole]="token.whole"
+      />
+    }
     @default {
       <ng-container>{{ token.text }}</ng-container>
     }
