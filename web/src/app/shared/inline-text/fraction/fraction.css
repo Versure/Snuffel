@@ -15,3 +15,8 @@ math {
   math-style: normal;
   color: inherit;
 }
+
+/* A little room between the whole number and the fraction, so 1 1/4 never looks like 11/4. */
+math > mn + mfrac {
+  margin-inline-start: 0.15em;
+}

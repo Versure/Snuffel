@@ -142,9 +142,11 @@ test.describe('fractions in lesson text', () => {
     const shape = await geometry(mixed);
     expectStacked(shape, 'mixed 1 1/2');
     expect(shape.whole, 'whole number').not.toBeNull();
-    expect(shape.whole!.right, 'whole number left of the fraction').toBeLessThanOrEqual(
-      shape.fraction.left + 1,
-    );
+    // Left of the fraction, with visible room between them: 1 1/2 never looks like 11/2.
+    expect(
+      shape.fraction.left - shape.whole!.right,
+      'room between the whole number and the fraction',
+    ).toBeGreaterThanOrEqual(1);
     // On the line of the fraction, not above or below it.
     expect(shape.whole!.top).toBeLessThan(shape.fraction.bottom);
     expect(shape.whole!.bottom).toBeGreaterThan(shape.fraction.top);
@@ -260,7 +262,10 @@ test.describe('the exercise shows how a typed fraction is read', () => {
     await expect(line.locator('snf-fraction mfrac > mn')).toHaveText(['1', '4']);
     const mixed = await geometry(line.locator('snf-fraction'));
     expect(mixed.whole).not.toBeNull();
-    expect(mixed.whole!.right).toBeLessThanOrEqual(mixed.fraction.left + 1);
+    expect(
+      mixed.fraction.left - mixed.whole!.right,
+      'room between the whole number and the fraction',
+    ).toBeGreaterThanOrEqual(1);
     expect(await readableText(line)).toBe(`${reading} 1 en 1 vierde`);
 
     await card.locator('input.input').fill('11/4');
