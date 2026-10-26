@@ -8,7 +8,6 @@ import {
   handOf,
   KEYBOARD_ROWS,
   keyForChar,
-  keyName,
   ROW_UNITS,
   type DrawnKey,
 } from './keyboard-layout';
@@ -108,8 +107,5 @@ describe('keyboard layout', () => {
     ]);
     expect(fingerKind('left-ring')).toBe('ring');
     expect(fingerKind('thumb')).toBe('thumb');
-    expect(keyName('space')).toBe('spatie');
-    expect(keyName('shift')).toBe('Shift');
-    expect(keyName(';')).toBe(';');
   });
 });

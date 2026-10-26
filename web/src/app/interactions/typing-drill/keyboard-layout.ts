@@ -183,14 +183,3 @@ export const FINGER_KINDS: readonly { readonly kind: FingerKind; readonly name: 
 export function fingerKind(finger: Finger): FingerKind {
   return finger === 'thumb' ? 'thumb' : (finger.split('-')[1] as FingerKind);
 }
-
-/** The name of a key in a text: `spatie`, `Shift`, or the key itself (`f`, `;`). */
-export const KEY_NAMES: Readonly<Partial<Record<TypingKey, string>>> = {
-  space: 'spatie',
-  shift: 'Shift',
-};
-
-/** The name of a key in a text. */
-export function keyName(key: TypingKey): string {
-  return KEY_NAMES[key] ?? key;
-}

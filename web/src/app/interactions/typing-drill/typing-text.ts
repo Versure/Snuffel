@@ -1,6 +1,7 @@
 // Fixed texts of a typing drill (no lesson content), and how keys are written in a sentence.
 import type { TypingKey } from '../../core/content/content.types';
-import { FINGER_NAMES, fingerOf, keyName, type KeyPress } from './keyboard-layout';
+import { keyName } from '../../core/typing/key-name';
+import { FINGER_NAMES, fingerOf, type KeyPress } from './keyboard-layout';
 
 /** "a", "a en b", "a, b en c". */
 export function dutchList(items: readonly string[]): string {

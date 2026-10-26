@@ -1,5 +1,6 @@
 import type { InteractionStep, PracticeStep, QuizStep } from '../content/content.types';
 import type { InteractionResultRecord, QuizAttemptRecord } from '../pocketbase/types';
+import { keyName } from '../typing/key-name';
 
 /** What a child did in one quiz step, with the lesson as it is now. */
 export interface QuizSummary {
@@ -150,13 +151,6 @@ export function exerciseHelp(detail: unknown): ExerciseHelp | null {
     if (solution) solutions += 1;
   }
   return { hints, solutions, exercises: detail['exercises'].length };
-}
-
-/** The name of a key in a text, as in the typing drill: `spatie`, `Shift`, or the key itself. */
-function keyName(key: string): string {
-  if (key === 'space') return 'spatie';
-  if (key === 'shift') return 'Shift';
-  return key;
 }
 
 /**

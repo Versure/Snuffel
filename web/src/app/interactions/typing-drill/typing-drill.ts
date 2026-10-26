@@ -24,6 +24,7 @@ import { TedSays } from '../../shared/ui/ted-says/ted-says';
 import type { TedMood } from '../../shared/ui/ted/ted';
 import type { InteractionComponent, InteractionResult } from '../interaction';
 import { accuracy } from '../../core/typing/accuracy';
+import { keyName } from '../../core/typing/key-name';
 import {
   drillResult,
   expectedChar,
@@ -34,7 +35,7 @@ import {
   typeChar,
 } from './drill';
 import { TypingKeyboard } from './keyboard/keyboard';
-import { keyForChar, keyName } from './keyboard-layout';
+import { keyForChar } from './keyboard-layout';
 import { TypedInput } from './typed-input';
 import { dutchList, newKeysText } from './typing-text';
 
