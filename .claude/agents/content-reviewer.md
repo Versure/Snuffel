@@ -13,7 +13,7 @@ Je bent de inhoudsreviewer van Snuffel. Je **verandert niets** en zoekt geen nie
 - het pad van de les (of lessen) die je beoordeelt;
 - bij huiswerk: wat het huiswerk is (vak, niveau, methode, hoofdstuk), zonder de opgaven zelf;
 - bij huiswerk soms: de paden van foto's van de werkboekpagina's (meestal onder `huiswerk-fotos/`). Lees ze met `Read`; ze staan nooit in de repo;
-- bij huiswerk: de **notatie** die de skill koos, per soort (breuk, kommagetal, delen, keer, tussenstap en uitwerking), en waarom: van de foto's, of zonder foto's wat Jop in de intake zei.
+- bij huiswerk: de **notatie** die de skill koos, per soort (breuk, kommagetal, delen, keer, tussenstap en uitwerking), en waarom: van de foto's, of zonder foto's wat Jop in de intake zei (in de voorbeeldmodus van de skill: "voorbeeldmodus, niet door Jop gegeven").
 
 Lees eerst `CLAUDE.md` en `content/schema/v1/catalogus.md` (vooral "Een les", "Staptypen", "Opmaak in tekst", "Notatie", "Bronnen en betrouwbaarheid" en "Wat een script niet kan zien"). Bij twijfel over een veld: het schema in dezelfde map.
 
@@ -53,7 +53,7 @@ Lees eerst `CLAUDE.md` en `content/schema/v1/catalogus.md` (vooral "Een les", "S
 
 - Geen voorgezegde antwoorden: hints en tussenstappen vóór de uitwerking, de uitwerking pas na een eigen poging.
 - Geen opgaven die letterlijk uit het huiswerk of de methode komen.
-- **Zonder foto's:** dezelfde notatiecontrole als hieronder, maar tegen de notatie die Jop in de intake gaf (die geeft de skill je mee). Kreeg je geen notatie mee terwijl de les getallen, breuken of bewerkingen heeft: **blokkerend** (de skill kiest de notatie nooit zelf).
+- **Zonder foto's:** dezelfde notatiecontrole als hieronder, maar tegen de notatie die Jop in de intake gaf (die geeft de skill je mee). Kreeg je geen notatie mee terwijl de les getallen, breuken of bewerkingen heeft: **blokkerend** (de skill kiest de notatie nooit zelf). **Uitzondering:** een voorbeeldles (id's beginnend met `voorbeeld-`, onder `content/fixtures/`) waarbij de skill de notatie meegaf als "voorbeeldmodus, niet door Jop gegeven". Controleer dan tegen die notatie (de schuine streep `a/b` en de komma, tenzij de wens een notatie noemde); dat de notatie niet van Jop komt, is niet blokkerend. Zet het wel in je rapport.
 - In `accepted` en `commonMistakes[].answer` staat wat het kind typt (`3/5`), geen `{{…}}`.
 
 **Foto's van het werkboek (als je ze kreeg)**

@@ -175,7 +175,7 @@ Voor een voorbeeld dat nooit echte inhoud wordt:
 - alle id's (cursus, les) beginnen met `voorbeeld-`;
 - wijzig `content/terms.json` **niet**; vaktermen staan alleen in de `glossary` van de les;
 - geen `content/…`-branch, geen commit, geen push en geen PR: de les blijft als **ongecommitte bestanden** in `content/fixtures/courses/<cursus-id>/` in de werkmap van de branch waarop je draait. Draai daarom op een eigen branch, niet op `main` of een `content/…`-branch: sta je op `main`, maak dan eerst `git switch -c sample/<cursus-id>` (werkmap schoon, zie "Vooraf");
-- geen vragen aan Jop: de intake-antwoorden staan in de wens; het leerpad komt in het verslag in plaats van een stop. Gaat het over rekenen en staat de notatie niet in de wens, gebruik dan de schuine streep (`a/b`) en de komma, en zeg in het verslag dat de notatie niet gegeven was;
+- geen vragen aan Jop: de intake-antwoorden staan in de wens; het leerpad komt in het verslag in plaats van een stop. Gaat het over rekenen en staat de notatie niet in de wens, gebruik dan de schuine streep (`a/b`) en de komma, geef die aan `content-reviewer` mee als notatie met de reden "voorbeeldmodus, niet door Jop gegeven", en zeg in het verslag dat de notatie niet gegeven was;
 - alle andere stappen (bronnen, les maken, `npm run content:check`, review) gelden gewoon.
 
 Geef aan het eind een verslag terug, met daarin hoe Jop de voorbeeldles weer weghaalt (de map `content/fixtures/courses/<cursus-id>/` verwijderen, of `git clean -fd content/fixtures/courses/<cursus-id>/`): de wens, de intake, de bronnen (geopend ja/nee), het leerpad, de uitvoer van `npm run content:check` en het volledige rapport van `content-reviewer` per ronde.
