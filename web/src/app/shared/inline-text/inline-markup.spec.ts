@@ -32,4 +32,10 @@ describe('plainText', () => {
     );
     expect(plainText('3 * 4 * 5')).toBe('3 * 4 * 5');
   });
+
+  it('plainText writes a fraction with a slash', () => {
+    expect(plainText('{{1 1/4}} liter')).toBe('1 1/4 liter');
+    expect(plainText('Hoeveel is {{1/5}} + **{{2/5}}**?')).toBe('Hoeveel is 1/5 + 2/5?');
+    expect(plainText('1/5')).toBe('1/5');
+  });
 });

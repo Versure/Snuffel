@@ -1,16 +1,18 @@
 // Inline markup of lesson text (a small subset of Markdown) and simple text measures.
 //
-// Allowed: **bold**, *italic*, [label](https://…), [[term]] and [[term|shown form]].
-// Everything else is plain text. The cases in content/schema/v1/inline-markup.cases.json pin the
+// Allowed: **bold**, *italic*, [label](https://…), [[term]], [[term|shown form]], and a stacked
+// fraction {{a/b}} or mixed number {{n a/b}} (M14). Everything else is plain text. The cases in content/schema/v1/inline-markup.cases.json pin the
 // behaviour; the renderer in the app (M7) is tested against the same cases.
 
 /**
  * Parses inline markup into tokens:
  * - `{ type: 'text', text }`
- * - `{ type: 'strong', children }` and `{ type: 'em', children }` (children: text, link, term;
- *   em may sit inside strong, not the other way round)
+ * - `{ type: 'strong', children }` and `{ type: 'em', children }` (children: text, link, term,
+ *   fraction; em may sit inside strong, not the other way round)
  * - `{ type: 'link', text, url }` (label is plain text; the url is not checked here)
  * - `{ type: 'term', term, text }` (`text` is the shown form, the term itself when not given)
+ * - `{ type: 'fraction', text, whole?, numerator, denominator }` (digits as written, as strings;
+ *   `text` is the plain form with a slash: `1/5`, `1 1/4`)
  */
 export function parseInline(input) {
   return parse(input, { strong: true, em: true });
@@ -25,6 +27,13 @@ function parse(input, allow) {
   };
   let i = 0;
   while (i < input.length) {
+    const fraction = input.startsWith('{{', i) ? readFraction(input, i) : null;
+    if (fraction) {
+      flush();
+      tokens.push(fraction.token);
+      i = fraction.end;
+      continue;
+    }
     const term = input.startsWith('[[', i) ? readTerm(input, i) : null;
     if (term) {
       flush();
@@ -68,6 +77,31 @@ function parse(input, allow) {
   }
   flush();
   return tokens;
+}
+
+// Whole numbers without a leading zero; one space between the whole number and the fraction.
+const FRACTION = /^(?:([1-9][0-9]*) )?(0|[1-9][0-9]*)\/([1-9][0-9]*)$/;
+
+/**
+ * `{{a/b}}` or `{{n a/b}}` at `start`, or null. Digits only, no spaces except the one after the
+ * whole number, the denominator is never 0, and in a mixed number the whole number is at least 1
+ * and the fraction is proper (1 ≤ numerator < denominator).
+ */
+function readFraction(input, start) {
+  const close = input.indexOf('}}', start + 2);
+  if (close < 0) return null;
+  const match = FRACTION.exec(input.slice(start + 2, close));
+  if (!match) return null;
+  const [, whole, numerator, denominator] = match;
+  if (whole !== undefined && (Number(numerator) < 1 || Number(numerator) >= Number(denominator))) {
+    return null;
+  }
+  const text = `${whole === undefined ? '' : `${whole} `}${numerator}/${denominator}`;
+  const token =
+    whole === undefined
+      ? { type: 'fraction', text, numerator, denominator }
+      : { type: 'fraction', text, whole, numerator, denominator };
+  return { token, end: close + 2 };
 }
 
 /** `[[term]]` or `[[term|shown form]]` at `start`, or null. */
@@ -125,7 +159,10 @@ function readDelimited(input, start, marker) {
   return null;
 }
 
-/** The text a reader sees: markup removed, link labels and shown term forms kept. */
+/**
+ * The text a reader sees: markup removed, link labels and shown term forms kept, a fraction with a
+ * slash (`{{1 1/4}}` is `1 1/4`).
+ */
 export function plainText(input) {
   return tokensToText(parseInline(input));
 }
