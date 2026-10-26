@@ -5,7 +5,7 @@ import type {
   NumberAnswer,
   TextAnswer,
 } from '../../core/content/content.types';
-import { checkAnswer, normalizeText, parseNumber } from './answer';
+import { checkAnswer, normalizeText, parseNumber, readFraction } from './answer';
 
 interface NumberCase {
   readonly name: string;
@@ -209,5 +209,86 @@ describe('common mistakes', () => {
     expect(outcome(liters, 'abc', [{ answer: 'abc', feedback: 'Nee.' }])).toBe('unreadable');
     expect(outcome(liters, '1/0')).toBe('unreadable');
     expect(outcome(sixths, '  ')).toBe('empty');
+  });
+});
+
+describe('readFraction', () => {
+  const sixthsNumber: NumberAnswer = { type: 'number', value: 3 / 5, tolerance: 0.001 };
+  const choice: ExerciseAnswer = {
+    type: 'choice',
+    options: [
+      { id: 'drie-vijfde', text: '3/5' },
+      { id: 'twee-tiende', text: '2/10' },
+    ],
+    correctOptionId: 'drie-vijfde',
+  };
+
+  it('reads 3/5, 3 / 5 and 1 1/4 as fractions', () => {
+    for (const answer of [sixthsNumber, sixths]) {
+      expect(readFraction(answer, '3/5')).toEqual({
+        negative: false,
+        numerator: '3',
+        denominator: '5',
+      });
+      expect(readFraction(answer, ' 3 / 5 ')).toEqual({
+        negative: false,
+        numerator: '3',
+        denominator: '5',
+      });
+      expect(readFraction(answer, '1 1/4')).toEqual({
+        negative: false,
+        whole: '1',
+        numerator: '1',
+        denominator: '4',
+      });
+    }
+    expect(readFraction(sixths, '1  1/4')).toEqual({
+      negative: false,
+      whole: '1',
+      numerator: '1',
+      denominator: '4',
+    });
+  });
+
+  it('11/4 is not 1 1/4', () => {
+    expect(readFraction(sixthsNumber, '11/4')).toEqual({
+      negative: false,
+      numerator: '11',
+      denominator: '4',
+    });
+  });
+
+  it('a number answer drops its unit and reads a minus', () => {
+    expect(readFraction(liters, '3/4 liter')).toEqual({
+      negative: false,
+      numerator: '3',
+      denominator: '4',
+    });
+    expect(readFraction(liters, '3/4 Liter')).toEqual({
+      negative: false,
+      numerator: '3',
+      denominator: '4',
+    });
+    expect(readFraction(sixthsNumber, '-1/2')).toEqual({
+      negative: true,
+      numerator: '1',
+      denominator: '2',
+    });
+    expect(readFraction(sixthsNumber, '−1 1/2')).toEqual({
+      negative: true,
+      whole: '1',
+      numerator: '1',
+      denominator: '2',
+    });
+    expect(readFraction(liters, '3/4 kilo')).toBeNull();
+  });
+
+  it('a decimal, words, empty, 3/0 and a choice are no fraction', () => {
+    for (const input of ['0,75', '0.75', '3', 'drie vijfde', '', '  ', '3/0', '1 1/0', '3/']) {
+      expect(readFraction(sixthsNumber, input), input).toBeNull();
+      expect(readFraction(sixths, input), input).toBeNull();
+    }
+    expect(readFraction(choice, '3/5')).toBeNull();
+    expect(readFraction(choice, 'drie-vijfde')).toBeNull();
   });
 });
