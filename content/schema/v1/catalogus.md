@@ -269,7 +269,7 @@ In alle tekstvelden mag een kleine subset van Markdown, alleen binnen een regel:
   - De noemer is nooit 0. In een gemengd getal is het gehele getal minstens 1 en de breuk echt (teller minstens 1 en kleiner dan de noemer): schrijf `{{2 1/4}}` of `{{9/4}}`, niet `{{1 5/4}}`. Een onechte breuk zonder geheel getal mag wel (`{{5/4}}`).
   - **Geen min binnen de haken:** een negatieve breuk is `−{{1/2}}` (het minteken als gewone tekst ervoor).
   - Een breuk mag in `**vet**` en `*cursief*` staan, niet in het label van een link of in `[[term|…]]` (dat is platte tekst). Binnen de haken geen andere opmaak.
-  - De app toont de breuk gestapeld, in het font en de kleur van de tekst eromheen. Een schermlezer zegt hem in woorden: `{{1/5}}` "1 vijfde", `{{3/4}}` "3 vierde", `{{1/2}}` "1 half", `{{3/2}}` "3 halve", `{{1 1/4}}` "1 en 1 vierde"; een ongewone noemer (bijv. 37) als "3 gedeeld door 37".
+  - De app toont de breuk gestapeld, in het font en de kleur van de tekst eromheen. Een schermlezer zegt hem in woorden: `{{1/5}}` "1 vijfde", `{{3/4}}` "3 vierde", `{{1/2}}` "1 half", `{{3/2}}` "3 halve", `{{1 1/4}}` "1 en 1 vierde", `{{3/1}}` "3 hele"; een ongewone noemer (bijv. 37) als "3 gedeeld door 37".
   - Op plekken waar de app platte tekst toont (titel van de pagina, startpagina, ouderoverzicht) staat de breuk met een schuine streep: `1/5`, `1 1/4`. Tijd en zinslengte tellen hem net als `1/5`.
   - **Een gewone `3/4` (zonder haken) blijft `3/4`**, met een schuine streep. Welke van de twee je gebruikt, volgt de notatie van de school (zie "Notatie").
   - `content:check` weigert elke `{{` of `}}` die geen geldige breuk vormt (`markup-fraction-invalid`), met wat er mis is en hoe het wel moet. In de app blijft zo'n ongeldige breuk gewone tekst, met haken en al.

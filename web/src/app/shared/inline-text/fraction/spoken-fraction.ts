@@ -1,6 +1,7 @@
 // What a screen reader says for a fraction: digits with the denominator as an ordinal, the way a
 // teacher says it ("1 vijfde", "3 halve", "1 en 1 vierde"). The screen reader speaks the digits
-// itself. A denominator without a common word is read as a division ("3 gedeeld door 37").
+// itself. A denominator of 1 is "hele" ("3 hele"); a denominator without a common word is read as
+// a division ("3 gedeeld door 37").
 
 export interface SpokenFractionParts {
   readonly numerator: string;
@@ -50,7 +51,9 @@ export function spokenFraction({
 }: SpokenFractionParts): string {
   const value = Number(denominator);
   let fraction: string;
-  if (value === 2) {
+  if (value === 1) {
+    fraction = `${numerator} hele`;
+  } else if (value === 2) {
     fraction = `${numerator} ${Number(numerator) === 1 ? 'half' : 'halve'}`;
   } else if (ORDINALS[value] !== undefined) {
     fraction = `${numerator} ${ORDINALS[value]}`;
