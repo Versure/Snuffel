@@ -1,0 +1,142 @@
+:host {
+  display: block;
+}
+
+/*
+ * A fixed light panel in both themes, like a figure: the finger colours are light and made for
+ * black text (decision M15, question 3).
+ */
+.guide {
+  padding: 0.75rem;
+  color: var(--snf-color-black);
+  background: var(--snf-color-cream);
+  border: var(--snf-border-width) solid var(--snf-color-black);
+  border-radius: var(--snf-radius-md);
+}
+
+.keyboard {
+  display: grid;
+  gap: 0.25rem;
+  /* Scales with the width; never wider than its card. */
+  font-size: clamp(0.55rem, 2.4vw, 1rem);
+}
+
+.row {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.key {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  height: 2.6em;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--snf-color-black);
+  border: 2px solid var(--snf-color-black);
+  border-radius: 0.4em;
+}
+
+.shift-label {
+  font-size: 0.75em;
+}
+
+.empty {
+  background: var(--snf-color-cream);
+  border-style: dashed;
+}
+
+.finger-pinky {
+  background: var(--snf-color-choice-pink);
+}
+
+.finger-ring {
+  background: var(--snf-color-choice-orange);
+}
+
+.finger-middle {
+  background: var(--snf-color-choice-green);
+}
+
+.finger-index {
+  background: var(--snf-color-choice-yellow);
+}
+
+.finger-thumb {
+  background: var(--snf-color-choice-purple);
+}
+
+/* A new key: a star in the corner and a dotted border. */
+.new {
+  border-style: dotted;
+  border-width: 3px;
+}
+
+.star {
+  font-size: 0.8em;
+}
+
+.key .star {
+  position: absolute;
+  top: 0.1em;
+  right: 0.2em;
+  font-size: 0.7em;
+}
+
+/* The key for the next char: a thick purple border (well over 3:1 on cream). */
+.next {
+  z-index: 1;
+  border: 0.25em solid var(--snf-color-purple);
+  box-shadow: 0 0 0 2px var(--snf-color-black);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .key {
+    transition: transform 0.12s ease-out;
+  }
+
+  .next {
+    transform: translateY(-0.25em);
+  }
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 1rem;
+  margin: 0.75rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.finger {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.swatch {
+  display: inline-block;
+  width: 1rem;
+  height: 1rem;
+  border: 2px solid var(--snf-color-black);
+  border-radius: 0.25rem;
+}
+
+.now {
+  font-weight: 700;
+}
+
+.new-keys,
+.next-key {
+  margin: 0.6rem 0 0;
+}
+
+.next-key {
+  font-size: 1.1rem;
+  font-weight: 700;
+}

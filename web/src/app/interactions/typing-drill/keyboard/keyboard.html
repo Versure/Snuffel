@@ -1,0 +1,36 @@
+<div class="guide">
+  <div class="keyboard" aria-hidden="true">
+    @for (row of rows(); track $index) {
+      <div class="row" [style.grid-template-columns]="'repeat(' + columns + ', minmax(0, 1fr))'">
+        @for (key of row; track key.id) {
+          <div [class]="key.classes" [style.grid-column]="key.column" [attr.data-key]="key.id">
+            @if (key.shiftLabel) {
+              <span class="shift-label">{{ key.shiftLabel }}</span>
+            }
+            <span class="label">{{ key.label }}</span>
+            @if (key.isNew) {
+              <span class="star">★</span>
+            }
+          </div>
+        }
+      </div>
+    }
+  </div>
+  <ul class="legend">
+    @for (finger of legend(); track finger.kind) {
+      <li class="finger" [class.now]="finger.now">
+        <span [class]="'swatch finger-' + finger.kind" aria-hidden="true"></span>
+        {{ finger.name }}
+        @if (finger.now) {
+          <span class="now-mark">← nu</span>
+        }
+      </li>
+    }
+  </ul>
+  @if (newText()) {
+    <p class="new-keys"><span class="star" aria-hidden="true">★</span> {{ newText() }}</p>
+  }
+  @if (nextText()) {
+    <p class="next-key">{{ nextText() }}</p>
+  }
+</div>
