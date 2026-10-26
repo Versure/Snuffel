@@ -130,6 +130,7 @@ test.describe('the page of a child (/ouder/<id>)', () => {
     await expect(sections.nth(1).getByRole('heading', { level: 2 })).toHaveText('Huiswerk oefenen');
     await expect(sections.nth(0).getByRole('heading', { level: 3 })).toHaveText([
       'Proefcursus',
+      'Proefcursus: typen',
       'Roofvissen met kunstaas',
     ]);
     const proefcursus = sections

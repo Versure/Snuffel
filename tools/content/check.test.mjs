@@ -18,7 +18,7 @@ describe('content:check on the repository', () => {
     assertClean(result);
     assert.deepEqual(
       result.courses.map((course) => course.data.id),
-      ['roofvissen', 'proefcursus', 'proefhuiswerk'],
+      ['roofvissen', 'proefcursus', 'proefhuiswerk', 'proeftypen'],
     );
   });
 

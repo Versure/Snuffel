@@ -62,7 +62,7 @@ export async function logout(page: Page): Promise<void> {
 export function card(page: Page, title: string): Locator {
   return page
     .locator('snf-course-card')
-    .filter({ has: page.getByRole('heading', { name: title }) });
+    .filter({ has: page.getByRole('heading', { name: title, exact: true }) });
 }
 
 /** The row of a lesson in the course overview. */

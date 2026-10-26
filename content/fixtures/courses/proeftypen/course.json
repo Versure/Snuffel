@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "id": "proeftypen",
+  "title": "Proefcursus: typen",
+  "audience": "Testdata voor de app en de checks, geen echte typcursus",
+  "goal": "Een typoefening op de thuisrij laten zien, met toetsenbord en vingergids",
+  "successCriterion": "De proefles laadt, de typoefening werkt en elke check slaagt",
+  "kind": "course",
+  "ted": { "greeting": "Dit is een proefcursus typen. Hier test ik de typoefening uit!" },
+  "lessons": [
+    {
+      "id": "proefles-thuisrij",
+      "title": "Proefles: de thuisrij",
+      "status": "published",
+      "file": "lessons/01-proefles-thuisrij.json"
+    }
+  ],
+  "sources": [
+    {
+      "id": "wikipedia-touch-typing",
+      "title": "Touch typing",
+      "url": "https://en.wikipedia.org/wiki/Touch_typing",
+      "publisher": "Wikipedia",
+      "type": "encyclopedia",
+      "reliability": "medium",
+      "accessedOn": "2026-10-26",
+      "note": "Testdata: over de thuisrij (asdf en jkl;) en de voelstreepjes op f en j."
+    }
+  ]
+}
