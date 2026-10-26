@@ -90,3 +90,35 @@ export async function waitForStepAnchor(page: Page, hash: string): Promise<void>
   if (!hash.startsWith('#stap-')) return;
   await expect(page.locator(`${hash}-titel`)).toBeFocused();
 }
+
+// The typing fixture course (blind typen: de thuisrij).
+const typingDir = resolve(
+  __dirname,
+  '..',
+  '..',
+  '..',
+  'content',
+  'fixtures',
+  'courses',
+  'proeftypen',
+);
+
+export const typingCourse = JSON.parse(
+  readFileSync(resolve(typingDir, 'course.json'), 'utf8'),
+) as Course;
+export const typingLesson = JSON.parse(
+  readFileSync(resolve(typingDir, 'lessons', '01-proefles-thuisrij.json'), 'utf8'),
+) as Lesson;
+
+export const typingLessonPath = '/leren/proeftypen/proefles-thuisrij';
+
+/** Like `openLesson`, for the typing lesson: a new child, optionally at an anchor. */
+export async function openTypingLesson(
+  page: Page,
+  { hash = '' }: { hash?: string } = {},
+): Promise<TestAccount> {
+  const account = await loginAsNewChild(page, `${typingLessonPath}${hash}`);
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Proefles: de thuisrij');
+  await waitForStepAnchor(page, hash);
+  return account;
+}

@@ -1,8 +1,10 @@
+import { plainText } from '../../src/app/shared/inline-text/inline-markup';
 import { expect, test } from '../fixtures';
 import { exerciseLesson } from '../lesson/fixture';
 import {
   answer,
   checkbox,
+  drillBlock,
   gameBlock,
   navLink,
   practice,
@@ -10,9 +12,14 @@ import {
   rightOption,
   section,
   settle,
+  startDrill,
+  typeLine,
+  typing,
+  typingStep,
+  typingTotal,
   wrongOption,
 } from '../lesson/actions';
-import { lessonPath } from '../lesson/fixture';
+import { lessonPath, typingLessonPath } from '../lesson/fixture';
 import { createChild, currentBaseURL, uniqueName } from '../support/accounts';
 import { loginAs } from '../support/login';
 import {
@@ -402,5 +409,66 @@ test.describe('the page of a child (/ouder/<id>)', () => {
       'Bezig: 1 van 4 stappen klaar',
     );
     await expect(page.locator('snf-progress-bar').first()).toBeVisible();
+  });
+});
+
+test.describe('the page of a child: a typing drill', () => {
+  // A laptop: a phone only shows the touch message instead of the drill.
+  test.use({
+    viewport: { width: 1280, height: 800 },
+    hasTouch: false,
+    isMobile: false,
+    deviceScaleFactor: 1,
+  });
+
+  test('the parent sees accuracy, speed and the most missed keys of a typing drill', async ({
+    page,
+  }) => {
+    const account = await createChild(baseURL(), { name: uniqueName() });
+    await page.clock.install();
+    await loginAs(page, account.username, `${typingLessonPath}#stap-typen`);
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Proefles: de thuisrij');
+    await expect(page.locator('#stap-typen-titel')).toBeFocused();
+    await startDrill(page);
+    await page.clock.pauseAt(new Date(Date.now() + 60_000));
+    // Fixed 500 ms per key and one mistake: the "f" of the first line typed as "x".
+    const gap = 500;
+    for (const [index, line] of typing.lines.entries()) {
+      await typeLine(page, index === 0 ? `${line.slice(0, 3)}x${line.slice(4)}` : line, gap);
+    }
+    await expect(drillBlock(page).getByRole('heading', { name: 'Klaar!' })).toBeVisible();
+    await settle(page);
+    await page.clock.resume();
+
+    const percentage = Math.floor(((typingTotal - 1) / typingTotal) * 100);
+    const keysPerMinute = Math.round(((typingTotal - 1) * 60_000) / ((typingTotal - 1) * gap));
+    await logout(page);
+    await openChildPage(page, account);
+    const row = childLesson(page, 'Proefles: de thuisrij');
+    expect(await detailText(row, plainText(typingStep.title))).toBe(
+      `${plainText(typingStep.title)}: ${percentage}% goed, ${keysPerMinute} aanslagen per minuut Vaakst fout: f 1 keer gedaan`,
+    );
+    // Not the typed text, and not the old game wording.
+    await expect(
+      row.locator('.detail', { hasText: `${plainText(typingStep.title)}:` }),
+    ).not.toContainText('van');
+    for (const line of typing.lines) await expect(row).not.toContainText(line);
+  });
+
+  test('a typing drill that was not done says nog niet gedaan', async ({ page }) => {
+    const account = await childWithProgress([
+      {
+        courseId: 'proeftypen',
+        lessonId: 'proefles-thuisrij',
+        stepId: 'uitleg',
+        status: 'completed',
+      },
+    ]);
+    await openAsParent(page, `/ouder/${account.id}`);
+    const row = childLesson(page, 'Proefles: de thuisrij');
+    await expect(row).toBeVisible();
+    expect(await detailText(row, plainText(typingStep.title))).toBe(
+      `${plainText(typingStep.title)}: nog niet gedaan`,
+    );
   });
 });
