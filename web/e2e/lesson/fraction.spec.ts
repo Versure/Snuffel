@@ -165,7 +165,8 @@ test.describe('fractions in lesson text', () => {
 
     const prompt = exerciseCard(page, 'gelijke-noemers').locator('.prompt');
     await expect(prompt).toBeVisible();
-    // Chrome's accessibility tree puts a space after an inline-block (here before the "?").
+    // The aria snapshot puts a space around a box that is not inline (here before the "?"): the
+    // visually hidden words are positioned absolutely, so they are a block, even in an inline host.
     await expect(prompt).toMatchAriaSnapshot('- paragraph: Hoeveel is 1 vijfde + 2 vijfde ?');
     // Every text of the exercise reads the way the content says it, with the fractions in words.
     const first = exercises[0];
