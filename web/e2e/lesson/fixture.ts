@@ -110,7 +110,7 @@ export const typingLesson = JSON.parse(
   readFileSync(resolve(typingDir, 'lessons', '01-proefles-thuisrij.json'), 'utf8'),
 ) as Lesson;
 
-export const typingLessonPath = '/leren/proeftypen/proefles-thuisrij';
+export const typingLessonPath = `/leren/${typingCourse.id}/${typingLesson.id}`;
 
 /** Like `openLesson`, for the typing lesson: a new child, optionally at an anchor. */
 export async function openTypingLesson(

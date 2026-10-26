@@ -392,8 +392,3 @@ export async function typeAll(page: Page, gap?: number): Promise<void> {
   for (const line of typing.lines) await typeLine(page, line, gap);
   await expect(drillBlock(page).getByRole('heading', { name: 'Klaar!' })).toBeVisible();
 }
-
-/** A char that is not the char of `char`, on the same row of the keyboard (still a key). */
-export function otherChar(char: string): string {
-  return char === 'x' ? 'z' : 'x';
-}
