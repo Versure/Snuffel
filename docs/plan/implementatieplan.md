@@ -300,7 +300,7 @@ Sleutels zijn Engels, teksten Nederlands. Id's zijn kebab-case en **veranderen n
 }
 ```
 
-- **Bloktypen**: `text` (beperkte opmaak: vet, cursief, link, `[[term]]` naar de woordenlijst), `example`, `signal-cards`, `rule`, `tip`, `figure` (svg uit `assets/` + verplichte `alt`), `ted-says`.
+- **Bloktypen**: `text` (beperkte opmaak: vet, cursief, link, `[[term]]` naar de woordenlijst, `{{breuk}}`), `example`, `signal-cards`, `rule`, `tip`, `figure` (svg uit `assets/` + verplichte `alt`), `ted-says`.
 - **Staptypen**: `explain`, `interaction`, `quiz`, `practice` (`practiceKind`: `at-the-water` \| `do-it-yourself`).
 - **Bronnen**: `sourceRefs` is verplicht op elk blok (bij `signal-cards` op elke kaart), elke quizvraag (geldt voor vraag, opties en feedback samen), elk checklist-item en elke interactiestap, en verwijst naar `course.sources`. Een lege lijst mag alleen bij tekst zonder feitelijke bewering, en de reviewer controleert dat.
 - **Vaktermen**: één lijst voor alle cursussen in `content/terms.json` (`term` en optioneel `forms`). Staat een term of vorm in de tekst van een les, dan hoort hij in de `glossary` van die les.

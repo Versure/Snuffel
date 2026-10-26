@@ -256,12 +256,42 @@ In alle tekstvelden mag een kleine subset van Markdown, alleen binnen een regel:
 | `[label](https://…)`      | een link (alleen `https://`)                        |
 | `[[aanslaan]]`            | de term, met de uitleg uit de `glossary` van de les |
 | `[[aanslaan\|slaat aan]]` | dezelfde term, getoond als "slaat aan"              |
+| `{{3/4}}`                 | een gestapelde breuk: 3 boven de streep, 4 eronder  |
+| `{{1 1/4}}`               | een gemengd getal: 1 met de gestapelde breuk 1/4    |
 
 - Geen HTML, koppen, lijsten of afbeeldingen in tekst.
 - Een losse `*` (zoals in `3 * 4`) blijft gewoon tekst, net als `**` zonder sluiting.
 - Elke `[[term]]` moet in de `glossary` van dezelfde les staan.
 - In `course.json` mag geen `[[term]]` staan: een cursus heeft geen `glossary` (`course-term-not-allowed`). Schrijf de term daar als gewone tekst. Links in `course.json` (bijvoorbeeld in `goal` of `sources[].note`) worden net zo gecontroleerd als in een les.
+- **Breuken** (sinds M14): `{{teller/noemer}}` of `{{geheel teller/noemer}}`.
+  - Alleen hele getallen zonder voorloopnul (`0` mag als teller): geen komma of punt, geen letters, geen breuk in een breuk.
+  - Geen spaties binnen de haken, behalve precies één tussen het gehele getal en de breuk (`{{1 1/4}}`); geen spaties rond `/`.
+  - De noemer is nooit 0. In een gemengd getal is het gehele getal minstens 1 en de breuk echt (teller minstens 1 en kleiner dan de noemer): schrijf `{{2 1/4}}` of `{{9/4}}`, niet `{{1 5/4}}`. Een onechte breuk zonder geheel getal mag wel (`{{5/4}}`).
+  - **Geen min binnen de haken:** een negatieve breuk is `−{{1/2}}` (het minteken als gewone tekst ervoor).
+  - Een breuk mag in `**vet**` en `*cursief*` staan, niet in het label van een link of in `[[term|…]]` (dat is platte tekst). Binnen de haken geen andere opmaak.
+  - De app toont de breuk gestapeld, in het font en de kleur van de tekst eromheen. Een schermlezer zegt hem in woorden: `{{1/5}}` "1 vijfde", `{{3/4}}` "3 vierde", `{{1/2}}` "1 half", `{{3/2}}` "3 halve", `{{1 1/4}}` "1 en 1 vierde"; een ongewone noemer (bijv. 37) als "3 gedeeld door 37".
+  - Op plekken waar de app platte tekst toont (titel van de pagina, startpagina, ouderoverzicht) staat de breuk met een schuine streep: `1/5`, `1 1/4`. Tijd en zinslengte tellen hem net als `1/5`.
+  - **Een gewone `3/4` (zonder haken) blijft `3/4`**, met een schuine streep. Welke van de twee je gebruikt, volgt de notatie van de school (zie "Notatie").
+  - `content:check` weigert elke `{{` of `}}` die geen geldige breuk vormt (`markup-fraction-invalid`), met wat er mis is en hoe het wel moet. In de app blijft zo'n ongeldige breuk gewone tekst, met haken en al.
+  - Mag in elk tekstveld, ook in `course.json`. In `accepted` en `commonMistakes[].answer` schrijf je wat het kind typt (`3/5`), geen `{{…}}`.
 - Alle gevallen staan in `inline-markup.cases.json`; de tools en de app worden daartegen getest.
+
+## Notatie
+
+Een les schrijft getallen, breuken en bewerkingen **zoals de school het doet**: volg de foto's van het werkboek (of wat Jop zegt als er geen foto's zijn). Kies per les en houd het de hele les gelijk, ook in hints, tussenstappen, feedback en uitwerkingen.
+
+**Wat de app kan tonen:**
+
+| Op de foto                                  | Schrijf                                                                                                |
+| ------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| een breuk boven elkaar (teller over noemer) | `{{3/4}}`, een gemengd getal `{{1 1/4}}`                                                               |
+| een breuk met een schuine streep            | `3/4`, `1 1/4`                                                                                         |
+| een kommagetal met een komma of een punt    | `0,75` of `0.75`, zoals op de foto                                                                     |
+| delen met `:` of `÷`                        | `12 : 4` of `12 ÷ 4`                                                                                   |
+| keer met `×` of `·`                         | `3 × 4` of `3 · 4`; **nooit `*`** (dat is opmaak: `3*4*5` wordt cursief)                               |
+| een tussenstap of uitwerking                | als zin ("{{1/2}} is hetzelfde als {{2/4}}.") of als `=`-reeks ("{{1/2}} = {{2/4}}"), zoals op de foto |
+
+**Wat de app (nog) niet kan tonen:** een staartdeling, een macht, een wortel, een breuk in een breuk, cijfers onder elkaar (optellen of vermenigvuldigen in kolommen). Schrijf zo'n opgave **niet** met een benadering (zoals `2^3` of "de wortel uit 9"): het kind ziet dan iets anders dan in het boek. Het is een **ontbrekende notatie**, net als een ontbrekende interactiesoort: meld het (wat, bij welk soort opgave) met een voorstel voor een kleine mijlpaal via `schema-wijzigen`.
 
 ## Startpagina en cursusoverzicht
 
@@ -413,6 +443,7 @@ Opgaven met een eigen antwoord van het kind, oplopende hints, tussenstappen die 
 
 - Een licht kaartje (zoals de quiz, geen donker paneel) met de opgaven **één voor één**: "Opgave <n> van <totaal>", de `prompt` groot, en een invoervak met "Controleer" (Enter werkt ook). Heeft het antwoord een `unit`, dan staat die achter het vak. Bij `choice` zijn de opties knoppen in een gehusselde volgorde (elke reeks anders); een tik is het antwoord.
 - **Onbeperkt proberen.** Goed: Ted blij met een regel uit `ted.correct`, het vak gaat dicht. Een herkende fout (`commonMistakes`): Ted nadenkend met de `feedback` van die fout. Een andere fout: Ted geschrokken met een regel uit `ted.incorrect` en "Probeer het nog eens, of vraag een hint.". Bij `choice` gaat een fout gekozen optie dicht met "Jouw antwoord".
+- **Zo lees ik jouw antwoord.** Gebruikt de oefening de gestapelde notatie (in minstens één tekst van een van haar opgaven staat een geldige `{{…}}`: opgave, hints, tussenstappen, feedback, uitwerking of keuzeopties), dan staat onder het invoervak, zodra wat het kind typt een breuk is, "Zo lees ik jouw antwoord:" met die breuk gestapeld, precies zoals de app hem leest: `3/5`, `3 / 5`, `1 1/4` (een gemengd getal) of `11/4` (elf vierde); bij `number` zonder de `unit` en met een min (`-1/2`). Bij een kommagetal, woorden, een leeg vak of iets onleesbaars staat er niets; niet bij `choice`. Een schermlezer leest de regel bij het invoervak ("Zo lees ik jouw antwoord: 3 vijfde"), maar niet bij elke toets. De regel blijft staan als het antwoord goed is. Goed of fout rekenen verandert er niet door.
 - **Leeg of onleesbaar telt niet** als poging: "Vul eerst een antwoord in." of (bij `number`) "Dat kan ik niet lezen als getal. Schrijf bijvoorbeeld 0,75 of 3/4.".
 - **Hints** op verzoek, één voor één ("Hint", "Nog een hint"). **Tussenstappen** zijn knoppen met de `title`; een tik klapt de `text` open en weer dicht, ook al vóór een poging.
 - **De uitwerking** ("Bekijk de uitwerking", daarna de `workedSolution` in een kader "Uitwerking") komt pas na **minstens één leesbare poging én alle hints** (zonder hints: na één poging), of meteen na een goed antwoord. Tot dan staat er: "De uitwerking kun je zien als je het zelf geprobeerd hebt en alle hints hebt bekeken.".
@@ -433,7 +464,7 @@ Opgaven met een eigen antwoord van het kind, oplopende hints, tussenstappen die 
 | `answer`         | `{ "type": "number", "value", "tolerance", "unit" (mag) }`, `{ "type": "text", "accepted": [...] }` of `{ "type": "choice", "options": [{ "id", "text" }], "correctOptionId" }` |
 | `hints`          | oplopende hints, één voor één te openen                                                                                                                                         |
 | `steps`          | tussenstappen: `id`, `title`, `text`                                                                                                                                            |
-| `commonMistakes` | `answer` (een fout antwoord zoals een kind het typt; bij `choice` het id van een optie) en `feedback`                                                                           |
+| `commonMistakes` | `answer` (een fout antwoord zoals een kind het typt, dus `3/5` en geen `{{…}}`; bij `choice` het id van een optie) en `feedback`                                                |
 | `workedSolution` | de uitwerking                                                                                                                                                                   |
 
 Hoogstens **10 opgaven** per oefening (`maxItems`); 4 tot 6 is voor een les van 10 minuten meestal genoeg. `hints` en `steps` mogen leeg zijn.
@@ -450,7 +481,7 @@ Voorbeeld (uit `content/fixtures/courses/proefhuiswerk/`, ingekort):
     "exercises": [
       {
         "id": "gelijke-noemers",
-        "prompt": "Hoeveel is 1/5 + 2/5?",
+        "prompt": "Hoeveel is {{1/5}} + {{2/5}}?",
         "answer": { "type": "text", "accepted": ["3/5", "drie vijfde"] },
         "hints": [
           "Kijk naar de noemers. Zijn ze gelijk?",
@@ -469,28 +500,28 @@ Voorbeeld (uit `content/fixtures/courses/proefhuiswerk/`, ingekort):
             "feedback": "Je telde de noemers ook op. Dat mag niet: de pizza blijft in vijf stukken verdeeld."
           }
         ],
-        "workedSolution": "De noemers zijn gelijk: allebei 5. Tel de tellers op: 1 + 2 = 3. De noemer blijft 5. Het antwoord is 3/5."
+        "workedSolution": "De noemers zijn gelijk: allebei 5. Tel de tellers op: 1 + 2 = 3. De noemer blijft 5. Het antwoord is {{3/5}}."
       },
       {
         "id": "recept",
-        "prompt": "Voor een saus doe je 1/2 liter melk en 1/4 liter room in een pan. Hoeveel liter is dat samen? Een kommagetal of een breuk mag allebei.",
+        "prompt": "Voor een saus doe je {{1/2}} liter melk en {{1/4}} liter room in een pan. Hoeveel liter is dat samen? Een kommagetal of een breuk mag allebei.",
         "answer": { "type": "number", "value": 0.75, "tolerance": 0.01, "unit": "liter" },
-        "hints": ["Maak eerst van 1/2 liter een aantal kwarten."],
+        "hints": ["Maak eerst van {{1/2}} liter een aantal kwarten."],
         "steps": [],
         "commonMistakes": [
           { "answer": "0,5", "feedback": "Je vergat de room. Tel de melk en de room allebei mee." }
         ],
-        "workedSolution": "1/2 liter is 2/4 liter. Samen is dat 3/4 liter, en dat is 0,75 liter."
+        "workedSolution": "{{1/2}} liter is {{2/4}} liter. Samen is dat {{3/4}} liter, en dat is 0,75 liter."
       },
       {
         "id": "kies-de-som",
-        "prompt": "Welke som is samen 3/4?",
+        "prompt": "Welke som is samen {{3/4}}?",
         "answer": {
           "type": "choice",
           "options": [
-            { "id": "half-en-kwart", "text": "1/2 + 1/4" },
-            { "id": "los-opgeteld", "text": "1/1 + 2/3" },
-            { "id": "twee-kwart", "text": "1/4 + 1/4" }
+            { "id": "half-en-kwart", "text": "{{1/2}} + {{1/4}}" },
+            { "id": "los-opgeteld", "text": "{{1/1}} + {{2/3}}" },
+            { "id": "twee-kwart", "text": "{{1/4}} + {{1/4}}" }
           ],
           "correctOptionId": "half-en-kwart"
         },
@@ -499,10 +530,10 @@ Voorbeeld (uit `content/fixtures/courses/proefhuiswerk/`, ingekort):
         "commonMistakes": [
           {
             "answer": "los-opgeteld",
-            "feedback": "Tel je de tellers en de noemers los op, dan krijg je 3/4. Maar 1/1 is al een hele pizza."
+            "feedback": "Tel je de tellers en de noemers los op, dan krijg je {{3/4}}. Maar {{1/1}} is al een hele pizza."
           }
         ],
-        "workedSolution": "1/2 + 1/4 = 2/4 + 1/4 = 3/4."
+        "workedSolution": "{{1/2}} + {{1/4}} = {{2/4}} + {{1/4}} = {{3/4}}."
       }
     ]
   }
@@ -512,6 +543,7 @@ Voorbeeld (uit `content/fixtures/courses/proefhuiswerk/`, ingekort):
 **Valkuilen:**
 
 - **Een tussenstap of hint die het antwoord voorzegt.** Tussenstappen zijn altijd te openen, ook vóór een poging; zet het eindantwoord er dus niet in. De laatste hint mag dichtbij komen, het antwoord zelf staat alleen in de `workedSolution`.
+- **`{{…}}` in `accepted` of `commonMistakes[].answer`.** Daar staat wat het kind typt (`3/5`), geen `{{3/5}}`. Een geldige `{{3/5}}` werkt wel (hij wordt `3/5`), maar is verwarrend.
 - **Te weinig vormen in `accepted`.** Het kind typt wat het denkt: `5/6`, `vijf zesde`, misschien `vijf-zesde`. Zet elke vorm die goed is in `accepted`; hoofdletters, spaties, een punt aan het eind en spaties rond `/` hoef je niet apart te noemen. Moet een breuk ook als kommagetal goed zijn, gebruik dan `number`.
 - **`tolerance` 0 bij een afgerond antwoord.** Is het antwoord `1/3` en mag het kind `0,33` typen, zet dan `tolerance` op `0.01`; met 0 is alleen `1/3` zelf goed. Bij een getal dat precies is (`0,75`) mag `tolerance` 0 blijven.
 - **Grote getallen met een punt.** `1.000` leest de app als één, niet als duizend. Vraag om grote getallen zonder punt ("schrijf het getal zonder punt"), of gebruik `text`.
