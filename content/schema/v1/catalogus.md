@@ -550,6 +550,10 @@ Voorbeeld (uit `content/fixtures/courses/proefhuiswerk/`, ingekort):
 - **Een `commonMistake` die eigenlijk goed is.** Ligt een fout antwoord binnen `tolerance` of is het een vorm uit `accepted`, dan zou het kind een "fout" krijgen voor een goed antwoord. `content:check` vangt dat (`exercise-mistake-accepted`).
 - **`version` omhoog bij een gewijzigde opgave.** Bewaarde resultaten horen bij één `version`; verander je een opgave, een antwoord of het aantal opgaven, hoog dan `version` op (`content:check` dwingt dat af).
 
+### `typing-drill` (blind typen)
+
+Een typoefening voor blind typen met tien vingers op een laptop of computer: het kind typt regels over, met een toetsenbord en een vingergids eronder. De velden staan in `lesson.schema.json` (`typingDrillConfig`); de app toont hem nog niet (hij komt in M15).
+
 ## Vaktermen (`content/terms.json`)
 
 ```json

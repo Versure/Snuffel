@@ -615,6 +615,9 @@
         },
         {
           "$ref": "#/$defs/steppedExerciseInteraction"
+        },
+        {
+          "$ref": "#/$defs/typingDrillInteraction"
         }
       ]
     },
@@ -649,6 +652,23 @@
         },
         "config": {
           "$ref": "#/$defs/steppedExerciseConfig"
+        }
+      }
+    },
+    "typingDrillInteraction": {
+      "title": "TypingDrillInteraction",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "config"],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "kind": {
+          "const": "typing-drill"
+        },
+        "config": {
+          "$ref": "#/$defs/typingDrillConfig"
         }
       }
     },
@@ -1065,6 +1085,121 @@
         },
         "feedback": {
           "$ref": "#/$defs/text"
+        }
+      }
+    },
+    "typingDrillConfig": {
+      "title": "TypingDrillConfig",
+      "description": "A typing drill: the child types the lines one after the other on a real keyboard (US QWERTY), with a finger guide. No lesson text in here; the app has its own fixed texts and Ted uses ted.correct and ted.incorrect of the lesson.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["lines", "newKeys"],
+      "properties": {
+        "lines": {
+          "description": "The lines to type, in order; one line at a time is shown.",
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 12,
+          "items": {
+            "$ref": "#/$defs/typingLine"
+          }
+        },
+        "newKeys": {
+          "description": "The keys that are new in this lesson (may be empty); they get a star on the keyboard. Every one must be used in a line (content:check).",
+          "type": "array",
+          "maxItems": 10,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/typingKey"
+          }
+        },
+        "goals": {
+          "$ref": "#/$defs/typingGoals"
+        }
+      }
+    },
+    "typingLine": {
+      "title": "TypingLine",
+      "description": "One line to type: 1 to 40 chars of the keyboard (ASCII ! to ~ and the space), not starting or ending with a space and without two spaces in a row. No accents, tab or new line. A dead key of US-International may not be followed by a letter it composes (content:check).",
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 40,
+      "pattern": "^[!-~]( ?[!-~])*$"
+    },
+    "typingKey": {
+      "title": "TypingKey",
+      "description": "A key of the keyboard, not a char: A is the key a with shift. See content/schema/v1/typing-keyboard.cases.json.",
+      "type": "string",
+      "enum": [
+        "a",
+        "b",
+        "c",
+        "d",
+        "e",
+        "f",
+        "g",
+        "h",
+        "i",
+        "j",
+        "k",
+        "l",
+        "m",
+        "n",
+        "o",
+        "p",
+        "q",
+        "r",
+        "s",
+        "t",
+        "u",
+        "v",
+        "w",
+        "x",
+        "y",
+        "z",
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "`",
+        "-",
+        "=",
+        "[",
+        "]",
+        "\\",
+        ";",
+        "'",
+        ",",
+        ".",
+        "/",
+        "space",
+        "shift"
+      ]
+    },
+    "typingGoals": {
+      "title": "TypingGoals",
+      "description": "What counts as a good result; only changes what Ted says, the step is done after every finished drill.",
+      "type": "object",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "properties": {
+        "accuracy": {
+          "description": "Right keys as a percentage of all keys, rounded down.",
+          "type": "integer",
+          "minimum": 50,
+          "maximum": 100
+        },
+        "keysPerMinute": {
+          "description": "Right keys per minute.",
+          "type": "integer",
+          "minimum": 10,
+          "maximum": 300
         }
       }
     }

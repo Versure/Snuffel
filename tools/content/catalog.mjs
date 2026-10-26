@@ -3,6 +3,7 @@
 export const interactionCatalog = {
   'trace-game': { minutes: 2 },
   'stepped-exercise': { minutes: 2 },
+  'typing-drill': { minutes: 2 },
 };
 
 /** Didactic limits from the implementation plan (2.4), as used by the checks. */

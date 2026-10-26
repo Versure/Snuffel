@@ -20,6 +20,8 @@ function interactionLabel(kind: Interaction['kind']): string {
       return 'Spel';
     case 'stepped-exercise':
       return 'Oefenen';
+    case 'typing-drill':
+      return 'Typen';
   }
 }
 

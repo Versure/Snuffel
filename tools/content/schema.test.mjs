@@ -157,6 +157,16 @@ const steppedExercise = {
   },
 };
 
+const typingDrill = {
+  id: 'thuisrij',
+  kind: 'typing-drill',
+  config: {
+    lines: ['asdf jkl;', 'Als las kas!', 'a\\b `~ "x" {[]}'],
+    newKeys: ['a', 's', 'space', 'shift', ';'],
+    goals: { accuracy: 90, keysPerMinute: 60 },
+  },
+};
+
 function lessonWithInteraction(interaction) {
   const lesson = clone(minimalLesson);
   lesson.steps.splice(1, 0, {
@@ -255,6 +265,108 @@ describe('schemas', () => {
     assertError(
       validate('lesson', lessonWithInteraction(eleven)),
       'steps[1].interaction.config.exercises',
+    );
+  });
+
+  test('accepts a typing drill with lines, newKeys and goals', () => {
+    assert.deepEqual(validate('lesson', lessonWithInteraction(typingDrill)), []);
+    const minimal = clone(typingDrill);
+    minimal.config = { lines: ['f'], newKeys: [] };
+    assert.deepEqual(validate('lesson', lessonWithInteraction(minimal)), []);
+    const forty = clone(typingDrill);
+    forty.config.lines = Array.from({ length: 12 }, () => 'asdf '.repeat(8).trim() + 'j');
+    assert.equal(forty.config.lines[0].length, 40);
+    assert.deepEqual(validate('lesson', lessonWithInteraction(forty)), []);
+  });
+
+  test('a line with a leading, trailing or double space is a schema error', () => {
+    for (const line of [' asdf', 'asdf ', 'asdf  jkl;', ' ']) {
+      const drill = clone(typingDrill);
+      drill.config.lines[1] = line;
+      const error = assertError(
+        validate('lesson', lessonWithInteraction(drill)),
+        'steps[1].interaction.config.lines[1]',
+      );
+      assert.match(error.message, /^typregel /);
+    }
+  });
+
+  test('a line with é, a tab or more than 40 characters is a schema error', () => {
+    for (const line of ['café', 'as\tdf', 'asdf\njkl', 'a'.repeat(41), '']) {
+      const drill = clone(typingDrill);
+      drill.config.lines[0] = line;
+      assertError(
+        validate('lesson', lessonWithInteraction(drill)),
+        'steps[1].interaction.config.lines[0]',
+      );
+    }
+  });
+
+  test('13 lines is a schema error', () => {
+    const drill = clone(typingDrill);
+    drill.config.lines = Array.from({ length: 13 }, () => 'asdf');
+    const error = assertError(
+      validate('lesson', lessonWithInteraction(drill)),
+      'steps[1].interaction.config.lines',
+    );
+    assert.match(error.message, /hoogstens 12 items/);
+    drill.config.lines = [];
+    assertError(
+      validate('lesson', lessonWithInteraction(drill)),
+      'steps[1].interaction.config.lines',
+    );
+  });
+
+  test('an unknown or duplicate key in newKeys is a schema error', () => {
+    for (const key of ['A', 'é', 'enter', 'tab', ' ']) {
+      const drill = clone(typingDrill);
+      drill.config.newKeys = [key];
+      assertError(
+        validate('lesson', lessonWithInteraction(drill)),
+        'steps[1].interaction.config.newKeys[0]',
+      );
+    }
+    const duplicate = clone(typingDrill);
+    duplicate.config.newKeys = ['a', 's', 'a'];
+    assertError(
+      validate('lesson', lessonWithInteraction(duplicate)),
+      'steps[1].interaction.config.newKeys',
+    );
+    const eleven = clone(typingDrill);
+    eleven.config.newKeys = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k'];
+    assertError(
+      validate('lesson', lessonWithInteraction(eleven)),
+      'steps[1].interaction.config.newKeys',
+    );
+  });
+
+  test('goals without a field or with accuracy 101 is a schema error', () => {
+    const empty = clone(typingDrill);
+    empty.config.goals = {};
+    const error = assertError(
+      validate('lesson', lessonWithInteraction(empty)),
+      'steps[1].interaction.config.goals',
+    );
+    assert.match(error.message, /minstens 1 veld/);
+    for (const [field, value] of [
+      ['accuracy', 101],
+      ['accuracy', 49],
+      ['accuracy', 90.5],
+      ['keysPerMinute', 9],
+      ['keysPerMinute', 301],
+    ]) {
+      const drill = clone(typingDrill);
+      drill.config.goals = { [field]: value };
+      assertError(
+        validate('lesson', lessonWithInteraction(drill)),
+        `steps[1].interaction.config.goals.${field}`,
+      );
+    }
+    const unknown = clone(typingDrill);
+    unknown.config.goals = { words: 10 };
+    assertError(
+      validate('lesson', lessonWithInteraction(unknown)),
+      'steps[1].interaction.config.goals.words',
     );
   });
 

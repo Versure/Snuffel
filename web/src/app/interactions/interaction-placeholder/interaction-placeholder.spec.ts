@@ -19,6 +19,12 @@ const steppedExercise = {
   config: { exercises: [{ id: 'som', prompt: 'Hoeveel is 1/2 + 1/4?' }] },
 } as unknown as Interaction;
 
+const typingDrill = {
+  id: 'thuisrij',
+  kind: 'typing-drill',
+  config: { lines: ['asdf jkl;'], newKeys: ['a'] },
+} as unknown as Interaction;
+
 describe('InteractionPlaceholder', () => {
   async function render(interaction: Interaction): Promise<HTMLElement> {
     TestBed.resetTestingModule();
@@ -48,5 +54,13 @@ describe('InteractionPlaceholder', () => {
       'Deze oefening komt binnenkort.',
     );
     expect(element.textContent).not.toContain('1/2');
+  });
+
+  it('typing-drill says Deze typoefening komt binnenkort', async () => {
+    const element = await render(typingDrill);
+    expect(element.querySelector('.message')?.textContent?.trim()).toBe(
+      'Deze typoefening komt binnenkort.',
+    );
+    expect(element.textContent).not.toContain('asdf');
   });
 });

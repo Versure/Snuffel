@@ -20,7 +20,11 @@ describe('reading time', () => {
   });
 
   test('every interaction in the catalogue counts 2 minutes', () => {
-    assert.deepEqual(Object.keys(interactionCatalog).sort(), ['stepped-exercise', 'trace-game']);
+    assert.deepEqual(Object.keys(interactionCatalog).sort(), [
+      'stepped-exercise',
+      'trace-game',
+      'typing-drill',
+    ]);
     for (const { minutes } of Object.values(interactionCatalog)) assert.equal(minutes, 2);
   });
 

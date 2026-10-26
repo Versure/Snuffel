@@ -91,7 +91,8 @@ export type SignalIcon =
 /**
  * Its id is the interaction_id in interaction_results.
  */
-export type Interaction = TraceGameInteraction | SteppedExerciseInteraction;
+export type Interaction =
+  TraceGameInteraction | SteppedExerciseInteraction | TypingDrillInteraction;
 
 /**
  * Id of one of the choices.
@@ -128,6 +129,65 @@ export type ContentText1 = string;
  * Shown only after an own attempt and all hints.
  */
 export type ContentText2 = string;
+
+/**
+ * One line to type: 1 to 40 chars of the keyboard (ASCII ! to ~ and the space), not starting or ending with a space and without two spaces in a row. No accents, tab or new line. A dead key of US-International may not be followed by a letter it composes (content:check).
+ */
+export type TypingLine = string;
+
+/**
+ * A key of the keyboard, not a char: A is the key a with shift. See content/schema/v1/typing-keyboard.cases.json.
+ */
+export type TypingKey =
+  | 'a'
+  | 'b'
+  | 'c'
+  | 'd'
+  | 'e'
+  | 'f'
+  | 'g'
+  | 'h'
+  | 'i'
+  | 'j'
+  | 'k'
+  | 'l'
+  | 'm'
+  | 'n'
+  | 'o'
+  | 'p'
+  | 'q'
+  | 'r'
+  | 's'
+  | 't'
+  | 'u'
+  | 'v'
+  | 'w'
+  | 'x'
+  | 'y'
+  | 'z'
+  | '0'
+  | '1'
+  | '2'
+  | '3'
+  | '4'
+  | '5'
+  | '6'
+  | '7'
+  | '8'
+  | '9'
+  | '`'
+  | '-'
+  | '='
+  | '['
+  | ']'
+  | '\\'
+  | ';'
+  | "'"
+  | ','
+  | '.'
+  | '/'
+  | 'space'
+  | 'shift';
 
 /**
  * A lesson: lessons/<nn>-<slug>.json in a course directory.
@@ -417,6 +477,46 @@ export interface ExerciseStep {
 export interface CommonMistake {
   answer: ContentText1;
   feedback: ContentText;
+}
+
+export interface TypingDrillInteraction {
+  id: ContentId;
+  kind: 'typing-drill';
+  config: TypingDrillConfig;
+}
+
+/**
+ * A typing drill: the child types the lines one after the other on a real keyboard (US QWERTY), with a finger guide. No lesson text in here; the app has its own fixed texts and Ted uses ted.correct and ted.incorrect of the lesson.
+ */
+export interface TypingDrillConfig {
+  /**
+   * The lines to type, in order; one line at a time is shown.
+   *
+   * @minItems 1
+   * @maxItems 12
+   */
+  lines: TypingLine[];
+  /**
+   * The keys that are new in this lesson (may be empty); they get a star on the keyboard. Every one must be used in a line (content:check).
+   *
+   * @maxItems 10
+   */
+  newKeys: TypingKey[];
+  goals?: TypingGoals;
+}
+
+/**
+ * What counts as a good result; only changes what Ted says, the step is done after every finished drill.
+ */
+export interface TypingGoals {
+  /**
+   * Right keys as a percentage of all keys, rounded down.
+   */
+  accuracy?: number;
+  /**
+   * Right keys per minute.
+   */
+  keysPerMinute?: number;
 }
 
 export interface QuizStep {

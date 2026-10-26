@@ -25,6 +25,7 @@ import { INTERACTION_REGISTRY } from '../registry';
 const LOAD_ERRORS: Record<Interaction['kind'], string> = {
   'trace-game': 'Dit spel kan ik nu niet laden.',
   'stepped-exercise': 'Deze oefening kan ik nu niet laden.',
+  'typing-drill': 'Deze typoefening kan ik nu niet laden.',
 };
 
 /**
@@ -72,8 +73,8 @@ export class InteractionHost {
   });
 
   protected readonly loadError = computed(() => LOAD_ERRORS[this.step().interaction.kind]);
-  /** A stepped exercise is a light card, a game a dark panel (also while loading). */
-  protected readonly light = computed(() => this.step().interaction.kind === 'stepped-exercise');
+  /** An exercise or typing drill is a light card, a game a dark panel (also while loading). */
+  protected readonly light = computed(() => this.step().interaction.kind !== 'trace-game');
 
   protected readonly unavailable = computed(() => this.progress?.state() === 'unavailable');
   protected readonly error = computed(() => this.progress?.saveError(this.step().id) ?? null);

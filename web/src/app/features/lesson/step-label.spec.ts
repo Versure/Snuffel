@@ -17,6 +17,12 @@ describe('stepLabel', () => {
     ).toBe('Oefenen');
   });
 
+  it('a typing drill is Typen', () => {
+    expect(stepLabel(step({ type: 'interaction', interaction: { kind: 'typing-drill' } }))).toBe(
+      'Typen',
+    );
+  });
+
   it('labels a quiz Quiz', () => {
     expect(stepLabel(step({ type: 'quiz', questions: [] }))).toBe('Quiz');
   });

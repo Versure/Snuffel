@@ -12,6 +12,7 @@ const TEXT_PATTERN = '\\S';
 const HTTPS_PATTERN = '^https://\\S+$';
 const DATE_PATTERN = '^\\d{4}-\\d{2}-\\d{2}$';
 const ASSET_PATTERN = '^assets/[a-z0-9-]+(/[a-z0-9-]+)*\\.svg$';
+const TYPING_LINE_PATTERN = '^[!-~]( ?[!-~])*$';
 
 export function loadSchema(kind) {
   return JSON.parse(readFileSync(join(schemaDir, `${kind}.schema.json`), 'utf8'));
@@ -124,6 +125,13 @@ function translate(error, data) {
           message: `${show(value)} moet een .svg in de map assets/ van de cursus zijn: kleine letters, cijfers en streepjes, zonder ..`,
         };
       }
+      if (params.pattern === TYPING_LINE_PATTERN) {
+        return {
+          code: 'schema',
+          path: pointerToPath(instancePath),
+          message: `typregel ${show(value)} mag alleen tekens van het toetsenbord hebben (geen accenten, tab of nieuwe regel), niet met een spatie beginnen of eindigen en geen twee spaties naast elkaar`,
+        };
+      }
       if (params.pattern === DATE_PATTERN) {
         return {
           code: 'schema',
@@ -161,6 +169,12 @@ function translate(error, data) {
         code: 'schema',
         path: pointerToPath(instancePath),
         message: `mag hoogstens ${params.limit} ${params.limit === 1 ? 'item' : 'items'} hebben`,
+      };
+    case 'minProperties':
+      return {
+        code: 'schema',
+        path: pointerToPath(instancePath),
+        message: `moet minstens ${params.limit} ${params.limit === 1 ? 'veld' : 'velden'} hebben`,
       };
     case 'uniqueItems':
       return {

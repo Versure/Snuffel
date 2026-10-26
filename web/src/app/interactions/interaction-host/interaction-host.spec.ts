@@ -65,6 +65,15 @@ const exerciseStep = {
   interaction: { id: 'breuken', kind: 'stepped-exercise', config: { exercises: [] } },
 } as unknown as InteractionStep;
 
+const typingStep = {
+  ...traceStep,
+  interaction: {
+    id: 'thuisrij',
+    kind: 'typing-drill',
+    config: { lines: ['asdf jkl;'], newKeys: [] },
+  },
+} as unknown as InteractionStep;
+
 const ted: LessonTed = {
   intro: { mood: 'cool', text: 'Hoi.' },
   correct: ['Goed gevoeld!'],
@@ -209,6 +218,13 @@ describe('InteractionHost', () => {
     expect(load).toHaveBeenCalledTimes(2);
     expect(element.querySelector('.panel')).toBeNull();
     expect(element.querySelector('snf-fake-game')).not.toBeNull();
+  });
+
+  it('a typing drill loads in a light panel', async () => {
+    const load = vi.fn<() => Promise<Type<unknown>>>().mockRejectedValue(new Error('offline'));
+    const { element } = await render(typingStep, { registry: { 'typing-drill': load } });
+    // The same light card as an exercise, not the dark game panel.
+    expect(element.querySelector('.panel.failed')?.classList.contains('light')).toBe(true);
   });
 
   it('a game that cannot be loaded keeps the dark panel', async () => {

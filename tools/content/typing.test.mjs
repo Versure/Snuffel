@@ -34,7 +34,7 @@ describe('typing keyboard', () => {
   });
 
   test('every key in the enum has a finger', () => {
-    const keyIds = schema.$defs.typingKey?.enum ?? cases.keys.map((item) => item.key);
+    const keyIds = schema.$defs.typingKey.enum;
     assert.equal(keyIds.length, 49);
     for (const key of keyIds) {
       const item = cases.keys.find((entry) => entry.key === key);
