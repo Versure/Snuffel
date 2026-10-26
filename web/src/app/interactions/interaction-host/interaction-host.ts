@@ -20,6 +20,7 @@ import { TedSays } from '../../shared/ui/ted-says/ted-says';
 import type { InteractionResult } from '../interaction';
 import { InteractionPlaceholder } from '../interaction-placeholder/interaction-placeholder';
 import { INTERACTION_REGISTRY } from '../registry';
+import { accuracy } from '../typing-drill/drill';
 
 /** What the host says per kind of interaction when its component cannot be loaded. */
 const LOAD_ERRORS: Record<Interaction['kind'], string> = {
@@ -81,6 +82,18 @@ export class InteractionHost {
   protected readonly previous = computed(
     () => this.progress?.latestResult(this.step().interaction.id) ?? null,
   );
+  /**
+   * "Vorige keer: 92% goed." for a typing drill (right keys of all keys, rounded down as in the
+   * drill), "<score> van <totaal> goed." for the others.
+   */
+  protected readonly previousText = computed(() => {
+    const result = this.previous();
+    if (!result) return '';
+    if (this.step().interaction.kind === 'typing-drill') {
+      return `Vorige keer: ${accuracy(result.score, result.total)}% goed.`;
+    }
+    return `Vorige keer: ${result.score} van ${result.total} goed.`;
+  });
 
   private created: ComponentRef<unknown> | null = null;
 

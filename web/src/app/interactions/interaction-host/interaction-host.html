@@ -24,6 +24,6 @@
 @if (error(); as message) {
   <p class="error" role="alert">{{ message }}</p>
 }
-@if (previous(); as result) {
-  <p class="previous">Vorige keer: {{ result.score }} van {{ result.total }} goed.</p>
+@if (previousText(); as text) {
+  <p class="previous">{{ text }}</p>
 }
