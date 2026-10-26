@@ -140,6 +140,179 @@
       "name": "abbreviations, decimals and an ellipsis stay text",
       "input": "Bijv. 1,5 m. of 3.2 cm… Klaar!",
       "tokens": [{ "type": "text", "text": "Bijv. 1,5 m. of 3.2 cm… Klaar!" }]
+    },
+    {
+      "name": "fraction",
+      "input": "Hoeveel is {{1/5}} + {{2/5}}?",
+      "tokens": [
+        { "type": "text", "text": "Hoeveel is " },
+        { "type": "fraction", "text": "1/5", "numerator": "1", "denominator": "5" },
+        { "type": "text", "text": " + " },
+        { "type": "fraction", "text": "2/5", "numerator": "2", "denominator": "5" },
+        { "type": "text", "text": "?" }
+      ]
+    },
+    {
+      "name": "mixed number",
+      "input": "Dat is {{1 1/4}} liter.",
+      "tokens": [
+        { "type": "text", "text": "Dat is " },
+        { "type": "fraction", "text": "1 1/4", "whole": "1", "numerator": "1", "denominator": "4" },
+        { "type": "text", "text": " liter." }
+      ]
+    },
+    {
+      "name": "improper fraction",
+      "input": "{{5/4}}",
+      "tokens": [{ "type": "fraction", "text": "5/4", "numerator": "5", "denominator": "4" }]
+    },
+    {
+      "name": "zero numerator",
+      "input": "{{0/5}} is niets.",
+      "tokens": [
+        { "type": "fraction", "text": "0/5", "numerator": "0", "denominator": "5" },
+        { "type": "text", "text": " is niets." }
+      ]
+    },
+    {
+      "name": "fraction with numbers of more digits",
+      "input": "{{12 7/100}}",
+      "tokens": [
+        {
+          "type": "fraction",
+          "text": "12 7/100",
+          "whole": "12",
+          "numerator": "7",
+          "denominator": "100"
+        }
+      ]
+    },
+    {
+      "name": "fraction inside bold",
+      "input": "**{{1/2}}**",
+      "tokens": [
+        {
+          "type": "strong",
+          "children": [{ "type": "fraction", "text": "1/2", "numerator": "1", "denominator": "2" }]
+        }
+      ]
+    },
+    {
+      "name": "fraction inside italic",
+      "input": "*ongeveer {{3/4}}*",
+      "tokens": [
+        {
+          "type": "em",
+          "children": [
+            { "type": "text", "text": "ongeveer " },
+            { "type": "fraction", "text": "3/4", "numerator": "3", "denominator": "4" }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "plain slash stays text",
+      "input": "Hoeveel is 1/5 + 2/5?",
+      "tokens": [{ "type": "text", "text": "Hoeveel is 1/5 + 2/5?" }]
+    },
+    {
+      "name": "minus before a fraction",
+      "input": "−{{1/2}}",
+      "tokens": [
+        { "type": "text", "text": "−" },
+        { "type": "fraction", "text": "1/2", "numerator": "1", "denominator": "2" }
+      ]
+    },
+    {
+      "name": "zero denominator stays text",
+      "input": "{{1/0}}",
+      "tokens": [{ "type": "text", "text": "{{1/0}}" }]
+    },
+    {
+      "name": "decimal in a fraction stays text",
+      "input": "{{1,5/2}}",
+      "tokens": [{ "type": "text", "text": "{{1,5/2}}" }]
+    },
+    {
+      "name": "minus inside the braces stays text",
+      "input": "{{-1/2}}",
+      "tokens": [{ "type": "text", "text": "{{-1/2}}" }]
+    },
+    {
+      "name": "spaces inside the braces stay text",
+      "input": "{{ 1/5 }}",
+      "tokens": [{ "type": "text", "text": "{{ 1/5 }}" }]
+    },
+    {
+      "name": "spaces around the slash stay text",
+      "input": "{{1 / 5}}",
+      "tokens": [{ "type": "text", "text": "{{1 / 5}}" }]
+    },
+    {
+      "name": "two spaces in a mixed number stay text",
+      "input": "{{1  1/4}}",
+      "tokens": [{ "type": "text", "text": "{{1  1/4}}" }]
+    },
+    {
+      "name": "zero whole number stays text",
+      "input": "{{0 1/4}}",
+      "tokens": [{ "type": "text", "text": "{{0 1/4}}" }]
+    },
+    {
+      "name": "improper mixed number stays text",
+      "input": "{{1 5/4}}",
+      "tokens": [{ "type": "text", "text": "{{1 5/4}}" }]
+    },
+    {
+      "name": "leading zero stays text",
+      "input": "{{01/5}}",
+      "tokens": [{ "type": "text", "text": "{{01/5}}" }]
+    },
+    {
+      "name": "letters stay text",
+      "input": "{{x/2}}",
+      "tokens": [{ "type": "text", "text": "{{x/2}}" }]
+    },
+    {
+      "name": "fraction in a fraction stays text",
+      "input": "{{1/2/3}}",
+      "tokens": [{ "type": "text", "text": "{{1/2/3}}" }]
+    },
+    {
+      "name": "empty braces stay text",
+      "input": "{{}}",
+      "tokens": [{ "type": "text", "text": "{{}}" }]
+    },
+    {
+      "name": "a lone brace after a fraction stays text",
+      "input": "{{1/2}}}",
+      "tokens": [
+        { "type": "fraction", "text": "1/2", "numerator": "1", "denominator": "2" },
+        { "type": "text", "text": "}" }
+      ]
+    },
+    {
+      "name": "a lone brace before a fraction stays text",
+      "input": "{{{1/2}}",
+      "tokens": [
+        { "type": "text", "text": "{" },
+        { "type": "fraction", "text": "1/2", "numerator": "1", "denominator": "2" }
+      ]
+    },
+    {
+      "name": "unclosed braces stay text",
+      "input": "{{1/5",
+      "tokens": [{ "type": "text", "text": "{{1/5" }]
+    },
+    {
+      "name": "braces in a link label stay text",
+      "input": "[{{1/2}}](https://example.org/a)",
+      "tokens": [{ "type": "link", "text": "{{1/2}}", "url": "https://example.org/a" }]
+    },
+    {
+      "name": "braces in a shown term form stay text",
+      "input": "[[term|{{1/2}}]]",
+      "tokens": [{ "type": "term", "term": "term", "text": "{{1/2}}" }]
     }
   ]
 }

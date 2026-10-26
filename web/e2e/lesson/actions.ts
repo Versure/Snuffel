@@ -7,8 +7,8 @@ import type {
   SteppedExerciseConfig,
   TraceGameConfig,
 } from '../../src/app/core/content/content.types';
-import { plainText } from '../../src/app/shared/inline-text/inline-markup';
 import { expect } from '../fixtures';
+import { readableText, spokenText } from '../support/readable-text';
 import { exerciseLesson, fixtureLesson, normalize } from './fixture';
 
 // Shared steps of the progress, quiz and checklist tests.
@@ -41,7 +41,7 @@ export function section(page: Page, stepId: string): Locator {
 export function questionBlock(page: Page, question: QuizQuestion, step: QuizStep = quiz): Locator {
   return section(page, step.id)
     .locator('snf-quiz-question')
-    .filter({ has: page.getByRole('group', { name: plainText(question.prompt) }) });
+    .filter({ has: page.getByRole('group', { name: spokenText(question.prompt) }) });
 }
 
 /** The button of an option of a question. */
@@ -54,7 +54,7 @@ export function optionButton(
   const option = question.options.find((candidate) => candidate.id === optionId)!;
   return questionBlock(page, question, step)
     .locator('button.option')
-    .filter({ has: page.locator('.option-text', { hasText: plainText(option.text) }) });
+    .filter({ has: page.locator('.option-text', { hasText: spokenText(option.text) }) });
 }
 
 export function rightOption(question: QuizQuestion): string {
@@ -95,7 +95,7 @@ export async function answerAll(
 /** The checkbox of an item of a checklist (default: the proefles). */
 export function checkbox(page: Page, itemId: string, step: PracticeStep = practice): Locator {
   const item = step.items.find((candidate) => candidate.id === itemId)!;
-  return section(page, step.id).getByRole('checkbox', { name: plainText(item.text) });
+  return section(page, step.id).getByRole('checkbox', { name: spokenText(item.text) });
 }
 
 /** The link of a step in the step navigation, with or without " (klaar)". */
@@ -275,7 +275,7 @@ export function exerciseCard(page: Page, id: string): Locator {
 
 /** What Ted says in the exercise, whitespace collapsed. */
 export async function exerciseTedText(page: Page): Promise<string> {
-  return normalize(await exerciseBlock(page).locator('.say').innerText());
+  return readableText(exerciseBlock(page).locator('.say'));
 }
 
 /** Types an answer in the input and taps Controleer. */

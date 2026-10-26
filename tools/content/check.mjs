@@ -10,6 +10,7 @@ import { parseArgs } from 'node:util';
 import { loadContent } from './load.mjs';
 import { formatReport, sortIssues } from './report.mjs';
 import { checkAssets } from './rules/assets.mjs';
+import { checkFractions } from './rules/fractions.mjs';
 import { checkGlossaryReferences, checkSentenceLength, checkTerms } from './rules/language.mjs';
 import { checkLinks } from './rules/links.mjs';
 import { checkQuiz } from './rules/quiz.mjs';
@@ -31,6 +32,7 @@ export const contentRules = [
   checkSentenceLength,
   checkTerms,
   checkLinks,
+  checkFractions,
   checkAssets,
 ];
 

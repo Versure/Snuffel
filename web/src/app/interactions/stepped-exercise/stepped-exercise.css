@@ -82,6 +82,14 @@
   font-weight: 700;
 }
 
+/* How the app reads a typed fraction: as large as the input, the fraction stacked. */
+.reading {
+  margin: 0;
+  font-size: 1.25rem;
+  line-height: 1.6;
+  color: var(--snf-color-text);
+}
+
 .notice {
   margin: 0;
   font-weight: 700;

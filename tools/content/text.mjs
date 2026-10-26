@@ -1,16 +1,18 @@
 // Inline markup of lesson text (a small subset of Markdown) and simple text measures.
 //
-// Allowed: **bold**, *italic*, [label](https://…), [[term]] and [[term|shown form]].
-// Everything else is plain text. The cases in content/schema/v1/inline-markup.cases.json pin the
+// Allowed: **bold**, *italic*, [label](https://…), [[term]], [[term|shown form]], and a stacked
+// fraction {{a/b}} or mixed number {{n a/b}} (M14). Everything else is plain text. The cases in content/schema/v1/inline-markup.cases.json pin the
 // behaviour; the renderer in the app (M7) is tested against the same cases.
 
 /**
  * Parses inline markup into tokens:
  * - `{ type: 'text', text }`
- * - `{ type: 'strong', children }` and `{ type: 'em', children }` (children: text, link, term;
- *   em may sit inside strong, not the other way round)
+ * - `{ type: 'strong', children }` and `{ type: 'em', children }` (children: text, link, term,
+ *   fraction; em may sit inside strong, not the other way round)
  * - `{ type: 'link', text, url }` (label is plain text; the url is not checked here)
  * - `{ type: 'term', term, text }` (`text` is the shown form, the term itself when not given)
+ * - `{ type: 'fraction', text, whole?, numerator, denominator }` (digits as written, as strings;
+ *   `text` is the plain form with a slash: `1/5`, `1 1/4`)
  */
 export function parseInline(input) {
   return parse(input, { strong: true, em: true });
@@ -25,6 +27,13 @@ function parse(input, allow) {
   };
   let i = 0;
   while (i < input.length) {
+    const fraction = input.startsWith('{{', i) ? readFraction(input, i) : null;
+    if (fraction) {
+      flush();
+      tokens.push(fraction.token);
+      i = fraction.end;
+      continue;
+    }
     const term = input.startsWith('[[', i) ? readTerm(input, i) : null;
     if (term) {
       flush();
@@ -68,6 +77,125 @@ function parse(input, allow) {
   }
   flush();
   return tokens;
+}
+
+// Whole numbers without a leading zero; one space between the whole number and the fraction.
+const FRACTION = /^(?:([1-9][0-9]*) )?(0|[1-9][0-9]*)\/([1-9][0-9]*)$/;
+
+/**
+ * `{{a/b}}` or `{{n a/b}}` at `start`, or null. Digits only, no spaces except the one after the
+ * whole number, the denominator is never 0, and in a mixed number the whole number is at least 1
+ * and the fraction is proper (1 ≤ numerator < denominator).
+ */
+function readFraction(input, start) {
+  const close = input.indexOf('}}', start + 2);
+  if (close < 0) return null;
+  const match = FRACTION.exec(input.slice(start + 2, close));
+  if (!match) return null;
+  const [, whole, numerator, denominator] = match;
+  if (whole !== undefined && (Number(numerator) < 1 || Number(numerator) >= Number(denominator))) {
+    return null;
+  }
+  const text = `${whole === undefined ? '' : `${whole} `}${numerator}/${denominator}`;
+  const token =
+    whole === undefined
+      ? { type: 'fraction', text, numerator, denominator }
+      : { type: 'fraction', text, whole, numerator, denominator };
+  return { token, end: close + 2 };
+}
+
+// The shape of a fraction with any spacing, to tell what is wrong with one that is not valid.
+const LOOSE_FRACTION = /^\s*(?:([0-9]+)\s+)?([0-9]+)\s*\/\s*([0-9]+)\s*$/;
+
+/**
+ * Every `{{` or `}}` that is not part of a valid fraction (also in link labels, urls, terms and
+ * shown forms), and a lone `{` or `}` right next to a valid fraction: `[{ snippet, reason,
+ * suggestion? }]`, in order. `reason` is one of `not-whole`, `zero-denominator`, `minus`, `spaces`,
+ * `mixed-improper`, `stray-brace`, `unclosed`, `unopened`, `inside-link-or-term` or `invalid`;
+ * `suggestion` is a valid way to write it (for `minus`, `mixed-improper` and `stray-brace`). Scans
+ * the raw text in the same order as `parse`.
+ */
+export function inlineFractionProblems(input) {
+  const problems = [];
+  let i = 0;
+  while (i < input.length) {
+    if (input.startsWith('{{', i)) {
+      // A valid fraction, or one right after a lone `{` (`{{{1/2}}`).
+      const direct = readFraction(input, i);
+      const before = !direct && input[i + 2] === '{';
+      const fraction = direct ?? (before ? readFraction(input, i + 1) : null);
+      if (fraction) {
+        // A lone `}` right after it (`{{1/2}}}`); `}}` is reported as `unopened` below.
+        const after = input[fraction.end] === '}' && !input.startsWith('}}', fraction.end);
+        if (before || after) {
+          // The app shows the fraction with a brace next to it.
+          const end = after ? fraction.end + 1 : fraction.end;
+          problems.push({
+            snippet: input.slice(i, end),
+            reason: 'stray-brace',
+            suggestion: input.slice(before ? i + 1 : i, fraction.end),
+          });
+          i = end;
+          continue;
+        }
+        i = fraction.end;
+        continue;
+      }
+      const close = input.indexOf('}}', i + 2);
+      const content = close < 0 ? '' : input.slice(i + 2, close);
+      if (close < 0 || content.includes('{{')) {
+        problems.push({ snippet: /^\{\{[^\s{}]*/.exec(input.slice(i))[0], reason: 'unclosed' });
+        i += 2;
+        continue;
+      }
+      problems.push({ snippet: input.slice(i, close + 2), ...fractionProblem(content) });
+      i = close + 2;
+      continue;
+    }
+    if (input.startsWith('}}', i)) {
+      problems.push({ snippet: '}}', reason: 'unopened' });
+      i += 2;
+      continue;
+    }
+    const term = input.startsWith('[[', i) ? readTerm(input, i) : null;
+    const link =
+      !term && input[i] === '[' && !input.startsWith('[[', i) ? readLink(input, i) : null;
+    const end = term?.end ?? link?.end;
+    if (end !== undefined) {
+      const braces = /\{\{[^{}]*\}\}|\{\{|\}\}/.exec(input.slice(i, end));
+      if (braces) problems.push({ snippet: braces[0], reason: 'inside-link-or-term' });
+      i = end;
+      continue;
+    }
+    i += 1;
+  }
+  return problems;
+}
+
+/** What is wrong with the content between `{{` and `}}` of a fraction that is not valid. */
+function fractionProblem(content) {
+  if (/[-−]/.test(content)) {
+    return { reason: 'minus', suggestion: `−{{${content.replace(/[-−]\s*/, '').trim()}}}` };
+  }
+  if (/^[0-9\s/.,]+$/.test(content) && /[.,]/.test(content)) return { reason: 'not-whole' };
+  const match = LOOSE_FRACTION.exec(content);
+  if (!match) return { reason: 'invalid' };
+  const [, whole, numerator, denominator] = match;
+  if (content !== `${whole === undefined ? '' : `${whole} `}${numerator}/${denominator}`) {
+    return { reason: 'spaces' };
+  }
+  if ([whole, numerator, denominator].some((digits) => digits && /^0[0-9]/.test(digits))) {
+    return { reason: 'invalid' };
+  }
+  if (Number(denominator) === 0) return { reason: 'zero-denominator' };
+  // Only a mixed number that is not proper is left.
+  const d = Number(denominator);
+  const total = Number(whole) * d + Number(numerator);
+  const mixedWhole = Math.floor(total / d);
+  const rest = total % d;
+  const options = [`{{${total}/${d}}}`];
+  if (mixedWhole >= 1 && rest >= 1) options.unshift(`{{${mixedWhole} ${rest}/${d}}}`);
+  return { reason: 'mixed-improper', suggestion: options.join(' of ') };
 }
 
 /** `[[term]]` or `[[term|shown form]]` at `start`, or null. */
@@ -125,7 +253,10 @@ function readDelimited(input, start, marker) {
   return null;
 }
 
-/** The text a reader sees: markup removed, link labels and shown term forms kept. */
+/**
+ * The text a reader sees: markup removed, link labels and shown term forms kept, a fraction with a
+ * slash (`{{1 1/4}}` is `1 1/4`).
+ */
 export function plainText(input) {
   return tokensToText(parseInline(input));
 }

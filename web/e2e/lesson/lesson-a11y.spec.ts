@@ -258,6 +258,8 @@ test.describe('lesson accessibility', () => {
 
     // From the prompt of the first question, Tab reaches its first option.
     const block = questionBlock(page, quiz.questions[0]);
+    // The options are disabled until the progress has loaded; Tab skips a disabled button.
+    await expect(block.locator('button.option').first()).toBeEnabled();
     await block.locator('.prompt').focus();
     await page.keyboard.press('Tab');
     await expectRing(block.locator('button.option').first(), 'quiz option');

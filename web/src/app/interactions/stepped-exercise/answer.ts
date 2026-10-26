@@ -2,6 +2,8 @@
 //
 // A port of tools/content/answer.mjs (used by content:check) with the same rules; both are tested
 // against content/schema/v1/answer-matching.cases.json. A change starts with a new case there.
+// readFraction (how the app shows a typed fraction, M14) exists only in the app: the tools show
+// nothing, so tools/content/answer.mjs has no port of it.
 import type { CommonMistake, ExerciseAnswer } from '../../core/content/content.types';
 import { plainText } from '../../shared/inline-text/inline-markup';
 
@@ -20,6 +22,33 @@ export const NUMBER_MARGIN = 1e-9;
 const DECIMAL = /^(-?)\s*(\d+(?:[.,]\d+)?)$/;
 const FRACTION = /^(-?)\s*(?:(\d+)\s+)?(\d+)\s*\/\s*(\d+)$/;
 
+/** A fraction as the child typed it: digits as typed, a minus in front or not. */
+export interface TypedFraction {
+  readonly negative: boolean;
+  /** Only in a mixed number (`1 1/4`). */
+  readonly whole?: string;
+  readonly numerator: string;
+  readonly denominator: string;
+}
+
+/** The typed number without spaces at the ends, with `-` for `−` and without the unit. */
+function numberText(input: string, unit?: string): string {
+  const text = input.trim().replace(/−/g, '-');
+  const shownUnit = unit === undefined ? '' : plainText(unit).trim().toLocaleLowerCase('nl');
+  if (shownUnit && text.toLocaleLowerCase('nl').endsWith(shownUnit)) {
+    return text.slice(0, text.length - shownUnit.length).trimEnd();
+  }
+  return text;
+}
+
+/** The parts of a fraction (`3/4`, `3 / 4`, `1 1/4`, `-1/2`), or null; also null for `/0`. */
+function fractionParts(text: string): TypedFraction | null {
+  const fraction = FRACTION.exec(text);
+  if (!fraction || Number(fraction[4]) === 0) return null;
+  const parts = { negative: fraction[1] === '-', numerator: fraction[3], denominator: fraction[4] };
+  return fraction[2] === undefined ? parts : { ...parts, whole: fraction[2] };
+}
+
 /**
  * Reads what the child typed as a number: a decimal with a comma or a point, a fraction (`3/4`)
  * or a mixed number (`1 1/4`), with a minus (`-` or `−`) and, when the answer has a unit, that
@@ -27,25 +56,37 @@ const FRACTION = /^(-?)\s*(?:(\d+)\s+)?(\d+)\s*\/\s*(\d+)$/;
  * no number (empty, letters, two decimal separators, another unit, a division by zero).
  */
 export function parseNumber(input: string, unit?: string): number | null {
-  let text = input.trim().replace(/−/g, '-');
-  const shownUnit = unit === undefined ? '' : plainText(unit).trim().toLocaleLowerCase('nl');
-  if (shownUnit && text.toLocaleLowerCase('nl').endsWith(shownUnit)) {
-    text = text.slice(0, text.length - shownUnit.length).trimEnd();
-  }
+  const text = numberText(input, unit);
   const decimal = DECIMAL.exec(text);
   if (decimal) {
     const value = Number(decimal[2].replace(',', '.'));
     return decimal[1] ? -value : value;
   }
-  const fraction = FRACTION.exec(text);
+  const fraction = fractionParts(text);
   if (fraction) {
-    const whole = fraction[2] === undefined ? 0 : Number(fraction[2]);
-    const denominator = Number(fraction[4]);
-    if (denominator === 0) return null;
-    const value = whole + Number(fraction[3]) / denominator;
-    return fraction[1] ? -value : value;
+    const whole = fraction.whole === undefined ? 0 : Number(fraction.whole);
+    const value = whole + Number(fraction.numerator) / Number(fraction.denominator);
+    return fraction.negative ? -value : value;
   }
   return null;
+}
+
+/**
+ * How the app reads what the child typed, as a fraction to show stacked under the input (plan
+ * M14, question 4), or null when it is no fraction. A number answer is read like parseNumber
+ * (without its unit, `−` as a minus); a text answer after normalizeText (`5 / 6` is `5/6`). The
+ * digits stay as typed, so `11/4` is eleven quarters and `1 1/4` one and a quarter. Null for a
+ * choice, a decimal, words, an empty or unreadable input and a denominator 0.
+ */
+export function readFraction(answer: ExerciseAnswer, input: string): TypedFraction | null {
+  switch (answer.type) {
+    case 'number':
+      return fractionParts(numberText(input, answer.unit));
+    case 'text':
+      return fractionParts(normalizeText(input).replace(/−/g, '-'));
+    case 'choice':
+      return null;
+  }
 }
 
 /**

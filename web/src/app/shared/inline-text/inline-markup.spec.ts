@@ -1,5 +1,5 @@
 import markupCases from '../../../../../content/schema/v1/inline-markup.cases.json';
-import { type InlineToken, parseInline, plainText } from './inline-markup';
+import { hasFraction, type InlineToken, parseInline, plainText } from './inline-markup';
 
 interface MarkupCase {
   readonly name: string;
@@ -31,5 +31,26 @@ describe('plainText', () => {
       'Lees dit over slaat aan en shad.',
     );
     expect(plainText('3 * 4 * 5')).toBe('3 * 4 * 5');
+  });
+
+  it('plainText writes a fraction with a slash', () => {
+    expect(plainText('{{1 1/4}} liter')).toBe('1 1/4 liter');
+    expect(plainText('Hoeveel is {{1/5}} + **{{2/5}}**?')).toBe('Hoeveel is 1/5 + 2/5?');
+    expect(plainText('1/5')).toBe('1/5');
+  });
+});
+
+describe('hasFraction', () => {
+  it('finds a valid fraction, also inside bold or italic', () => {
+    expect(hasFraction('Hoeveel is {{1/5}}?')).toBe(true);
+    expect(hasFraction('**{{1 1/4}}**')).toBe(true);
+    expect(hasFraction('**echt *{{3/4}}***')).toBe(true);
+  });
+
+  it('a plain slash, an invalid fraction or braces in a term are no fraction', () => {
+    expect(hasFraction('Hoeveel is 1/5?')).toBe(false);
+    expect(hasFraction('{{1/0}} en {{-1/2}}')).toBe(false);
+    expect(hasFraction('[[term|{{1/2}}]]')).toBe(false);
+    expect(hasFraction('')).toBe(false);
   });
 });

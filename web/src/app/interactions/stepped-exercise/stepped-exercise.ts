@@ -18,6 +18,8 @@ import type {
   SteppedExerciseConfig,
 } from '../../core/content/content.types';
 import { RANDOM } from '../../core/random/random';
+import { Fraction } from '../../shared/inline-text/fraction/fraction';
+import { hasFraction } from '../../shared/inline-text/inline-markup';
 import { InlineText } from '../../shared/inline-text/inline-text/inline-text';
 import { pick, shuffle } from '../../shared/quiz/shuffle';
 import { Button } from '../../shared/ui/button/button';
@@ -25,7 +27,7 @@ import { Card } from '../../shared/ui/card/card';
 import { TedSays } from '../../shared/ui/ted-says/ted-says';
 import type { TedMood } from '../../shared/ui/ted/ted';
 import type { InteractionComponent, InteractionResult } from '../interaction';
-import { checkAnswer } from './answer';
+import { checkAnswer, readFraction } from './answer';
 import {
   afterAnswer,
   afterHint,
@@ -56,12 +58,25 @@ export const EXERCISE_TEXT = {
   mine: 'Jouw antwoord',
   finishedTitle: 'Klaar!',
   finishedRetry: 'Kijk de uitwerkingen nog eens rustig na. Morgen gaat het nog beter.',
+  reading: 'Zo lees ik jouw antwoord:',
 } as const;
 
 /** What Ted says: his mood and the parts of his text (lesson text with inline markup). */
 interface TedLine {
   readonly mood: TedMood;
   readonly parts: readonly string[];
+}
+
+/** Every text of an exercise that the child sees (not what the child types). */
+function exerciseTexts(exercise: Exercise): string[] {
+  return [
+    exercise.prompt,
+    ...exercise.hints,
+    ...exercise.steps.flatMap((step) => [step.title, step.text]),
+    ...exercise.commonMistakes.map((mistake) => mistake.feedback),
+    exercise.workedSolution,
+    ...(exercise.answer.type === 'choice' ? exercise.answer.options.map((item) => item.text) : []),
+  ];
 }
 
 /** The message under the input when an answer is no attempt. */
@@ -79,7 +94,7 @@ let nextId = 0;
  */
 @Component({
   selector: 'snf-stepped-exercise',
-  imports: [Button, Card, InlineText, TedSays],
+  imports: [Button, Card, Fraction, InlineText, TedSays],
   templateUrl: './stepped-exercise.html',
   styleUrl: './stepped-exercise.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -100,6 +115,7 @@ export class SteppedExercise implements InteractionComponent<SteppedExerciseConf
   protected readonly promptId = `${this.baseId}-opgave`;
   protected readonly unitId = `${this.baseId}-eenheid`;
   protected readonly noticeId = `${this.baseId}-melding`;
+  protected readonly readingId = `${this.baseId}-lezing`;
 
   /** A new series shuffles the options again. */
   private readonly series = signal(0);
@@ -140,8 +156,27 @@ export class SteppedExercise implements InteractionComponent<SteppedExerciseConf
     return answer?.type === 'number' ? answer.unit : undefined;
   });
 
+  /**
+   * True when the exercise writes fractions stacked: a valid `{{a/b}}` in any text of any of its
+   * exercises. Derived, not a field in the content (plan M14, question 4).
+   */
+  protected readonly usesStackedNotation = computed(() =>
+    this.exercises().some((exercise) => exerciseTexts(exercise).some(hasFraction)),
+  );
+
+  /** How the app reads the typed answer as a fraction, shown stacked under the input. */
+  protected readonly reading = computed(() => {
+    const exercise = this.exercise();
+    if (!exercise || !this.usesStackedNotation()) return null;
+    return readFraction(exercise.answer, this.typed());
+  });
+
   protected readonly describedBy = computed(() => {
-    const ids = [this.unit() ? this.unitId : '', this.notice() ? this.noticeId : ''];
+    const ids = [
+      this.unit() ? this.unitId : '',
+      this.reading() ? this.readingId : '',
+      this.notice() ? this.noticeId : '',
+    ];
     return ids.filter(Boolean).join(' ') || null;
   });
 

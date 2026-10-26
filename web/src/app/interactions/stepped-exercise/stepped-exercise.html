@@ -54,6 +54,17 @@
               /></span>
             }
           </div>
+          @if (reading(); as read) {
+            <p class="reading" [id]="readingId">
+              {{ text.reading }}{{ ' '
+              }}<snf-fraction
+                [numerator]="read.numerator"
+                [denominator]="read.denominator"
+                [whole]="read.whole"
+                [negative]="read.negative"
+              />
+            </p>
+          }
           @if (notice()) {
             <p class="notice" [id]="noticeId">{{ noticeText() }}</p>
           }

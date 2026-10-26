@@ -1,7 +1,7 @@
 import AxeBuilder from '@axe-core/playwright';
 import type { Page } from '@playwright/test';
-import { plainText } from '../../src/app/shared/inline-text/inline-markup';
 import { expect, test } from '../fixtures';
+import { readableText, spokenText } from '../support/readable-text';
 import {
   answerExercise,
   askAllHints,
@@ -39,7 +39,7 @@ function oefenenLink(page: Page, done: boolean) {
 
 /** Whether what Ted says starts with one of the lines. */
 function startsWithLine(said: string, lines: readonly string[]): boolean {
-  return lines.map(plainText).some((line) => said.startsWith(line));
+  return lines.map(spokenText).some((line) => said.startsWith(line));
 }
 
 test.describe('the stepped exercise', () => {
@@ -51,7 +51,9 @@ test.describe('the stepped exercise', () => {
     await openExerciseLesson(page, { hash: anchor });
     const card = exerciseCard(page, 'gelijke-noemers');
     await expect(card.locator('.heading')).toHaveText('Opgave 1 van 4');
-    await expect(card.locator('.prompt')).toHaveText('Hoeveel is 1/5 + 2/5?');
+    await expect
+      .poll(() => readableText(card.locator('.prompt')))
+      .toBe('Hoeveel is 1 vijfde + 2 vijfde?');
     await expect(card.locator('input.input')).toBeVisible();
     await expect(card.getByRole('button', { name: 'Controleer', exact: true })).toBeVisible();
     await expect(card.locator('.solution-later')).toHaveText(
@@ -111,7 +113,7 @@ test.describe('the stepped exercise', () => {
     await openExerciseLesson(page, { hash: anchor });
     await answerExercise(page, '3/10');
     expect(await exerciseTedText(page)).toBe(
-      plainText(exercise('gelijke-noemers').commonMistakes[0].feedback),
+      spokenText(exercise('gelijke-noemers').commonMistakes[0].feedback),
     );
     await expect(exerciseBlock(page).locator('snf-ted-says snf-ted svg')).toHaveCSS(
       '--m-mond-denk',
@@ -135,7 +137,7 @@ test.describe('the stepped exercise', () => {
       'Jouw antwoord',
     );
     expect(await exerciseTedText(page)).toBe(
-      plainText(exercise('kies-de-som').commonMistakes[0].feedback),
+      spokenText(exercise('kies-de-som').commonMistakes[0].feedback),
     );
   });
 
@@ -150,7 +152,9 @@ test.describe('the stepped exercise', () => {
         .getByRole('button', { name: shown === 0 ? 'Hint' : 'Nog een hint', exact: true })
         .click();
       await expect(card.locator('.hint')).toHaveCount(shown + 1);
-      await expect(card.locator('.hint').nth(shown)).toContainText(plainText(hint));
+      await expect
+        .poll(() => readableText(card.locator('.hint').nth(shown)))
+        .toContain(spokenText(hint));
     }
     // After the last hint: no hint button, and the focus is on that hint.
     await expect(card.getByRole('button', { name: /hint/i })).toHaveCount(0);
@@ -167,7 +171,9 @@ test.describe('the stepped exercise', () => {
     await toggle(0).click();
     await expect(toggle(0)).toHaveAttribute('aria-expanded', 'true');
     await expect(card.locator('.step-text').nth(0)).toBeVisible();
-    await expect(card.locator('.step-text').nth(0)).toContainText(plainText(steps[0].text));
+    await expect
+      .poll(() => readableText(card.locator('.step-text').nth(0)))
+      .toContain(spokenText(steps[0].text));
     await expect(toggle(1)).toHaveAttribute('aria-expanded', 'false');
     await expect(card.locator('.step-text').nth(1)).toBeHidden();
     await toggle(1).click();
@@ -201,7 +207,9 @@ test.describe('the stepped exercise', () => {
     const solution = card.locator('.solution');
     await expect(solution).toBeFocused();
     await expect(solution).toContainText('Uitwerking');
-    await expect(solution).toContainText(plainText(exercise('ongelijke-noemers').workedSolution));
+    await expect
+      .poll(() => readableText(solution))
+      .toContain(spokenText(exercise('ongelijke-noemers').workedSolution));
     // The exercise is finished with the solution.
     await expect(card.getByRole('button', { name: 'Volgende opgave' })).toBeVisible();
   });
@@ -353,7 +361,7 @@ test.describe('the stepped exercise', () => {
     expect(await exerciseTedText(page)).toContain('4 van 4 zelf goed.');
     // Ted is cool, with a line of the lesson after the score.
     const said = await exerciseTedText(page);
-    expect(ted.correct.map(plainText).some((line) => said.endsWith(line))).toBe(true);
+    expect(ted.correct.map(spokenText).some((line) => said.endsWith(line))).toBe(true);
     await expect(exerciseBlock(page).locator('snf-ted-says snf-ted svg')).not.toHaveCSS(
       '--m-bril',
       'none',
@@ -488,7 +496,7 @@ test.describe('the stepped exercise', () => {
     await page.keyboard.press('Enter');
     await expect(card.locator('.say')).toBeFocused();
     expect(await exerciseTedText(page)).toBe(
-      plainText(exercise('gelijke-noemers').commonMistakes[0].feedback),
+      spokenText(exercise('gelijke-noemers').commonMistakes[0].feedback),
     );
     // A hint with Space, a step with Enter.
     await tabTo(card.getByRole('button', { name: 'Hint', exact: true }), 'Hint');

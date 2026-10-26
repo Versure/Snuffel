@@ -23,7 +23,7 @@ describe('parseInline', () => {
     }
   });
 
-  test('the cases cover bold, italic, links, terms and the edge cases', () => {
+  test('the cases cover bold, italic, links, terms, fractions and the edge cases', () => {
     const types = new Set();
     const visit = (tokens) =>
       tokens.forEach((token) => {
@@ -31,7 +31,7 @@ describe('parseInline', () => {
         if (token.children) visit(token.children);
       });
     cases.forEach(({ tokens }) => visit(tokens));
-    assert.deepEqual([...types].sort(), ['em', 'link', 'strong', 'term', 'text']);
+    assert.deepEqual([...types].sort(), ['em', 'fraction', 'link', 'strong', 'term', 'text']);
   });
 });
 
@@ -41,6 +41,12 @@ describe('plainText, links and terms', () => {
       plainText('**Tip:** [[aanslaan|Sla aan]], zie [de site](https://example.org/a) *nu*.'),
       'Tip: Sla aan, zie de site nu.',
     );
+  });
+
+  test('plainText writes a fraction with a slash', () => {
+    assert.equal(plainText('{{1 1/4}} liter'), '1 1/4 liter');
+    assert.equal(plainText('Hoeveel is {{1/5}} + **{{2/5}}**?'), 'Hoeveel is 1/5 + 2/5?');
+    assert.equal(plainText('−{{1/2}}'), '−1/2');
   });
 
   test('inlineLinks and inlineTerms find links and terms, also inside bold', () => {
@@ -61,6 +67,16 @@ describe('countWords', () => {
     assert.equal(countWords('[[aanslaan|slaat aan]]'), 2);
     assert.equal(countWords('1,5 meter'), 2);
     assert.equal(countWords(''), 0);
+  });
+
+  test('a fraction counts the same as the plain form', () => {
+    for (const [plain, stacked] of [
+      ['Hoeveel is 1/5 + 2/5?', 'Hoeveel is {{1/5}} + {{2/5}}?'],
+      ['Dat is 1 1/4 liter.', 'Dat is {{1 1/4}} liter.'],
+    ]) {
+      assert.equal(countWords(stacked), countWords(plain));
+      assert.deepEqual(splitSentences(stacked), splitSentences(plain));
+    }
   });
 });
 

@@ -26,7 +26,7 @@ Stel alleen de vragen die de wens nog niet beantwoordt, **in één bericht, maxi
 - wat kan diegene al: stel een paar korte controlevragen;
 - wat is "gelukt": iets concreets en zichtbaars;
 - hoeveel tijd per week;
-- context: de vijver; bij huiswerk vak, niveau, methode en hoofdstuk, of liever foto's van de pagina's (zie hieronder).
+- context: de vijver; bij huiswerk vak, niveau, methode en hoofdstuk, of liever foto's van de pagina's (zie hieronder). Gaat het huiswerk over getallen of rekenen en zijn er **geen foto's**, vraag dan in dezelfde vraag naar de notatie: "Hoe schrijft de school breuken: boven elkaar of met een schuine streep? Komma of punt bij kommagetallen? Delen met : of ÷, keer met × of ·?" Kies de notatie nooit zelf; komen de foto's alsnog, dan gelden de foto's.
 
 Kies daarna `kind`: `course` (leertraject) of `practice` (huiswerk-oefenles; dan zijn `subject`, `schoolLevel`, `method` en `chapter` verplicht).
 
@@ -40,7 +40,13 @@ Lees elke foto met `Read` (een map: eerst `Glob` op de afbeeldingen erin). Haal 
 
 - vak, niveau, methode en hoofdstuk; vraag alleen wat er niet op staat (in hetzelfde bericht of, als de foto's pas na de intake komen, in één vervolgbericht; samen nooit meer dan zes vragen);
 - de uitleg van het boek: welk begrip, in welke volgorde, met welke voorbeelden;
-- de **notatie en werkwijze** van het boek (bijv. hoe een breuk, een tussenstap, een eenheid of een tabel genoteerd wordt); de les gebruikt precies die notatie;
+- de **notatie en werkwijze** van het boek (bijv. hoe een breuk, een tussenstap, een eenheid of een tabel genoteerd wordt); de les gebruikt precies die notatie. Kies hem **per les** uit de foto's, per soort (zie "Notatie" in de catalogus):
+  - een breuk boven elkaar (teller over noemer) wordt `{{a/b}}`, een gemengd getal `{{n a/b}}`; een breuk met een schuine streep blijft `a/b`;
+  - een kommagetal met een komma of met een punt, zoals in het boek;
+  - delen met `:` of `÷`, keer met `×` of `·`, zoals in het boek; **nooit `*` voor keer** (dat is opmaak: `3*4*5` wordt cursief);
+  - de vorm van een tussenstap of uitwerking (bijv. "{{1/2}} = {{2/4}}" als één `=`-reeks, of als losse zinnen), zoals in het boek;
+  - de hele les gebruikt dezelfde notatie. Schrijf je keuze op (per soort: wat je op de foto's zag en wat je schrijft); die gaat mee naar `content-reviewer` en in de PR onder "Notatie".
+  - Staat er een notatie op de foto's die de app niet kan tonen (zie "Grenzen"), maak die opgaven dan niet.
 - het niveau en het **soort opgaven** (wat er gevraagd wordt, hoeveel stappen, met of zonder context).
 
 **Persoonsgegevens op foto's:** naam, klas, school, handschrift, behaalde cijfers of iets anders dat naar een kind wijst, negeer je. Ze komen nergens: niet in inhoud, commits, branchnaam of PR, en niet in je opdrachten aan de agents (die krijgen alleen de paden). **Kopieer nooit een foto** naar `content/` of elders in de repo (een test faalt op foto's onder `content/`), en noem in de PR geen bestandsnamen of mapnamen van foto's (die kunnen een naam bevatten); schrijf "eigen foto's van het hoofdstuk".
@@ -94,6 +100,7 @@ Bestand `content/courses/<cursus-id>/lessons/NN-<les-id>.json` (`NN` is het volg
 - Hints en tussenstappen gaan vóór het antwoord; de uitwerking (`workedSolution`) komt pas na een eigen poging.
 - Neem nooit opgaven letterlijk over uit het huiswerk of de methode.
 - **Met foto's:** volg de stof, de volgorde en de **notatie** van het boek, op hetzelfde niveau. **Parafraseer** de uitleg in je eigen woorden. De opgaven lijken op die in het boek (zelfde soort, zelfde niveau, zelfde notatie), maar zijn nooit letterlijk overgenomen, en ook niet dezelfde zin met alleen andere getallen: bedenk een eigen context (bij voorkeur iets herkenbaars, zoals de vijver of vissen).
+- **Notatie:** de notatie van de foto's (of uit de intake) geldt overal in de les: uitleg, opgaven, hints, tussenstappen, `feedback` van `commonMistakes`, `workedSolution`, keuzeopties en quiz. Alleen in `accepted` en `commonMistakes[].answer` staat wat het kind **typt** (`3/5`, `1 1/4`, `0,75`), nooit `{{…}}`. Gebruikt de oefening `{{a/b}}`, dan laat de app onder het invoervak zien hoe hij een getypte breuk leest ("Zo lees ik jouw antwoord:").
 - De oefening werkt in de app sinds M10. Kort (details en valkuilen in de catalogus, sectie `stepped-exercise`):
   - `accepted`: zet elke vorm die goed is erin (`5/6`, `vijf zesde`); hoofdletters, extra spaties, spaties rond `/` en een punt aan het eind tellen niet mee, accenten en typefouten wel.
   - `number`: het kind mag een komma, een punt, een breuk (`3/4`) of een gemengd getal (`1 1/4`) typen, en de `unit` erachter. Zet `tolerance` boven 0 als een afgerond antwoord goed moet zijn (`0,33` bij `1/3`). Grote getallen zonder punt (`1.000` is één).
@@ -106,7 +113,7 @@ Bestand `content/courses/<cursus-id>/lessons/NN-<les-id>.json` (`NN` is het volg
 
 ## 7. Review
 
-Zet de agent `content-reviewer` in met het pad van `course.json` en van de les; bij huiswerk ook vak, niveau, methode en hoofdstuk, en de paden van de foto's als die er zijn (hij controleert dan dat de les de stof en notatie van het boek volgt, dat niets (bijna) letterlijk van de foto's komt en dat er geen persoonsgegevens van de foto's in staan). Blokkerende punten: oplossen, opnieuw `npm run content:check`, opnieuw `content-reviewer`. **Maximaal twee rondes.** Bewaar elk rapport voor de PR.
+Zet de agent `content-reviewer` in met het pad van `course.json` en van de les; bij huiswerk ook vak, niveau, methode en hoofdstuk, de paden van de foto's als die er zijn (hij controleert dan dat de les de stof en notatie van het boek volgt, dat niets (bijna) letterlijk van de foto's komt en dat er geen persoonsgegevens van de foto's in staan), en **de notatie die je gekozen hebt**: per soort wat je schrijft en waarom (van de foto's, of zonder foto's: wat Jop in de intake zei). Hij controleert elke breuk, elk getal en elke bewerking daartegen. Blokkerende punten: oplossen, opnieuw `npm run content:check`, opnieuw `content-reviewer`. **Maximaal twee rondes.** Bewaar elk rapport voor de PR.
 
 ## 8. Toevoegen
 
@@ -128,6 +135,14 @@ Zet de agent `content-reviewer` in met het pad van `course.json` en van de les; 
 
 | Bron | Uitgever | Type | Betrouwbaarheid | Geopend op |
 | ---- | -------- | ---- | --------------- | ---------- |
+
+## Notatie
+
+<alleen bij huiswerk: per soort (breuk, kommagetal, delen, keer, tussenstap en uitwerking) wat de les schrijft en waarom: "zo staat het op de eigen foto's van het hoofdstuk" of "zo zei Jop het in de intake">
+
+## Ontbrekende notatie
+
+<alleen als het voorkomt: welke notatie de app nog niet kan tonen, bij welk soort opgave, wat er daarom niet in de les staat, en een voorstel voor een kleine mijlpaal via `schema-wijzigen`>
 
 ## Review door content-reviewer
 
@@ -160,7 +175,7 @@ Voor een voorbeeld dat nooit echte inhoud wordt:
 - alle id's (cursus, les) beginnen met `voorbeeld-`;
 - wijzig `content/terms.json` **niet**; vaktermen staan alleen in de `glossary` van de les;
 - geen `content/…`-branch, geen commit, geen push en geen PR: de les blijft als **ongecommitte bestanden** in `content/fixtures/courses/<cursus-id>/` in de werkmap van de branch waarop je draait. Draai daarom op een eigen branch, niet op `main` of een `content/…`-branch: sta je op `main`, maak dan eerst `git switch -c sample/<cursus-id>` (werkmap schoon, zie "Vooraf");
-- geen vragen aan Jop: de intake-antwoorden staan in de wens; het leerpad komt in het verslag in plaats van een stop;
+- geen vragen aan Jop: de intake-antwoorden staan in de wens; het leerpad komt in het verslag in plaats van een stop. Gaat het over rekenen en staat de notatie niet in de wens, gebruik dan de schuine streep (`a/b`) en de komma, geef die aan `content-reviewer` mee als notatie met de reden "voorbeeldmodus, niet door Jop gegeven", en zeg in het verslag dat de notatie niet gegeven was;
 - alle andere stappen (bronnen, les maken, `npm run content:check`, review) gelden gewoon.
 
 Geef aan het eind een verslag terug, met daarin hoe Jop de voorbeeldles weer weghaalt (de map `content/fixtures/courses/<cursus-id>/` verwijderen, of `git clean -fd content/fixtures/courses/<cursus-id>/`): de wens, de intake, de bronnen (geopend ja/nee), het leerpad, de uitvoer van `npm run content:check` en het volledige rapport van `content-reviewer` per ronde.
@@ -168,6 +183,7 @@ Geef aan het eind een verslag terug, met daarin hoe Jop de voorbeeldles weer weg
 ## Grenzen
 
 - Past een les niet in de catalogus (er is een nieuwe interactiesoort nodig): **stop** en stel een mijlpaal voor via de skill `spelcomponent-bouwen`. Dat is codewerk, geen inhoud.
+- **Een notatie die de app niet kan tonen** (zie "Notatie" in de catalogus: bijv. een staartdeling, een macht, een wortel, een breuk in een breuk, cijfers onder elkaar): maak die les of die opgaven **niet** met een benadering (geen `2^3`, geen "de wortel uit 9" als het boek √9 schrijft). **Stop**, net als bij een ontbrekende interactiesoort, en meld het als **ontbrekende notatie**: wat, bij welk soort opgave, en een voorstel voor een kleine mijlpaal via `schema-wijzigen`. Komt er voor de rest wel een PR (bijv. andere lessen), dan staat het daarin onder "Ontbrekende notatie"; anders in je bericht aan Jop.
 - Geen app-code, geen schemawijziging (daarvoor is er `schema-wijzigen`), geen AI-API's of andere diensten in de app.
 - Nooit een bron verzinnen, nooit tekst kopiëren, nooit persoonsgegevens van de kinderen.
 - Foto's van het werkboek blijven in `huiswerk-fotos/` (buiten git) of in het gesprek; nooit in de repo, nooit in de PR.

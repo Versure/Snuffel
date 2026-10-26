@@ -105,6 +105,63 @@ describe('InlineText', () => {
     expect(p.textContent).toBe('Je moet slaat aan en shad.');
   });
 
+  /** The text a screen reader reads: without aria-hidden parts, whitespace collapsed. */
+  const readable = (element: Element): string => {
+    const clone = element.cloneNode(true) as Element;
+    clone.querySelectorAll('[aria-hidden="true"]').forEach((node) => node.remove());
+    return (clone.textContent ?? '').replace(/\s+/g, ' ').trim();
+  };
+  const fractionParts = (fraction: Element) =>
+    [...fraction.querySelectorAll('mfrac > mn')].map((mn) => mn.textContent?.trim());
+
+  it('renders {{1/5}} as a stacked fraction with 1 vijfde for a screen reader', async () => {
+    const p = await render(caseInput('fraction'));
+    const fractions = [...p.querySelectorAll('snf-fraction')];
+    expect(fractions.map(fractionParts)).toEqual([
+      ['1', '5'],
+      ['2', '5'],
+    ]);
+    expect(p.querySelector('math')?.getAttribute('aria-hidden')).toBe('true');
+    expect(readable(p)).toBe('Hoeveel is 1 vijfde + 2 vijfde?');
+  });
+
+  it('a fraction inside bold is bold', async () => {
+    const p = await render(caseInput('fraction inside bold'));
+    const fraction = p.querySelector('strong snf-fraction');
+    expect(fraction).not.toBeNull();
+    expect(fractionParts(fraction as Element)).toEqual(['1', '2']);
+    expect(readable(p)).toBe('1 half');
+  });
+
+  it('a plain 1/5 stays text', async () => {
+    const p = await render(caseInput('plain slash stays text'));
+    expect(p.querySelector('snf-fraction')).toBeNull();
+    expect(p.textContent).toBe('Hoeveel is 1/5 + 2/5?');
+    const invalid = await render('Neem {{1/0}} liter.');
+    expect(invalid.querySelector('snf-fraction')).toBeNull();
+    expect(invalid.textContent).toBe('Neem {{1/0}} liter.');
+  });
+
+  it('a fraction in a glossary definition and with terms off is still stacked', async () => {
+    TestBed.resetTestingModule();
+    TestBed.configureTestingModule({ providers: [LessonContext] });
+    TestBed.inject(LessonContext).glossary.set([
+      { term: 'noemer', definition: 'het getal onder de streep, zoals de 5 in {{1/5}}' },
+    ]);
+    const fixture = TestBed.createComponent(Host);
+    fixture.componentInstance.text.set('De [[noemer]] van {{3/4}}.');
+    await fixture.whenStable();
+    const p = (fixture.nativeElement as HTMLElement).querySelector('p') as HTMLElement;
+    const definition = p.querySelector('.definition') as HTMLElement;
+    expect(fractionParts(definition.querySelector('snf-fraction') as Element)).toEqual(['1', '5']);
+    expect(p.querySelectorAll('snf-fraction').length).toBe(2);
+
+    const termsOff = await render('De [[shad]] is {{3/4}} van de vis.', { terms: false });
+    expect(termsOff.querySelector('button')).toBeNull();
+    expect(fractionParts(termsOff.querySelector('snf-fraction') as Element)).toEqual(['3', '4']);
+    expect(readable(termsOff)).toBe('De shad is 3 vierde van de vis.');
+  });
+
   it('never uses innerHTML', async () => {
     const p = await render(caseInput('html stays plain text'));
     expect(p.querySelector('b')).toBeNull();
