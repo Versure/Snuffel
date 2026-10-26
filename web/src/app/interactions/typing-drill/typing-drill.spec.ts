@@ -325,6 +325,25 @@ describe('TypingDrill', () => {
     expect(document.activeElement).toBe(field(setup.element));
   });
 
+  it('a new key in the field closes the question and counts', async () => {
+    const setup = await render();
+    await start(setup);
+    await type(setup, 'xx');
+    button(setup.element, 'Opnieuw beginnen')?.click();
+    await setup.fixture.whenStable();
+    expect(setup.element.querySelector('.confirm')).not.toBeNull();
+    // A click on the line puts the focus back in the field; the child types on.
+    field(setup.element)?.focus();
+    await type(setup, lines[0]?.[2] ?? '');
+    expect(setup.element.querySelector('.confirm')).toBeNull();
+    expect(button(setup.element, 'Opnieuw beginnen')).toBeDefined();
+    expect(
+      lineMarks(setup.element)
+        .slice(0, 3)
+        .map((item) => item.mark),
+    ).toEqual(['wrong', 'wrong', 'correct']);
+  });
+
   it('Opnieuw beginnen before the first key starts over without a question', async () => {
     const setup = await render();
     await start(setup);
