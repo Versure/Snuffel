@@ -402,7 +402,8 @@ test.describe('the typing drill: results', () => {
   test('finishing stores one result without the typed text', async ({ page }) => {
     await openTypingLesson(page, { hash: anchor });
     await startDrill(page);
-    // Two wrong keys on "f" (once each time it should have been f) and one on the space.
+    // Two wrong keys, counted across all lines: index 3 is the "f" of line 1 ("asdf jkl;"), index
+    // 12 the "a" of line 2 ("fdsa ;lkj", 12 - 9 = 3).
     const wrongAt = new Set([3, 12]);
     let index = 0;
     for (const line of typing.lines) {
@@ -432,8 +433,8 @@ test.describe('the typing drill: results', () => {
     expect(Object.keys(detail).sort()).toEqual(['durationMs', 'keysPerMinute', 'mistakes']);
     expect(Number.isInteger(detail.keysPerMinute)).toBe(true);
     expect(detail.durationMs).toBeGreaterThanOrEqual(1000);
-    // The keys that should have been pressed: index 3 is the "f" of line 1, index 12 the "a" ... of
-    // line 2 ("fdsa ;lkj": 12 - 9 = 3, the "a").
+    // A mistake counts on the key that should have been pressed: "a" and "f", once each (equal
+    // counts in key order).
     expect(detail.mistakes).toEqual([
       { key: 'a', count: 1 },
       { key: 'f', count: 1 },
