@@ -610,6 +610,7 @@ De kaart staat in `content/schema/v1/typing-keyboard.cases.json`; app en `conten
 
 - zet een dode toets in een regel **nooit direct voor** een letter die hij samenstelt: `'` voor `a e i o u y c`, `"` voor `a e i o u y`, `` ` `` voor `a e i o u`, `~` voor `a o n`, `^` voor `a e i o u` (ook hoofdletters). `auto's`, `zo'n` en `'t` mogen; `'en`, `"oei"` en `l'Avenue` niet. Dat geldt ook **over de regelgrens**: de regels worden zonder Enter na elkaar getypt, dus eindigt een regel op `"` en begint de volgende met `a`, dan wordt het `ä`. `content:check` meldt het (`typing-dead-key-sequence`);
 - laat de **laatste regel niet eindigen** op een dode toets: die verschijnt pas na nog een toets, dus de oefening blijft wachten. `content:check` meldt het (`typing-dead-key-at-end`);
+- **Linux** (indeling "US international with dead keys") stelt meer samen dan Windows en macOS: `'` + `s` wordt `ś` en `'` + `n` wordt `ń`, dus `auto's` en `zo'n` gaan daar mis. `content:check` volgt Windows en macOS; zet in een les over `'` een tip voor wie op Linux typt;
 - leg in een leestekenles uit dat je na `'` of `"` soms een spatie typt om het teken zelf te krijgen;
 - geen accenten in regels: die vragen twee toetsen na elkaar en komen later, als een les ze nodig heeft.
 
