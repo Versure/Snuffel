@@ -23,14 +23,18 @@
   color: var(--snf-color-text-muted);
 }
 
-/* The line to type, with the hidden field; its focus ring shows on the whole box. */
+/*
+ * The line to type, with the hidden field; its focus ring shows on the whole box. The border is
+ * text colour, not ink: ink is nearly invisible on the dark card, text has more than 3:1 against
+ * card and paper in both themes (WCAG 1.4.11).
+ */
 .line-box {
   position: relative;
   display: block;
   padding: 0.6rem 0.8rem;
   cursor: text;
   background: var(--snf-color-paper);
-  border: var(--snf-border-width) solid var(--snf-color-ink);
+  border: var(--snf-border-width) solid var(--snf-color-text);
   border-radius: var(--snf-radius-md);
 }
 
