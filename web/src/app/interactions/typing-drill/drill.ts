@@ -107,12 +107,6 @@ export function keyCount(state: DrillState): number {
   return state.times.length;
 }
 
-/** Right as a percentage of all, rounded down: 100 only without mistakes. 0 without keys. */
-export function accuracy(score: number, total: number): number {
-  if (total <= 0) return 0;
-  return Math.floor((score * 100) / total);
-}
-
 /**
  * The measured time from the first to the last key press: every pause counts at most
  * MAX_PAUSE_MS, and the whole at least MIN_DURATION_MS. In whole ms.

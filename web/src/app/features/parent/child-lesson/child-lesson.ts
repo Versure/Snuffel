@@ -27,7 +27,7 @@ import {
 } from '../../../core/progress/child-progress';
 import { groupStepStatuses, lessonProgress } from '../../../core/progress/course-progress';
 import type { LessonRecords } from '../../../core/progress/progress.service';
-import { accuracy } from '../../../interactions/typing-drill/drill';
+import { accuracy } from '../../../core/typing/accuracy';
 import { plainText } from '../../../shared/inline-text/inline-markup';
 import { Button } from '../../../shared/ui/button/button';
 import { LessonStatusLabel } from '../../../shared/ui/lesson-status/lesson-status';

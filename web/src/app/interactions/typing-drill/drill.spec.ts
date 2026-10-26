@@ -1,6 +1,5 @@
 import type { TypingKey } from '../../core/content/content.types';
 import {
-  accuracy,
   drillDuration,
   drillResult,
   expectedChar,
@@ -63,16 +62,6 @@ describe('typing drill logic', () => {
     const after = typeChar(finished, 'x', 500);
     expect(after).toBe(finished);
     expect(drillResult(after).total).toBe(2);
-  });
-
-  it('accuracy is rounded down so 100% means no mistakes', () => {
-    expect(accuracy(199, 200)).toBe(99);
-    expect(accuracy(442, 480)).toBe(92);
-    expect(accuracy(480, 480)).toBe(100);
-    expect(accuracy(0, 5)).toBe(0);
-    expect(accuracy(0, 0)).toBe(0);
-    // 29 of 100 is 28.999… as a float; still 29.
-    expect(accuracy(29, 100)).toBe(29);
   });
 
   it('keys per minute count right keys from the first to the last key', () => {

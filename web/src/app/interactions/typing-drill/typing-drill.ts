@@ -23,8 +23,8 @@ import { Card } from '../../shared/ui/card/card';
 import { TedSays } from '../../shared/ui/ted-says/ted-says';
 import type { TedMood } from '../../shared/ui/ted/ted';
 import type { InteractionComponent, InteractionResult } from '../interaction';
+import { accuracy } from '../../core/typing/accuracy';
 import {
-  accuracy,
   drillResult,
   expectedChar,
   goalsMet,

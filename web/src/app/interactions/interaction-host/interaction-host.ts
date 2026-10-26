@@ -20,7 +20,7 @@ import { TedSays } from '../../shared/ui/ted-says/ted-says';
 import type { InteractionResult } from '../interaction';
 import { InteractionPlaceholder } from '../interaction-placeholder/interaction-placeholder';
 import { INTERACTION_REGISTRY } from '../registry';
-import { accuracy } from '../typing-drill/drill';
+import { accuracy } from '../../core/typing/accuracy';
 
 /** What the host says per kind of interaction when its component cannot be loaded. */
 const LOAD_ERRORS: Record<Interaction['kind'], string> = {
