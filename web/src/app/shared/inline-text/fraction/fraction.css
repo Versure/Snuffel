@@ -1,0 +1,17 @@
+/*
+ * A fraction never breaks inside itself; the sentence around it wraps as usual. The MathML takes
+ * the font and colour of the text around it (the bar is drawn in currentColor), so contrast is
+ * that of the text. math-style: normal keeps numerator and denominator from shrinking; the whole
+ * fraction is a little smaller than the text, so two rows fit in a paragraph. No animation.
+ */
+:host {
+  display: inline-block;
+  white-space: nowrap;
+}
+
+math {
+  font-family: var(--snf-font-body);
+  font-size: 0.9em;
+  math-style: normal;
+  color: inherit;
+}

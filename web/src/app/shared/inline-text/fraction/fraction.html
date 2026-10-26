@@ -1,0 +1,13 @@
+<span class="snf-visually-hidden">{{ spoken() }}</span>
+<math aria-hidden="true">
+  @if (negative()) {
+    <mo>−</mo>
+  }
+  @if (whole(); as whole) {
+    <mn>{{ whole }}</mn>
+  }
+  <mfrac>
+    <mn>{{ numerator() }}</mn>
+    <mn>{{ denominator() }}</mn>
+  </mfrac>
+</math>
