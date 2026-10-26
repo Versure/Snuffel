@@ -64,7 +64,8 @@ function htmlIssue(file, path) {
     code: 'markup-html',
     file,
     path,
-    message: 'HTML is niet toegestaan; gebruik **vet**, *cursief*, [label](https://…) of [[term]]',
+    message:
+      'HTML is niet toegestaan; gebruik **vet**, *cursief*, [label](https://…), [[term]] of {{1/5}}',
   };
 }
 

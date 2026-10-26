@@ -569,6 +569,7 @@ Zijn er schemafouten in een cursus, dan worden eerst alleen die gemeld; de ander
 | `link-not-https`              | een link die niet met `https://` begint (ook `http:`, `javascript:`, `data:` en relatieve links) |
 | `link-tracker`                | een link naar een tracker of linkverkorter, of met een trackingparameter                         |
 | `markup-html`                 | HTML in tekst                                                                                    |
+| `markup-fraction-invalid`     | een `{{` of `}}` die geen geldige breuk vormt (bijv. `{{1/0}}`, `{{1,5/2}}`, `{{-1/2}}`)         |
 | `course-term-not-allowed`     | een `[[term]]` in `course.json` (een cursus heeft geen `glossary`)                               |
 | `asset-path-invalid`          | `figure.src` is geen `.svg` onder `assets/`, bevat `..`, of is (of ligt in) een symlink          |
 | `asset-missing`               | de afbeelding bestaat niet                                                                       |
