@@ -65,9 +65,32 @@ describe('typing drill checks', () => {
     );
   });
 
+  test('a dead key at the end of a line before a vowel on the next line gives typing-dead-key-sequence', (t) => {
+    // The app types the lines one after another without Enter: `"` and `a` become `ä`.
+    const result = withDrill(t, {
+      lines: ['zeg "hoi"', 'alle sla', "auto'", 'en dan'],
+      newKeys: [],
+    }).check();
+    const error = assertIssue(result, 'typing-dead-key-sequence', `${base}.lines[1]`);
+    assert.equal(
+      error.message,
+      '" aan het eind van de vorige regel en a aan het begin van deze regel worden op een US-International-toetsenbord ä; laat deze regel met een spatie of een andere letter beginnen',
+    );
+    assertIssue(result, 'typing-dead-key-sequence', `${base}.lines[3]`);
+    assert.equal(result.errors.filter((e) => e.code === 'typing-dead-key-sequence').length, 2);
+  });
+
+  test('a dead key at the end of a line before a letter it does not compose is fine', (t) => {
+    const result = withDrill(t, {
+      lines: ["auto'", 'tja', 'zei "ja"', 'klaar'],
+      newKeys: [],
+    }).check();
+    assertNoIssue(result, 'typing-dead-key-sequence');
+  });
+
   test("auto's and zo'n are fine", (t) => {
     const result = withDrill(t, {
-      lines: ["auto's", "zo'n", "'t is", 'zei "ja"', "auto' en"],
+      lines: ["auto's", "zo'n", "'t is", "auto' en", 'zei "ja"'],
       newKeys: ["'"],
     }).check();
     assertNoIssue(result, 'typing-dead-key-sequence');

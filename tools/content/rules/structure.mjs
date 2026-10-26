@@ -177,6 +177,21 @@ function checkTypingDrill(config, base, file, issues) {
         ),
       );
     }
+    // The app types the lines one after another without Enter, so the last char of a line and
+    // the first char of the next line follow each other as well.
+    const next = config.lines[l + 1];
+    if (!line || !next) return;
+    const join = [...line].at(-1) + [...next][0];
+    for (const { sequence } of deadKeySequences(join)) {
+      issues.push(
+        issue(
+          'typing-dead-key-sequence',
+          file,
+          `${base}.lines[${l + 1}]`,
+          `${sequence[0]} aan het eind van de vorige regel en ${sequence.slice(1)} aan het begin van deze regel worden op een US-International-toetsenbord ${composedChar(sequence)}; laat deze regel met een spatie of een andere letter beginnen`,
+        ),
+      );
+    }
   });
 }
 
