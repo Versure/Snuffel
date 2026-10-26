@@ -399,8 +399,13 @@ describe('TypingDrill', () => {
     const setup = await render(fixtureConfig, { touchOnly: true });
     const editable = document.createElement('div');
     editable.setAttribute('contenteditable', 'true');
+    const inputs = ['text', 'search', 'email', 'number', 'tel', 'url', 'password'].map((kind) => {
+      const input = document.createElement('input');
+      input.type = kind;
+      return input;
+    });
     const fields = ['input', 'textarea', 'select'].map((tag) => document.createElement(tag));
-    for (const target of [...fields, editable]) {
+    for (const target of [...inputs, ...fields, editable]) {
       document.body.append(target);
       target.dispatchEvent(new KeyboardEvent('keydown', { key: 'a', bubbles: true }));
       target.remove();
@@ -408,6 +413,20 @@ describe('TypingDrill', () => {
       expect(setup.element.querySelector('.touch'), target.tagName).not.toBeNull();
     }
   });
+
+  it.each(['checkbox', 'radio', 'button'])(
+    'a key on an input of type %s on a touch-only device shows the drill',
+    async (kind) => {
+      const setup = await render(fixtureConfig, { touchOnly: true });
+      const target = document.createElement('input');
+      target.type = kind;
+      document.body.append(target);
+      target.dispatchEvent(new KeyboardEvent('keydown', { key: 'a', bubbles: true }));
+      target.remove();
+      await setup.fixture.whenStable();
+      expect(setup.element.querySelector('.touch')).toBeNull();
+    },
+  );
 
   it('the live region says the line at the start of each line and the result at the end, not per key', async () => {
     const setup = await render();

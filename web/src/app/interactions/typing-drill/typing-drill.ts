@@ -320,15 +320,19 @@ export class TypingDrill implements InteractionComponent<TypingDrillConfig> {
   }
 }
 
+/** Input types you type text in (`type` is `text` without or with an unknown type). */
+const TEXT_INPUT_TYPES = new Set(['text', 'search', 'email', 'number', 'tel', 'url', 'password']);
+
 /**
  * A key in a text field elsewhere on the page (the on-screen keyboard of a phone types there too)
  * says nothing about a real keyboard.
  */
 function isTextField(target: EventTarget | null): boolean {
+  if (target instanceof HTMLInputElement) return TEXT_INPUT_TYPES.has(target.type);
+  if (target instanceof HTMLTextAreaElement || target instanceof HTMLSelectElement) return true;
   if (!(target instanceof HTMLElement)) return false;
   return (
     target.isContentEditable ||
-    target.closest('input, textarea, select, [contenteditable]:not([contenteditable="false"])') !==
-      null
+    target.closest('[contenteditable]:not([contenteditable="false"])') !== null
   );
 }
