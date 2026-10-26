@@ -153,3 +153,16 @@
   gap: 0.6rem;
   margin-top: 1rem;
 }
+
+.confirm {
+  margin-top: 1rem;
+}
+
+.confirm-question {
+  margin: 0;
+  font-weight: 700;
+}
+
+.confirm .buttons {
+  margin-top: 0.5rem;
+}

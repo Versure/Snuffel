@@ -271,6 +271,17 @@ describe('TypingDrill', () => {
     await type(setup, `${lines[0]}xx`);
     button(setup.element, 'Opnieuw beginnen')?.click();
     await setup.fixture.whenStable();
+    // With keys typed, it asks first; the safe answer has the focus.
+    expect(clean(setup.element.querySelector('.confirm-question')?.textContent)).toBe(
+      'Weet je het zeker? Wat je al getypt hebt, gaat weg.',
+    );
+    expect(document.activeElement).toBe(button(setup.element, 'Nee, verder typen'));
+    expect(clean(setup.element.querySelector('.counter')?.textContent)).toBe(
+      `Regel 2 van ${lines.length}`,
+    );
+    button(setup.element, 'Ja, opnieuw beginnen')?.click();
+    await setup.fixture.whenStable();
+    expect(setup.element.querySelector('.confirm')).toBeNull();
     expect(clean(setup.element.querySelector('.counter')?.textContent)).toBe(
       `Regel 1 van ${lines.length}`,
     );
@@ -281,6 +292,30 @@ describe('TypingDrill', () => {
     expect(setup.completed.length).toBe(1);
     expect(setup.completed[0]?.score).toBe(setup.completed[0]?.total);
     expect(setup.answered.length).toBe(2);
+  });
+
+  it('Nee, verder typen keeps what was typed and goes back to the field', async () => {
+    const setup = await render();
+    await start(setup);
+    await type(setup, 'xx');
+    const before = lineMarks(setup.element);
+    button(setup.element, 'Opnieuw beginnen')?.click();
+    await setup.fixture.whenStable();
+    button(setup.element, 'Nee, verder typen')?.click();
+    await setup.fixture.whenStable();
+    expect(setup.element.querySelector('.confirm')).toBeNull();
+    expect(button(setup.element, 'Opnieuw beginnen')).toBeDefined();
+    expect(lineMarks(setup.element)).toEqual(before);
+    expect(document.activeElement).toBe(field(setup.element));
+  });
+
+  it('Opnieuw beginnen before the first key starts over without a question', async () => {
+    const setup = await render();
+    await start(setup);
+    button(setup.element, 'Opnieuw beginnen')?.click();
+    await setup.fixture.whenStable();
+    expect(setup.element.querySelector('.confirm')).toBeNull();
+    expect(document.activeElement).toBe(field(setup.element));
   });
 
   it('Nog een keer starts a new drill', async () => {

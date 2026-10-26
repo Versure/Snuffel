@@ -77,11 +77,31 @@
         }
       </p>
       <snf-typing-keyboard [next]="nextPress()" [newKeys]="config().newKeys" />
-      <div class="buttons">
-        <button snf-button type="button" variant="light" class="restart" (click)="start()">
-          {{ text.restart }}
-        </button>
-      </div>
+      @if (confirmRestart()) {
+        <div class="confirm" role="group" [attr.aria-labelledby]="confirmId">
+          <p class="confirm-question" [id]="confirmId">{{ text.restartQuestion }}</p>
+          <div class="buttons">
+            <button snf-button type="button" class="keep-typing" (click)="keepTyping()">
+              {{ text.restartNo }}
+            </button>
+            <button snf-button type="button" variant="light" class="restart-yes" (click)="start()">
+              {{ text.restartYes }}
+            </button>
+          </div>
+        </div>
+      } @else {
+        <div class="buttons">
+          <button
+            snf-button
+            type="button"
+            variant="light"
+            class="restart"
+            (click)="requestRestart()"
+          >
+            {{ text.restart }}
+          </button>
+        </div>
+      }
     </snf-card>
   }
   @case ('finished') {

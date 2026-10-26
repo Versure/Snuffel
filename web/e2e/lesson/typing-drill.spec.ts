@@ -365,6 +365,8 @@ test.describe('the typing drill on a laptop', () => {
     await startDrill(page);
     await typeLine(page, typing.lines[0] + typing.lines[1].slice(0, 3));
     await drillBlock(page).getByRole('button', { name: 'Opnieuw beginnen' }).click();
+    await expect(drillBlock(page).getByText('Weet je het zeker?')).toBeVisible();
+    await drillBlock(page).getByRole('button', { name: 'Ja, opnieuw beginnen' }).click();
     await expect(drillBlock(page).locator('.counter')).toHaveText(
       `Regel 1 van ${typing.lines.length}`,
     );
@@ -372,6 +374,25 @@ test.describe('the typing drill on a laptop', () => {
     await expect(drillBlock(page).getByLabel('Typvak')).toBeFocused();
     await settle(page);
     expect((await storedRecords(page)).interaction_results).toEqual([]);
+  });
+
+  test('Tab and a space from the field do not wipe what was typed', async ({ page }) => {
+    await openTypingLesson(page, { hash: anchor });
+    await startDrill(page);
+    await typeLine(page, typing.lines[0].slice(0, 3));
+    const before = await marks(page);
+    await page.keyboard.press('Tab');
+    await page.keyboard.press('Space');
+    // Opnieuw beginnen asks first, and the safe answer has the focus: another space goes on.
+    await expect(drillBlock(page).getByText('Weet je het zeker?')).toBeVisible();
+    const keepTyping = drillBlock(page).getByRole('button', { name: 'Nee, verder typen' });
+    await expect(keepTyping).toBeFocused();
+    expect(await marks(page)).toBe(before);
+    await page.keyboard.press('Space');
+    await expect(drillBlock(page).getByLabel('Typvak')).toBeFocused();
+    expect(await marks(page)).toBe(before);
+    await page.keyboard.type(typing.lines[0][3] ?? '');
+    expect(await marks(page)).toBe('cccc' + '.'.repeat(typing.lines[0].length - 4));
   });
 });
 

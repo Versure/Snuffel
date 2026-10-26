@@ -28,6 +28,7 @@ import {
   drillResult,
   expectedChar,
   goalsMet,
+  keyCount,
   type KeyMistake,
   startDrill,
   typeChar,
@@ -47,6 +48,9 @@ export const TYPING_TEXT = {
   refocus: 'Klik op de regel om verder te typen.',
   capsLock: 'Caps Lock staat aan',
   restart: 'Opnieuw beginnen',
+  restartQuestion: 'Weet je het zeker? Wat je al getypt hebt, gaat weg.',
+  restartYes: 'Ja, opnieuw beginnen',
+  restartNo: 'Nee, verder typen',
   finishedTitle: 'Klaar!',
   noMistakes: 'Geen fouten!',
   again: 'Nog een keer',
@@ -133,12 +137,15 @@ export class TypingDrill implements InteractionComponent<TypingDrillConfig> {
   protected readonly text = TYPING_TEXT;
   private readonly baseId = `snf-typen-${nextId++}`;
   protected readonly helpId = `${this.baseId}-uitleg`;
+  protected readonly confirmId = `${this.baseId}-opnieuw`;
 
   protected readonly phase = signal<TypingPhase>(
     inject(INPUT_DEVICE).touchOnly() ? 'touch' : 'start',
   );
   protected readonly drill = signal(startDrill([]));
   protected readonly capsLock = signal(false);
+  /** Whether Opnieuw beginnen asks first (a Tab and a space must not wipe what was typed). */
+  protected readonly confirmRestart = signal(false);
   /** Whether the typing field has the focus. */
   protected readonly focused = signal(false);
   /** The polite live region: the line at its start, and the result at the end. */
@@ -202,9 +209,27 @@ export class TypingDrill implements InteractionComponent<TypingDrillConfig> {
     this.drill.set(startDrill(this.lines()));
     this.outcome.set(null);
     this.capsLock.set(false);
+    this.confirmRestart.set(false);
     this.answeredThisDrill = false;
     this.phase.set('typing');
     this.announceLine(0);
+    this.focusAfterRender('input.field');
+  }
+
+  /** Opnieuw beginnen: at once before the first key, else after a question. */
+  protected requestRestart(): void {
+    if (keyCount(this.drill()) === 0) {
+      this.start();
+      return;
+    }
+    this.confirmRestart.set(true);
+    // The safe answer gets the focus, so another space does not wipe anything either.
+    this.focusAfterRender('.keep-typing');
+  }
+
+  /** Nee, verder typen: back to the field, where the drill goes on. */
+  protected keepTyping(): void {
+    this.confirmRestart.set(false);
     this.focusAfterRender('input.field');
   }
 
@@ -222,6 +247,7 @@ export class TypingDrill implements InteractionComponent<TypingDrillConfig> {
     if (this.phase() !== 'typing' || before.finished) return;
     const after = typeChar(before, char, this.clock());
     this.drill.set(after);
+    this.confirmRestart.set(false);
     if (!this.answeredThisDrill) {
       this.answeredThisDrill = true;
       this.answered.emit();
