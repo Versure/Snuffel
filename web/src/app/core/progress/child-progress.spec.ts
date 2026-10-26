@@ -6,6 +6,7 @@ import {
   interactionSummary,
   lastActivity,
   quizSummary,
+  typingSummary,
 } from './child-progress';
 
 const quiz: QuizStep = {
@@ -222,5 +223,38 @@ describe('child progress', () => {
     expect(exerciseHelp({ exercises: [{ hints: '2', solution: true }] })).toBeNull();
     expect(exerciseHelp({ exercises: [{ hints: 2 }] })).toBeNull();
     expect(exerciseHelp({ exercises: [{ hints: -1, solution: false }] })).toBeNull();
+  });
+
+  it('typingSummary reads keys per minute and mistakes', () => {
+    const detail = {
+      keysPerMinute: 85,
+      durationMs: 182000,
+      mistakes: [
+        { key: 'f', count: 3 },
+        { key: ';', count: 2 },
+        { key: 'shift', count: 1 },
+        { key: 'a', count: 1 },
+      ],
+    };
+    expect(typingSummary(detail)).toEqual({ keysPerMinute: 85, mistakes: ['f', ';', 'Shift'] });
+    expect(typingSummary({ ...detail, mistakes: [] })).toEqual({ keysPerMinute: 85, mistakes: [] });
+  });
+
+  it('another shape gives null', () => {
+    expect(typingSummary(null)).toBeNull();
+    expect(typingSummary('92%')).toBeNull();
+    expect(typingSummary([])).toBeNull();
+    expect(typingSummary({ rounds: [] })).toBeNull();
+    expect(typingSummary({ keysPerMinute: '85', mistakes: [] })).toBeNull();
+    expect(typingSummary({ keysPerMinute: -1, mistakes: [] })).toBeNull();
+    expect(typingSummary({ keysPerMinute: 85 })).toBeNull();
+    expect(typingSummary({ keysPerMinute: 85, mistakes: [null] })).toBeNull();
+    expect(typingSummary({ keysPerMinute: 85, mistakes: [{ key: 'f' }] })).toBeNull();
+    expect(typingSummary({ keysPerMinute: 85, mistakes: [{ key: 3, count: 1 }] })).toBeNull();
+  });
+
+  it('space is spatie', () => {
+    const detail = { keysPerMinute: 40, durationMs: 1000, mistakes: [{ key: 'space', count: 2 }] };
+    expect(typingSummary(detail)?.mistakes).toEqual(['spatie']);
   });
 });

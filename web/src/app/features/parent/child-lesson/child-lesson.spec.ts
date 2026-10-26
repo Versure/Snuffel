@@ -140,6 +140,55 @@ describe('ChildLesson', () => {
     ]);
   });
 
+  it('a typing drill shows accuracy, speed, the most missed keys and the plays', async () => {
+    const detail = {
+      keysPerMinute: 85,
+      durationMs: 182000,
+      mistakes: [
+        { key: 'f', count: 3 },
+        { key: 'j', count: 2 },
+        { key: 'space', count: 1 },
+        { key: 'a', count: 1 },
+      ],
+    };
+    const results = [
+      resultRecord('thuisrij', 442, 480, '2026-01-03 10:00:00.000Z', detail),
+      resultRecord('thuisrij', 300, 480, '2026-01-02 10:00:00.000Z', { ...detail, mistakes: [] }),
+      resultRecord('thuisrij', 200, 480, '2026-01-01 10:00:00.000Z', null),
+    ];
+    const { detail: lines } = await render(records({ steps: started, results }));
+    expect(lines('Typen')).toEqual([
+      '92% goed, 85 aanslagen per minuut',
+      'Vaakst fout: f, j en spatie',
+      '3 keer gedaan',
+    ]);
+  });
+
+  it('a typing drill without mistakes names no keys', async () => {
+    const clean = [
+      resultRecord('thuisrij', 480, 480, '2026-01-02 10:00:00.000Z', {
+        keysPerMinute: 60,
+        durationMs: 480000,
+        mistakes: [],
+      }),
+    ];
+    const { detail } = await render(records({ steps: started, results: clean }));
+    expect(detail('Typen')).toEqual(['100% goed, 60 aanslagen per minuut', '1 keer gedaan']);
+  });
+
+  it('a typing drill without a readable detail shows only the accuracy', async () => {
+    const results = [
+      resultRecord('thuisrij', 479, 480, '2026-01-02 10:00:00.000Z', { rounds: [] }),
+    ];
+    const { detail } = await render(records({ steps: started, results }));
+    expect(detail('Typen')).toEqual(['99% goed', '1 keer gedaan']);
+  });
+
+  it('a typing drill without a result says nog niet gedaan', async () => {
+    const { detail } = await render(records({ steps: started }));
+    expect(detail('Typen')).toEqual(['nog niet gedaan']);
+  });
+
   it('says a game is not played yet', async () => {
     const { detail } = await render(records({ steps: started }));
     expect(detail('Voel de lijn')).toEqual(['nog niet gespeeld']);
@@ -154,7 +203,7 @@ describe('ChildLesson', () => {
       records({ steps: [stepRecord('uitleg', 'completed', today), stepRecord('quiz', 'started')] }),
     );
     expect(textOf(element.querySelector('.last-activity'))).toBe('Laatst actief: vandaag om 14:05');
-    expect(textOf(element.querySelector('snf-lesson-status'))).toBe('Bezig: 1 van 5 stappen klaar');
+    expect(textOf(element.querySelector('snf-lesson-status'))).toBe('Bezig: 1 van 6 stappen klaar');
   });
 
   it('a planned lesson says Komt nog', async () => {
@@ -170,7 +219,7 @@ describe('ChildLesson', () => {
   it('a lesson file that cannot be loaded says so with a retry', async () => {
     const { fixture, element } = await render(records({ steps: started }), 'unavailable');
     expect(element.querySelector('.details')).toBeNull();
-    expect(textOf(element.querySelector('snf-lesson-status'))).toBe('Bezig: 1 van 5 stappen klaar');
+    expect(textOf(element.querySelector('snf-lesson-status'))).toBe('Bezig: 1 van 6 stappen klaar');
     expect(textOf(element.querySelector('.content-error p'))).toBe(
       'De details van deze les kan ik nu niet laden.',
     );

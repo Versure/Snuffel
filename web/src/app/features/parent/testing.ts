@@ -1,5 +1,5 @@
 // Fixtures for the unit tests of the parent pages (not used by the app).
-import type { Lesson, ManifestLesson } from '../../core/content/content.types';
+import type { Interaction, Lesson, ManifestLesson } from '../../core/content/content.types';
 import type {
   ChecklistStateRecord,
   InteractionResultRecord,
@@ -16,7 +16,7 @@ export const proeflesEntry: ManifestLesson = {
   estimatedMinutes: 10,
   file: 'proefcursus/lessons/01-proefles.json',
   hash: '0123456789abcdef',
-  stepIds: ['uitleg', 'spel', 'quiz', 'zelf-doen', 'oefenen'],
+  stepIds: ['uitleg', 'spel', 'quiz', 'zelf-doen', 'oefenen', 'typen'],
 };
 
 export const proefles: Lesson = {
@@ -82,9 +82,28 @@ export const proefles: Lesson = {
       sourceRefs: [],
       interaction: { id: 'breuken', kind: 'stepped-exercise', config: { exercises: [] } },
     },
+    {
+      id: 'typen',
+      type: 'interaction',
+      title: 'Typen',
+      intro: 'Typ',
+      sourceRefs: [],
+      interaction: {
+        id: 'thuisrij',
+        kind: 'typing-drill',
+        config: { lines: ['asdf jkl;'], newKeys: [] },
+      },
+    },
   ],
   furtherReading: [],
   faq: [],
+};
+
+/** The kind of every interaction of the test lesson. */
+const KINDS: Readonly<Record<string, Interaction['kind']>> = {
+  'voel-spel': 'trace-game',
+  breuken: 'stepped-exercise',
+  thuisrij: 'typing-drill',
 };
 
 const base = { user: 'a1', lesson_id: 'proefles', updated: '2026-01-01 10:00:00.000Z' };
@@ -149,7 +168,7 @@ export function resultRecord(
     created,
     updated: created,
     interaction_id: interactionId,
-    kind: interactionId === 'breuken' ? 'stepped-exercise' : 'trace-game',
+    kind: KINDS[interactionId] ?? 'trace-game',
     score,
     total,
     detail,

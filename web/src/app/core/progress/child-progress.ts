@@ -38,6 +38,16 @@ export interface ExerciseHelp {
   readonly exercises: number;
 }
 
+/** Speed and the most missed keys of a typing drill, read from `detail` (M15). */
+export interface TypingSummary {
+  readonly keysPerMinute: number;
+  /** The most missed keys as the app names them (`f`, `spatie`), most first, at most three. */
+  readonly mistakes: readonly string[];
+}
+
+/** How many missed keys the parent sees, as on the end screen of the drill. */
+const SHOWN_MISTAKES = 3;
+
 /**
  * The newest `updated` of the records, or null without records. PocketBase dates
  * (`2026-10-23 12:05:00.000Z`) sort as text.
@@ -140,4 +150,34 @@ export function exerciseHelp(detail: unknown): ExerciseHelp | null {
     if (solution) solutions += 1;
   }
   return { hints, solutions, exercises: detail['exercises'].length };
+}
+
+/** The name of a key in a text, as in the typing drill: `spatie`, `Shift`, or the key itself. */
+function keyName(key: string): string {
+  if (key === 'space') return 'spatie';
+  if (key === 'shift') return 'Shift';
+  return key;
+}
+
+/**
+ * Reads speed and the most missed keys from the `detail` of a typing-drill result
+ * (`{ keysPerMinute, durationMs, mistakes: [{ key, count }] }`, M15). Any other shape gives null,
+ * never an error.
+ */
+export function typingSummary(detail: unknown): TypingSummary | null {
+  if (!isRecord(detail)) return null;
+  const speed = detail['keysPerMinute'];
+  const mistakes = detail['mistakes'];
+  if (typeof speed !== 'number' || !Number.isFinite(speed) || speed < 0) return null;
+  if (!Array.isArray(mistakes)) return null;
+  const keys: string[] = [];
+  for (const mistake of mistakes as unknown[]) {
+    if (!isRecord(mistake)) return null;
+    const key = mistake['key'];
+    const count = mistake['count'];
+    if (typeof key !== 'string' || key === '') return null;
+    if (typeof count !== 'number' || !Number.isFinite(count) || count < 1) return null;
+    keys.push(keyName(key));
+  }
+  return { keysPerMinute: Math.round(speed), mistakes: keys.slice(0, SHOWN_MISTAKES) };
 }
