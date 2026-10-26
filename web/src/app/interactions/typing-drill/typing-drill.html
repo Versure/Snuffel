@@ -1,0 +1,124 @@
+@switch (phase()) {
+  @case ('touch') {
+    <snf-card class="touch">
+      <snf-ted-says mood="thinking" size="small">
+        <span class="message">{{ text.touchOnly }}</span>
+      </snf-ted-says>
+    </snf-card>
+  }
+  @case ('start') {
+    <snf-card class="intro">
+      <h3 class="heading">{{ lines().length }} {{ lines().length === 1 ? 'regel' : 'regels' }}</h3>
+      @if (newText()) {
+        <p class="new-keys"><span class="star" aria-hidden="true">★</span> {{ newText() }}</p>
+      }
+      <snf-ted-says mood="cool" size="small">{{ text.ready }}</snf-ted-says>
+      <div class="buttons">
+        <button snf-button type="button" variant="pink" class="start" (click)="start()">
+          {{ text.start }}
+        </button>
+      </div>
+    </snf-card>
+  }
+  @case ('typing') {
+    <snf-card class="typing">
+      <p class="counter">Regel {{ lineNumber() }} van {{ lines().length }}</p>
+      <!-- A label: a click anywhere on the line puts the focus back in the field; Tab works too. -->
+      <label class="line-box">
+        <span class="line">
+          @for (item of chars(); track $index) {
+            <span
+              class="char"
+              [class.correct]="item.mark === 'correct'"
+              [class.wrong]="item.mark === 'wrong'"
+              [class.current]="item.current"
+              [class.space]="item.space"
+            >
+              @if (item.mark === 'wrong') {
+                <span class="cross" aria-hidden="true">✗</span>
+              }
+              @if (item.space) {
+                <span aria-hidden="true">·</span
+                ><span class="snf-visually-hidden">{{ text.space }}</span>
+              } @else {
+                {{ item.char }}
+              }
+              @if (item.mark === 'wrong') {
+                <span class="snf-visually-hidden">({{ text.wrong }})</span>
+              }
+            </span>
+          }
+        </span>
+        <input
+          #field
+          type="text"
+          class="field snf-visually-hidden"
+          inputmode="none"
+          autocomplete="off"
+          autocorrect="off"
+          autocapitalize="off"
+          spellcheck="false"
+          [attr.aria-label]="text.field"
+          [attr.aria-describedby]="helpId"
+          (focus)="focused.set(true)"
+          (blur)="focused.set(false)"
+        />
+      </label>
+      <p class="help" [id]="helpId">{{ text.help }}</p>
+      @if (nextLine(); as upcoming) {
+        <p class="next-line">{{ text.nextLine }} {{ upcoming }}</p>
+      }
+      @if (!focused()) {
+        <p class="refocus">{{ text.refocus }}</p>
+      }
+      <p class="caps" role="status">
+        @if (capsLock()) {
+          {{ text.capsLock }}
+        }
+      </p>
+      <snf-typing-keyboard [next]="nextPress()" [newKeys]="config().newKeys" />
+      <div class="buttons">
+        <button snf-button type="button" variant="light" class="restart" (click)="start()">
+          {{ text.restart }}
+        </button>
+      </div>
+    </snf-card>
+  }
+  @case ('finished') {
+    <snf-card class="end">
+      <h3 class="heading">{{ text.finishedTitle }}</h3>
+      @if (outcome(); as result) {
+        <ul class="results">
+          <li>
+            <strong>Nauwkeurigheid:</strong> {{ result.accuracy }}% goed ({{ result.score }} van
+            {{ result.total }} aanslagen)
+          </li>
+          <li><strong>Snelheid:</strong> {{ result.keysPerMinute }} aanslagen per minuut</li>
+          <li>
+            @if (shownMistakes().length) {
+              <strong>Vaakst fout:</strong> {{ mistakesText() }}
+            } @else {
+              {{ text.noMistakes }}
+            }
+          </li>
+        </ul>
+      }
+      <div class="ted">
+        <snf-ted-says [mood]="endLine().mood" size="small">
+          <span class="say" tabindex="-1">
+            @for (part of endLine().parts; track $index) {
+              @if (!$first) {
+                {{ ' ' }}
+              }
+              <snf-inline-text [text]="part" />
+            }
+          </span>
+        </snf-ted-says>
+      </div>
+      <div class="buttons">
+        <button snf-button type="button" class="again" (click)="start()">{{ text.again }}</button>
+      </div>
+    </snf-card>
+  }
+}
+<p class="snf-visually-hidden live" aria-live="polite">{{ announcement() }}</p>

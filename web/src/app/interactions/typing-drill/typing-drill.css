@@ -1,0 +1,155 @@
+:host {
+  display: block;
+}
+
+/* A light card, like the stepped exercise; the keyboard below has its own fixed light panel. */
+.heading {
+  margin: 0 0 0.4rem;
+  font-family: var(--snf-font-display);
+  font-size: 1.35rem;
+  font-weight: 400;
+  letter-spacing: 0.03em;
+  color: var(--snf-color-heading);
+}
+
+.new-keys {
+  margin: 0 0 0.75rem;
+  font-weight: 700;
+}
+
+.counter {
+  margin: 0 0 0.5rem;
+  font-weight: 700;
+  color: var(--snf-color-text-muted);
+}
+
+/* The line to type, with the hidden field; its focus ring shows on the whole box. */
+.line-box {
+  position: relative;
+  display: block;
+  padding: 0.6rem 0.8rem;
+  cursor: text;
+  background: var(--snf-color-paper);
+  border: var(--snf-border-width) solid var(--snf-color-ink);
+  border-radius: var(--snf-radius-md);
+}
+
+.line-box:focus-within {
+  outline: var(--snf-focus-ring);
+  outline-offset: var(--snf-focus-ring-offset);
+}
+
+.line {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0;
+  padding-top: 0.9rem;
+  font-family: var(--snf-font-body);
+  font-size: clamp(1.4rem, 5vw, 2.2rem);
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+
+.char {
+  position: relative;
+  display: inline-block;
+  min-width: 0.35em;
+  padding: 0 0.04em;
+  text-align: center;
+  white-space: pre;
+  border-bottom: 0.12em solid transparent;
+}
+
+.space {
+  color: var(--snf-color-text-muted);
+}
+
+.correct {
+  color: var(--snf-color-success);
+}
+
+/* A wrong char: red on soft red, a wavy underline and a ✗ above it (never colour alone). */
+.wrong {
+  color: var(--snf-color-error);
+  background: var(--snf-color-error-soft);
+  text-decoration: underline wavy var(--snf-color-error);
+  text-underline-offset: 0.15em;
+}
+
+.cross {
+  position: absolute;
+  top: -0.9em;
+  left: 50%;
+  font-size: 0.5em;
+  line-height: 1;
+  transform: translateX(-50%);
+}
+
+/* The cursor: yellow with a thick underline, with black text in both themes. */
+.current {
+  color: var(--snf-color-black);
+  background: var(--snf-color-yellow);
+  border-bottom-color: var(--snf-color-black);
+}
+
+.help {
+  margin: 0.5rem 0 0;
+  font-size: 0.95rem;
+  color: var(--snf-color-text-muted);
+}
+
+.next-line {
+  margin: 0.6rem 0 0;
+  font-size: 1.05rem;
+  color: var(--snf-color-text-muted);
+}
+
+.refocus {
+  margin: 0.6rem 0 0;
+  font-weight: 700;
+}
+
+.caps {
+  margin: 0.4rem 0 0.6rem;
+  font-weight: 700;
+  color: var(--snf-color-error);
+}
+
+.caps:empty {
+  margin: 0;
+}
+
+.results {
+  margin: 0 0 0.75rem;
+  padding: 0;
+  font-size: 1.1rem;
+  list-style: none;
+}
+
+.results li {
+  margin: 0 0 0.3rem;
+}
+
+.ted {
+  margin: 0.9rem 0 0;
+}
+
+.say {
+  display: block;
+}
+
+.say:focus {
+  outline: none;
+}
+
+.say:focus-visible {
+  outline: var(--snf-focus-ring);
+  outline-offset: var(--snf-focus-ring-offset);
+}
+
+.buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: 1rem;
+}
