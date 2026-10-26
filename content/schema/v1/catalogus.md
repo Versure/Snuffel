@@ -331,7 +331,7 @@ Een les staat in de app op `/leren/<cursus-id>/<les-id>`, voor wie ingelogd is (
 
 ## Interacties
 
-Een interactie is data voor een bestaand onderdeel van de app. Alleen deze twee soorten bestaan; een nieuwe soort vraagt code (skill `spelcomponent-bouwen`). Elke interactiestap telt **2 minuten** in de berekende tijd.
+Een interactie is data voor een bestaand onderdeel van de app. Alleen deze twee soorten bestaan; een nieuwe soort vraagt code (skill `spelcomponent-bouwen`). Een `trace-game` of `stepped-exercise` telt **2 minuten** in de berekende tijd, een `typing-drill` 1 minuut plus 1 minuut per 60 tekens.
 
 ### `trace-game` (het voel-spel)
 
@@ -574,52 +574,54 @@ FOUT content/fixtures/courses/proefcursus/lessons/01-proefles.json
 
 Zijn er schemafouten in een cursus, dan worden eerst alleen die gemeld; de andere checks lopen pas als het schema klopt.
 
-| Code                          | Wanneer                                                                                          |
-| ----------------------------- | ------------------------------------------------------------------------------------------------ |
-| `json-invalid`                | het bestand is geen geldige JSON (met regel en kolom)                                            |
-| `schema`                      | het bestand past niet bij het schema (ontbrekend of onbekend veld, verkeerde waarde, fout id)    |
-| `course-file-missing`         | een cursusmap zonder `course.json`                                                               |
-| `terms-file-missing`          | `content/terms.json` ontbreekt                                                                   |
-| `course-id-mismatch`          | het cursus-id is niet gelijk aan de mapnaam                                                      |
-| `lesson-file-missing`         | een `published` les zonder bestand                                                               |
-| `lesson-id-mismatch`          | het id in het lesbestand is anders dan in `course.json`                                          |
-| `lesson-file-orphan`          | een lesbestand dat niet als `published` les in `course.json` staat                               |
-| `id-duplicate`                | een id komt dubbel voor (zie "Id's"), met beide plekken                                          |
-| `interaction-answer-unknown`  | een antwoord in een interactie (ook een fout antwoord bij `choice`) is geen keuze of optie       |
-| `exercise-mistake-unreadable` | een fout antwoord bij een `number`-opgave is geen getal: de app herkent het nooit                |
-| `exercise-mistake-accepted`   | een fout antwoord telt als goed (binnen `tolerance`, in `accepted` of de juiste optie)           |
-| `source-ref-missing`          | een `sourceRef` (ook in `furtherReading`) staat niet in `sources`                                |
-| `source-only-low`             | een niet-lege `sourceRefs` met alleen `low`-bronnen                                              |
-| `source-date-invalid`         | `accessedOn` is geen bestaande datum (bijv. `2026-02-30`)                                        |
-| `source-date-future`          | `accessedOn` ligt na vandaag                                                                     |
-| `glossary-term-unknown`       | een `[[term]]` die niet in de `glossary` van de les staat                                        |
-| `term-not-in-glossary`        | een vakterm uit `terms.json` staat in de tekst, maar niet in de `glossary`                       |
-| `quiz-step-count`             | een leertrajectles zonder of met meer dan één quizstap (oefenles: meer dan één)                  |
-| `quiz-question-count`         | een quiz met minder dan 3 of meer dan 5 vragen                                                   |
-| `quiz-option-count`           | een vraag met minder dan 3 of meer dan 4 opties                                                  |
-| `quiz-correct-option-missing` | `correctOptionId` is geen van de opties                                                          |
-| `quiz-option-length`          | de langste optie is meer dan 1,5 × de kortste (in tekens, zonder opmaak en spaties eromheen)     |
-| `duration-out-of-range`       | de berekende tijd ligt niet tussen 8 en 12 minuten                                               |
-| `duration-mismatch`           | `estimatedMinutes` ligt meer dan 2 minuten naast de berekende tijd                               |
-| `sentence-length`             | gemiddeld meer dan 15 woorden per zin                                                            |
-| `link-not-https`              | een link die niet met `https://` begint (ook `http:`, `javascript:`, `data:` en relatieve links) |
-| `link-tracker`                | een link naar een tracker of linkverkorter, of met een trackingparameter                         |
-| `markup-html`                 | HTML in tekst                                                                                    |
-| `markup-fraction-invalid`     | een `{{` of `}}` die geen geldige breuk vormt (bijv. `{{1/0}}`, `{{1,5/2}}`, `{{-1/2}}`)         |
-| `course-term-not-allowed`     | een `[[term]]` in `course.json` (een cursus heeft geen `glossary`)                               |
-| `asset-path-invalid`          | `figure.src` is geen `.svg` onder `assets/`, bevat `..`, of is (of ligt in) een symlink          |
-| `asset-missing`               | de afbeelding bestaat niet                                                                       |
-| `asset-external-ref`          | de svg verwijst naar een andere site                                                             |
-| `figure-alt-missing`          | `alt` is leeg of alleen spaties                                                                  |
-| `id-removed`                  | een gepubliceerd id (cursus, les, stap, vraag, optie, interactie, item) is weg                   |
-| `id-moved`                    | een gepubliceerd id staat onder een andere ouder, of is hergebruikt voor iets anders             |
-| `lesson-unpublished`          | een les die op `main` `published` is, is dat niet meer                                           |
-| `version-not-bumped`          | een gepubliceerde les is gewijzigd zonder hogere `version` (of `version` is lager)               |
-| `base-not-found`              | de ref van `--base` bestaat niet                                                                 |
+| Code                          | Wanneer                                                                                                                                                     |
+| ----------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `json-invalid`                | het bestand is geen geldige JSON (met regel en kolom)                                                                                                       |
+| `schema`                      | het bestand past niet bij het schema (ontbrekend of onbekend veld, verkeerde waarde, fout id)                                                               |
+| `course-file-missing`         | een cursusmap zonder `course.json`                                                                                                                          |
+| `terms-file-missing`          | `content/terms.json` ontbreekt                                                                                                                              |
+| `course-id-mismatch`          | het cursus-id is niet gelijk aan de mapnaam                                                                                                                 |
+| `lesson-file-missing`         | een `published` les zonder bestand                                                                                                                          |
+| `lesson-id-mismatch`          | het id in het lesbestand is anders dan in `course.json`                                                                                                     |
+| `lesson-file-orphan`          | een lesbestand dat niet als `published` les in `course.json` staat                                                                                          |
+| `id-duplicate`                | een id komt dubbel voor (zie "Id's"), met beide plekken                                                                                                     |
+| `interaction-answer-unknown`  | een antwoord in een interactie (ook een fout antwoord bij `choice`) is geen keuze of optie                                                                  |
+| `exercise-mistake-unreadable` | een fout antwoord bij een `number`-opgave is geen getal: de app herkent het nooit                                                                           |
+| `exercise-mistake-accepted`   | een fout antwoord telt als goed (binnen `tolerance`, in `accepted` of de juiste optie)                                                                      |
+| `typing-new-key-unused`       | een toets in `newKeys` van een `typing-drill` komt in geen enkele regel voor (`shift` telt bij een hoofdletter of een Shift-teken)                          |
+| `typing-dead-key-sequence`    | een regel van een `typing-drill` heeft een dode toets (`'`, `"`, `` ` ``, `~`, `^`) direct voor een letter die US-International samenstelt (`'e` wordt `é`) |
+| `source-ref-missing`          | een `sourceRef` (ook in `furtherReading`) staat niet in `sources`                                                                                           |
+| `source-only-low`             | een niet-lege `sourceRefs` met alleen `low`-bronnen                                                                                                         |
+| `source-date-invalid`         | `accessedOn` is geen bestaande datum (bijv. `2026-02-30`)                                                                                                   |
+| `source-date-future`          | `accessedOn` ligt na vandaag                                                                                                                                |
+| `glossary-term-unknown`       | een `[[term]]` die niet in de `glossary` van de les staat                                                                                                   |
+| `term-not-in-glossary`        | een vakterm uit `terms.json` staat in de tekst, maar niet in de `glossary`                                                                                  |
+| `quiz-step-count`             | een leertrajectles zonder of met meer dan één quizstap (oefenles: meer dan één)                                                                             |
+| `quiz-question-count`         | een quiz met minder dan 3 of meer dan 5 vragen                                                                                                              |
+| `quiz-option-count`           | een vraag met minder dan 3 of meer dan 4 opties                                                                                                             |
+| `quiz-correct-option-missing` | `correctOptionId` is geen van de opties                                                                                                                     |
+| `quiz-option-length`          | de langste optie is meer dan 1,5 × de kortste (in tekens, zonder opmaak en spaties eromheen)                                                                |
+| `duration-out-of-range`       | de berekende tijd ligt niet tussen 8 en 12 minuten                                                                                                          |
+| `duration-mismatch`           | `estimatedMinutes` ligt meer dan 2 minuten naast de berekende tijd                                                                                          |
+| `sentence-length`             | gemiddeld meer dan 15 woorden per zin                                                                                                                       |
+| `link-not-https`              | een link die niet met `https://` begint (ook `http:`, `javascript:`, `data:` en relatieve links)                                                            |
+| `link-tracker`                | een link naar een tracker of linkverkorter, of met een trackingparameter                                                                                    |
+| `markup-html`                 | HTML in tekst                                                                                                                                               |
+| `markup-fraction-invalid`     | een `{{` of `}}` die geen geldige breuk vormt (bijv. `{{1/0}}`, `{{1,5/2}}`, `{{-1/2}}`)                                                                    |
+| `course-term-not-allowed`     | een `[[term]]` in `course.json` (een cursus heeft geen `glossary`)                                                                                          |
+| `asset-path-invalid`          | `figure.src` is geen `.svg` onder `assets/`, bevat `..`, of is (of ligt in) een symlink                                                                     |
+| `asset-missing`               | de afbeelding bestaat niet                                                                                                                                  |
+| `asset-external-ref`          | de svg verwijst naar een andere site                                                                                                                        |
+| `figure-alt-missing`          | `alt` is leeg of alleen spaties                                                                                                                             |
+| `id-removed`                  | een gepubliceerd id (cursus, les, stap, vraag, optie, interactie, item) is weg                                                                              |
+| `id-moved`                    | een gepubliceerd id staat onder een andere ouder, of is hergebruikt voor iets anders                                                                        |
+| `lesson-unpublished`          | een les die op `main` `published` is, is dat niet meer                                                                                                      |
+| `version-not-bumped`          | een gepubliceerde les is gewijzigd zonder hogere `version` (of `version` is lager)                                                                          |
+| `base-not-found`              | de ref van `--base` bestaat niet                                                                                                                            |
 
 ### Hoe de tijd wordt berekend
 
-`woorden / 130` + 2 minuten per interactiestap + 1 minuut per quizvraag, afgerond op één decimaal.
+`woorden / 130` + 2 minuten per interactiestap (een `typing-drill`: 1 minuut + 1 minuut per 60 tekens van alle regels samen, afgerond op één decimaal) + 1 minuut per quizvraag, afgerond op één decimaal.
 
 Woorden tellen in de tekst die een kind sowieso leest: `objective`, Teds intro, de titels van stappen en blokken, alle bloktekst en kaarten (ook het onderschrift van een afbeelding), de intro van een quiz-, interactie- of practice-stap, vragen en opties, checklist-items en `successCriterion`. Feedback, hints, Teds reacties, de teksten binnen een interactie, de woordenlijst, de FAQ en "verder lezen" tellen niet mee. Opmaak en losse webadressen tellen niet als woorden.
 

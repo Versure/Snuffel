@@ -3,7 +3,7 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, test } from 'node:test';
 import { schemaDir } from './schema.mjs';
-import { DEAD_KEYS, deadKeySequences, keyForChar, keysOfLine } from './typing.mjs';
+import { composedChar, DEAD_KEYS, deadKeySequences, keyForChar, keysOfLine } from './typing.mjs';
 
 // The same cases as web/src/app/interactions/typing-drill/keyboard-layout.spec.ts.
 const cases = JSON.parse(readFileSync(join(schemaDir, 'typing-keyboard.cases.json'), 'utf8'));
@@ -76,6 +76,18 @@ describe('typing keyboard', () => {
     assert.ok(lines.some((item) => item.found.length > 0));
     for (const { name, line, found } of lines) {
       assert.deepEqual(deadKeySequences(line), found, name);
+    }
+  });
+
+  test('a dead-key sequence becomes one char with an accent', () => {
+    assert.equal(composedChar("'e"), 'é');
+    assert.equal(composedChar("'c"), 'ç');
+    assert.equal(composedChar('"u'), 'ü');
+    assert.equal(composedChar('`A'), 'À');
+    assert.equal(composedChar('~n'), 'ñ');
+    assert.equal(composedChar('^o'), 'ô');
+    for (const [deadKey, letters] of Object.entries(DEAD_KEYS)) {
+      for (const letter of letters) assert.equal([...composedChar(deadKey + letter)].length, 1);
     }
   });
 });

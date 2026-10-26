@@ -1,5 +1,6 @@
 // Structure: lesson files match course.json, and ids are unique where they must be.
 import { checkAnswer, parseNumber } from '../answer.mjs';
+import { composedChar, deadKeySequences, keysOfLine } from '../typing.mjs';
 import { interactionConfigIds, lessonIds } from '../walk.mjs';
 
 function issue(code, file, path, message) {
@@ -143,6 +144,38 @@ function checkLessonIds({ file, data }, issues) {
       config.exercises.forEach((exercise, e) => {
         checkExercise(exercise, `${base}.exercises[${e}]`, file, issues);
       });
+    }
+    if (kind === 'typing-drill') {
+      checkTypingDrill(config, base, file, issues);
+    }
+  });
+}
+
+/** New keys that no line uses, and dead keys that US-International composes (typing.mjs). */
+function checkTypingDrill(config, base, file, issues) {
+  const used = new Set(config.lines.flatMap((line) => keysOfLine(line)));
+  config.newKeys.forEach((key, k) => {
+    if (!used.has(key)) {
+      issues.push(
+        issue(
+          'typing-new-key-unused',
+          file,
+          `${base}.newKeys[${k}]`,
+          `toets "${key}" staat in newKeys maar in geen enkele regel`,
+        ),
+      );
+    }
+  });
+  config.lines.forEach((line, l) => {
+    for (const { sequence } of deadKeySequences(line)) {
+      issues.push(
+        issue(
+          'typing-dead-key-sequence',
+          file,
+          `${base}.lines[${l}]`,
+          `${sequence} wordt op een US-International-toetsenbord ${composedChar(sequence)}; zet er een spatie of een andere letter achter`,
+        ),
+      );
     }
   });
 }

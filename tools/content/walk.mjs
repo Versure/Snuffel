@@ -224,6 +224,11 @@ export function lessonTexts(lesson) {
   return texts;
 }
 
+/**
+ * The texts inside an interaction config. A typing-drill has none: its lines are what the child
+ * types, not markup, so they get no term, link, markup or fraction check; rules/structure.mjs
+ * checks them with tools/content/typing.mjs instead.
+ */
 function interactionTexts({ kind, config }, base, add) {
   if (kind === 'trace-game') {
     config.choices.forEach((choice, c) => add(`${base}.choices[${c}].label`, choice.label));

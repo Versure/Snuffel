@@ -27,6 +27,9 @@ export const DEAD_KEYS = {
   '^': 'aeiouAEIOU',
 };
 
+/** The accent each dead key puts on a letter, as a combining mark (`'` and `c` give `ç`). */
+const MARKS = { "'": '\u0301', '"': '\u0308', '`': '\u0300', '~': '\u0303', '^': '\u0302' };
+
 const CHARS = new Map([[' ', { key: 'space', shift: null }]]);
 for (const row of ROWS) {
   for (const pair of row) {
@@ -68,4 +71,11 @@ export function deadKeySequences(line) {
     }
   }
   return found;
+}
+
+/** The char a dead-key sequence becomes on US-International: `'e` gives `é`, `'c` gives `ç`. */
+export function composedChar(sequence) {
+  const [deadKey, letter] = [...sequence];
+  const mark = deadKey === "'" && (letter === 'c' || letter === 'C') ? '\u0327' : MARKS[deadKey];
+  return (letter + mark).normalize('NFC');
 }
