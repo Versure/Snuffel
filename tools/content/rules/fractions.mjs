@@ -19,6 +19,8 @@ export function fractionMessage({ snippet, reason, suggestion }) {
       return `"${snippet}": geen spaties binnen de haken, behalve één tussen het gehele getal en de breuk ({{1 1/4}}).`;
     case 'mixed-improper':
       return `"${snippet}": in een gemengd getal is het gehele getal minstens 1 en de teller kleiner dan de noemer; schrijf ${suggestion}.`;
+    case 'stray-brace':
+      return `"${snippet}": een losse { of } direct naast een breuk; schrijf ${suggestion}.`;
     case 'unclosed':
       return `"${snippet}": {{ zonder }}.`;
     case 'unopened':

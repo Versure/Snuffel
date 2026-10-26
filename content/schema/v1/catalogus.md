@@ -272,7 +272,7 @@ In alle tekstvelden mag een kleine subset van Markdown, alleen binnen een regel:
   - De app toont de breuk gestapeld, in het font en de kleur van de tekst eromheen. Een schermlezer zegt hem in woorden: `{{1/5}}` "1 vijfde", `{{3/4}}` "3 vierde", `{{1/2}}` "1 half", `{{3/2}}` "3 halve", `{{1 1/4}}` "1 en 1 vierde", `{{3/1}}` "3 hele"; een ongewone noemer (bijv. 37) als "3 gedeeld door 37".
   - Op plekken waar de app platte tekst toont (titel van de pagina, startpagina, ouderoverzicht) staat de breuk met een schuine streep: `1/5`, `1 1/4`. Tijd en zinslengte tellen hem net als `1/5`.
   - **Een gewone `3/4` (zonder haken) blijft `3/4`**, met een schuine streep. Welke van de twee je gebruikt, volgt de notatie van de school (zie "Notatie").
-  - `content:check` weigert elke `{{` of `}}` die geen geldige breuk vormt (`markup-fraction-invalid`), met wat er mis is en hoe het wel moet. In de app blijft zo'n ongeldige breuk gewone tekst, met haken en al.
+  - `content:check` weigert elke `{{` of `}}` die geen geldige breuk vormt (`markup-fraction-invalid`), met wat er mis is en hoe het wel moet, en ook een losse `{` of `}` direct naast een breuk (`{{1/2}}}`, `{{{1/2}}`). In de app blijft zo'n ongeldige breuk gewone tekst, met haken en al.
   - Mag in elk tekstveld, ook in `course.json`. In `accepted` en `commonMistakes[].answer` schrijf je wat het kind typt (`3/5`), geen `{{…}}`.
 - Alle gevallen staan in `inline-markup.cases.json`; de tools en de app worden daartegen getest.
 

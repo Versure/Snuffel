@@ -48,6 +48,12 @@ describe('inlineFractionProblems', () => {
       'invalid',
       'invalid',
     ]);
+    assert.deepEqual(reasons('{{1/2}}} {{{1/2}} {{{1 1/4}}} a{{{3/4}}b'), [
+      'stray-brace',
+      'stray-brace',
+      'stray-brace',
+      'stray-brace',
+    ]);
     assert.deepEqual(reasons('{{1/5 en verder'), ['unclosed']);
     assert.deepEqual(reasons('1/5}} en'), ['unopened']);
     assert.deepEqual(reasons('[{{1/2}}](https://example.org/a) en [[term|{{1/2}}]]'), [
@@ -64,6 +70,15 @@ describe('inlineFractionProblems', () => {
       { snippet: '{{1 5/4}}', reason: 'mixed-improper', suggestion: '{{2 1/4}} of {{9/4}}' },
     ]);
     assert.deepEqual(inlineFractionProblems('{{0 1/4}}')[0].suggestion, '{{1/4}}');
+    assert.deepEqual(inlineFractionProblems('Neem {{1/2}}} liter'), [
+      { snippet: '{{1/2}}}', reason: 'stray-brace', suggestion: '{{1/2}}' },
+    ]);
+    assert.deepEqual(inlineFractionProblems('Neem {{{1/2}} liter'), [
+      { snippet: '{{{1/2}}', reason: 'stray-brace', suggestion: '{{1/2}}' },
+    ]);
+    assert.deepEqual(inlineFractionProblems('{{{1 1/4}}}'), [
+      { snippet: '{{{1 1/4}}}', reason: 'stray-brace', suggestion: '{{1 1/4}}' },
+    ]);
   });
 });
 
@@ -112,6 +127,17 @@ describe('markup-fraction-invalid', () => {
         `"${snippet}" is geen geldige breuk. Schrijf {{teller/noemer}} of {{geheel teller/noemer}}, met hele getallen.`,
       );
     }
+  });
+
+  test('a lone { or } right next to a fraction gives markup-fraction-invalid', (t) => {
+    assertFractionIssue(
+      checkText(t, 'Neem {{1/2}}} liter.'),
+      '"{{1/2}}}": een losse { of } direct naast een breuk; schrijf {{1/2}}.',
+    );
+    assertFractionIssue(
+      checkText(t, 'Neem {{{1/2}} liter.'),
+      '"{{{1/2}}": een losse { of } direct naast een breuk; schrijf {{1/2}}.',
+    );
   });
 
   test('an unclosed {{ gives markup-fraction-invalid', (t) => {

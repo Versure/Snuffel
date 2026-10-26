@@ -109,18 +109,35 @@ const LOOSE_FRACTION = /^\s*(?:([0-9]+)\s+)?([0-9]+)\s*\/\s*([0-9]+)\s*$/;
 
 /**
  * Every `{{` or `}}` that is not part of a valid fraction (also in link labels, urls, terms and
- * shown forms): `[{ snippet, reason, suggestion? }]`, in order. `reason` is one of `not-whole`,
- * `zero-denominator`, `minus`, `spaces`, `mixed-improper`, `unclosed`, `unopened`,
- * `inside-link-or-term` or `invalid`; `suggestion` is a valid way to write it (for `minus` and
- * `mixed-improper`). Scans the raw text in the same order as `parse`.
+ * shown forms), and a lone `{` or `}` right next to a valid fraction: `[{ snippet, reason,
+ * suggestion? }]`, in order. `reason` is one of `not-whole`, `zero-denominator`, `minus`, `spaces`,
+ * `mixed-improper`, `stray-brace`, `unclosed`, `unopened`, `inside-link-or-term` or `invalid`;
+ * `suggestion` is a valid way to write it (for `minus`, `mixed-improper` and `stray-brace`). Scans
+ * the raw text in the same order as `parse`.
  */
 export function inlineFractionProblems(input) {
   const problems = [];
   let i = 0;
   while (i < input.length) {
     if (input.startsWith('{{', i)) {
-      const fraction = readFraction(input, i);
+      // A valid fraction, or one right after a lone `{` (`{{{1/2}}`).
+      const direct = readFraction(input, i);
+      const before = !direct && input[i + 2] === '{';
+      const fraction = direct ?? (before ? readFraction(input, i + 1) : null);
       if (fraction) {
+        // A lone `}` right after it (`{{1/2}}}`); `}}` is reported as `unopened` below.
+        const after = input[fraction.end] === '}' && !input.startsWith('}}', fraction.end);
+        if (before || after) {
+          // The app shows the fraction with a brace next to it.
+          const end = after ? fraction.end + 1 : fraction.end;
+          problems.push({
+            snippet: input.slice(i, end),
+            reason: 'stray-brace',
+            suggestion: input.slice(before ? i + 1 : i, fraction.end),
+          });
+          i = end;
+          continue;
+        }
         i = fraction.end;
         continue;
       }
