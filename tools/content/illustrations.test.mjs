@@ -83,6 +83,20 @@ describe('illustration palette', () => {
     }
   });
 
+  test('three skin tones, each with four palette colours that are tokens', () => {
+    const values = new Set(palette.colors.map(({ value }) => value));
+    assert.deepEqual(Object.keys(palette.skinTones), ['light', 'medium', 'dark']);
+    for (const [tone, parts] of Object.entries(palette.skinTones)) {
+      assert.deepEqual(Object.keys(parts), ['skin', 'shade', 'line', 'nail'], tone);
+      for (const [part, value] of Object.entries(parts)) {
+        assert.ok(values.has(value), `${tone} ${part}: ${value} is not in the palette`);
+        const token =
+          part === 'skin' ? `--snf-color-skin-${tone}` : `--snf-color-skin-${tone}-${part}`;
+        assert.equal(normalizeHex(tokens.get(token) ?? ''), value, token);
+      }
+    }
+  });
+
   test('the style guide lists every palette colour', () => {
     const guide = readFileSync(join(illustrationsDir, 'README.md'), 'utf8');
     for (const { value } of palette.colors) {
@@ -120,8 +134,10 @@ describe('illustration templates', () => {
     assert.deepEqual(templateNames, [
       'arrow.svg',
       'card.svg',
+      'hand.svg',
       'keyboard-qwerty.svg',
       'label.svg',
+      'person-sitting.svg',
       'step-number.svg',
     ]);
   });

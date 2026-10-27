@@ -92,8 +92,8 @@ Bestand `content/courses/<cursus-id>/lessons/NN-<les-id>.json` (`NN` is het volg
 - **Ted:** `ted.intro` (met `mood`), `ted.correct`, `ted.incorrect`, `ted.finished`; kort, in Teds toon (stoer, vrolijk, nooit betuttelend).
 - **Interacties alleen uit de catalogus** (`trace-game`, `stepped-exercise`, `typing-drill`, of wat daar later bij komt).
 - **Afbeeldingen:** elke tekening uit de beeldlijst komt als blok `figure` bij de uitleg die hij laat zien. Volg de stijlgids `content/illustrations/README.md`:
-  - kopieer een sjabloon uit `content/illustrations/templates/` (kaart, pijl, label, genummerde stap, QWERTY-toetsenbord) naar `content/courses/<cursus-id>/assets/<naam>.svg` en pas het aan; begin niet elke keer opnieuw;
-  - alleen de kleuren uit `content/illustrations/palette.json`, zwarte lijnen van 3, harde schaduw, `viewBox` van 400 breed, schematisch (een hand is een vlak met vijf vingertoppen);
+  - kopieer een sjabloon uit `content/illustrations/templates/` (kaart, pijl, label, genummerde stap, QWERTY-toetsenbord, hand, zittend kind) naar `content/courses/<cursus-id>/assets/<naam>.svg` en pas het aan; begin niet elke keer opnieuw;
+  - alleen de kleuren uit `content/illustrations/palette.json`, zwarte lijnen van 3, harde schaduw, `viewBox` van 400 breed, in de rijke stripstijl: echte vormen (handen met nagels en knokkels, toetsen met diepte), schaduw in twee tinten zonder verloop, één huidskleur per tekening en wisselend over de cursus, nooit paarse kleren;
   - alleen korte labels (hoogstens 24 tekens, met het font uit de stijlgids); uitleg hoort in de les of de `caption`;
   - een `alt` die zegt wat je ziet en waarom het er staat, met alles wat in de tekening ertoe doet (labels, kleuren en hun betekenis);
   - `sourceRefs` bij de tekening: de bronnen van wat hij laat zien, net als bij tekst;

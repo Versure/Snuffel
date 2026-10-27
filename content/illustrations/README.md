@@ -1,6 +1,6 @@
 # Stijlgids voor afbeeldingen in lessen
 
-Een les legt een plek, vorm, volgorde, vergelijking of beweging uit met een tekening, niet alleen met tekst. Deze gids zegt hoe zo'n tekening eruitziet, zodat alle tekeningen in Snuffel bij elkaar en bij Ted passen: de stripstijl van de app, met vaste kleuren, dikke zwarte lijnen en een harde schaduw.
+Een les legt een plek, vorm, volgorde, vergelijking of beweging uit met een tekening, niet alleen met tekst. Deze gids zegt hoe zo'n tekening eruitziet, zodat alle tekeningen in Snuffel bij elkaar en bij Ted passen: de **rijke stripstijl** van de app: echte vormen (handen met nagels en knokkels, een kind met hoofd, romp, armen en benen, toetsen met diepte), schaduw in twee tinten, vaste kleuren, dikke zwarte lijnen en een harde schaduw.
 
 Een tekening is een svg in de map `assets/` van de cursus en staat in de les als blok `figure` (zie `content/schema/v1/catalogus.md`). De app toont hem als `<img>` op een vaste crème kaart met een zwarte rand, ook in de donkere modus. `npm run content:check` bewaakt de regels hieronder die een script kan zien; de rest bewaakt `content-reviewer`.
 
@@ -16,15 +16,17 @@ Een tekening is een svg in de map `assets/` van de cursus en staat in de les als
 
 In `templates/` staan bouwstenen in deze stijl. Kopieer er een naar `assets/` van de cursus en pas hem aan; begin niet elke keer opnieuw.
 
-| Sjabloon              | Wat                                                                                                                                                         |
-| --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `card.svg`            | een kaart met harde schaduw, een titel en een label                                                                                                         |
-| `arrow.svg`           | een dikke pijl met een label                                                                                                                                |
-| `label.svg`           | een label met een lijn naar een punt                                                                                                                        |
-| `step-number.svg`     | genummerde stappen (paars bolletje met wit cijfer) met pijlen ertussen                                                                                      |
-| `keyboard-qwerty.svg` | een QWERTY-toetsenbord met dezelfde toetsen en vingerkleuren als de typoefening; een toets is een `<rect>` met `data-key`, de voelstreepjes staan op F en J |
+| Sjabloon              | Wat                                                                                                                                                                                                                |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `card.svg`            | een kaart met harde schaduw, een titel en een label                                                                                                                                                                |
+| `arrow.svg`           | een dikke pijl met een label                                                                                                                                                                                       |
+| `label.svg`           | een label met een lijn naar een punt                                                                                                                                                                               |
+| `hand.svg`            | een linkerhand van bovenaf in typhouding (vingers als capsules met nagel en twee plooien, handpalm met knokkels, duim, blauwe mouw), en de rechterhand als spiegelbeeld met `<use>`                                |
+| `person-sitting.svg`  | een kind van opzij aan een bureau: hoofd met haar, oog en oor, romp in een roze shirt, armen, blauwe broek, schoenen; stoel en bureau met diepte, toetsenbord en scherm                                            |
+| `step-number.svg`     | genummerde stappen (paars bolletje met wit cijfer) met pijlen ertussen                                                                                                                                             |
+| `keyboard-qwerty.svg` | een QWERTY-toetsenbord met diepte (donkere body, toetsen met een lila zijkant) en dezelfde toetsen en vingerkleuren als de typoefening; een toets is een `<rect>` met `data-key`, de voelstreepjes staan op F en J |
 
-Een toets van het toetsenbord aanpassen is één attribuut: `fill="#ffffff"` voor een toets die nog niet geleerd is, of `stroke="#5b2bb5" stroke-width="4"` om hem te omranden. Met de `viewBox` laat je een deel zien, bijv. `viewBox="0 34 400 88"` voor de drie letterrijen. De letters op het hele toetsenbord zijn kleiner dan 15 (12, want er staan 15 toetsen naast elkaar); dat is de enige uitzondering, net als in de typoefening zelf.
+Een toets van het toetsenbord aanpassen is één attribuut: `fill="#ffffff"` voor een toets die nog niet geleerd is, of `stroke="#5b2bb5" stroke-width="4"` om hem te omranden. De letters op het hele toetsenbord zijn kleiner dan 15 (12, want er staan 15 toetsen naast elkaar); dat is de enige uitzondering, net als in de typoefening zelf.
 
 ## Palet
 
@@ -43,11 +45,22 @@ Alleen deze kleuren; ze staan in `palette.json` en komen uit `web/src/styles/tok
 | zacht roze  | `#ffb3cd`                             | vlak; pink                                                |
 | blauw       | `#7cc1d8`                             | vlak (water, lucht)                                       |
 | oranje      | `#ffc078`                             | vlak; ringvinger                                          |
+| donkerpaars | `#3d2d66`                             | body van een toetsenbord, scherm                          |
 | goed        | `#12804a`                             | alleen samen met een ✓, nooit als enige teken             |
 | fout        | `#c2183f`                             | alleen samen met een ✗, nooit als enige teken             |
 | trefwoorden | `none`, `currentColor`, `transparent` | `currentColor` is in een `<img>` altijd zwart             |
 
-- **Vingerkleuren** zijn dezelfde als in de typoefening: pink zacht roze, ringvinger oranje, middelvinger groen, wijsvinger geel, duim lila. Gebruik die kleuren in een andere tekening niet voor iets anders dan vingers, anders raakt een kind in de war.
+**Huidskleuren** (vier tinten per huidskleur: huid, schaduw, lijn voor plooien en nagelrand, nagel):
+
+| Huid   | Huid      | Schaduw   | Lijn      | Nagel     |
+| ------ | --------- | --------- | --------- | --------- |
+| licht  | `#f6d2b5` | `#e5ad88` | `#a86a4a` | `#fbe8da` |
+| midden | `#d9a06f` | `#b97b4c` | `#7a4a2a` | `#f0cfb2` |
+| donker | `#8d5a3b` | `#6b4129` | `#3e2416` | `#c99a7e` |
+
+- **Eén huidskleur per tekening.** In een cursus wisselen de tekeningen met mensen of handen van huidskleur (licht, midden, donker, en weer licht). Dat is een afspraak voor de maker en de reviewer, geen check.
+- **Kleren en mouwen nooit paars:** paars betekent op een toetsenbord "nieuw". Gebruik blauw `#7cc1d8`, roze `#ff2e7a`, wit of zwart.
+- **Vingerkleuren** zijn dezelfde als in de typoefening: pink zacht roze, ringvinger oranje, middelvinger groen, wijsvinger geel, duim lila. Gebruik zacht roze, oranje, groen en geel in een andere tekening niet voor iets anders dan vingers, anders raakt een kind in de war. Lila is daarnaast de kleur van de zijkant van een voorwerp (toets, stoel, bureau).
 - **Kleur is nooit het enige teken.** Wat een kleur betekent, staat er ook als label, cijfer, ✓/✗ of patroon bij, en in de `alt`.
 - **Geen verlopen** (`linearGradient`, `radialGradient`), geen filters met kleur en geen doorzichtigheid: `opacity`, `fill-opacity` en `stroke-opacity` zijn `1` of `0`.
 
@@ -56,11 +69,34 @@ Alleen deze kleuren; ze staan in `palette.json` en komen uit `web/src/styles/tok
 - **`viewBox` van 400 breed** (`viewBox="0 0 400 H"`, de hoogte kies je zelf; liefst niet hoger dan 400). Geen vaste `width` en `height` nodig; de tekening schaalt mee met de kaart. Zonder `viewBox` weigert `content:check` hem (`asset-viewbox-missing`).
 - **Lijnen:** zwart `#141414`, dikte `3` (`stroke-width="3"`), `stroke-linejoin="round"` en `stroke-linecap="round"`. Dunner (2) alleen voor kleine details binnen een vlak.
 - **Ronde hoeken:** `rx="12"` op kaarten en grote vlakken; kleine vlakken (een toets) `rx="6"`.
-- **Harde schaduw:** een zwarte kopie van de vorm, 6 naar rechts en 6 naar beneden, achter de vorm (eerst tekenen). Alleen onder de grote vormen, niet onder elke toets of elk label.
-- **Schematisch, niet realistisch.** Een hand is een vlak met vijf ronde vingertoppen, een toetsenbord is een raster van afgeronde rechthoeken. Geen schaduwen met verloop, geen 3D, geen foto's.
+- **Harde schaduw:** een zwarte kopie van de vorm, 6 naar rechts en 6 naar beneden, achter de vorm (eerst tekenen). Alleen onder de grote vormen (een kaart, de body van een toetsenbord), niet onder elke toets of elk label.
+- **Echte vormen, eenvoudig getekend.** Een hand heeft vingers, nagels en knokkels; een kind heeft een hoofd, een romp, armen en benen; een toets heeft een bovenkant en een zijkant. Geen foto's, geen verlopen, geen perspectief met verdwijnpunt.
+- **Schaduw in twee tinten, zonder verloop:** een vorm van huid is eerst de schaduwkleur met een zwarte rand van 2,5, met daarop een iets kleinere vorm in de lichte huidskleur, naar links-boven geschoven. Plooien en de rand van een nagel in de lijnkleur van die huid (1 tot 1,5).
+- **Diepte bij voorwerpen:** de zijkant van een toets, stoel of bureau is lila `#cfc3e8` en ligt 3 tot 4 onder de bovenkant; de body van een toetsenbord is donkerpaars `#3d2d66` met een zwarte schaduw (6, 6).
+- **Hergebruik met `<use href="#id">`:** teken een hand één keer en spiegel hem voor de andere hand (`transform="translate(B 0) scale(-1 1)"`). Zo blijft een tekening klein.
 - **Rustig:** hoogstens één ding dat opvalt (een accentkleur, een pijl of een omranding). Laat ruimte tussen vormen (minstens 8).
 - **Groot genoeg voor een telefoon:** op een telefoon is een tekening van 400 breed ongeveer 300 tot 340 pixels breed. Labels zijn daarom minstens `font-size="15"`, liever 16 tot 18; lijnen minstens 2.
-- Hoogstens **40 kB** per svg (`asset-too-large`). Een met de hand geschreven tekening blijft daar ruim onder.
+- Hoogstens **40 kB** per svg (`asset-too-large`). Een toetsenbord met diepte is ongeveer 14 kB; hergebruik met `<use>` houdt handen klein.
+
+## Zo teken je …
+
+**Een hand (van bovenaf, typhouding)** — begin met `templates/hand.svg`.
+
+1. Vier vingers als capsules (`rect` met `rx` = halve breedte), een beetje uitwaaierend (draai de pink -7°, de ringvinger -3°, de wijsvinger 4°). Elke vinger: schaduwvorm met zwarte rand, lichte vorm erop, een nagel aan de top (nagelkleur, rand in de lijnkleur) en twee plooien (korte boogjes in de lijnkleur).
+2. Een handpalm onder de vingers, met vier kleine boogjes voor de knokkels.
+3. Een duim die schuin naar binnen wijst, naar de spatiebalk.
+4. Een mouw over de pols (blauw, met een witte streep), nooit paars.
+5. De andere hand is `<use href="#hand-left" transform="translate(B 0) scale(-1 1)"/>`; tekst nooit in de gespiegelde groep.
+
+**Een persoon (van opzij)** — begin met `templates/person-sitting.svg`.
+
+- Hoofd: een cirkel in de schaduwkleur met daarop een kleinere lichte cirkel; een oor, een oog (wit met een zwarte pupil), een klein neusje en een mond in de lijnkleur, zwart haar.
+- Romp: een afgeronde vorm in de kleur van het shirt; armen en benen als dikke capsules met een zwarte rand (mouw in de shirtkleur, onderarm in twee huidtinten, broek blauw).
+- Houding klopt met de les: rug tegen de leuning, bovenarm langs het lijf, onderarm naar het toetsenbord, voeten plat, ruimte tussen knie en bureau.
+
+**Een toets** — begin met `templates/keyboard-qwerty.svg`.
+
+- Eerst de zijkant: een lila `rect` 3 lager, dan de bovenkant erop (wit of in de vingerkleur), beide met een zwarte rand van 2 en `rx="4"`. De letter in het bovenste deel; een voelstreepje is een kort zwart lijntje onderaan de bovenkant.
 
 ## Tekst in een tekening
 
@@ -96,6 +132,7 @@ Fout: _"Toetsenbord"_ (zegt niet wat je moet zien) of _"Een plaatje met allemaal
 | Een toetsenbord met alleen de nieuwe toetsen omrand    | Alle toetsen in felle kleuren, zodat niets meer opvalt              |
 | Labels "f" en "j" en een streepje op die toetsen       | Een label met een hele zin: "Leg hier je wijsvingers op de toetsen" |
 | Vingerkleuren uit het palet, met een legenda of labels | Rood en groen als enige verschil                                    |
-| Een hand als vlak met vijf vingertoppen                | Een realistische hand met nagels en schaduwen                       |
+| Een hand met vingers, nagels en twee huidtinten        | Een hand als vlak of als stokjes, of met een verloop als schaduw    |
 | `viewBox="0 0 400 220"`                                | `width="1200" height="800"` zonder `viewBox`                        |
 | Zwarte lijnen van 3, harde schaduw van 6               | Grijze lijntjes van 1, een vage schaduw met doorzichtigheid         |
+| Een blauwe mouw, één huidskleur per tekening           | Een paarse mouw (paars is "nieuw"), twee huidskleuren door elkaar   |

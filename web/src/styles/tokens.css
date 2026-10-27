@@ -47,6 +47,22 @@
   --snf-color-game-water: #2b5c8a;
   --snf-color-game-wave: #7cc1d8;
   --snf-color-game-label: #cfc3e8;
+  /*
+   * Skin tones of the figures in lessons (decision M16, question 6): per tone the skin, a darker
+   * shade, the line of creases and the nail. Fixed in both themes, like the figure card.
+   */
+  --snf-color-skin-light: #f6d2b5;
+  --snf-color-skin-light-shade: #e5ad88;
+  --snf-color-skin-light-line: #a86a4a;
+  --snf-color-skin-light-nail: #fbe8da;
+  --snf-color-skin-medium: #d9a06f;
+  --snf-color-skin-medium-shade: #b97b4c;
+  --snf-color-skin-medium-line: #7a4a2a;
+  --snf-color-skin-medium-nail: #f0cfb2;
+  --snf-color-skin-dark: #8d5a3b;
+  --snf-color-skin-dark-shade: #6b4129;
+  --snf-color-skin-dark-line: #3e2416;
+  --snf-color-skin-dark-nail: #c99a7e;
 
   --snf-font-display: 'Bangers', 'Impact', 'Arial Narrow', sans-serif;
   --snf-font-body: 'Atkinson Hyperlegible', -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
