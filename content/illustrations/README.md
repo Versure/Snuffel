@@ -12,6 +12,20 @@ Een tekening is een svg in de map `assets/` van de cursus en staat in de les als
 4. `npm run content:figures -- <cursus-id>`: maakt van elke tekening een png in `tmp/figures/<cursus-id>/` (licht en donker, telefoon en laptop). **Bekijk elke png**: overlapt er iets, is elk label leesbaar, klopt de tekening met de tekst en de bronnen?
 5. Schrijf de `alt` (zie hieronder) en zet de `sourceRefs` bij de tekening: dezelfde bronnen als de tekst die hij laat zien.
 
+## Sjablonen
+
+In `templates/` staan bouwstenen in deze stijl. Kopieer er een naar `assets/` van de cursus en pas hem aan; begin niet elke keer opnieuw.
+
+| Sjabloon              | Wat                                                                                                                                                         |
+| --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `card.svg`            | een kaart met harde schaduw, een titel en een label                                                                                                         |
+| `arrow.svg`           | een dikke pijl met een label                                                                                                                                |
+| `label.svg`           | een label met een lijn naar een punt                                                                                                                        |
+| `step-number.svg`     | genummerde stappen (paars bolletje met wit cijfer) met pijlen ertussen                                                                                      |
+| `keyboard-qwerty.svg` | een QWERTY-toetsenbord met dezelfde toetsen en vingerkleuren als de typoefening; een toets is een `<rect>` met `data-key`, de voelstreepjes staan op F en J |
+
+Een toets van het toetsenbord aanpassen is één attribuut: `fill="#ffffff"` voor een toets die nog niet geleerd is, of `stroke="#5b2bb5" stroke-width="4"` om hem te omranden. Met de `viewBox` laat je een deel zien, bijv. `viewBox="0 34 400 88"` voor de drie letterrijen. De labels van het hele toetsenbord zijn kleiner dan 16 (15 toetsen naast elkaar); dat is de enige uitzondering, net als in de typoefening zelf.
+
 ## Palet
 
 Alleen deze kleuren; ze staan in `palette.json` en komen uit `web/src/styles/tokens.css`. Een andere kleur weigert `content:check` (`asset-color-off-palette`).
