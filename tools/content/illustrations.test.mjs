@@ -85,7 +85,7 @@ describe('illustration palette', () => {
 
   test('three skin tones, each with four palette colours that are tokens', () => {
     const values = new Set(palette.colors.map(({ value }) => value));
-    assert.deepEqual(Object.keys(palette.skinTones), ['light', 'medium', 'dark']);
+    assert.deepEqual(Object.keys(palette.skinTones), ['tone-1', 'tone-2', 'tone-3']);
     for (const [tone, parts] of Object.entries(palette.skinTones)) {
       assert.deepEqual(Object.keys(parts), ['skin', 'shade', 'line', 'nail'], tone);
       for (const [part, value] of Object.entries(parts)) {

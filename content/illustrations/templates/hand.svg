@@ -3,8 +3,8 @@
     Template: a left hand seen from above (fingers up, the typing position), in the rich style,
     and the right hand as a mirror image of it (<use> with scale(-1 1)). Each finger is a capsule:
     a shade shape with the black outline, a lighter skin shape on top, a nail and two creases;
-    the thumb points in; the cuff of the sleeve is blue. Skin tone light; for another tone,
-    replace the four colours with those of skinTones in palette.json (skin, shade, line, nail).
+    the thumb points in; the cuff of the sleeve is blue. Skin tone 1 (light); for another tone,
+    replace the four colours with those of another tone in skinTones in palette.json (skin, shade, line, nail).
     Fingertips of the left hand: x 50, 88, 126, 164 at y 82 (before the scale of 0.9).
   -->
   <g transform="scale(0.9) translate(0 -62)">

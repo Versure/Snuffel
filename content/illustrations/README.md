@@ -50,13 +50,13 @@ Alleen deze kleuren; ze staan in `palette.json` en komen uit `web/src/styles/tok
 | fout        | `#c2183f`                             | alleen samen met een ✗, nooit als enige teken             |
 | trefwoorden | `none`, `currentColor`, `transparent` | `currentColor` is in een `<img>` altijd zwart             |
 
-**Huidskleuren** (vier tinten per huidskleur: huid, schaduw, lijn voor plooien en nagelrand, nagel):
+**Huidskleuren** (vier tinten per huidskleur: huid, schaduw, lijn voor plooien en nagelrand, nagel; in `palette.json` onder `skinTones` en als tokens `--snf-color-skin-tone-1` tot `-3`, alleen voor tekeningen):
 
-| Huid   | Huid      | Schaduw   | Lijn      | Nagel     |
-| ------ | --------- | --------- | --------- | --------- |
-| licht  | `#f6d2b5` | `#e5ad88` | `#a86a4a` | `#fbe8da` |
-| midden | `#d9a06f` | `#b97b4c` | `#7a4a2a` | `#f0cfb2` |
-| donker | `#8d5a3b` | `#6b4129` | `#3e2416` | `#c99a7e` |
+| Huid              | Huid      | Schaduw   | Lijn      | Nagel     |
+| ----------------- | --------- | --------- | --------- | --------- |
+| licht (`tone-1`)  | `#f6d2b5` | `#e5ad88` | `#a86a4a` | `#fbe8da` |
+| midden (`tone-2`) | `#d9a06f` | `#b97b4c` | `#7a4a2a` | `#f0cfb2` |
+| donker (`tone-3`) | `#8d5a3b` | `#6b4129` | `#3e2416` | `#c99a7e` |
 
 - **Eén huidskleur per tekening.** In een cursus wisselen de tekeningen met mensen of handen van huidskleur (licht, midden, donker, en weer licht). Dat is een afspraak voor de maker en de reviewer, geen check.
 - **Kleren en mouwen nooit paars:** paars betekent op een toetsenbord "nieuw". Gebruik blauw `#7cc1d8`, roze `#ff2e7a`, wit of zwart.

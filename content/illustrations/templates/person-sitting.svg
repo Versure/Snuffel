@@ -3,7 +3,7 @@
     Template: a child sitting at a desk, seen from the side, in the rich style: body parts with a
     black outline, skin in two tones (shade with a lighter inset), clothes in palette colours (no
     purple: on keyboards purple means "new"), chair and desk with a lilac front face for depth.
-    Skin tone medium; for another tone, replace the four colours with those of skinTones in
+    Skin tone 2 (medium); for another tone, replace the four colours with those of another tone in skinTones in
     palette.json. Add labels (white pills, 15) in the free space: top left, between head and
     screen, under the desk.
   -->

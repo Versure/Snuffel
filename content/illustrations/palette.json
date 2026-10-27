@@ -1,5 +1,5 @@
 {
-  "description": "The fixed Snuffel palette for svg figures in lessons (M16, question 1). content:check (tools/content/rules/assets.mjs) refuses any other colour; tools/content/illustrations.test.mjs checks that every colour is the value of its token in web/src/styles/tokens.css. A figure is always shown on the fixed cream card, also in dark mode, so these are the light-theme values. skinTones are the three skin tones (decision M16, question 6): one tone per figure, alternating across the people drawings of a course.",
+  "description": "The fixed Snuffel palette for svg figures in lessons (M16, question 1). content:check (tools/content/rules/assets.mjs) refuses any other colour; tools/content/illustrations.test.mjs checks that every colour is the value of its token in web/src/styles/tokens.css. A figure is always shown on the fixed cream card, also in dark mode, so these are the light-theme values. skinTones are the three skin tones (tone-1 light, tone-2 medium, tone-3 dark skin) (decision M16, question 6): one tone per figure, alternating across the people drawings of a course.",
   "colors": [
     {
       "value": "#141414",
@@ -89,73 +89,73 @@
       "value": "#f6d2b5",
       "name": "huid licht",
       "use": "huid",
-      "token": "--snf-color-skin-light"
+      "token": "--snf-color-skin-tone-1"
     },
     {
       "value": "#e5ad88",
       "name": "huid licht schaduw",
       "use": "huid, schaduwkant (met zwarte rand)",
-      "token": "--snf-color-skin-light-shade"
+      "token": "--snf-color-skin-tone-1-shade"
     },
     {
       "value": "#a86a4a",
       "name": "huid licht lijn",
       "use": "plooien en nagelrand",
-      "token": "--snf-color-skin-light-line"
+      "token": "--snf-color-skin-tone-1-line"
     },
     {
       "value": "#fbe8da",
       "name": "huid licht nagel",
       "use": "nagel",
-      "token": "--snf-color-skin-light-nail"
+      "token": "--snf-color-skin-tone-1-nail"
     },
     {
       "value": "#d9a06f",
       "name": "huid midden",
       "use": "huid",
-      "token": "--snf-color-skin-medium"
+      "token": "--snf-color-skin-tone-2"
     },
     {
       "value": "#b97b4c",
       "name": "huid midden schaduw",
       "use": "huid, schaduwkant (met zwarte rand)",
-      "token": "--snf-color-skin-medium-shade"
+      "token": "--snf-color-skin-tone-2-shade"
     },
     {
       "value": "#7a4a2a",
       "name": "huid midden lijn",
       "use": "plooien en nagelrand",
-      "token": "--snf-color-skin-medium-line"
+      "token": "--snf-color-skin-tone-2-line"
     },
     {
       "value": "#f0cfb2",
       "name": "huid midden nagel",
       "use": "nagel",
-      "token": "--snf-color-skin-medium-nail"
+      "token": "--snf-color-skin-tone-2-nail"
     },
     {
       "value": "#8d5a3b",
       "name": "huid donker",
       "use": "huid",
-      "token": "--snf-color-skin-dark"
+      "token": "--snf-color-skin-tone-3"
     },
     {
       "value": "#6b4129",
       "name": "huid donker schaduw",
       "use": "huid, schaduwkant (met zwarte rand)",
-      "token": "--snf-color-skin-dark-shade"
+      "token": "--snf-color-skin-tone-3-shade"
     },
     {
       "value": "#3e2416",
       "name": "huid donker lijn",
       "use": "plooien en nagelrand",
-      "token": "--snf-color-skin-dark-line"
+      "token": "--snf-color-skin-tone-3-line"
     },
     {
       "value": "#c99a7e",
       "name": "huid donker nagel",
       "use": "nagel",
-      "token": "--snf-color-skin-dark-nail"
+      "token": "--snf-color-skin-tone-3-nail"
     }
   ],
   "keywords": ["none", "currentColor", "transparent"],
@@ -173,19 +173,19 @@
   },
   "maxBytes": 40960,
   "skinTones": {
-    "light": {
+    "tone-1": {
       "skin": "#f6d2b5",
       "shade": "#e5ad88",
       "line": "#a86a4a",
       "nail": "#fbe8da"
     },
-    "medium": {
+    "tone-2": {
       "skin": "#d9a06f",
       "shade": "#b97b4c",
       "line": "#7a4a2a",
       "nail": "#f0cfb2"
     },
-    "dark": {
+    "tone-3": {
       "skin": "#8d5a3b",
       "shade": "#6b4129",
       "line": "#3e2416",
