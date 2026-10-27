@@ -73,4 +73,5 @@
     <text x="80" y="207">linkerhand</text>
     <text x="314" y="207">rechterhand</text>
   </g>
+  <text x="200" y="164" text-anchor="middle" font-family="Atkinson Hyperlegible, Verdana, sans-serif" font-size="15" font-weight="700" fill="#141414">spatie</text>
 </svg>

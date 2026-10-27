@@ -80,7 +80,7 @@
         {
           "type": "figure",
           "src": "assets/polsen.svg",
-          "alt": "Twee tekeningen van opzij van een onderarm en hand boven een toetsenbord. Links, met een vinkje en het label recht en zwevend: onderarm en hand vormen één rechte lijn en zweven boven het toetsenbord. Rechts, met een kruisje en het label leunen en knikken: de onderarm ligt op tafel en de pols knikt omhoog, met een rode cirkel om de pols.",
+          "alt": "Twee tekeningen van opzij van een onderarm en hand boven een toetsenbord. Links, met een vinkje en het label recht en zwevend: onderarm en hand vormen één rechte lijn en zweven boven het toetsenbord; een zwarte stippellijn loopt over onderarm en hand. Rechts, met een kruisje en het label leunen en knikken: de onderarm ligt op tafel en de pols knikt omhoog, met een rode cirkel om de pols.",
           "sourceRefs": [
             "cornell-ergonomie-kinderen-computer",
             "cesi-beeldschermwerk",

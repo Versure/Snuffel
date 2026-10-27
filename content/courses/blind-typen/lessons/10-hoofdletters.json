@@ -50,7 +50,8 @@
         {
           "type": "figure",
           "src": "assets/toetsen-shift.svg",
-          "alt": "Toetsenbord met alle letters in de kleur van hun vinger. Nieuw, met een paarse rand: de linker-Shift en de rechter-Shift, allebei roze voor je pinken. Onder het toetsenbord staat welke kleur bij welke vinger hoort.",
+          "alt": "Toetsenbord met alle letters in de kleur van hun vinger. Nieuw, met een paarse rand: de linker-Shift en de rechter-Shift, allebei roze voor je pinken. Het voorbeeld is de hoofdletter T: bij de rechter-Shift staat een bolletje met 1, bij de T, die een dikke zwarte rand heeft, een bolletje met 2. Eerst houd je de rechter-Shift vast, dan tik je de T. Onder het toetsenbord staat welke kleur bij welke vinger hoort.",
+          "caption": "Typ je met links, dan Shift rechts.",
           "sourceRefs": ["uwaterloo-touch-typing", "isbe-keyboard-technique"]
         },
         {

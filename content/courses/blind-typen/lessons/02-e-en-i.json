@@ -47,13 +47,13 @@
         {
           "type": "rule",
           "title": "Middelvingers omhoog",
-          "text": "De **e** zit recht boven de d. Die typ je met je linkermiddelvinger. De **i** zit recht boven de k. Die typ je met je rechtermiddelvinger.",
+          "text": "De **e** zit schuin boven de d, een klein stukje naar links. Die typ je met je linkermiddelvinger. De **i** zit schuin boven de k, ook een stukje naar links. Die typ je met je rechtermiddelvinger.",
           "sourceRefs": ["isbe-keyboard-technique", "uwaterloo-touch-typing"]
         },
         {
           "type": "figure",
           "src": "assets/toetsen-e-en-i.svg",
-          "alt": "Toetsenbord met de toetsen die je al kent in de kleur van hun vinger; de toetsen die je nog niet kent zijn wit. Nieuw, met een paarse rand: de E recht boven de D en de I recht boven de K, allebei groen voor je middelvingers. Onder het toetsenbord staat welke kleur bij welke vinger hoort.",
+          "alt": "Toetsenbord met de toetsen die je al kent in de kleur van hun vinger; de toetsen die je nog niet kent zijn wit. Nieuw, met een paarse rand: de E schuin boven de D en de I schuin boven de K, allebei een stukje naar links, allebei groen voor je middelvingers. Onder het toetsenbord staat welke kleur bij welke vinger hoort.",
           "sourceRefs": ["isbe-keyboard-technique", "uwaterloo-touch-typing"]
         },
         {
@@ -122,12 +122,12 @@
             {
               "id": "linkermiddelvinger",
               "text": "Je linkermiddelvinger",
-              "feedback": "Klopt. De e zit recht boven de d, waar je linkermiddelvinger rust."
+              "feedback": "Klopt. De e zit schuin boven de d, waar je linkermiddelvinger rust."
             },
             {
               "id": "linkerwijsvinger",
               "text": "Je linkerwijsvinger",
-              "feedback": "Je linkerwijsvinger rust op de f. De e zit boven de d."
+              "feedback": "Je linkerwijsvinger rust op de f. De e zit schuin boven de d."
             },
             {
               "id": "rechtermiddelvinger",
@@ -141,7 +141,7 @@
         },
         {
           "id": "vinger-i",
-          "prompt": "De i zit recht boven een toets van de thuisrij. Welke?",
+          "prompt": "De i zit schuin boven een toets van de thuisrij. Welke?",
           "options": [
             {
               "id": "k",
@@ -151,12 +151,12 @@
             {
               "id": "j",
               "text": "Boven de j",
-              "feedback": "Boven de j zit de u. De i zit één toets verder."
+              "feedback": "Schuin boven de j zit de u. De i zit één toets verder."
             },
             {
               "id": "l",
               "text": "Boven de l",
-              "feedback": "Boven de l zit de o. De i zit boven de k."
+              "feedback": "Schuin boven de l zit de o. De i zit schuin boven de k."
             }
           ],
           "correctOptionId": "k",

@@ -63,7 +63,7 @@
         {
           "type": "figure",
           "src": "assets/toetsen-leestekens.svg",
-          "alt": "Toetsenbord met alle letters, Shift en de leestekens die je al kent in de kleur van hun vinger. Nieuw, met een paarse rand en allebei roze voor je pinken: linksboven de toets met 1 en het uitroepteken, rechtsonder naast de punt de toets met de schuine streep en het vraagteken, en rechts naast de puntkomma de apostrof. Onder het toetsenbord staat welke kleur bij welke vinger hoort.",
+          "alt": "Toetsenbord met alle letters, Shift en de leestekens die je al kent in de kleur van hun vinger. Nieuw, met een paarse rand en alle drie roze voor je pinken: linksboven de toets met 1 en het uitroepteken, rechtsonder naast de punt de toets met de schuine streep en het vraagteken, en rechts naast de puntkomma de apostrof. Onder het toetsenbord staan drie labels: ! = Shift + 1, ? = Shift + /, ' = apostrof. Daaronder staat welke kleur bij welke vinger hoort.",
           "sourceRefs": ["isbe-keyboard-technique", "uwaterloo-touch-typing"]
         },
         {
