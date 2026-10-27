@@ -21,6 +21,7 @@ import {
 } from '../lesson/actions';
 import { lessonPath, typingLessonPath } from '../lesson/fixture';
 import { createChild, currentBaseURL, uniqueName } from '../support/accounts';
+import { learningCourses, practiceCourses } from '../support/courses';
 import { loginAs } from '../support/login';
 import {
   storeChecklist,
@@ -135,12 +136,13 @@ test.describe('the page of a child (/ouder/<id>)', () => {
     const sections = page.locator('section.section');
     await expect(sections.nth(0).getByRole('heading', { level: 2 })).toHaveText('Leertrajecten');
     await expect(sections.nth(1).getByRole('heading', { level: 2 })).toHaveText('Huiswerk oefenen');
-    await expect(sections.nth(0).getByRole('heading', { level: 3 })).toHaveText([
-      'Blind typen met tien vingers',
-      'Proefcursus',
-      'Proefcursus: typen',
-      'Roofvissen met kunstaas',
-    ]);
+    // The courses on disk, sorted by title within each section (support/courses.ts).
+    await expect(sections.nth(0).getByRole('heading', { level: 3 })).toHaveText(
+      learningCourses.map((course) => course.title),
+    );
+    await expect(sections.nth(1).getByRole('heading', { level: 3 })).toHaveText(
+      practiceCourses.map((course) => course.title),
+    );
     const proefcursus = sections
       .nth(0)
       .locator('section.course')
