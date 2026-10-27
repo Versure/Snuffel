@@ -1,0 +1,218 @@
+{
+  "schemaVersion": 1,
+  "id": "z-x-q-en-y",
+  "version": 1,
+  "title": "De laatste letters",
+  "sticker": "Blind typen · les 9",
+  "objective": "Na deze les typ je de z, de x, de q en de y. Je kent nu alle letters, en je weet hoe je ze bijhoudt.",
+  "concept": "de laatste letters",
+  "estimatedMinutes": 10,
+  "glossary": [
+    {
+      "term": "blind typen",
+      "definition": "typen met tien vingers zonder naar het toetsenbord te kijken"
+    },
+    {
+      "term": "thuisrij",
+      "definition": "de middelste rij letters waar je vingers op rusten: a s d f en j k l ;"
+    }
+  ],
+  "ted": {
+    "intro": {
+      "mood": "cool",
+      "text": "Laatste letters! Daarna ken je het hele alfabet blind. Zet hem op."
+    },
+    "correct": ["Alle letters!", "Strak, kampioen.", "Lekker gedaan!"],
+    "incorrect": ["Bijna. Je pinken leren nog.", "Rustig aan, dan komt het goed."],
+    "finished": "Het hele alfabet zit in je vingers. Nu bijhouden!"
+  },
+  "steps": [
+    {
+      "id": "uitleg",
+      "type": "explain",
+      "title": "Het hele alfabet, en kort maar vaak",
+      "blocks": [
+        {
+          "type": "example",
+          "text": "Een voetballer traint niet één keer per maand vijf uur. Hij traint een paar keer per week. Zo leert zijn lijf de bewegingen. Je vingers werken net zo.",
+          "sourceRefs": ["uow-touch-typing", "district30-keyboarding-basisschool"]
+        },
+        {
+          "type": "rule",
+          "title": "Vier laatste letters",
+          "text": "De **q** zit boven de a en de **z** onder de a. Die typ je allebei met je linkerpink. De **x** zit onder de s, voor je linkerringvinger. De **y** zit naast de u, voor je rechterwijsvinger.",
+          "sourceRefs": ["isbe-keyboard-technique", "uwaterloo-touch-typing"]
+        },
+        {
+          "type": "text",
+          "text": "Je pinken hebben het zwaarst. Ze zijn zwak en moeten ver reiken. Typ die letters daarom extra rustig, en ga goed terug naar de [[thuisrij]].",
+          "sourceRefs": ["uow-touch-typing", "isbe-keyboard-technique"]
+        },
+        {
+          "type": "rule",
+          "title": "Kort en vaak",
+          "text": "Oefen een paar keer per week tien tot vijftien minuten. Zo leren je vingers de weg en vergeten ze hem niet. Typ ook thuis met tien vingers, bijvoorbeeld voor je huiswerk.",
+          "sourceRefs": ["district30-keyboarding-basisschool", "district30-touch-typing-tips"]
+        },
+        {
+          "type": "ted-says",
+          "mood": "happy",
+          "text": "[[blind typen|Blind typen]] wordt pas echt makkelijk als je het vaak doet. Elk appje telt mee.",
+          "sourceRefs": ["uow-touch-typing"]
+        }
+      ]
+    },
+    {
+      "id": "typen",
+      "type": "interaction",
+      "title": "Typ met z, x, q en y",
+      "intro": "Je pinken en je linkerringvinger reiken ver. Typ rustig en ga steeds terug.",
+      "interaction": {
+        "id": "z-x-q-en-y-typen",
+        "kind": "typing-drill",
+        "config": {
+          "lines": [
+            "aa aq aq qa aa az az za",
+            "ss sx sx xs jj jy jy yj",
+            "zee zus taxi quiz",
+            "pizza yoga extra",
+            "typen op een qwerty",
+            "zitten met een rechte rug",
+            "elke week een paar keer",
+            "kort en vaak oefenen"
+          ],
+          "newKeys": ["z", "x", "q", "y"],
+          "goals": { "accuracy": 90 }
+        }
+      },
+      "sourceRefs": ["isbe-keyboard-technique", "uwaterloo-touch-typing"]
+    },
+    {
+      "id": "quiz",
+      "type": "quiz",
+      "title": "Quiz: de laatste letters",
+      "intro": "Drie vragen over de laatste letters en over oefenen.",
+      "questions": [
+        {
+          "id": "vinger-z",
+          "prompt": "Met welke vinger typ je de z?",
+          "options": [
+            {
+              "id": "linkerpink",
+              "text": "Je linkerpink",
+              "feedback": "Klopt. De z zit onder de a, waar je linkerpink rust."
+            },
+            {
+              "id": "linkerring",
+              "text": "Je ringvinger",
+              "feedback": "Je linkerringvinger typt de x. De z zit nog één toets verder."
+            },
+            {
+              "id": "rechterpink",
+              "text": "Je rechterpink",
+              "feedback": "Die typt de p en de puntkomma. De z zit links."
+            }
+          ],
+          "correctOptionId": "linkerpink",
+          "hints": ["Welke toets van de thuisrij zit boven de z?"],
+          "sourceRefs": ["isbe-keyboard-technique", "uwaterloo-touch-typing"]
+        },
+        {
+          "id": "vinger-y",
+          "prompt": "Met welke vinger typ je de y?",
+          "options": [
+            {
+              "id": "rechterwijsvinger",
+              "text": "Je rechterwijsvinger",
+              "feedback": "Klopt. De y zit naast de u, net als de h en de n bij die vinger."
+            },
+            {
+              "id": "linkerwijsvinger",
+              "text": "Je linkerwijsvinger",
+              "feedback": "Die typt de t. De y zit net aan de rechterkant."
+            },
+            {
+              "id": "rechtermiddelvinger",
+              "text": "Je rechtermiddelvinger",
+              "feedback": "Die typt de i. De y zit verder naar het midden."
+            }
+          ],
+          "correctOptionId": "rechterwijsvinger",
+          "hints": ["De y zit naast de u."],
+          "sourceRefs": ["isbe-keyboard-technique", "uwaterloo-touch-typing"]
+        },
+        {
+          "id": "kort-en-vaak",
+          "prompt": "Hoe oefen je het best?",
+          "options": [
+            {
+              "id": "kort-vaak",
+              "text": "Een paar keer per week kort",
+              "feedback": "Klopt. Zo leren je vingers de weg en onthouden ze hem."
+            },
+            {
+              "id": "lang-zelden",
+              "text": "Eén keer per maand heel lang",
+              "feedback": "Dan vergeten je vingers de weg tussendoor. Oefen liever vaker kort."
+            },
+            {
+              "id": "alleen-snelheid",
+              "text": "Alleen als je snel wil worden",
+              "feedback": "Ook nauwkeurig typen vraagt oefening. Oefen een paar keer per week."
+            }
+          ],
+          "correctOptionId": "kort-vaak",
+          "hints": ["Denk aan de voetballer."],
+          "sourceRefs": ["district30-keyboarding-basisschool", "uow-touch-typing"]
+        }
+      ]
+    },
+    {
+      "id": "zelf-oefenen",
+      "type": "practice",
+      "practiceKind": "do-it-yourself",
+      "title": "Zelf oefenen: alle letters",
+      "intro": "Oefen deze week nog twee keer kort, op een andere dag dan vandaag.",
+      "items": [
+        {
+          "id": "check-houding",
+          "text": "Check voor je begint: rug recht, voeten plat, scherm op een armlengte.",
+          "sourceRefs": ["isbe-keyboard-technique", "eur-kans-beeldschermwerk"]
+        },
+        {
+          "id": "check-streepjes",
+          "text": "Leg je wijsvingers op de streepjes van de f en de j, zonder te kijken.",
+          "sourceRefs": ["isbe-keyboard-technique"]
+        },
+        {
+          "id": "check-vingers",
+          "text": "Typ je huiswerk of een appje met tien vingers.",
+          "sourceRefs": ["district30-touch-typing-tips"]
+        },
+        {
+          "id": "check-oefening",
+          "text": "Doe de typoefening van les 8 en van deze les nog een keer.",
+          "sourceRefs": ["district30-keyboarding-basisschool"]
+        },
+        {
+          "id": "check-pauze",
+          "text": "Kijk na het typen 20 tellen naar iets ver weg.",
+          "sourceRefs": ["aap-healthychildren-scherm-rug-ogen"]
+        }
+      ],
+      "successCriterion": "Gelukt als je 'kort en vaak oefenen' typt met de goede vingers, zonder te kijken."
+    }
+  ],
+  "furtherReading": [
+    {
+      "sourceRef": "district30-keyboarding-basisschool",
+      "why": "Hoe vaak kinderen op een Amerikaanse basisschool typen oefenen, in het Engels."
+    }
+  ],
+  "faq": [
+    {
+      "q": "Wat is QWERTY?",
+      "a": "Zo heet de indeling van je toetsenbord. Het zijn de eerste zes letters linksboven."
+    }
+  ]
+}

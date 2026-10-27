@@ -1,0 +1,242 @@
+{
+  "schemaVersion": 1,
+  "id": "punt-en-komma",
+  "version": 1,
+  "title": "Punt en komma",
+  "sticker": "Blind typen · les 11",
+  "objective": "Na deze les typ je de punt en de komma met de goede vinger. Je wisselt tijdens lang typen af en toe van houding.",
+  "concept": "de punt en de komma",
+  "estimatedMinutes": 10,
+  "glossary": [
+    {
+      "term": "blind typen",
+      "definition": "typen met tien vingers zonder naar het toetsenbord te kijken"
+    },
+    {
+      "term": "thuisrij",
+      "definition": "de middelste rij letters waar je vingers op rusten: a s d f en j k l ;"
+    },
+    {
+      "term": "aanslag",
+      "definition": "één keer een toets indrukken; elke letter, elk leesteken en elke spatie is een aanslag"
+    }
+  ],
+  "ted": {
+    "intro": {
+      "mood": "happy",
+      "text": "Echte zinnen hebben een punt. En soms een komma. Die twee leer je nu."
+    },
+    "correct": ["Punt gezet!", "Strak, die zinnen.", "Lekker getypt!"],
+    "incorrect": ["Bijna. Middelvinger komma, ringvinger punt.", "Rustig aan, eerst goed."],
+    "finished": "Je typt nu hele zinnen. Bijna klaar met de cursus!"
+  },
+  "steps": [
+    {
+      "id": "uitleg",
+      "type": "explain",
+      "title": "Zinnen afmaken, en blijven bewegen",
+      "blocks": [
+        {
+          "type": "example",
+          "text": "Je typt een verslag van een hele pagina. Halverwege merk je dat je stijf zit. Je schouders zijn omhoog gekropen. Tijd om even te bewegen.",
+          "sourceRefs": ["eur-kans-beeldschermwerk"]
+        },
+        {
+          "type": "rule",
+          "title": "Komma en punt",
+          "text": "De **komma** zit schuin onder de k. Die typ je met je rechtermiddelvinger. De **punt** zit schuin onder de l. Die typ je met je rechterringvinger.",
+          "sourceRefs": ["isbe-keyboard-technique"]
+        },
+        {
+          "type": "text",
+          "text": "Je reikt dus net zo als bij de m, maar met een andere vinger. Ga na elke toets terug naar de [[thuisrij]].",
+          "sourceRefs": ["isbe-keyboard-technique"]
+        },
+        {
+          "type": "text",
+          "text": "De dubbele punt typ je met Shift en de puntkomma. Je linkerpink houdt Shift vast, want de puntkomma zit rechts.",
+          "sourceRefs": ["uwaterloo-touch-typing", "tameside-touch-typing-basis"]
+        },
+        {
+          "type": "signal-cards",
+          "cards": [
+            {
+              "icon": "idea",
+              "title": "Wissel af",
+              "text": "Typ je lang? Verander af en toe van houding, zodat je spieren niet stijf worden.",
+              "sourceRefs": ["eur-kans-beeldschermwerk"]
+            },
+            {
+              "icon": "idea",
+              "title": "Elk uur op",
+              "text": "Sta minstens elk uur op. Loop wat rond of rek je uit. Een wekker helpt je eraan denken.",
+              "sourceRefs": ["aap-healthychildren-scherm-rug-ogen", "cesi-beeldschermwerk"]
+            }
+          ]
+        },
+        {
+          "type": "ted-says",
+          "mood": "thinking",
+          "text": "[[blind typen|Blind typen]] gaat steeds beter. Vergeet je lijf niet: dat moet het hele uur meedoen.",
+          "sourceRefs": []
+        }
+      ]
+    },
+    {
+      "id": "typen",
+      "type": "interaction",
+      "title": "Typ met punt en komma",
+      "intro": "Komma met je middelvinger, punt met je ringvinger. Het doel is weer 40 aanslagen per minuut.",
+      "interaction": {
+        "id": "punt-en-komma-typen",
+        "kind": "typing-drill",
+        "config": {
+          "lines": [
+            "kk k, k, ll l. l.",
+            "Ja, ik typ.",
+            "Mijn rug is recht.",
+            "Eerst goed, dan snel.",
+            "Ted, Lisa en Omar typen.",
+            "Sta op, rek je uit.",
+            "Kijk naar het scherm.",
+            "Na een uur: pauze.",
+            "Klaar, goed gedaan."
+          ],
+          "newKeys": [".", ","],
+          "goals": {
+            "accuracy": 90,
+            "keysPerMinute": 40
+          }
+        }
+      },
+      "sourceRefs": ["isbe-keyboard-technique", "uwaterloo-touch-typing"]
+    },
+    {
+      "id": "quiz",
+      "type": "quiz",
+      "title": "Quiz: punt, komma en bewegen",
+      "intro": "Drie vragen over de leestekens en je lijf.",
+      "questions": [
+        {
+          "id": "vinger-komma",
+          "prompt": "Met welke vinger typ je de komma?",
+          "options": [
+            {
+              "id": "rechtermiddelvinger",
+              "text": "Je rechtermiddelvinger",
+              "feedback": "Klopt. De komma zit schuin onder de k."
+            },
+            {
+              "id": "rechterringvinger",
+              "text": "Je rechterringvinger",
+              "feedback": "Die typt de punt. De komma zit één toets naar links."
+            },
+            {
+              "id": "rechterpink",
+              "text": "De pink van je rechterhand",
+              "feedback": "Die typt de puntkomma. De komma zit onder de k."
+            }
+          ],
+          "correctOptionId": "rechtermiddelvinger",
+          "hints": ["Boven de komma zit de k."],
+          "sourceRefs": ["isbe-keyboard-technique"]
+        },
+        {
+          "id": "vinger-punt",
+          "prompt": "Waar zit de punt?",
+          "options": [
+            {
+              "id": "onder-l",
+              "text": "Schuin onder de l",
+              "feedback": "Klopt. Daarom typt je rechterringvinger hem."
+            },
+            {
+              "id": "onder-k",
+              "text": "Schuin onder de k",
+              "feedback": "Onder de k zit de komma. De punt zit één toets verder."
+            },
+            {
+              "id": "boven-l",
+              "text": "Schuin boven de l",
+              "feedback": "Boven de l zit de o. De punt zit eronder."
+            }
+          ],
+          "correctOptionId": "onder-l",
+          "hints": ["De punt typ je met je rechterringvinger."],
+          "sourceRefs": ["isbe-keyboard-technique"]
+        },
+        {
+          "id": "lang-typen",
+          "prompt": "Je typt al een uur aan een verslag. Wat doe je?",
+          "options": [
+            {
+              "id": "opstaan",
+              "text": "Even opstaan en bewegen",
+              "feedback": "Klopt. Daarna typ je weer fris verder."
+            },
+            {
+              "id": "doorgaan",
+              "text": "Doorgaan tot het af is",
+              "feedback": "Lang stilzitten is zwaar voor je spieren. Sta eerst even op."
+            },
+            {
+              "id": "sneller",
+              "text": "Sneller typen, dan is het af",
+              "feedback": "Dan maak je meer fouten. Sta liever even op en ga daarna verder."
+            }
+          ],
+          "correctOptionId": "opstaan",
+          "hints": ["Denk aan de kaartjes over bewegen."],
+          "sourceRefs": ["aap-healthychildren-scherm-rug-ogen", "eur-kans-beeldschermwerk"]
+        }
+      ]
+    },
+    {
+      "id": "zelf-oefenen",
+      "type": "practice",
+      "practiceKind": "do-it-yourself",
+      "title": "Zelf oefenen: punt en komma",
+      "intro": "Oefen deze week nog twee keer kort, op een andere dag dan vandaag.",
+      "items": [
+        {
+          "id": "check-houding",
+          "text": "Check voor je begint: rug recht, voeten plat, polsen recht.",
+          "sourceRefs": ["isbe-keyboard-technique", "cornell-ergonomie-kinderen-computer"]
+        },
+        {
+          "id": "check-streepjes",
+          "text": "Leg je wijsvingers op de streepjes van de f en de j, zonder te kijken.",
+          "sourceRefs": ["isbe-keyboard-technique"]
+        },
+        {
+          "id": "check-vingers",
+          "text": "Typ drie zinnen over je dag, met punten en komma's, met tien vingers.",
+          "sourceRefs": ["isbe-keyboard-technique"]
+        },
+        {
+          "id": "check-oefening",
+          "text": "Doe de typoefening van les 10 en van deze les nog een keer.",
+          "sourceRefs": ["district30-keyboarding-basisschool"]
+        },
+        {
+          "id": "check-pauze",
+          "text": "Typ je langer dan een uur? Sta dan op en beweeg even.",
+          "sourceRefs": ["aap-healthychildren-scherm-rug-ogen"]
+        }
+      ],
+      "successCriterion": "Gelukt als je drie zinnen met punten en komma's typt zonder naar je handen te kijken."
+    }
+  ],
+  "furtherReading": [
+    {
+      "sourceRef": "eur-kans-beeldschermwerk",
+      "why": "Folder in het Nederlands over werkhouding en pauzes achter het scherm."
+    }
+  ],
+  "faq": [
+    {
+      "q": "Komt er na een punt een spatie?",
+      "a": "Ja. Na een punt en na een komma typ je een spatie, net als in de oefening."
+    }
+  ]
+}

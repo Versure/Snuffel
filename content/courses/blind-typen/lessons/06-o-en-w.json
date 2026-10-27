@@ -1,0 +1,242 @@
+{
+  "schemaVersion": 1,
+  "id": "o-en-w",
+  "version": 1,
+  "title": "Ringvingers: o en w",
+  "sticker": "Blind typen · les 6",
+  "objective": "Na deze les typ je de o en de w met je ringvingers. Je weet waarom je die vingers extra rustig gebruikt.",
+  "concept": "ringvingers omhoog reiken",
+  "estimatedMinutes": 10,
+  "glossary": [
+    {
+      "term": "thuisrij",
+      "definition": "de middelste rij letters waar je vingers op rusten: a s d f en j k l ;"
+    },
+    {
+      "term": "blind typen",
+      "definition": "typen met tien vingers zonder naar het toetsenbord te kijken"
+    }
+  ],
+  "ted": {
+    "intro": {
+      "mood": "happy",
+      "text": "Vandaag zijn je ringvingers aan de beurt. Die zijn wat minder handig. Geef ze de tijd."
+    },
+    "correct": ["Netjes!", "Die ringvingers worden sterk.", "Lekker bezig!"],
+    "incorrect": [
+      "Bijna. Ringvingers hebben wat meer oefening nodig.",
+      "Rustig aan, dat komt goed."
+    ],
+    "finished": "Ringvingers getraind! Je kunt nu bijna elk kort woord typen."
+  },
+  "steps": [
+    {
+      "id": "uitleg",
+      "type": "explain",
+      "title": "De ringvingers doen mee",
+      "blocks": [
+        {
+          "type": "example",
+          "text": "Probeer eens je ringvinger op te tillen terwijl de rest blijft liggen. Lastig, toch? Je ringvinger en je pink zijn wat zwakker. Ze hebben extra oefening nodig.",
+          "sourceRefs": ["uow-touch-typing"]
+        },
+        {
+          "type": "rule",
+          "title": "Ringvingers omhoog",
+          "text": "De **w** zit schuin boven de s. Die typ je met je linkerringvinger. De **o** zit schuin boven de l. Die typ je met je rechterringvinger.",
+          "sourceRefs": ["isbe-keyboard-technique", "uwaterloo-touch-typing"]
+        },
+        {
+          "type": "text",
+          "text": "Typ in een rustig ritme. Beweeg je handen zo weinig mogelijk. Alleen de vinger die typt, gaat van de [[thuisrij]] af.",
+          "sourceRefs": ["uow-touch-typing", "tameside-touch-typing-basis"]
+        },
+        {
+          "type": "signal-cards",
+          "cards": [
+            {
+              "icon": "check",
+              "title": "Bovenarmen bij je lijf",
+              "text": "Laat je bovenarmen ontspannen langs je lichaam hangen.",
+              "sourceRefs": ["cornell-ergonomie-kinderen-computer", "isbe-keyboard-technique"]
+            },
+            {
+              "icon": "check",
+              "title": "Ellebogen open",
+              "text": "Je ellebogen maken een hoek van ongeveer 90 graden of iets meer.",
+              "sourceRefs": ["cornell-ergonomie-kinderen-computer", "cesi-beeldschermwerk"]
+            },
+            {
+              "icon": "cross",
+              "title": "Schouders omhoog",
+              "text": "Trek je schouders niet op. Dan worden je nek en schouders moe.",
+              "sourceRefs": ["eur-kans-beeldschermwerk"]
+            }
+          ]
+        },
+        {
+          "type": "ted-says",
+          "mood": "thinking",
+          "text": "Een fout met je ringvinger? Geen punt. Bij [[blind typen]] leer je van elke fout.",
+          "sourceRefs": []
+        }
+      ]
+    },
+    {
+      "id": "typen",
+      "type": "interaction",
+      "title": "Typ met o en w",
+      "intro": "Reik met je ringvinger omhoog. Je andere vingers blijven liggen.",
+      "interaction": {
+        "id": "o-en-w-typen",
+        "kind": "typing-drill",
+        "config": {
+          "lines": [
+            "ll lo lo ol ss sw sw ws",
+            "lol sws lol sws",
+            "wolk rood west woord",
+            "oog wit twee wolf",
+            "onder de wolken",
+            "ik woon in de stad",
+            "oefen elke week",
+            "wat wil jij doen",
+            "twee toetsen tegelijk",
+            "ook de rug is los"
+          ],
+          "newKeys": ["o", "w"],
+          "goals": {
+            "accuracy": 90
+          }
+        }
+      },
+      "sourceRefs": ["isbe-keyboard-technique", "uwaterloo-touch-typing"]
+    },
+    {
+      "id": "quiz",
+      "type": "quiz",
+      "title": "Quiz: o, w en je armen",
+      "intro": "Drie vragen over je ringvingers en je armen.",
+      "questions": [
+        {
+          "id": "vinger-w",
+          "prompt": "Met welke vinger typ je de w?",
+          "options": [
+            {
+              "id": "linkerringvinger",
+              "text": "Je linkerringvinger",
+              "feedback": "Klopt. De w zit schuin boven de s."
+            },
+            {
+              "id": "linkerpink",
+              "text": "De pink van je linkerhand",
+              "feedback": "Je linkerpink rust op de a. De w zit één toets verder."
+            },
+            {
+              "id": "linkermiddelvinger",
+              "text": "Je linkermiddelvinger",
+              "feedback": "Die typt de e. De w zit boven de s."
+            }
+          ],
+          "correctOptionId": "linkerringvinger",
+          "hints": ["Welke vinger rust op de s?"],
+          "sourceRefs": ["isbe-keyboard-technique", "uwaterloo-touch-typing"]
+        },
+        {
+          "id": "vinger-o",
+          "prompt": "De o zit schuin boven een toets van de thuisrij. Welke?",
+          "options": [
+            {
+              "id": "l",
+              "text": "Boven de l",
+              "feedback": "Klopt. Daarom typt je rechterringvinger de o."
+            },
+            {
+              "id": "k",
+              "text": "Boven de k",
+              "feedback": "Boven de k zit de i. De o zit één toets verder."
+            },
+            {
+              "id": "puntkomma",
+              "text": "Boven de ;",
+              "feedback": "Boven de puntkomma zit de p. De o zit boven de l."
+            }
+          ],
+          "correctOptionId": "l",
+          "hints": ["Denk aan de rechterringvinger."],
+          "sourceRefs": ["isbe-keyboard-technique"]
+        },
+        {
+          "id": "armen",
+          "prompt": "Hoe houd je je armen tijdens het typen?",
+          "options": [
+            {
+              "id": "ontspannen",
+              "text": "Ontspannen langs je lijf",
+              "feedback": "Klopt. Zo blijven je schouders en je nek los."
+            },
+            {
+              "id": "schouders-op",
+              "text": "Met je schouders omhoog",
+              "feedback": "Dan worden je nek en schouders snel moe."
+            },
+            {
+              "id": "gestrekt",
+              "text": "Helemaal gestrekt naar voren",
+              "feedback": "Dan hangen je armen in de lucht. Houd ze dichter bij je lijf."
+            }
+          ],
+          "correctOptionId": "ontspannen",
+          "hints": ["Denk aan je bovenarmen."],
+          "sourceRefs": ["cornell-ergonomie-kinderen-computer", "isbe-keyboard-technique"]
+        }
+      ]
+    },
+    {
+      "id": "zelf-oefenen",
+      "type": "practice",
+      "practiceKind": "do-it-yourself",
+      "title": "Zelf oefenen: o en w",
+      "intro": "Oefen deze week nog twee keer kort, op een andere dag dan vandaag.",
+      "items": [
+        {
+          "id": "check-houding",
+          "text": "Laat je schouders zakken en je bovenarmen langs je lijf hangen.",
+          "sourceRefs": ["cornell-ergonomie-kinderen-computer"]
+        },
+        {
+          "id": "check-streepjes",
+          "text": "Leg je wijsvingers op de streepjes van de f en de j, zonder te kijken.",
+          "sourceRefs": ["isbe-keyboard-technique"]
+        },
+        {
+          "id": "check-vingers",
+          "text": "Typ de o en de w met je ringvingers, en ga steeds terug.",
+          "sourceRefs": ["isbe-keyboard-technique"]
+        },
+        {
+          "id": "check-oefening",
+          "text": "Doe de typoefening van les 5 en van deze les nog een keer.",
+          "sourceRefs": ["district30-keyboarding-basisschool"]
+        },
+        {
+          "id": "check-pauze",
+          "text": "Sta na het oefenen op en schud je handen even los.",
+          "sourceRefs": ["aap-healthychildren-scherm-rug-ogen"]
+        }
+      ],
+      "successCriterion": "Gelukt als je 'wat wil jij doen' typt met de goede vingers, zonder te kijken."
+    }
+  ],
+  "furtherReading": [
+    {
+      "sourceRef": "cornell-ergonomie-kinderen-computer",
+      "why": "Richtlijnen van Cornell University voor kinderen achter de computer, in het Engels."
+    }
+  ],
+  "faq": [
+    {
+      "q": "Mijn ringvinger typt steeds de verkeerde toets. Wat nu?",
+      "a": "Dat is normaal in het begin. Typ langzamer en ga na elke toets goed terug naar de thuisrij."
+    }
+  ]
+}

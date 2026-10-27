@@ -1,0 +1,234 @@
+{
+  "schemaVersion": 1,
+  "id": "e-en-i",
+  "version": 1,
+  "title": "Omhoog naar e en i",
+  "sticker": "Blind typen · les 2",
+  "objective": "Na deze les typ je de e en de i met je middelvingers. Na elke toets gaat je vinger terug naar de thuisrij.",
+  "concept": "vanaf de thuisrij omhoog reiken",
+  "estimatedMinutes": 10,
+  "glossary": [
+    {
+      "term": "blind typen",
+      "definition": "typen met tien vingers zonder naar het toetsenbord te kijken"
+    },
+    {
+      "term": "thuisrij",
+      "definition": "de middelste rij letters waar je vingers op rusten: a s d f en j k l ;"
+    },
+    {
+      "term": "voelstreepje",
+      "definition": "een klein bultje op de f en de j, zodat je die toetsen zonder kijken vindt"
+    }
+  ],
+  "ted": {
+    "intro": {
+      "mood": "happy",
+      "text": "Daar ben je weer! Vandaag gaan je middelvingers op reis. Even omhoog, en dan snel weer naar huis."
+    },
+    "correct": ["Lekker bezig!", "Strak, die middelvingers.", "Zo moet het!"],
+    "incorrect": [
+      "Bijna. Voel eerst de streepjes, dan weer verder.",
+      "Rustig aan. Goed gaat voor snel."
+    ],
+    "finished": "De e en de i zijn binnen. Je vingers worden echte reizigers!"
+  },
+  "steps": [
+    {
+      "id": "uitleg",
+      "type": "explain",
+      "title": "Even weg, en weer terug",
+      "blocks": [
+        {
+          "type": "example",
+          "text": "Denk aan een keeper in het doel. Hij duikt naar een bal en staat daarna meteen weer in het midden. Je vingers doen hetzelfde. Ze reiken naar een toets en gaan direct terug naar de [[thuisrij]].",
+          "sourceRefs": ["isbe-keyboard-technique", "tameside-touch-typing-basis"]
+        },
+        {
+          "type": "rule",
+          "title": "Middelvingers omhoog",
+          "text": "De **e** zit recht boven de d. Die typ je met je linkermiddelvinger. De **i** zit recht boven de k. Die typ je met je rechtermiddelvinger.",
+          "sourceRefs": ["isbe-keyboard-technique", "uwaterloo-touch-typing"]
+        },
+        {
+          "type": "text",
+          "text": "Alleen de vinger die typt, gaat omhoog. De andere vingers blijven op hun plek liggen. Na de toets gaat je vinger in een rechte lijn terug.",
+          "sourceRefs": ["tameside-touch-typing-basis", "uow-touch-typing"]
+        },
+        {
+          "type": "tip",
+          "title": "Tik licht",
+          "text": "Tik een toets licht en kort aan. Je hoeft niet hard te drukken. Zo blijven je vingers soepel.",
+          "sourceRefs": ["isbe-keyboard-technique"]
+        },
+        {
+          "type": "text",
+          "text": "Kwijt? Voel dan even naar het [[voelstreepje]] op de f en de j. Daarna typ je verder, zonder te kijken. Dat hoort bij [[blind typen]].",
+          "sourceRefs": ["uow-touch-typing"]
+        },
+        {
+          "type": "ted-says",
+          "mood": "cool",
+          "text": "Check je houding nog even: rug recht, voeten plat, schouders los.",
+          "sourceRefs": ["isbe-keyboard-technique"]
+        }
+      ]
+    },
+    {
+      "id": "typen",
+      "type": "interaction",
+      "title": "Typ met e en i",
+      "intro": "Leg je vingers op de thuisrij. Reik met je middelvinger omhoog en ga meteen terug.",
+      "interaction": {
+        "id": "e-en-i-typen",
+        "kind": "typing-drill",
+        "config": {
+          "lines": [
+            "dd de de ed kk ki ki ik",
+            "ded kik ded kik",
+            "ik eis ijs; lees",
+            "idee lijf dijk kijk",
+            "lief dief kies kiel",
+            "elf keel deel lees",
+            "lade kade jas sla",
+            "elke dikke ijsfles",
+            "als ik lees; ik kijk",
+            "ik eis alles"
+          ],
+          "newKeys": ["e", "i"],
+          "goals": {
+            "accuracy": 90
+          }
+        }
+      },
+      "sourceRefs": ["isbe-keyboard-technique", "uwaterloo-touch-typing"]
+    },
+    {
+      "id": "quiz",
+      "type": "quiz",
+      "title": "Quiz: e en i",
+      "intro": "Drie vragen over je middelvingers.",
+      "questions": [
+        {
+          "id": "vinger-e",
+          "prompt": "Met welke vinger typ je de e?",
+          "options": [
+            {
+              "id": "linkermiddelvinger",
+              "text": "Je linkermiddelvinger",
+              "feedback": "Klopt. De e zit recht boven de d, waar je linkermiddelvinger rust."
+            },
+            {
+              "id": "linkerwijsvinger",
+              "text": "Je linkerwijsvinger",
+              "feedback": "Je linkerwijsvinger rust op de f. De e zit boven de d."
+            },
+            {
+              "id": "rechtermiddelvinger",
+              "text": "Je rechtermiddelvinger",
+              "feedback": "Die typt de i. De e zit aan de linkerkant."
+            }
+          ],
+          "correctOptionId": "linkermiddelvinger",
+          "hints": ["Boven welke toets van de thuisrij zit de e?"],
+          "sourceRefs": ["isbe-keyboard-technique", "uwaterloo-touch-typing"]
+        },
+        {
+          "id": "vinger-i",
+          "prompt": "De i zit recht boven een toets van de thuisrij. Welke?",
+          "options": [
+            {
+              "id": "k",
+              "text": "Boven de k",
+              "feedback": "Klopt. Daarom typt je rechtermiddelvinger de i."
+            },
+            {
+              "id": "j",
+              "text": "Boven de j",
+              "feedback": "Boven de j zit de u. De i zit één toets verder."
+            },
+            {
+              "id": "l",
+              "text": "Boven de l",
+              "feedback": "Boven de l zit de o. De i zit boven de k."
+            }
+          ],
+          "correctOptionId": "k",
+          "hints": ["De i typ je met dezelfde vinger als een toets op de thuisrij."],
+          "sourceRefs": ["isbe-keyboard-technique"]
+        },
+        {
+          "id": "terug",
+          "prompt": "Je hebt een e getypt. Wat doet je vinger daarna?",
+          "options": [
+            {
+              "id": "terug-naar-d",
+              "text": "Meteen terug naar de d",
+              "feedback": "Klopt. Na elke toets gaat je vinger terug naar de thuisrij."
+            },
+            {
+              "id": "blijft",
+              "text": "Blijft op de e liggen",
+              "feedback": "Dan weet je vinger niet meer waar hij is. Ga meteen terug."
+            },
+            {
+              "id": "zoeken",
+              "text": "Hij zoekt de volgende letter",
+              "feedback": "Eerst terug naar de thuisrij. Vanaf daar weet hij de weg."
+            }
+          ],
+          "correctOptionId": "terug-naar-d",
+          "hints": ["Denk aan de keeper uit het voorbeeld."],
+          "sourceRefs": ["isbe-keyboard-technique", "tameside-touch-typing-basis"]
+        }
+      ]
+    },
+    {
+      "id": "zelf-oefenen",
+      "type": "practice",
+      "practiceKind": "do-it-yourself",
+      "title": "Zelf oefenen: e en i",
+      "intro": "Oefen deze week nog twee keer kort, op een andere dag dan vandaag.",
+      "items": [
+        {
+          "id": "check-houding",
+          "text": "Ga rechtop zitten. Laat je schouders en armen ontspannen hangen.",
+          "sourceRefs": ["isbe-keyboard-technique", "eur-kans-beeldschermwerk"]
+        },
+        {
+          "id": "check-streepjes",
+          "text": "Leg je wijsvingers op de streepjes van de f en de j, zonder te kijken.",
+          "sourceRefs": ["isbe-keyboard-technique"]
+        },
+        {
+          "id": "check-vingers",
+          "text": "Typ de e en de i alleen met je middelvingers, en ga steeds terug.",
+          "sourceRefs": ["isbe-keyboard-technique", "tameside-touch-typing-basis"]
+        },
+        {
+          "id": "check-oefening",
+          "text": "Doe de typoefening van les 1 en van deze les nog een keer.",
+          "sourceRefs": ["district30-keyboarding-basisschool"]
+        },
+        {
+          "id": "check-pauze",
+          "text": "Kijk na het typen 20 tellen naar iets ver weg.",
+          "sourceRefs": ["aap-healthychildren-scherm-rug-ogen"]
+        }
+      ],
+      "successCriterion": "Gelukt als je 'ik lees' typt zonder één keer naar je handen te kijken."
+    }
+  ],
+  "furtherReading": [
+    {
+      "sourceRef": "tameside-touch-typing-basis",
+      "why": "Korte uitleg voor kinderen over de thuisrij en teruggaan, in het Engels."
+    }
+  ],
+  "faq": [
+    {
+      "q": "Mag ik de e ook met mijn wijsvinger typen?",
+      "a": "Liever niet. Als elke vinger zijn eigen toetsen heeft, hoef je nooit te zoeken."
+    }
+  ]
+}
