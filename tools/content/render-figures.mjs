@@ -93,6 +93,7 @@ export function findFigures(target, { root = repoRoot } = {}) {
     };
   }
   if (existsSync(path) && statSync(path).isDirectory()) {
+    if (!basename(path)) throw new Error(`ongeldige naam voor de uitvoermap: "${target}"`);
     const files = readdirSync(path, { recursive: true })
       .map(String)
       .filter((name) => name.endsWith('.svg'))
@@ -110,6 +111,22 @@ export function findFigures(target, { root = repoRoot } = {}) {
     };
   }
   throw new Error(`"${target}" is geen cursus-id, svg-bestand of map`);
+}
+
+/** Starts Chromium, with a clear message when it is not installed. */
+export async function launchChromium(
+  executablePath,
+  launch = (options) => chromium.launch(options),
+) {
+  try {
+    return await launch({ executablePath });
+  } catch (error) {
+    const reason = error instanceof Error ? error.message.split('\n')[0] : String(error);
+    throw new Error(
+      `Chromium start niet (${reason}). Installeer hem met "npx playwright install chromium", of zet PLAYWRIGHT_CHROMIUM_PATH naar een geïnstalleerde Chromium.`,
+      { cause: error },
+    );
+  }
 }
 
 /** The html page of one figure: the card of the figure block, with alt and caption below it. */
@@ -149,7 +166,13 @@ export async function renderFigures(
   } = {},
 ) {
   const found = targets.map((target) => findFigures(target, { root }));
-  const browser = await chromium.launch({ executablePath });
+  for (const { name } of found) {
+    // The output directory is replaced: never <outDir> itself or something outside it.
+    if (!name || name === '.' || name === '..' || /[\\/]/.test(name)) {
+      throw new Error(`ongeldige naam voor de uitvoermap: "${name}"`);
+    }
+  }
+  const browser = await launchChromium(executablePath);
   const results = [];
   try {
     for (const { name, figures } of found) {

@@ -8,6 +8,7 @@ import { describe, test } from 'node:test';
 import { repoRoot } from './check.mjs';
 import {
   figurePage,
+  launchChromium,
   findFigures,
   outputStem,
   parseRenderArgs,
@@ -88,6 +89,20 @@ describe('content:figures', () => {
     // The phone renders at device scale 2 (360 css px), the laptop at 1 (672 css px).
     assert.equal(pngSize(join(outDir, 'proefcursus', 'hengeltop-telefoon-licht.png')).width, 720);
     assert.equal(pngSize(join(outDir, 'proefcursus', 'hengeltop-laptop-donker.png')).width, 672);
+  });
+
+  test('a missing Chromium gives a message with what to do', async () => {
+    await assert.rejects(
+      launchChromium('/bestaat-niet/chrome', () =>
+        Promise.reject(new Error("Executable doesn't exist")),
+      ),
+      /npx playwright install chromium.*PLAYWRIGHT_CHROMIUM_PATH/,
+    );
+  });
+
+  test('an empty name for the output directory is refused', async (t) => {
+    assert.throws(() => findFigures('/'), /ongeldige naam/);
+    await assert.rejects(renderFigures(['/'], { outDir: tempDir(t) }), /ongeldige naam/);
   });
 
   test('an svg that does not load as an image is an error', async (t) => {
