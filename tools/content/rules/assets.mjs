@@ -4,7 +4,7 @@
 // lesson uses is a warning. (A non-empty alt text is enforced by the schema, figure-alt-missing.)
 import { existsSync, lstatSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { join } from 'node:path';
-import { analyzeSvg, loadPalette } from '../svg.mjs';
+import { analyzeSvg, decodeEntities, loadPalette } from '../svg.mjs';
 
 // XML namespaces are identifiers, not requests (same rule as npm run privacy).
 const allowedUrls = [/^http:\/\/www\.w3\.org\//i];
@@ -51,10 +51,13 @@ export function lessonFigures(lesson) {
 
 /** External references in an svg: every http(s) url except XML namespaces, and `//host` links. */
 export function externalReferences(svg) {
-  const found = [...svg.matchAll(urlPattern)]
-    .map(([url]) => url)
-    .filter((url) => !allowedUrls.some((pattern) => pattern.test(url)));
-  if (protocolRelative.test(svg)) found.push('//…');
+  // Also after decoding entities: h&#x74;tps://host is https://host to the browser.
+  const decoded = decodeEntities(svg);
+  const text = decoded === svg ? svg : `${svg}\n${decoded}`;
+  const found = [...new Set([...text.matchAll(urlPattern)].map(([url]) => url))].filter(
+    (url) => !allowedUrls.some((pattern) => pattern.test(url)),
+  );
+  if (protocolRelative.test(text)) found.push('//…');
   return found;
 }
 

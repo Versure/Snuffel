@@ -192,11 +192,41 @@ const unsafeElements = [
   'animatecolor',
   'discard',
 ];
+// Allowlist: the drawing elements a figure may use. Everything else is refused (an XHTML <img>,
+// <a>, <view>, …); gradients and filters are reported as colours outside the palette instead.
+const allowedElements = [
+  'svg',
+  'g',
+  'defs',
+  'symbol',
+  'use',
+  'title',
+  'desc',
+  'rect',
+  'circle',
+  'ellipse',
+  'line',
+  'polyline',
+  'polygon',
+  'path',
+  'text',
+  'tspan',
+  'clippath',
+  'style',
+];
+// Namespaces a figure may declare: SVG itself, and xlink for older href attributes.
+const allowedNamespaces = ['http://www.w3.org/2000/svg', 'http://www.w3.org/1999/xlink'];
+// Attributes that load a file (src, srcset, poster) or change where links point (xml:base).
+const loadingAttributes = ['src', 'srcset', 'poster', 'xml:base'];
+// CSS functions that load an image, besides url().
+const cssLoaders = /(?:image-set|image|src)\s*\(/i;
 // Filters and blending change colours outside the palette.
 const colorEffectElements = ['filter'];
 /** Every `url(…)` in a text, with its target (quotes and spaces removed). */
 export function urlTargets(text) {
-  return [...text.matchAll(/url\(\s*(['"]?)\s*([^)'"]*)/gi)].map(([, , target]) => target.trim());
+  return [...text.replace(/\/\*[\s\S]*?\*\//g, '').matchAll(/url\(\s*(['"]?)\s*([^)'"]*)/gi)].map(
+    ([, , target]) => target.trim(),
+  );
 }
 
 /** `#fff` and `#FFFFFF` both become `#ffffff`; other values are only lowercased and trimmed. */
@@ -277,6 +307,16 @@ export function analyzeSvg(svg, palette = loadPalette()) {
   for (const element of elements(root)) {
     const name = localName(element.name);
     if (unsafeElements.includes(name)) result.unsafe.push(`<${element.name}>`);
+    else if (element.name.includes(':')) result.unsafe.push(`<${element.name}> (namespace)`);
+    else if (
+      !allowedElements.includes(name) &&
+      !gradientElements.includes(name) &&
+      name !== 'stop' &&
+      !colorEffectElements.includes(name) &&
+      !name.startsWith('fe')
+    ) {
+      result.unsafe.push(`<${element.name}>`);
+    }
     if (colorEffectElements.includes(name) || name.startsWith('fe')) {
       if (name !== 'feimage') result.colors.push(`<${element.name}> (filter)`);
     }
@@ -285,6 +325,8 @@ export function analyzeSvg(svg, palette = loadPalette()) {
       if (/@import/i.test(css)) result.unsafe.push('@import');
       if (/@font-face/i.test(css)) result.unsafe.push('@font-face');
       if (css.includes('\\')) result.unsafe.push('\\ in <style>');
+      if (cssLoaders.test(css.replace(/\/\*[\s\S]*?\*\//g, '')))
+        result.unsafe.push('image-set(), image() of src() in <style>');
       for (const target of urlTargets(css)) {
         if (!target.startsWith('#')) result.unsafe.push(`url(${target})`);
       }
@@ -293,6 +335,17 @@ export function analyzeSvg(svg, palette = loadPalette()) {
     for (const { name: attributeName, value } of element.attributes) {
       const lower = attributeName.toLowerCase();
       if (/^on/.test(localName(attributeName))) result.unsafe.push(`${attributeName}="…"`);
+      if (loadingAttributes.includes(lower)) result.unsafe.push(`${attributeName}="${value}"`);
+      if (
+        (lower === 'xmlns' || lower.startsWith('xmlns:')) &&
+        !allowedNamespaces.includes(value.trim())
+      ) {
+        result.unsafe.push(`${attributeName}="${value}"`);
+      }
+      if (lower === 'style') {
+        if (value.includes('\\')) result.unsafe.push('\\ in style=""');
+        if (cssLoaders.test(value)) result.unsafe.push(`style="${value}"`);
+      }
       if (/(^|:)href$/.test(lower) && !value.trim().startsWith('#')) {
         result.unsafe.push(`${attributeName}="${value}"`);
       }

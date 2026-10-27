@@ -479,6 +479,58 @@ describe('svg style and safety', () => {
     }
   });
 
+  test('escapes in style, XHTML, other namespaces, src, xml:base and image-set() are refused', (t) => {
+    const head = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 100">';
+    const h = 'xmlns:h="http://www.w3.org/1999/xhtml"';
+    const cases = {
+      'escaped url() in style': [
+        `${head}<rect style="cursor:u\\72l(h\\74tps://example.org/c.png),auto" fill="#ffd83d"/></svg>\n`,
+        '\\ in style=""',
+      ],
+      'escaped fill in style': [
+        `${head}<rect style="f\\69ll:#ff0000" fill="#ffd83d"/></svg>\n`,
+        '\\ in style=""',
+      ],
+      'escaped opacity in style': [
+        `${head}<rect style="op\\61city:.3" fill="#ffd83d"/></svg>\n`,
+        '\\ in style=""',
+      ],
+      'XHTML img with an entity in src': [
+        `${head}<h:img ${h} src="h&#x74;tps://example.org/x.png"/></svg>\n`,
+        '<h:img> (namespace)',
+      ],
+      'XHTML img with //host': [
+        `${head}<h:img ${h} src="&#x2f;/example.org/x.png"/></svg>\n`,
+        'src="//example.org/x.png"',
+      ],
+      'img in the XHTML default namespace': [
+        `${head}<img xmlns="http://www.w3.org/1999/xhtml" src="x.png"/></svg>\n`,
+        '<img>',
+      ],
+      'xml:base': [
+        `${head}<g xml:base="vissen/"><use href="#a"/></g></svg>\n`,
+        'xml:base="vissen/"',
+      ],
+      'image-set()': [
+        `${head}<style>rect{background-image:image-set("x.png" 1x)}</style></svg>\n`,
+        'image-set()',
+      ],
+    };
+    for (const [name, [svg, finding]] of Object.entries(cases)) {
+      const fixture = withFigure(t, svg);
+      const error = assertIssue(fixture.check(), 'asset-unsafe-content', `${figurePath}.src`);
+      assert.ok(
+        error.message.includes(finding),
+        `${name}: ${finding} missing in: ${error.message}`,
+      );
+    }
+    // The decoded entity is also a link to another site.
+    assert.deepEqual(externalReferences(`<h:img ${h} src="h&#x74;tps://example.org/x.png"/>`), [
+      'https://example.org/x.png',
+    ]);
+    assert.deepEqual(externalReferences('<h:img src="&#x2f;/example.org/x.png"/>'), ['//…']);
+  });
+
   test('an uppercase HTTPS:// and url(//host) give asset-external-ref', (t) => {
     const head = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 100">';
     const fixture = withFigure(

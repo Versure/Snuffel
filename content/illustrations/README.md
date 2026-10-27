@@ -111,7 +111,17 @@ Een svg in een `<img>` laadt geen webfonts. Daarom:
 
 ## Veilig
 
-Een svg is een tekening, geen programma en geen verpakte foto. `content:check` weigert (`asset-unsafe-content`): `<script>`, `<foreignObject>`, `<image>`, `<!DOCTYPE>` of `<!ENTITY>`, `<?xml-stylesheet?>`, attributen die met `on` beginnen (`onclick`), `javascript:` of `data:`, een `href` of `url(…)` die niet met `#` begint (een ander bestand), `@import`, `@font-face` en `\` in `<style>`, en animatie (`<set>`, `<animate>`, `<animateTransform>`, `<animateMotion>`): een tekening staat stil. Filters (`<filter>`) en `mix-blend-mode` veranderen kleuren en weigert hij als kleur buiten het palet. Verwijzingen naar een andere site weigert hij ook, ook in hoofdletters (`asset-external-ref`). Een svg in `assets/` die geen les gebruikt, geeft een waarschuwing (`asset-unused`).
+Een svg is een tekening, geen programma en geen verpakte foto. `content:check` weigert (`asset-unsafe-content`):
+
+- elk element dat niet in de lijst met tekenelementen staat: alleen `svg`, `g`, `defs`, `symbol`, `use`, `title`, `desc`, `rect`, `circle`, `ellipse`, `line`, `polyline`, `polygon`, `path`, `text`, `tspan`, `clipPath` en `style` mogen (dus geen `<script>`, `<foreignObject>`, `<image>`, `<a>`, HTML zoals `<img>`);
+- elk element met een voorvoegsel (`<h:img>`) en elke `xmlns` die niet die van SVG of xlink is;
+- `<!DOCTYPE>` of `<!ENTITY>`, en `<?xml-stylesheet?>` of een andere processing instruction dan `<?xml …?>`;
+- attributen die met `on` beginnen (`onclick`), `src`, `srcset`, `poster` en `xml:base`, en `javascript:` of `data:`;
+- een `href` of `url(…)` die niet met `#` begint (een ander bestand);
+- in `<style>`: `@import`, `@font-face`, `\` en `image-set()`, `image()` of `src()`; in een `style`-attribuut: `\` en dezelfde functies;
+- animatie: `<set>`, `<animate>`, `<animateTransform>`, `<animateMotion>`, `<animateColor>` en `<discard>`. Een tekening staat stil.
+
+Filters (`<filter>`) en `mix-blend-mode` veranderen kleuren; die weigert hij als kleur buiten het palet. Verwijzingen naar een andere site weigert hij ook, ook in hoofdletters of met entiteiten (`h&#x74;tps://`) (`asset-external-ref`). Een svg in `assets/` die geen les gebruikt, geeft een waarschuwing (`asset-unused`).
 
 ## Een goede `alt`
 
