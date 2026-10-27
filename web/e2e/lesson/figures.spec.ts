@@ -129,4 +129,34 @@ test.describe('figures in blind-typen', () => {
       expect(box!.x + box!.width).toBeLessThanOrEqual(width);
     }
   });
+
+  test('every lesson shows all its figures with their alt text and without overflow', async ({
+    page,
+  }) => {
+    test.setTimeout(120_000);
+    await loginAsNewChild(page, '/leren/blind-typen/thuisrij');
+    for (const entry of course.lessons) {
+      const expected = figures(lesson(entry.id));
+      expect(expected.length, `${entry.id} has a figure`).toBeGreaterThanOrEqual(1);
+      await page.goto(`/leren/blind-typen/${entry.id}`);
+      await expect(page.getByRole('heading', { level: 1 })).toHaveText(lesson(entry.id).title);
+      const images = await loadedImages(page);
+      await expect(images, entry.id).toHaveCount(expected.length);
+      for (const [index, figure] of expected.entries()) {
+        expect(figure.alt.trim().length, `${entry.id} alt`).toBeGreaterThan(0);
+        await expect(images.nth(index)).toHaveAttribute('alt', figure.alt);
+      }
+      const overflow = await page.evaluate(
+        () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+      );
+      expect(overflow, `${entry.id} overflow`).toBeLessThanOrEqual(0);
+    }
+  });
+
+  test('a lesson with a keyboard has no axe violations in dark mode', async ({ page }) => {
+    await page.emulateMedia({ colorScheme: 'dark' });
+    await openCourseLesson(page, 'vraagteken-en-uitroepteken');
+    await loadedImages(page);
+    await expectNoViolations(page, 'dark, lesson 12');
+  });
 });
