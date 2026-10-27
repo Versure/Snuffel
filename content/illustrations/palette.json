@@ -1,0 +1,67 @@
+{
+  "description": "The fixed Snuffel palette for svg figures in lessons (M16, question 1). content:check (tools/content/rules/assets.mjs) refuses any other colour; tools/content/illustrations.test.mjs checks that every colour is the value of its token in web/src/styles/tokens.css. A figure is always shown on the fixed cream card, also in dark mode, so these are the light-theme values.",
+  "colors": [
+    {
+      "value": "#141414",
+      "name": "zwart",
+      "use": "lijnen, tekst, schaduw",
+      "token": "--snf-color-black"
+    },
+    { "value": "#ffd83d", "name": "geel", "use": "vlak", "token": "--snf-color-yellow" },
+    { "value": "#5b2bb5", "name": "paars", "use": "vlak, accent", "token": "--snf-color-purple" },
+    { "value": "#ff2e7a", "name": "roze", "use": "vlak, accent", "token": "--snf-color-pink" },
+    {
+      "value": "#fff6dc",
+      "name": "crème",
+      "use": "vlak (achtergrond van de kaart)",
+      "token": "--snf-color-cream"
+    },
+    { "value": "#ffffff", "name": "wit", "use": "vlak", "token": "--snf-color-white" },
+    { "value": "#cfc3e8", "name": "lila", "use": "vlak; duim", "token": "--snf-color-lilac" },
+    {
+      "value": "#8fe3a8",
+      "name": "groen",
+      "use": "vlak; middelvinger",
+      "token": "--snf-color-choice-green"
+    },
+    {
+      "value": "#ffb3cd",
+      "name": "zacht roze",
+      "use": "vlak; pink",
+      "token": "--snf-color-choice-pink"
+    },
+    { "value": "#7cc1d8", "name": "blauw", "use": "vlak", "token": "--snf-color-choice-blue" },
+    {
+      "value": "#ffc078",
+      "name": "oranje",
+      "use": "vlak; ringvinger",
+      "token": "--snf-color-choice-orange"
+    },
+    {
+      "value": "#12804a",
+      "name": "goed",
+      "use": "alleen samen met ✓",
+      "token": "--snf-color-success"
+    },
+    {
+      "value": "#c2183f",
+      "name": "fout",
+      "use": "alleen samen met ✗",
+      "token": "--snf-color-error"
+    }
+  ],
+  "keywords": ["none", "currentColor", "transparent"],
+  "fingers": {
+    "pinky": "#ffb3cd",
+    "ring": "#ffc078",
+    "middle": "#8fe3a8",
+    "index": "#ffd83d",
+    "thumb": "#cfc3e8"
+  },
+  "font": {
+    "family": "Atkinson Hyperlegible, Verdana, sans-serif",
+    "weights": ["400", "700"],
+    "maxTextLength": 24
+  },
+  "maxBytes": 40960
+}
