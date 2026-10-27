@@ -42,7 +42,7 @@
     <line x1="158" y1="77" x2="170" y2="77"/>
     <line x1="272" y1="77" x2="284" y2="77"/>
   </g>
-    <g transform="translate(0 10)">
+    <g transform="translate(0 2)">
     <g id="hand-left">
       <g transform="rotate(-7 50 88)">
         <rect x="38" y="76" width="24" height="112" rx="12" fill="#e5ad88" stroke="#141414" stroke-width="2.5"/>
