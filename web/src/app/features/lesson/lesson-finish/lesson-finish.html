@@ -1,0 +1,31 @@
+<snf-ted-says mood="happy" size="small">
+  <snf-inline-text [text]="finished()" />
+</snf-ted-says>
+@if (openSteps().length) {
+  <div class="not-yet">
+    <p class="not-yet-title">{{ text.notYet }}</p>
+    <ul class="open-steps">
+      @for (step of openSteps(); track step.id) {
+        <li>
+          <a
+            class="open-step"
+            [class.started]="step.started"
+            [routerLink]="[]"
+            [fragment]="anchorPrefix + step.id"
+            (click)="onClick($event, step.id)"
+          >
+            <span class="number" aria-hidden="true">{{ step.number }}</span>
+            <span class="what">
+              <span class="name"
+                ><span class="snf-visually-hidden">Naar stap {{ step.number }}, </span
+                >{{ step.label }}:{{ ' ' }}<snf-inline-text [text]="step.title" [terms]="false"
+              /></span>
+              <span class="snf-visually-hidden">, </span>
+              <span class="status">{{ step.started ? text.started : text.open }}</span>
+            </span>
+          </a>
+        </li>
+      }
+    </ul>
+  </div>
+}

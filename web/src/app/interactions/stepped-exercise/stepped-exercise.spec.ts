@@ -435,6 +435,37 @@ describe('SteppedExercise', () => {
     expect(button(setup.element, EXERCISE_TEXT.next)).toBeDefined();
   });
 
+  it('shows how many exercises are done and how many are still coming', async () => {
+    const setup = await render();
+    const bar = () => setup.element.querySelector('.series-progress [role="progressbar"]');
+    const remaining = () => clean(setup.element.querySelector('.remaining')?.textContent);
+    expect(bar()?.getAttribute('aria-label')).toBe('Opgaven');
+    expect(bar()?.getAttribute('aria-valuetext')).toBe('0 van 4 opgaven klaar');
+    expect(setup.element.querySelector('.remaining')).toBeNull();
+
+    await answerRight(setup, fractions);
+    expect(bar()?.getAttribute('aria-valuetext')).toBe('1 van 4 opgaven klaar');
+    expect(remaining()).toBe('Er komen nog 3 opgaven.');
+    await click(setup, button(setup.element, EXERCISE_TEXT.next));
+    await answerRight(setup, unlike);
+    await click(setup, button(setup.element, EXERCISE_TEXT.next));
+    await answerRight(setup, recipe);
+    expect(remaining()).toBe('Er komt nog 1 opgave.');
+    await click(setup, button(setup.element, EXERCISE_TEXT.next));
+    await answerRight(setup, choice);
+    expect(bar()?.getAttribute('aria-valuetext')).toBe('4 van 4 opgaven klaar');
+    // The last exercise: nothing is coming, the button says Klaar.
+    expect(setup.element.querySelector('.remaining')).toBeNull();
+    expect(button(setup.element, EXERCISE_TEXT.done)).toBeDefined();
+  });
+
+  it('a series of one exercise has no progress bar', async () => {
+    const setup = await render(only(fractions));
+    expect(setup.element.querySelector('.series-progress')).toBeNull();
+    await answerRight(setup, fractions);
+    expect(setup.element.querySelector('.remaining')).toBeNull();
+  });
+
   it('emits answered once per series at the first readable attempt', async () => {
     const setup = await render(only(fractions, choice));
     await click(setup, button(setup.element, 'Controleer'));

@@ -211,7 +211,7 @@ test.describe('the trace game', () => {
           (await storedRecords(page)).lesson_progress.map((record) => record['status']),
         )
         .toEqual(['started']);
-      await expect(navLink(page, 2, 'Spel', false)).toBeVisible();
+      await expect(navLink(page, 2, 'Spel', 'started')).toBeVisible();
       await gameBlock(page).getByRole('button', { name: 'Volgende', exact: true }).click();
       for (let round = 1; round < game.rounds; round += 1) {
         await expect(choiceButton(page, game.choices[0].id)).toBeEnabled();
@@ -247,11 +247,11 @@ test.describe('the trace game', () => {
       await expect(section(page, gameStep.id).getByRole('alert')).toHaveText(
         'Je score is niet bewaard.',
       );
-      // The score stays on the page and the step is not done.
+      // The score stays on the page and the step is begun, not done.
       await expect(gameBlock(page).locator('.rounds')).toHaveText(
         `${game.rounds} van ${game.rounds} goed`,
       );
-      await expect(navLink(page, 2, 'Spel', false)).toBeVisible();
+      await expect(navLink(page, 2, 'Spel', 'started')).toBeVisible();
       await page.unroute(resultsPattern);
       expect((await storedRecords(page)).interaction_results).toEqual([]);
     });

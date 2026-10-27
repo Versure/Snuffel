@@ -39,7 +39,7 @@ async function doSomeWork(page: Page): Promise<void> {
 async function expectWorkIsThere(page: Page): Promise<void> {
   await expect(navLink(page, 1, 'Uitleg', true)).toBeVisible();
   await expect(navLink(page, 3, 'Quiz', true)).toBeVisible();
-  await expect(navLink(page, 4, 'Zelf doen', false)).toBeVisible();
+  await expect(navLink(page, 4, 'Zelf doen', 'started')).toBeVisible();
   await expect(checkbox(page, practice.items[0].id)).toBeChecked();
   await expect(checkbox(page, practice.items[1].id)).not.toBeChecked();
   await expect(checkbox(page, practice.items[2].id)).toBeChecked();

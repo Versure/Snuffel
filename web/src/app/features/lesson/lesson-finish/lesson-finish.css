@@ -1,0 +1,72 @@
+:host {
+  display: block;
+}
+
+.not-yet {
+  margin: 1.25rem 0 0;
+}
+
+.not-yet-title {
+  margin: 0;
+  font-weight: 700;
+}
+
+.open-steps {
+  display: grid;
+  gap: 0.6rem;
+  margin: 0.6rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* A whole row is the tap area: at least 44 px high. */
+.open-step {
+  display: flex;
+  gap: 0.8rem;
+  align-items: center;
+  min-height: var(--snf-tap-min);
+  padding: 0.5rem 0.9rem;
+  color: var(--snf-color-text);
+  text-decoration: none;
+  background: var(--snf-color-surface);
+  border: var(--snf-border-width) solid var(--snf-color-ink);
+  border-radius: var(--snf-radius-lg);
+  box-shadow: var(--snf-shadow-sm);
+}
+
+.open-step:hover .name {
+  text-decoration: underline;
+}
+
+.number {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 2.4rem;
+  height: 2.4rem;
+  font-family: var(--snf-font-display);
+  font-size: 1.4rem;
+  color: var(--snf-color-on-pink);
+  background: var(--snf-color-pink);
+  border: var(--snf-border-width) solid var(--snf-color-ink);
+  border-radius: 50%;
+}
+
+.started .number {
+  color: var(--snf-color-ink);
+  background: var(--snf-color-yellow);
+}
+
+.what {
+  display: flex;
+  flex-direction: column;
+}
+
+.name {
+  font-weight: 700;
+}
+
+.status {
+  font-size: 0.95rem;
+  color: var(--snf-color-text-muted);
+}

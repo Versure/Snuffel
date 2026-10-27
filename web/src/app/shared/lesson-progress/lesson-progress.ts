@@ -63,6 +63,10 @@ export class LessonProgress {
   readonly doneSteps = computed(() =>
     [...this.steps()].filter(([, step]) => step.status === 'completed').map(([id]) => id),
   );
+  /** The ids of the steps with status started (begun, not completed). */
+  readonly startedSteps = computed(() =>
+    [...this.steps()].filter(([, step]) => step.status === 'started').map(([id]) => id),
+  );
 
   /** Loads the progress of the logged-in user for `lesson`; a failure gives `unavailable`. */
   load(lesson: Lesson, courseId: string): Promise<void> {

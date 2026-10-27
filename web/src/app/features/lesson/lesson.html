@@ -25,17 +25,33 @@
         <snf-step-nav
           [steps]="navItems()"
           [done]="progress.doneSteps()"
+          [started]="progress.startedSteps()"
           (navigate)="goToStep($event)"
         />
+        @if (progress.state() === 'ready') {
+          <snf-progress-bar
+            class="lesson-progress"
+            name="Voortgang in deze les"
+            [value]="doneCount()"
+            [max]="navItems().length"
+            [label]="progressLabel()"
+          />
+        }
       </header>
 
       @for (step of data.steps; track step.id; let index = $index) {
         <snf-lesson-step [step]="step" [number]="index + 1" [ted]="data.ted" />
       }
 
-      <snf-ted-says class="finished" mood="happy" size="small">
-        <snf-inline-text [text]="data.ted.finished" />
-      </snf-ted-says>
+      <snf-lesson-finish
+        class="finished"
+        [steps]="finishSteps()"
+        [done]="progress.doneSteps()"
+        [started]="progress.startedSteps()"
+        [known]="progress.state() === 'ready'"
+        [finished]="data.ted.finished"
+        (navigate)="goToStep($event)"
+      />
 
       <snf-lesson-end
         [glossary]="data.glossary"

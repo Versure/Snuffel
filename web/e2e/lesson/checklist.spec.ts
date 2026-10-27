@@ -76,7 +76,7 @@ test.describe('the checklist', () => {
   test('ticking every item fills the practice circle', async ({ page }) => {
     for (const item of practice.items.slice(0, -1)) await checkbox(page, item.id).check();
     await settle(page);
-    await expect(navLink(page, 4, 'Zelf doen', false)).toBeVisible();
+    await expect(navLink(page, 4, 'Zelf doen', 'started')).toBeVisible();
     await checkbox(page, practice.items.at(-1)!.id).check();
     await expect(navLink(page, 4, 'Zelf doen', true)).toBeVisible();
     await expect

@@ -1,15 +1,18 @@
 <nav aria-label="Stappen van deze les">
   <ol class="steps">
     @for (step of steps(); track step.id; let index = $index) {
-      <li [class.done]="doneIds().has(step.id)">
+      @let current = status(step.id);
+      <li [class.done]="current === 'done'" [class.started]="current === 'started'">
         <a [routerLink]="[]" [fragment]="anchorPrefix + step.id" (click)="onClick($event, step.id)">
-          <!-- One name for screen readers ("Stap 1: Uitleg"); the circle and label are what you see. -->
+          <!-- One name for screen readers ("Stap 1: Uitleg (klaar)"); circle, label and status are what you see. -->
           <span class="snf-visually-hidden"
-            >Stap {{ index + 1 }}: {{ step.label
-            }}{{ doneIds().has(step.id) ? ' (klaar)' : '' }}</span
+            >Stap {{ index + 1 }}: {{ step.label }}{{ statusText[current].spoken }}</span
           >
           <span class="number" aria-hidden="true">{{ index + 1 }}</span>
           <span class="label" aria-hidden="true">{{ step.label }}</span>
+          @if (statusText[current].shown; as shown) {
+            <span class="status" aria-hidden="true">{{ shown }}</span>
+          }
         </a>
       </li>
     }

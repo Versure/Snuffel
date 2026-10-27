@@ -494,9 +494,9 @@ test.describe('the typing drill: results', () => {
     await expect(section(page, typingStep.id).getByRole('alert')).toHaveText(
       'Je score is niet bewaard.',
     );
-    // The result stays on the page and the step is not done.
+    // The result stays on the page and the step is begun, not done.
     await expect(drillBlock(page).locator('.results li').nth(0)).toContainText('100% goed');
-    await expect(navLink(page, 2, 'Typen', false)).toBeVisible();
+    await expect(navLink(page, 2, 'Typen', 'started')).toBeVisible();
     await page.unroute(resultsPattern);
     expect((await storedRecords(page)).interaction_results).toEqual([]);
   });

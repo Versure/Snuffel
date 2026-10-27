@@ -188,7 +188,7 @@ test.describe('the quiz', () => {
 
   test('answering every question fills the quiz circle', async ({ page }) => {
     await answer(page, first, rightOption(first));
-    await expect(navLink(page, 3, 'Quiz', false), 'started is not done yet').toBeVisible();
+    await expect(navLink(page, 3, 'Quiz', 'started'), 'started is not done yet').toBeVisible();
     for (const question of quiz.questions.slice(1)) {
       await answer(page, question, wrongOption(question));
     }

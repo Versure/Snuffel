@@ -54,3 +54,22 @@ a:hover .label {
   color: var(--snf-color-white);
   background: var(--snf-color-purple);
 }
+
+/* Begun, not done yet. */
+.started .number {
+  color: var(--snf-color-ink);
+  background: var(--snf-color-yellow);
+}
+
+.status {
+  margin-top: 0.2rem;
+  padding: 0 0.45rem;
+  font-size: 0.85rem;
+  color: var(--snf-color-text);
+  background: var(--snf-color-paper);
+  border-radius: var(--snf-radius-pill);
+}
+
+.done .status {
+  background: var(--snf-color-success-soft);
+}

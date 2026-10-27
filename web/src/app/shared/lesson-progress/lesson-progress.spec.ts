@@ -165,6 +165,19 @@ describe('LessonProgress', () => {
     expect(progress.doneSteps()).toEqual(['uitleg', 'zelf-doen']);
   });
 
+  it('startedSteps lists only started steps', async () => {
+    fake.loadLesson.mockResolvedValue(
+      snapshot({
+        steps: new Map<string, StepProgress>([
+          ['uitleg', { id: 'p1', status: 'completed' }],
+          ['quiz', { id: 'p2', status: 'started' }],
+        ]),
+      }),
+    );
+    await progress.load(lesson, 'proefcursus');
+    expect(progress.startedSteps()).toEqual(['quiz']);
+  });
+
   it('latestAnswers ignores attempts for another content version', async () => {
     fake.loadLesson.mockResolvedValue(
       snapshot({
