@@ -1,4 +1,6 @@
 import assert from 'node:assert/strict';
+import { readdirSync, readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { describe, test } from 'node:test';
 import { checkContent, checkScript, parseCheckArgs, repoRoot } from './check.mjs';
 import { jsonErrorOffset, lineAndColumn, parseJson } from './load.mjs';
@@ -12,13 +14,32 @@ import {
   runTool,
 } from './test-helpers.mjs';
 
+/**
+ * The ids in course.json of every course directory below content/courses (and, with fixtures,
+ * content/fixtures/courses), each root sorted by directory name: what content:check should check.
+ */
+function courseIdsOnDisk({ fixtures }) {
+  const roots = [join(repoRoot, 'content', 'courses')];
+  if (fixtures) roots.push(join(repoRoot, 'content', 'fixtures', 'courses'));
+  return roots.flatMap((root) =>
+    readdirSync(root, { withFileTypes: true })
+      .filter((entry) => entry.isDirectory())
+      .map((entry) => entry.name)
+      .sort()
+      .map((name) => JSON.parse(readFileSync(join(root, name, 'course.json'), 'utf8')).id),
+  );
+}
+
 describe('content:check on the repository', () => {
   test('the fixture has no errors', () => {
     const result = checkContent({ today: fixtureToday });
     assertClean(result);
+    const expected = courseIdsOnDisk({ fixtures: true });
+    // The real courses first, then the fixtures.
+    assert.deepEqual(expected.slice(-3), ['proefcursus', 'proefhuiswerk', 'proeftypen']);
     assert.deepEqual(
       result.courses.map((course) => course.data.id),
-      ['blind-typen', 'roofvissen', 'proefcursus', 'proefhuiswerk', 'proeftypen'],
+      expected,
     );
   });
 
@@ -89,9 +110,11 @@ describe('content:check on the repository', () => {
   test('without fixtures only content/courses is checked', () => {
     const result = checkContent({ fixtures: false, today: fixtureToday });
     assertClean(result);
+    const expected = courseIdsOnDisk({ fixtures: false });
+    assert.ok(expected.length > 0, 'content/courses has courses');
     assert.deepEqual(
       result.courses.map((course) => course.data.id),
-      ['blind-typen', 'roofvissen'],
+      expected,
     );
   });
 
