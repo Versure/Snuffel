@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 160">
+  <!-- Wrong: a whole sentence in the drawing, another font and a label without a font. -->
+  <text x="20" y="40" font-family="Atkinson Hyperlegible, Verdana, sans-serif" font-size="16" fill="#141414">Leg je wijsvingers op de f en de j</text>
+  <text x="20" y="80" font-family="Comic Sans MS" font-size="16" fill="#141414">f</text>
+  <text x="20" y="120" font-size="16" fill="#141414">j</text>
+</svg>
