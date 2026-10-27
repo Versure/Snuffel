@@ -10,6 +10,10 @@
       "forms": ["sla aan", "slaat aan", "sloeg aan", "sloegen aan", "aangeslagen", "aanslaat"]
     },
     {
+      "term": "aanslag",
+      "forms": ["aanslagen"]
+    },
+    {
       "term": "beetmelder",
       "forms": ["beetmelders"]
     },

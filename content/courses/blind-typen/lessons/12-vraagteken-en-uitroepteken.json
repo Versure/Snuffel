@@ -23,6 +23,10 @@
     {
       "term": "KANS",
       "definition": "klachten aan armen, nek of schouders, bijvoorbeeld door lang typen zonder pauze; vroeger heette dat RSI"
+    },
+    {
+      "term": "aanslag",
+      "definition": "één teken typen; elke letter, elk leesteken en elke spatie is een aanslag, ook een hoofdletter met Shift"
     }
   ],
   "ted": {
@@ -59,14 +63,14 @@
         {
           "type": "tip",
           "title": "Een apostrof die wacht",
-          "text": "Op veel computers met de indeling US-International is de apostrof een [[dode toets]]. Je ziet hem pas als je de volgende toets typt. Wil je alleen de apostrof? Typ er dan een spatie achter.",
+          "text": "Heeft je computer de indeling US-International? Dan is de apostrof een [[dode toets]]. Je ziet hem pas als je de volgende toets typt. Bij een s, zoals in auto's, krijg je gewoon allebei de tekens.",
           "sourceRefs": ["wikipedia-qwerty", "wikipedia-dead-key"]
         },
         {
           "type": "tip",
           "title": "Typ je op Linux?",
-          "text": "Op Linux maakt de apostrof met sommige letters een andere letter dan op Windows, zoals ć. Zie je een vreemde letter verschijnen? Vraag dan een ouder om naar de toetsenbordindeling te kijken.",
-          "sourceRefs": ["wikipedia-qwerty"]
+          "text": "Op Linux maakt de apostrof met meer letters een andere letter, zoals ć. Typ je op Linux? Typ dan na de apostrof eerst een spatie, ook in auto's en zo'n.",
+          "sourceRefs": ["wikipedia-qwerty", "wikipedia-dead-key"]
         },
         {
           "type": "signal-cards",
@@ -92,8 +96,8 @@
             {
               "icon": "warning",
               "title": "Pijn of tintelen",
-              "text": "Stop en doe iets anders. Het kan een begin zijn van klachten aan armen, nek of schouders ([[KANS]]).",
-              "sourceRefs": ["radboud-kans"]
+              "text": "Stop en doe iets anders. Het kan een begin zijn van klachten aan armen, nek of schouders ([[KANS]]). Vertel het een ouder als het terugkomt.",
+              "sourceRefs": ["radboud-kans", "aap-healthychildren-scherm-rug-ogen"]
             }
           ]
         },
@@ -109,13 +113,13 @@
       "id": "typen",
       "type": "interaction",
       "title": "Typ met vraagteken, uitroepteken en apostrof",
-      "intro": "Let op de Shift aan de andere kant. Het doel is 90% goed en 40 aanslagen per minuut.",
+      "intro": "Let op de Shift aan de andere kant. Het doel is 90% goed en 40 aanslagen per minuut. Een [[aanslag]] is één teken.",
       "interaction": {
         "id": "leestekens-typen",
         "kind": "typing-drill",
         "config": {
           "lines": [
-            ";' ;' a1 a! ;/ ;?",
+            ";'; ;'; a1 a! ;/ ;?",
             "Wat typ jij?",
             "Hoera! Klaar!",
             "Hoe gaat het?",

@@ -24,7 +24,7 @@
   "ted": {
     "intro": {
       "mood": "cool",
-      "text": "Je wijsvingers zijn de sterkste werkers. Vandaag krijgen ze er een toets bij. Opzij, en weer terug."
+      "text": "Je wijsvingers doen het meeste werk. Vandaag krijgen ze er een toets bij. Opzij, en weer terug."
     },
     "correct": ["Lekker!", "Je wijsvingers zijn wakker.", "Strak getypt!"],
     "incorrect": [

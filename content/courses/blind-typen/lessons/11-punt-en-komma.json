@@ -86,7 +86,7 @@
       "id": "typen",
       "type": "interaction",
       "title": "Typ met punt en komma",
-      "intro": "Komma met je middelvinger, punt met je ringvinger. Het doel is weer 40 aanslagen per minuut.",
+      "intro": "Komma met je middelvinger, punt met je ringvinger. Het doel is weer 40 aanslagen per minuut. Een [[aanslag]] is één teken.",
       "interaction": {
         "id": "punt-en-komma-typen",
         "kind": "typing-drill",
