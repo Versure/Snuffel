@@ -111,7 +111,7 @@ Een svg in een `<img>` laadt geen webfonts. Daarom:
 
 ## Veilig
 
-Een svg is een tekening, geen programma en geen verpakte foto. `content:check` weigert (`asset-unsafe-content`): `<script>`, `<foreignObject>`, `<image>`, `<!DOCTYPE>` of `<!ENTITY>`, attributen die met `on` beginnen (`onclick`), en `javascript:` of `data:`. Verwijzingen naar een andere site weigert hij ook (`asset-external-ref`). Een svg in `assets/` die geen les gebruikt, geeft een waarschuwing (`asset-unused`).
+Een svg is een tekening, geen programma en geen verpakte foto. `content:check` weigert (`asset-unsafe-content`): `<script>`, `<foreignObject>`, `<image>`, `<!DOCTYPE>` of `<!ENTITY>`, `<?xml-stylesheet?>`, attributen die met `on` beginnen (`onclick`), `javascript:` of `data:`, een `href` of `url(…)` die niet met `#` begint (een ander bestand), `@import`, `@font-face` en `\` in `<style>`, en animatie (`<set>`, `<animate>`, `<animateTransform>`, `<animateMotion>`): een tekening staat stil. Filters (`<filter>`) en `mix-blend-mode` veranderen kleuren en weigert hij als kleur buiten het palet. Verwijzingen naar een andere site weigert hij ook, ook in hoofdletters (`asset-external-ref`). Een svg in `assets/` die geen les gebruikt, geeft een waarschuwing (`asset-unused`).
 
 ## Een goede `alt`
 

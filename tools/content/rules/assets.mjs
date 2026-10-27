@@ -7,9 +7,9 @@ import { join } from 'node:path';
 import { analyzeSvg, loadPalette } from '../svg.mjs';
 
 // XML namespaces are identifiers, not requests (same rule as npm run privacy).
-const allowedUrls = [/^http:\/\/www\.w3\.org\//];
-const urlPattern = /https?:\/\/[^\s'"`)<>]+/g;
-const protocolRelative = /(?:href|src)\s*=\s*["']\s*\/\//i;
+const allowedUrls = [/^http:\/\/www\.w3\.org\//i];
+const urlPattern = /https?:\/\/[^\s'"`)<>]+/gi;
+const protocolRelative = /(?:href|src)\s*=\s*["']\s*\/\/|url\(\s*['"]?\s*\/\//i;
 
 /** True when `src` is a relative path below assets/ ending in .svg, without `..`. */
 export function isValidAssetPath(src) {

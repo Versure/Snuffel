@@ -411,7 +411,14 @@ describe('svg style and safety', () => {
     const fixture = withFigure(t, svgFixture('unsafe-content.svg'));
     const result = fixture.check();
     const error = assertIssue(result, 'asset-unsafe-content', `${figurePath}.src`);
-    for (const finding of ['<script>', '<image>', '<foreignObject>', 'onload=', 'javascript:']) {
+    for (const finding of [
+      '<script>',
+      '<image>',
+      '<foreignObject>',
+      'onload=',
+      'javascript:',
+      'data:',
+    ]) {
       assert.ok(error.message.includes(finding), `${finding} missing in: ${error.message}`);
     }
     assert.equal(
@@ -430,6 +437,75 @@ describe('svg style and safety', () => {
     assert.match(error.message, /<!DOCTYPE>/);
     assert.match(error.message, /andere\.svg#vis/);
     assert.doesNotMatch(error.message, /"#eigen"/);
+  });
+
+  test('style sheets, url() to other files and animation give asset-unsafe-content', (t) => {
+    const head = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 100">';
+    const cases = {
+      'xml-stylesheet': [
+        `<?xml-stylesheet type="text/css" href="vis.css"?>\n${head}</svg>\n`,
+        '<?xml-stylesheet?>',
+      ],
+      '@import': [`${head}<style>@import "vis.css";</style></svg>\n`, '@import'],
+      '@font-face': [
+        `${head}<style>@font-face{font-family:x;src:url(f.woff)}</style></svg>\n`,
+        '@font-face',
+      ],
+      'url() to another file': [
+        `${head}<rect mask="url(andere.svg#m)" fill="#ffd83d"/></svg>\n`,
+        'url(andere.svg#m)',
+      ],
+      'url() in style': [
+        `${head}<rect style="cursor:url(c.png),auto" fill="#ffd83d"/></svg>\n`,
+        'url(c.png)',
+      ],
+      '<set>': [
+        `${head}<use href="#a"><set attributeName="href" to="andere.svg#x"/></use></svg>\n`,
+        '<set>',
+      ],
+      '<animate>': [
+        `${head}<rect fill="#ffd83d"><animate attributeName="fill" to="#ff0000" dur="1s"/></rect></svg>\n`,
+        '<animate>',
+      ],
+      'escape in style': [`${head}<style>rect{f\\69ll:#ff0000}</style></svg>\n`, '\\ in <style>'],
+    };
+    for (const [name, [svg, finding]] of Object.entries(cases)) {
+      const fixture = withFigure(t, svg);
+      const error = assertIssue(fixture.check(), 'asset-unsafe-content', `${figurePath}.src`);
+      assert.ok(
+        error.message.includes(finding),
+        `${name}: ${finding} missing in: ${error.message}`,
+      );
+    }
+  });
+
+  test('an uppercase HTTPS:// and url(//host) give asset-external-ref', (t) => {
+    const head = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 100">';
+    const fixture = withFigure(
+      t,
+      `${head}<style>@import url(HTTPS://example.org/x.css);</style></svg>\n`,
+    );
+    const error = assertIssue(fixture.check(), 'asset-external-ref', `${figurePath}.src`);
+    assert.match(error.message, /HTTPS:\/\/example\.org\/x\.css/);
+    assert.deepEqual(externalReferences('<rect style="fill:url(//cdn.example.org/p.svg#x)"/>'), [
+      '//…',
+    ]);
+  });
+
+  test('filters and mix-blend-mode give asset-color-off-palette; url(#id) is fine', (t) => {
+    const head = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 100">';
+    const fixture = withFigure(
+      t,
+      `${head}<filter id="f"><feColorMatrix values="0 0 0 0 1"/></filter><rect style="mix-blend-mode:multiply" fill="#ffd83d"/></svg>\n`,
+    );
+    const error = assertIssue(fixture.check(), 'asset-color-off-palette', `${figurePath}.src`);
+    assert.match(error.message, /<filter>/);
+    assert.match(error.message, /mix-blend-mode/);
+    fixture.writeFile(
+      'assets/hengeltop.svg',
+      `${head}<defs><clipPath id="c"><rect width="9" height="9"/></clipPath></defs><rect clip-path="url(#c)" fill="#ffd83d"/></svg>\n`,
+    );
+    assertClean(fixture.check());
   });
 
   test('a fixed size without viewBox gives asset-viewbox-missing', (t) => {

@@ -44,12 +44,14 @@ export function localName(name) {
 /**
  * Parses svg text into `{ root, declarations }`: `root` is a document node whose `children` are
  * the top elements; each element is `{ name, attributes: [{ name, value }], children, parent }`,
- * text is `{ text }`. `declarations` lists `<!DOCTYPE …>` and `<!ENTITY …>` found. Broken markup
- * is read as well as possible; this is a check, not a validator.
+ * text is `{ text }`. `declarations` lists `<!DOCTYPE …>` and `<!ENTITY …>` found, `instructions`
+ * every processing instruction (`<?xml …?>`, `<?xml-stylesheet …?>`). Broken markup is read as
+ * well as possible; this is a check, not a validator.
  */
 export function parseSvg(text) {
   const root = { name: '#document', attributes: [], children: [], parent: null };
   const declarations = [];
+  const instructions = [];
   let current = root;
   let i = 0;
   const addText = (value) => {
@@ -79,6 +81,7 @@ export function parseSvg(text) {
       else i = end === -1 ? text.length : end + 1;
     } else if (text.startsWith('<?', lt)) {
       const end = text.indexOf('?>', lt);
+      instructions.push(text.slice(lt, end === -1 ? text.length : end + 2));
       i = end === -1 ? text.length : end + 2;
     } else if (text.startsWith('</', lt)) {
       const end = text.indexOf('>', lt);
@@ -109,7 +112,7 @@ export function parseSvg(text) {
       i = tagPattern.lastIndex;
     }
   }
-  return { root, declarations };
+  return { root, declarations, instructions };
 }
 
 /** Every element below `node`, depth first. */
@@ -172,7 +175,29 @@ const opacityProperties = [
   'flood-opacity',
 ];
 const gradientElements = ['lineargradient', 'radialgradient', 'meshgradient'];
-const unsafeElements = ['script', 'foreignobject', 'image', 'feimage', 'iframe', 'embed', 'object'];
+const unsafeElements = [
+  'script',
+  'foreignobject',
+  'image',
+  'feimage',
+  'iframe',
+  'embed',
+  'object',
+  // Animation: a figure is still (no reduced-motion variant), and set/animate can change a link
+  // or a colour after the check.
+  'set',
+  'animate',
+  'animatetransform',
+  'animatemotion',
+  'animatecolor',
+  'discard',
+];
+// Filters and blending change colours outside the palette.
+const colorEffectElements = ['filter'];
+/** Every `url(…)` in a text, with its target (quotes and spaces removed). */
+export function urlTargets(text) {
+  return [...text.matchAll(/url\(\s*(['"]?)\s*([^)'"]*)/gi)].map(([, , target]) => target.trim());
+}
 
 /** `#fff` and `#FFFFFF` both become `#ffffff`; other values are only lowercased and trimmed. */
 export function normalizeColor(value) {
@@ -231,7 +256,7 @@ function declarationsOf(root) {
  * `{ colors, unsafe, viewBox, text }` (`viewBox` is a description or null when it is fine).
  */
 export function analyzeSvg(svg, palette = loadPalette()) {
-  const { root, declarations } = parseSvg(svg);
+  const { root, declarations, instructions } = parseSvg(svg);
   const result = { colors: [], unsafe: [], viewBox: null, text: [] };
   const font = normalizeFontFamily(palette.font.family);
   const weights = new Set([...palette.font.weights, 'normal', 'bold']);
@@ -242,15 +267,38 @@ export function analyzeSvg(svg, palette = loadPalette()) {
     }
   }
 
+  for (const instruction of instructions) {
+    // Only the XML declaration itself; <?xml-stylesheet …?> loads a style sheet.
+    if (!/^<\?xml(\s|\?>)/i.test(instruction)) {
+      result.unsafe.push(`${instruction.slice(0, instruction.search(/\s|\?>/))}?>`);
+    }
+  }
+
   for (const element of elements(root)) {
     const name = localName(element.name);
     if (unsafeElements.includes(name)) result.unsafe.push(`<${element.name}>`);
+    if (colorEffectElements.includes(name) || name.startsWith('fe')) {
+      if (name !== 'feimage') result.colors.push(`<${element.name}> (filter)`);
+    }
+    if (name === 'style') {
+      const css = textContent(element);
+      if (/@import/i.test(css)) result.unsafe.push('@import');
+      if (/@font-face/i.test(css)) result.unsafe.push('@font-face');
+      if (css.includes('\\')) result.unsafe.push('\\ in <style>');
+      for (const target of urlTargets(css)) {
+        if (!target.startsWith('#')) result.unsafe.push(`url(${target})`);
+      }
+    }
     if (gradientElements.includes(name)) result.colors.push(`<${element.name}> (verloop)`);
     for (const { name: attributeName, value } of element.attributes) {
       const lower = attributeName.toLowerCase();
       if (/^on/.test(localName(attributeName))) result.unsafe.push(`${attributeName}="…"`);
       if (/(^|:)href$/.test(lower) && !value.trim().startsWith('#')) {
         result.unsafe.push(`${attributeName}="${value}"`);
+      }
+      // url(…) in an attribute or a style attribute: only to something in this file (#id).
+      for (const target of urlTargets(value)) {
+        if (!target.startsWith('#')) result.unsafe.push(`url(${target})`);
       }
     }
   }
@@ -266,6 +314,10 @@ export function analyzeSvg(svg, palette = loadPalette()) {
       if (normalizeFontFamily(value) !== font) result.text.push(`font-family="${value}"`);
     } else if (property === 'font-weight') {
       if (!weights.has(value.trim().toLowerCase())) result.text.push(`font-weight="${value}"`);
+    } else if (property === 'mix-blend-mode' || property === 'filter') {
+      if (!(property === 'filter' && value.trim().toLowerCase() === 'none')) {
+        result.colors.push(`${property}="${value}"`);
+      }
     } else if (property === 'font') {
       result.text.push(`font="${value}" (gebruik font-family en font-weight)`);
     }
