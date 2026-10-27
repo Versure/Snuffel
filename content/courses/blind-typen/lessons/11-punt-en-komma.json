@@ -14,11 +14,11 @@
     },
     {
       "term": "thuisrij",
-      "definition": "de middelste rij letters waar je vingers op rusten: a s d f en j k l ;"
+      "definition": "de middelste rij toetsen waar je vingers op rusten: a s d f en j k l ;"
     },
     {
       "term": "aanslag",
-      "definition": "één keer een toets indrukken; elke letter, elk leesteken en elke spatie is een aanslag"
+      "definition": "één teken typen; elke letter, elk leesteken en elke spatie is een aanslag, ook een hoofdletter met Shift"
     }
   ],
   "ted": {
@@ -55,7 +55,7 @@
         {
           "type": "text",
           "text": "De dubbele punt typ je met Shift en de puntkomma. Je linkerpink houdt Shift vast, want de puntkomma zit rechts.",
-          "sourceRefs": ["uwaterloo-touch-typing", "tameside-touch-typing-basis"]
+          "sourceRefs": ["uwaterloo-touch-typing"]
         },
         {
           "type": "signal-cards",
@@ -96,7 +96,7 @@
             "Ja, ik typ.",
             "Mijn rug is recht.",
             "Eerst goed, dan snel.",
-            "Ted, Lisa en Omar typen.",
+            "Ted, jij en ik typen.",
             "Sta op, rek je uit.",
             "Kijk naar het scherm.",
             "Na een uur: pauze.",
@@ -109,7 +109,7 @@
           }
         }
       },
-      "sourceRefs": ["isbe-keyboard-technique", "uwaterloo-touch-typing"]
+      "sourceRefs": ["isbe-keyboard-technique"]
     },
     {
       "id": "quiz",
@@ -132,9 +132,9 @@
               "feedback": "Die typt de punt. De komma zit één toets naar links."
             },
             {
-              "id": "rechterpink",
-              "text": "De pink van je rechterhand",
-              "feedback": "Die typt de puntkomma. De komma zit onder de k."
+              "id": "rechterwijsvinger",
+              "text": "Je rechterwijsvinger",
+              "feedback": "Die typt de m. De komma zit één toets verder, onder de k."
             }
           ],
           "correctOptionId": "rechtermiddelvinger",

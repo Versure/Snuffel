@@ -10,7 +10,7 @@
   "glossary": [
     {
       "term": "thuisrij",
-      "definition": "de middelste rij letters waar je vingers op rusten: a s d f en j k l ;"
+      "definition": "de middelste rij toetsen waar je vingers op rusten: a s d f en j k l ;"
     },
     {
       "term": "blind typen",
@@ -48,8 +48,8 @@
         },
         {
           "type": "text",
-          "text": "Typ in een rustig ritme. Beweeg je handen zo weinig mogelijk. Alleen de vinger die typt, gaat van de [[thuisrij]] af.",
-          "sourceRefs": ["uow-touch-typing", "tameside-touch-typing-basis"]
+          "text": "Typ in een rustig ritme en beweeg je handen zo weinig mogelijk. Ga na elke toets terug naar de [[thuisrij]].",
+          "sourceRefs": ["uow-touch-typing", "isbe-keyboard-technique"]
         },
         {
           "type": "signal-cards",
@@ -128,13 +128,13 @@
             },
             {
               "id": "linkerpink",
-              "text": "De pink van je linkerhand",
+              "text": "Je linkerpink",
               "feedback": "Je linkerpink rust op de a. De w zit één toets verder."
             },
             {
-              "id": "linkermiddelvinger",
-              "text": "Je linkermiddelvinger",
-              "feedback": "Die typt de e. De w zit boven de s."
+              "id": "linkerwijsvinger",
+              "text": "Je linkerwijsvinger",
+              "feedback": "Die rust op de f. De w zit boven de s."
             }
           ],
           "correctOptionId": "linkerringvinger",

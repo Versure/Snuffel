@@ -6,7 +6,9 @@
   "goal": "Typen met tien vingers zonder naar het toetsenbord te kijken: alle letters, hoofdletters en leestekens",
   "successCriterion": "Een korte tekst met hoofdletters en leestekens typen zonder naar het toetsenbord te kijken, met minstens 90% goed",
   "kind": "course",
-  "ted": { "greeting": "Tien vingers, nul keer kijken. Zet je vingers klaar!" },
+  "ted": {
+    "greeting": "Tien vingers, nul keer kijken. Zet je vingers klaar!"
+  },
   "lessons": [
     {
       "id": "thuisrij",
@@ -90,7 +92,7 @@
       "type": "government",
       "reliability": "high",
       "accessedOn": "2026-10-26",
-      "note": "Lesmateriaal voor scholen (e-unit van CAERT), Engelstalig: houding, thuisrij, welke vinger welke toets typt, eerst nauwkeurig."
+      "note": "Lesmateriaal voor scholen van de uitgever CAERT, op de site van de onderwijsdienst van de staat Illinois, Engelstalig: houding, thuisrij, welke vinger welke toets typt, eerst nauwkeurig."
     },
     {
       "id": "uwaterloo-touch-typing",
@@ -111,16 +113,6 @@
       "reliability": "high",
       "accessedOn": "2026-10-26",
       "note": "Studievaardighedenpagina van de universiteit, Engelstalig."
-    },
-    {
-      "id": "tameside-touch-typing-basis",
-      "title": "Instructions for using Doorway Online - Text typing (Basic touch-typing guidance)",
-      "url": "https://www.tameside.gov.uk/TamesideMBC/media/Children/Doorway-online-touch-typing-instructions.pdf",
-      "publisher": "Tameside Metropolitan Borough Council",
-      "type": "government",
-      "reliability": "high",
-      "accessedOn": "2026-10-26",
-      "note": "Brits gemeentedocument voor kinderen, Engelstalig."
     },
     {
       "id": "eur-kans-beeldschermwerk",
@@ -170,7 +162,7 @@
       "type": "association",
       "reliability": "medium",
       "accessedOn": "2026-10-26",
-      "note": "Belgische informatiefiche over beeldschermwerk, februari 2015."
+      "note": "Belgische informatiefiche over beeldschermwerk, februari 2015. De fiche zegt niet wat CESI is; daarom medium."
     },
     {
       "id": "district30-touch-typing-tips",
@@ -201,6 +193,16 @@
       "reliability": "medium",
       "accessedOn": "2026-10-27",
       "note": "Over dode toetsen en de indeling US-International, Engelstalig."
+    },
+    {
+      "id": "wikipedia-qwerty",
+      "title": "QWERTY",
+      "url": "https://en.wikipedia.org/wiki/QWERTY",
+      "publisher": "Wikipedia",
+      "type": "encyclopedia",
+      "reliability": "medium",
+      "accessedOn": "2026-10-27",
+      "note": "Over de indeling US-International: welke toetsen dode toetsen zijn en hoe Linux (X11) daarin afwijkt, Engelstalig."
     }
   ]
 }

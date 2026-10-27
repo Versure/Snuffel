@@ -14,7 +14,7 @@
     },
     {
       "term": "thuisrij",
-      "definition": "de middelste rij letters waar je vingers op rusten: a s d f en j k l ;"
+      "definition": "de middelste rij toetsen waar je vingers op rusten: a s d f en j k l ;"
     },
     {
       "term": "voelstreepje",
@@ -48,16 +48,12 @@
           "type": "rule",
           "title": "Begin op de thuisrij",
           "text": "Je linkerhand rust op **a s d f**. Je rechterhand rust op **j k l ;**. Je duimen liggen op de spatiebalk. Dit is de [[thuisrij]]. Hier begin je, en hier komt elke vinger na een toets weer terug.",
-          "sourceRefs": ["isbe-keyboard-technique", "tameside-touch-typing-basis"]
+          "sourceRefs": ["isbe-keyboard-technique"]
         },
         {
           "type": "text",
           "text": "Hoe vind je die plek zonder te kijken? Op de f en de j zit een klein [[voelstreepje]]. Leg je wijsvingers daarop. Je andere vingers komen dan vanzelf goed te liggen.",
-          "sourceRefs": [
-            "isbe-keyboard-technique",
-            "uow-touch-typing",
-            "tameside-touch-typing-basis"
-          ]
+          "sourceRefs": ["isbe-keyboard-technique", "uow-touch-typing"]
         },
         {
           "type": "text",
@@ -76,7 +72,7 @@
             {
               "icon": "check",
               "title": "Voeten plat",
-              "text": "Zet je voeten plat op de grond, recht voor het toetsenbord.",
+              "text": "Zit recht voor het toetsenbord, met je voeten plat op de grond.",
               "sourceRefs": ["isbe-keyboard-technique", "aap-healthychildren-scherm-rug-ogen"]
             },
             {
@@ -91,7 +87,7 @@
           "type": "ted-says",
           "mood": "thinking",
           "text": "Kijk naar het scherm, niet naar je handen. Dat is lastig. Toch is dat precies de truc.",
-          "sourceRefs": []
+          "sourceRefs": ["isbe-keyboard-technique"]
         }
       ]
     },
@@ -152,7 +148,7 @@
           ],
           "correctOptionId": "rechterwijsvinger",
           "hints": ["Op welke twee toetsen zit een streepje?"],
-          "sourceRefs": ["isbe-keyboard-technique", "tameside-touch-typing-basis"]
+          "sourceRefs": ["isbe-keyboard-technique"]
         },
         {
           "id": "voelstreepjes",
@@ -189,13 +185,13 @@
             },
             {
               "id": "onderuit",
-              "text": "Onderuitgezakt, met je benen gekruist",
-              "feedback": "Dan buigt je rug en komen je handen scheef bij de toetsen."
+              "text": "Rechtop, met je benen over elkaar",
+              "feedback": "Dan staan je voeten niet plat. Zet ze allebei op de grond."
             },
             {
               "id": "voorover",
-              "text": "Voorover, met je neus bij het scherm",
-              "feedback": "Dan staat je nek gespannen. Zit rechtop, met je rug tegen de leuning."
+              "text": "Iets voorover, dicht bij de toetsen",
+              "feedback": "Dan buig je je rug en je nek. Zit rechtop, met je rug tegen de leuning."
             }
           ],
           "correctOptionId": "rechtop",

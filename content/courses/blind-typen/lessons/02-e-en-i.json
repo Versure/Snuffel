@@ -14,7 +14,7 @@
     },
     {
       "term": "thuisrij",
-      "definition": "de middelste rij letters waar je vingers op rusten: a s d f en j k l ;"
+      "definition": "de middelste rij toetsen waar je vingers op rusten: a s d f en j k l ;"
     },
     {
       "term": "voelstreepje",
@@ -42,7 +42,7 @@
         {
           "type": "example",
           "text": "Denk aan een keeper in het doel. Hij duikt naar een bal en staat daarna meteen weer in het midden. Je vingers doen hetzelfde. Ze reiken naar een toets en gaan direct terug naar de [[thuisrij]].",
-          "sourceRefs": ["isbe-keyboard-technique", "tameside-touch-typing-basis"]
+          "sourceRefs": ["isbe-keyboard-technique"]
         },
         {
           "type": "rule",
@@ -52,8 +52,8 @@
         },
         {
           "type": "text",
-          "text": "Alleen de vinger die typt, gaat omhoog. De andere vingers blijven op hun plek liggen. Na de toets gaat je vinger in een rechte lijn terug.",
-          "sourceRefs": ["tameside-touch-typing-basis", "uow-touch-typing"]
+          "text": "Houd je bewegingen klein: alleen de vinger die typt, reikt omhoog. Na de toets gaat hij meteen terug naar zijn plek.",
+          "sourceRefs": ["uow-touch-typing", "isbe-keyboard-technique"]
         },
         {
           "type": "tip",
@@ -179,7 +179,7 @@
           ],
           "correctOptionId": "terug-naar-d",
           "hints": ["Denk aan de keeper uit het voorbeeld."],
-          "sourceRefs": ["isbe-keyboard-technique", "tameside-touch-typing-basis"]
+          "sourceRefs": ["isbe-keyboard-technique"]
         }
       ]
     },
@@ -203,7 +203,7 @@
         {
           "id": "check-vingers",
           "text": "Typ de e en de i alleen met je middelvingers, en ga steeds terug.",
-          "sourceRefs": ["isbe-keyboard-technique", "tameside-touch-typing-basis"]
+          "sourceRefs": ["isbe-keyboard-technique"]
         },
         {
           "id": "check-oefening",
@@ -221,8 +221,8 @@
   ],
   "furtherReading": [
     {
-      "sourceRef": "tameside-touch-typing-basis",
-      "why": "Korte uitleg voor kinderen over de thuisrij en teruggaan, in het Engels."
+      "sourceRef": "uow-touch-typing",
+      "why": "Korte uitleg over de thuisrij, kleine bewegingen en teruggaan naar je plek, in het Engels."
     }
   ],
   "faq": [

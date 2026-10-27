@@ -5,7 +5,7 @@
   "title": "De laatste letters",
   "sticker": "Blind typen · les 9",
   "objective": "Na deze les typ je de z, de x, de q en de y. Je kent nu alle letters, en je weet hoe je ze bijhoudt.",
-  "concept": "de laatste letters",
+  "concept": "de laatste letters: q, z, x en y",
   "estimatedMinutes": 10,
   "glossary": [
     {
@@ -14,7 +14,7 @@
     },
     {
       "term": "thuisrij",
-      "definition": "de middelste rij letters waar je vingers op rusten: a s d f en j k l ;"
+      "definition": "de middelste rij toetsen waar je vingers op rusten: a s d f en j k l ;"
     }
   ],
   "ted": {
@@ -57,7 +57,7 @@
         {
           "type": "ted-says",
           "mood": "happy",
-          "text": "[[blind typen|Blind typen]] wordt pas echt makkelijk als je het vaak doet. Elk appje telt mee.",
+          "text": "[[blind typen|Blind typen]] wordt pas echt makkelijk als je het vaak doet. Elk bericht op de computer telt mee.",
           "sourceRefs": ["uow-touch-typing"]
         }
       ]
@@ -82,7 +82,9 @@
             "kort en vaak oefenen"
           ],
           "newKeys": ["z", "x", "q", "y"],
-          "goals": { "accuracy": 90 }
+          "goals": {
+            "accuracy": 90
+          }
         }
       },
       "sourceRefs": ["isbe-keyboard-technique", "uwaterloo-touch-typing"]
@@ -104,7 +106,7 @@
             },
             {
               "id": "linkerring",
-              "text": "Je ringvinger",
+              "text": "Je linkerringvinger",
               "feedback": "Je linkerringvinger typt de x. De z zit nog één toets verder."
             },
             {
@@ -186,7 +188,7 @@
         },
         {
           "id": "check-vingers",
-          "text": "Typ je huiswerk of een appje met tien vingers.",
+          "text": "Typ je huiswerk of een bericht op de computer met tien vingers.",
           "sourceRefs": ["district30-touch-typing-tips"]
         },
         {

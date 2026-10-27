@@ -14,7 +14,7 @@
     },
     {
       "term": "thuisrij",
-      "definition": "de middelste rij letters waar je vingers op rusten: a s d f en j k l ;"
+      "definition": "de middelste rij toetsen waar je vingers op rusten: a s d f en j k l ;"
     },
     {
       "term": "dode toets",
@@ -42,7 +42,7 @@
       "blocks": [
         {
           "type": "example",
-          "text": "Je appt een vriend: Kom je ook? Leuk! Met deze les typ je zulke berichten met tien vingers. Je hoeft niet meer te zoeken.",
+          "text": "Je mailt een vriend vanaf de computer: Kom je ook? Leuk! Met deze les typ je zulke zinnen met tien vingers. Je hoeft niet meer te zoeken.",
           "sourceRefs": []
         },
         {
@@ -59,14 +59,14 @@
         {
           "type": "tip",
           "title": "Een apostrof die wacht",
-          "text": "Op veel computers is de apostrof een [[dode toets]]. Je ziet hem pas als je de volgende toets typt. Wil je alleen de apostrof? Typ er dan een spatie achter.",
-          "sourceRefs": ["wikipedia-dead-key"]
+          "text": "Op veel computers met de indeling US-International is de apostrof een [[dode toets]]. Je ziet hem pas als je de volgende toets typt. Wil je alleen de apostrof? Typ er dan een spatie achter.",
+          "sourceRefs": ["wikipedia-qwerty", "wikipedia-dead-key"]
         },
         {
           "type": "tip",
           "title": "Typ je op Linux?",
-          "text": "Daar kan een apostrof met een s of n een letter met een streepje worden, zoals ś. Vraag dan een ouder om het toetsenbord op gewoon Engels (VS) te zetten.",
-          "sourceRefs": ["wikipedia-dead-key"]
+          "text": "Op Linux maakt de apostrof met sommige letters een andere letter dan op Windows, zoals ć. Zie je een vreemde letter verschijnen? Vraag dan een ouder om naar de toetsenbordindeling te kijken.",
+          "sourceRefs": ["wikipedia-qwerty"]
         },
         {
           "type": "signal-cards",
@@ -92,7 +92,7 @@
             {
               "icon": "warning",
               "title": "Pijn of tintelen",
-              "text": "Stop en doe iets anders. Dat kan een begin van [[KANS]] zijn.",
+              "text": "Stop en doe iets anders. Het kan een begin zijn van klachten aan armen, nek of schouders ([[KANS]]).",
               "sourceRefs": ["radboud-kans"]
             }
           ]
@@ -100,7 +100,7 @@
         {
           "type": "ted-says",
           "mood": "happy",
-          "text": "Je kunt nu [[blind typen]]. Gebruik het elke keer dat je typt, dan blijft het erin.",
+          "text": "Je kunt nu [[blind typen]]. Oefen regelmatig, dan blijft het erin.",
           "sourceRefs": ["uow-touch-typing"]
         }
       ]
@@ -115,7 +115,7 @@
         "kind": "typing-drill",
         "config": {
           "lines": [
-            "aa a1 a! ;; ;/ ;?",
+            ";' ;' a1 a! ;/ ;?",
             "Wat typ jij?",
             "Hoera! Klaar!",
             "Hoe gaat het?",
@@ -180,7 +180,7 @@
             },
             {
               "id": "linkerring",
-              "text": "Je ringvinger",
+              "text": "Je linkerringvinger",
               "feedback": "Je linkerringvinger typt de 2. Het uitroepteken zit op de 1."
             }
           ],
@@ -198,14 +198,14 @@
               "feedback": "Klopt. Zo blijven je rug, nek en armen fit."
             },
             {
-              "id": "dichtbij",
-              "text": "Dichtbij het scherm, dan zie je meer",
-              "feedback": "Zet je scherm liever op een armlengte. Dan rusten je ogen."
+              "id": "dertig-cm",
+              "text": "Je scherm op 30 centimeter afstand",
+              "feedback": "Dat is te dichtbij. Zet je scherm op ongeveer een armlengte."
             },
             {
-              "id": "doortypen",
-              "text": "Doortypen, ook als je pols pijn doet",
-              "feedback": "Pijn is een seintje. Stop dan en doe iets anders."
+              "id": "twee-uur",
+              "text": "Alleen elke twee uur even opstaan",
+              "feedback": "Sta liever elk uur op, en kijk tussendoor af en toe ver weg."
             }
           ],
           "correctOptionId": "rechtop-pauze",
@@ -213,7 +213,7 @@
           "sourceRefs": [
             "isbe-keyboard-technique",
             "aap-healthychildren-scherm-rug-ogen",
-            "radboud-kans"
+            "eur-kans-beeldschermwerk"
           ]
         }
       ]

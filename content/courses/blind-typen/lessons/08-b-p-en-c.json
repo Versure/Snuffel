@@ -5,7 +5,7 @@
   "title": "De b, de p en de c",
   "sticker": "Blind typen · les 8",
   "objective": "Na deze les typ je de b, de p en de c met de goede vinger. Je houdt je polsen recht tijdens het typen.",
-  "concept": "drie nieuwe reikbewegingen",
+  "concept": "reiken met wijsvinger, middelvinger en pink",
   "estimatedMinutes": 10,
   "glossary": [
     {
@@ -14,7 +14,7 @@
     },
     {
       "term": "thuisrij",
-      "definition": "de middelste rij letters waar je vingers op rusten: a s d f en j k l ;"
+      "definition": "de middelste rij toetsen waar je vingers op rusten: a s d f en j k l ;"
     }
   ],
   "ted": {
@@ -66,8 +66,8 @@
             {
               "icon": "cross",
               "title": "Niet leunen",
-              "text": "Leun niet op je polsen. Rust ze hooguit even op tafel tussen het typen door.",
-              "sourceRefs": ["uow-touch-typing", "aap-healthychildren-scherm-rug-ogen"]
+              "text": "Leun tijdens het typen niet op je polsen.",
+              "sourceRefs": ["aap-healthychildren-scherm-rug-ogen", "isbe-keyboard-technique"]
             }
           ]
         },
@@ -75,7 +75,7 @@
           "type": "ted-says",
           "mood": "cool",
           "text": "Bij [[blind typen]] doen je vingers het werk. Je polsen blijven rustig.",
-          "sourceRefs": []
+          "sourceRefs": ["isbe-keyboard-technique"]
         }
       ]
     },
@@ -100,7 +100,9 @@
             "beter en beter"
           ],
           "newKeys": ["b", "p", "c"],
-          "goals": { "accuracy": 90 }
+          "goals": {
+            "accuracy": 90
+          }
         }
       },
       "sourceRefs": ["isbe-keyboard-technique", "uwaterloo-touch-typing"]
@@ -122,13 +124,13 @@
             },
             {
               "id": "rechterring",
-              "text": "Je ringvinger",
+              "text": "Je rechterringvinger",
               "feedback": "Je rechterringvinger typt de o. De p zit één toets verder."
             },
             {
-              "id": "linkerpink",
-              "text": "Je linkerpink",
-              "feedback": "Je linkerpink rust op de a. De p zit aan de rechterkant."
+              "id": "rechterwijsvinger",
+              "text": "Je rechterwijsvinger",
+              "feedback": "Die rust op de j, ver van de p."
             }
           ],
           "correctOptionId": "rechterpink",

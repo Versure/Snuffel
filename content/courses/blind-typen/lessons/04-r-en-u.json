@@ -14,7 +14,7 @@
     },
     {
       "term": "thuisrij",
-      "definition": "de middelste rij letters waar je vingers op rusten: a s d f en j k l ;"
+      "definition": "de middelste rij toetsen waar je vingers op rusten: a s d f en j k l ;"
     },
     {
       "term": "voelstreepje",
@@ -38,7 +38,7 @@
       "blocks": [
         {
           "type": "example",
-          "text": "Je typt op een laptop op de bank. Je kijkt steeds naar beneden. Na een tijdje doet je nek pijn. Dat komt niet door het typen, maar door de plek van je scherm.",
+          "text": "Je typt op een laptop op de bank. Je kijkt steeds naar beneden. Na een tijdje doet je nek pijn. Dat komt vooral door de plek van je scherm.",
           "sourceRefs": ["aap-healthychildren-scherm-rug-ogen"]
         },
         {

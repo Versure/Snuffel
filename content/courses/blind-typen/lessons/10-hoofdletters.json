@@ -14,11 +14,11 @@
     },
     {
       "term": "thuisrij",
-      "definition": "de middelste rij letters waar je vingers op rusten: a s d f en j k l ;"
+      "definition": "de middelste rij toetsen waar je vingers op rusten: a s d f en j k l ;"
     },
     {
       "term": "aanslag",
-      "definition": "één keer een toets indrukken; elke letter, elk leesteken en elke spatie is een aanslag"
+      "definition": "één teken typen; elke letter, elk leesteken en elke spatie is een aanslag, ook een hoofdletter met Shift"
     }
   ],
   "ted": {
@@ -39,17 +39,13 @@
         {
           "type": "example",
           "text": "Je typt de naam Ted. De T typ je met je linkerwijsvinger. Die hand heeft het al druk. Daarom houdt je rechterpink de Shift ingedrukt.",
-          "sourceRefs": ["uwaterloo-touch-typing", "tameside-touch-typing-basis"]
+          "sourceRefs": ["uwaterloo-touch-typing"]
         },
         {
           "type": "rule",
           "title": "Shift aan de andere kant",
           "text": "Typt je linkerhand de letter? Dan houdt je **rechterpink** de rechter-Shift vast. Typt je rechterhand de letter? Dan houdt je **linkerpink** de linker-Shift vast.",
-          "sourceRefs": [
-            "uwaterloo-touch-typing",
-            "tameside-touch-typing-basis",
-            "isbe-keyboard-technique"
-          ]
+          "sourceRefs": ["uwaterloo-touch-typing", "isbe-keyboard-technique"]
         },
         {
           "type": "text",
@@ -58,7 +54,7 @@
         },
         {
           "type": "text",
-          "text": "Na deze oefening krijg je ook een doel voor je snelheid: 40 aanslagen per minuut. Een [[aanslag]] is één toets, ook een spatie. Alleen goede aanslagen tellen mee.",
+          "text": "Bij deze oefening krijg je ook een doel voor je snelheid: 40 aanslagen per minuut. Een [[aanslag]] is één teken, ook een spatie of een hoofdletter. Alleen goede aanslagen tellen mee.",
           "sourceRefs": []
         },
         {
@@ -67,7 +63,7 @@
             {
               "icon": "check",
               "title": "Voeten plat",
-              "text": "Je voeten staan plat op de grond. Kom je er niet bij? Zet ze op een kistje of een stapel boeken.",
+              "text": "Je voeten staan plat op de grond. Kom je er niet bij? Zet ze op een stevig kistje of een voetsteun.",
               "sourceRefs": ["aap-healthychildren-scherm-rug-ogen", "cesi-beeldschermwerk"]
             },
             {
@@ -113,10 +109,13 @@
             "Typ rustig en goed"
           ],
           "newKeys": ["shift"],
-          "goals": { "accuracy": 90, "keysPerMinute": 40 }
+          "goals": {
+            "accuracy": 90,
+            "keysPerMinute": 40
+          }
         }
       },
-      "sourceRefs": ["uwaterloo-touch-typing", "tameside-touch-typing-basis"]
+      "sourceRefs": ["uwaterloo-touch-typing"]
     },
     {
       "id": "quiz",
@@ -146,7 +145,7 @@
           ],
           "correctOptionId": "links",
           "hints": ["Welke hand typt de k?"],
-          "sourceRefs": ["uwaterloo-touch-typing", "tameside-touch-typing-basis"]
+          "sourceRefs": ["uwaterloo-touch-typing"]
         },
         {
           "id": "shift-vinger",
@@ -182,14 +181,14 @@
               "feedback": "Klopt. Zo staan je voeten toch plat en stevig."
             },
             {
-              "id": "bungelen",
-              "text": "Laat ze lekker bungelen",
-              "feedback": "Dan heeft je lijf geen steun. Zet je voeten op iets stevigs."
+              "id": "hoger",
+              "text": "Zet je stoel nog hoger",
+              "feedback": "Dan kom je nog minder bij de grond. Zet je voeten op een kistje."
             },
             {
-              "id": "zitten",
-              "text": "Ga op je voeten zitten",
-              "feedback": "Dan zit je scheef. Zet je voeten plat op een kistje of boeken."
+              "id": "stoelpoot",
+              "text": "Haak ze om de stoelpoot",
+              "feedback": "Dan staan ze niet plat en zit je scheef. Zet ze op een kistje."
             }
           ],
           "correctOptionId": "kistje",

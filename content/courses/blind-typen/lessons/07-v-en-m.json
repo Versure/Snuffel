@@ -14,7 +14,7 @@
     },
     {
       "term": "thuisrij",
-      "definition": "de middelste rij letters waar je vingers op rusten: a s d f en j k l ;"
+      "definition": "de middelste rij toetsen waar je vingers op rusten: a s d f en j k l ;"
     },
     {
       "term": "nauwkeurigheid",
@@ -49,8 +49,8 @@
         },
         {
           "type": "text",
-          "text": "Omlaag reiken voelt anders dan omhoog. Krul je vinger een klein beetje naar binnen. Je hand blijft liggen op de [[thuisrij]].",
-          "sourceRefs": ["uow-touch-typing", "tameside-touch-typing-basis"]
+          "text": "Houd je vingers licht gebogen, ook als je omlaag reikt. Beweeg alleen die ene vinger en ga meteen terug naar de [[thuisrij]].",
+          "sourceRefs": ["isbe-keyboard-technique", "uow-touch-typing"]
         },
         {
           "type": "text",
@@ -92,7 +92,9 @@
             "vandaag oefen ik weer"
           ],
           "newKeys": ["v", "m"],
-          "goals": { "accuracy": 90 }
+          "goals": {
+            "accuracy": 90
+          }
         }
       },
       "sourceRefs": ["isbe-keyboard-technique", "uwaterloo-touch-typing"]

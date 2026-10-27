@@ -14,7 +14,7 @@
     },
     {
       "term": "thuisrij",
-      "definition": "de middelste rij letters waar je vingers op rusten: a s d f en j k l ;"
+      "definition": "de middelste rij toetsen waar je vingers op rusten: a s d f en j k l ;"
     },
     {
       "term": "voelstreepje",
@@ -52,8 +52,8 @@
         },
         {
           "type": "text",
-          "text": "Je andere vingers blijven liggen waar ze liggen. Zo weet je hand altijd waar hij is.",
-          "sourceRefs": ["tameside-touch-typing-basis"]
+          "text": "Houd je bewegingen klein: alleen je wijsvinger schuift opzij. Na de toets gaat hij meteen terug naar de f of de j.",
+          "sourceRefs": ["uow-touch-typing", "isbe-keyboard-technique"]
         },
         {
           "type": "signal-cards",
@@ -136,9 +136,9 @@
               "feedback": "Die typt de g. De h hoort bij je rechterhand."
             },
             {
-              "id": "rechterduim",
-              "text": "Je rechterduim",
-              "feedback": "Je duimen typen alleen de spatie."
+              "id": "rechtermiddelvinger",
+              "text": "Je rechtermiddelvinger",
+              "feedback": "Die typt de i en de k. De h ligt naast de j."
             }
           ],
           "correctOptionId": "rechterwijsvinger",
@@ -184,9 +184,9 @@
               "feedback": "Dan moeten je ogen nog harder werken."
             },
             {
-              "id": "ogen-wrijven",
-              "text": "Hard in je ogen wrijven",
-              "feedback": "Dat helpt niet. Kijk liever even naar iets dat ver weg is."
+              "id": "telefoon",
+              "text": "Even naar je telefoon kijken",
+              "feedback": "Dan kijken je ogen weer dichtbij. Kijk liever naar iets dat ver weg is."
             }
           ],
           "correctOptionId": "ver-weg",
