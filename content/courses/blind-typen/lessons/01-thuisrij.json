@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "thuisrij",
-  "version": 1,
+  "version": 2,
   "title": "De thuisrij",
   "sticker": "Blind typen · les 1",
   "objective": "Na deze les leg je je vingers op de thuisrij zonder te kijken. Je typt korte woorden met a, s, d, f, j, k, l en de puntkomma.",
@@ -56,8 +56,22 @@
           "sourceRefs": ["isbe-keyboard-technique", "uow-touch-typing"]
         },
         {
+          "type": "figure",
+          "src": "assets/handen-thuisrij.svg",
+          "alt": "Twee handen van bovenaf op de thuisrij. De vingers van je linkerhand liggen op A, S, D en F, die van je rechterhand op J, K, L en de puntkomma. Je duimen liggen op de spatiebalk. Tussen je wijsvingers blijven G en H vrij. Op de F en de J zit een voelstreepje. Elke vingertop heeft de kleur van zijn vinger.",
+          "caption": "Je wijsvingers liggen op de streepjes van F en J.",
+          "sourceRefs": ["isbe-keyboard-technique", "uow-touch-typing"]
+        },
+        {
           "type": "text",
           "text": "Je pinken typen de a en de puntkomma. Je ringvingers typen de s en de l. Je middelvingers typen de d en de k. Je wijsvingers typen de f en de j. De spatie tik je met een duim.",
+          "sourceRefs": ["isbe-keyboard-technique", "uwaterloo-touch-typing"]
+        },
+        {
+          "type": "figure",
+          "src": "assets/toetsen-thuisrij.svg",
+          "alt": "Toetsenbord met de thuisrij in kleur: A en de puntkomma roze voor je pinken, S en L oranje voor je ringvingers, D en K groen voor je middelvingers, F en J geel voor je wijsvingers, en de spatiebalk lila voor je duimen. De andere toetsen zijn wit. Onder het toetsenbord staat welke kleur bij welke vinger hoort.",
+          "caption": "Elke kleur hoort bij een vinger.",
           "sourceRefs": ["isbe-keyboard-technique", "uwaterloo-touch-typing"]
         },
         {
@@ -81,6 +95,16 @@
               "text": "Laat je schouders en armen ontspannen hangen. Je vingers zijn licht gebogen.",
               "sourceRefs": ["isbe-keyboard-technique", "eur-kans-beeldschermwerk"]
             }
+          ]
+        },
+        {
+          "type": "figure",
+          "src": "assets/houding.svg",
+          "alt": "Een kind zit van opzij gezien op een stoel aan een bureau met een toetsenbord en een scherm. Drie labels met een vinkje: rug recht, bij de rug tegen de leuning; losse armen, bij de arm die naar het toetsenbord gaat; voeten plat, bij de voet op de grond.",
+          "sourceRefs": [
+            "isbe-keyboard-technique",
+            "eur-kans-beeldschermwerk",
+            "aap-healthychildren-scherm-rug-ogen"
           ]
         },
         {

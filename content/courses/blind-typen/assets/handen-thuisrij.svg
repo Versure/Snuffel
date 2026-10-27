@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 252">
+  <text x="200" y="28" text-anchor="middle" font-family="Atkinson Hyperlegible, Verdana, sans-serif" font-size="16" font-weight="700" fill="#141414">voelstreepjes op F en J</text>
+  <g stroke="#141414" stroke-width="2">
+    <rect x="10" y="44" width="34" height="56" rx="6" fill="#ffb3cd"/>
+    <rect x="48" y="44" width="34" height="56" rx="6" fill="#ffc078"/>
+    <rect x="86" y="44" width="34" height="56" rx="6" fill="#8fe3a8"/>
+    <rect x="124" y="44" width="34" height="56" rx="6" fill="#ffd83d"/>
+    <rect x="162" y="44" width="34" height="56" rx="6" fill="#ffffff"/>
+    <rect x="200" y="44" width="34" height="56" rx="6" fill="#ffffff"/>
+    <rect x="238" y="44" width="34" height="56" rx="6" fill="#ffd83d"/>
+    <rect x="276" y="44" width="34" height="56" rx="6" fill="#8fe3a8"/>
+    <rect x="314" y="44" width="34" height="56" rx="6" fill="#ffc078"/>
+    <rect x="352" y="44" width="34" height="56" rx="6" fill="#ffb3cd"/>
+    <rect x="158" y="112" width="84" height="30" rx="6" fill="#cfc3e8"/>
+  </g>
+  <g font-family="Atkinson Hyperlegible, Verdana, sans-serif" font-size="16" font-weight="700" text-anchor="middle" fill="#141414">
+    <text x="27" y="66">A</text>
+    <text x="65" y="66">S</text>
+    <text x="103" y="66">D</text>
+    <text x="141" y="66">F</text>
+    <text x="179" y="66">G</text>
+    <text x="217" y="66">H</text>
+    <text x="255" y="66">J</text>
+    <text x="293" y="66">K</text>
+    <text x="331" y="66">L</text>
+    <text x="369" y="66">;</text>
+  </g>
+  <g stroke="#141414" stroke-width="4" stroke-linecap="round">
+    <line x1="133" y1="74" x2="149" y2="74"/>
+    <line x1="247" y1="74" x2="263" y2="74"/>
+  </g>
+  <g stroke-linecap="round">
+    <line x1="27" y1="180" x2="27" y2="88" stroke="#141414" stroke-width="24"/>
+    <line x1="65" y1="180" x2="65" y2="88" stroke="#141414" stroke-width="24"/>
+    <line x1="103" y1="180" x2="103" y2="88" stroke="#141414" stroke-width="24"/>
+    <line x1="141" y1="180" x2="141" y2="88" stroke="#141414" stroke-width="24"/>
+    <line x1="255" y1="180" x2="255" y2="88" stroke="#141414" stroke-width="24"/>
+    <line x1="293" y1="180" x2="293" y2="88" stroke="#141414" stroke-width="24"/>
+    <line x1="331" y1="180" x2="331" y2="88" stroke="#141414" stroke-width="24"/>
+    <line x1="369" y1="180" x2="369" y2="88" stroke="#141414" stroke-width="24"/>
+    <line x1="146" y1="180" x2="184" y2="127" stroke="#141414" stroke-width="24"/>
+    <line x1="254" y1="180" x2="216" y2="127" stroke="#141414" stroke-width="24"/>
+    <line x1="27" y1="180" x2="27" y2="88" stroke="#ffffff" stroke-width="18"/>
+    <line x1="65" y1="180" x2="65" y2="88" stroke="#ffffff" stroke-width="18"/>
+    <line x1="103" y1="180" x2="103" y2="88" stroke="#ffffff" stroke-width="18"/>
+    <line x1="141" y1="180" x2="141" y2="88" stroke="#ffffff" stroke-width="18"/>
+    <line x1="255" y1="180" x2="255" y2="88" stroke="#ffffff" stroke-width="18"/>
+    <line x1="293" y1="180" x2="293" y2="88" stroke="#ffffff" stroke-width="18"/>
+    <line x1="331" y1="180" x2="331" y2="88" stroke="#ffffff" stroke-width="18"/>
+    <line x1="369" y1="180" x2="369" y2="88" stroke="#ffffff" stroke-width="18"/>
+    <line x1="146" y1="180" x2="184" y2="127" stroke="#ffffff" stroke-width="18"/>
+    <line x1="254" y1="180" x2="216" y2="127" stroke="#ffffff" stroke-width="18"/>
+  </g>
+  <g stroke="#141414" stroke-width="3">
+    <rect x="12" y="174" width="148" height="66" rx="24" fill="#141414"/>
+    <rect x="246" y="174" width="148" height="66" rx="24" fill="#141414"/>
+    <rect x="6" y="168" width="148" height="66" rx="24" fill="#ffffff"/>
+    <rect x="240" y="168" width="148" height="66" rx="24" fill="#ffffff"/>
+  </g>
+  <g stroke="#141414" stroke-width="2">
+    <circle cx="27" cy="88" r="9" fill="#ffb3cd"/>
+    <circle cx="65" cy="88" r="9" fill="#ffc078"/>
+    <circle cx="103" cy="88" r="9" fill="#8fe3a8"/>
+    <circle cx="141" cy="88" r="9" fill="#ffd83d"/>
+    <circle cx="255" cy="88" r="9" fill="#ffd83d"/>
+    <circle cx="293" cy="88" r="9" fill="#8fe3a8"/>
+    <circle cx="331" cy="88" r="9" fill="#ffc078"/>
+    <circle cx="369" cy="88" r="9" fill="#ffb3cd"/>
+    <circle cx="184" cy="127" r="9" fill="#cfc3e8"/>
+    <circle cx="216" cy="127" r="9" fill="#cfc3e8"/>
+  </g>
+  <g font-family="Atkinson Hyperlegible, Verdana, sans-serif" font-size="18" font-weight="700" text-anchor="middle" fill="#141414">
+    <text x="80" y="207">linkerhand</text>
+    <text x="314" y="207">rechterhand</text>
+  </g>
+</svg>
