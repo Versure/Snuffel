@@ -24,7 +24,7 @@ In `templates/` staan bouwstenen in deze stijl. Kopieer er een naar `assets/` va
 | `step-number.svg`     | genummerde stappen (paars bolletje met wit cijfer) met pijlen ertussen                                                                                      |
 | `keyboard-qwerty.svg` | een QWERTY-toetsenbord met dezelfde toetsen en vingerkleuren als de typoefening; een toets is een `<rect>` met `data-key`, de voelstreepjes staan op F en J |
 
-Een toets van het toetsenbord aanpassen is één attribuut: `fill="#ffffff"` voor een toets die nog niet geleerd is, of `stroke="#5b2bb5" stroke-width="4"` om hem te omranden. Met de `viewBox` laat je een deel zien, bijv. `viewBox="0 34 400 88"` voor de drie letterrijen. De labels van het hele toetsenbord zijn kleiner dan 16 (15 toetsen naast elkaar); dat is de enige uitzondering, net als in de typoefening zelf.
+Een toets van het toetsenbord aanpassen is één attribuut: `fill="#ffffff"` voor een toets die nog niet geleerd is, of `stroke="#5b2bb5" stroke-width="4"` om hem te omranden. Met de `viewBox` laat je een deel zien, bijv. `viewBox="0 34 400 88"` voor de drie letterrijen. De letters op het hele toetsenbord zijn kleiner dan 15 (12, want er staan 15 toetsen naast elkaar); dat is de enige uitzondering, net als in de typoefening zelf.
 
 ## Palet
 
@@ -59,7 +59,7 @@ Alleen deze kleuren; ze staan in `palette.json` en komen uit `web/src/styles/tok
 - **Harde schaduw:** een zwarte kopie van de vorm, 6 naar rechts en 6 naar beneden, achter de vorm (eerst tekenen). Alleen onder de grote vormen, niet onder elke toets of elk label.
 - **Schematisch, niet realistisch.** Een hand is een vlak met vijf ronde vingertoppen, een toetsenbord is een raster van afgeronde rechthoeken. Geen schaduwen met verloop, geen 3D, geen foto's.
 - **Rustig:** hoogstens één ding dat opvalt (een accentkleur, een pijl of een omranding). Laat ruimte tussen vormen (minstens 8).
-- **Groot genoeg voor een telefoon:** op een telefoon is een tekening van 400 breed ongeveer 300 tot 340 pixels breed. Labels zijn daarom minstens `font-size="16"`, liever 18; lijnen minstens 2.
+- **Groot genoeg voor een telefoon:** op een telefoon is een tekening van 400 breed ongeveer 300 tot 340 pixels breed. Labels zijn daarom minstens `font-size="15"`, liever 16 tot 18; lijnen minstens 2.
 - Hoogstens **40 kB** per svg (`asset-too-large`). Een met de hand geschreven tekening blijft daar ruim onder.
 
 ## Tekst in een tekening
