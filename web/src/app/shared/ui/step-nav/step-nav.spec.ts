@@ -8,6 +8,7 @@ import { StepNav, type StepNavItem } from './step-nav';
   template: `<snf-step-nav
     [steps]="steps()"
     [done]="done()"
+    [started]="started()"
     (navigate)="navigated.push($event)"
   />`,
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -20,6 +21,7 @@ class Host {
     { id: 'zelf-doen', label: 'Zelf doen' },
   ]);
   readonly done = signal<readonly string[]>([]);
+  readonly started = signal<readonly string[]>([]);
   readonly navigated: string[] = [];
 }
 
@@ -80,6 +82,36 @@ describe('StepNav', () => {
     expect(links()[2].querySelector('.snf-visually-hidden')?.textContent?.trim()).toBe(
       'Stap 3: Quiz (klaar)',
     );
+  });
+
+  it('shows done and started steps with a visible status, not only a colour', async () => {
+    const { fixture, element, links } = await render();
+    expect(element.querySelectorAll('.status')).toHaveLength(0);
+    fixture.componentInstance.done.set(['uitleg', 'spel']);
+    // A step in both lists counts as done.
+    fixture.componentInstance.started.set(['spel', 'quiz']);
+    await fixture.whenStable();
+    expect([...element.querySelectorAll('li')].map((item) => item.className.trim())).toEqual([
+      'done',
+      'done',
+      'started',
+      '',
+    ]);
+    expect(links().map((link) => link.querySelector('.status')?.textContent ?? null)).toEqual([
+      'klaar ✓',
+      'klaar ✓',
+      'bezig',
+      null,
+    ]);
+    expect(links()[2].querySelector('.status')?.getAttribute('aria-hidden')).toBe('true');
+    expect(
+      links().map((link) => link.querySelector('.snf-visually-hidden')?.textContent?.trim()),
+    ).toEqual([
+      'Stap 1: Uitleg (klaar)',
+      'Stap 2: Spel (klaar)',
+      'Stap 3: Quiz (bezig)',
+      'Stap 4: Zelf doen',
+    ]);
   });
 
   it('emits navigate', async () => {

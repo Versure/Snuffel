@@ -155,8 +155,9 @@ test.describe('les 1', () => {
     );
     await expect(navLink(page, 4, label(3), true)).toBeVisible();
 
-    // Ted at the end, four filled circles.
-    await expect(page.locator('snf-ted-says.finished')).toContainText(
+    // Ted at the end, no open steps, four filled circles.
+    await expect(page.locator('.finished .not-yet')).toHaveCount(0);
+    await expect(page.locator('.finished snf-ted-says')).toContainText(
       normalize(plainText(les1.ted.finished)),
     );
     await expect(

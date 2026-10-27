@@ -24,10 +24,12 @@ import { LessonContext } from '../../shared/lesson-context/lesson-context';
 import { LessonProgress } from '../../shared/lesson-progress/lesson-progress';
 import { Band } from '../../shared/ui/band/band';
 import { Button } from '../../shared/ui/button/button';
+import { ProgressBar } from '../../shared/ui/progress-bar/progress-bar';
 import { STEP_ANCHOR_PREFIX, StepNav } from '../../shared/ui/step-nav/step-nav';
 import { Sticker } from '../../shared/ui/sticker/sticker';
 import { TedSays } from '../../shared/ui/ted-says/ted-says';
 import { LessonEnd } from './lesson-end/lesson-end';
+import { LessonFinish } from './lesson-finish/lesson-finish';
 import { LessonStep, stepHeadingId, stepSectionId } from './lesson-step/lesson-step';
 import { stepLabel } from './step-label';
 
@@ -51,7 +53,19 @@ export const STEP_SCROLL_MAX_WAIT_MS = 1500;
  */
 @Component({
   selector: 'snf-lesson',
-  imports: [Band, Button, InlineText, LessonEnd, LessonStep, RouterLink, StepNav, Sticker, TedSays],
+  imports: [
+    Band,
+    Button,
+    InlineText,
+    LessonEnd,
+    LessonFinish,
+    LessonStep,
+    ProgressBar,
+    RouterLink,
+    StepNav,
+    Sticker,
+    TedSays,
+  ],
   providers: [LessonContext, LessonProgress],
   templateUrl: './lesson.html',
   styleUrl: './lesson.css',
@@ -126,6 +140,27 @@ export class Lesson {
   protected readonly navItems = computed(() =>
     (this.lesson()?.steps ?? []).map((step) => ({ id: step.id, label: stepLabel(step) })),
   );
+
+  /** The steps for the end of the lesson, which lists the ones that are not done yet. */
+  protected readonly finishSteps = computed(() =>
+    (this.lesson()?.steps ?? []).map((step) => ({
+      id: step.id,
+      label: stepLabel(step),
+      title: step.title,
+    })),
+  );
+
+  /** Completed steps of this lesson (a stored id of a step that no longer exists is not counted). */
+  protected readonly doneCount = computed(() => {
+    const ids = new Set(this.navItems().map((item) => item.id));
+    return this.progress.doneSteps().filter((id) => ids.has(id)).length;
+  });
+
+  protected readonly progressLabel = computed(() => {
+    const done = this.doneCount();
+    const total = this.navItems().length;
+    return done === total ? 'Alle stappen klaar!' : `${done} van ${total} stappen klaar`;
+  });
 
   protected readonly pageTitle = computed(() => {
     const state = this.state();

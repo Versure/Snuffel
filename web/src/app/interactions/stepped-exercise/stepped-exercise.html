@@ -5,6 +5,15 @@
       <h3 class="heading" [id]="headingId" tabindex="-1">
         Opgave {{ index() + 1 }} van {{ total() }}
       </h3>
+      @if (total() > 1) {
+        <snf-progress-bar
+          class="series-progress"
+          [name]="text.progressName"
+          [value]="finishedCount()"
+          [max]="total()"
+          [label]="text.progress(finishedCount(), total())"
+        />
+      }
       <p class="prompt" [id]="promptId"><snf-inline-text [text]="current.prompt" /></p>
 
       @if (current.answer.type === 'choice') {
@@ -153,6 +162,9 @@
           <button snf-button type="button" variant="pink" class="next" (click)="next()">
             {{ isLast() ? text.done : text.next }}
           </button>
+          @if (remaining()) {
+            <span class="remaining">{{ text.remaining(remaining()) }}</span>
+          }
         </div>
       }
     </snf-card>

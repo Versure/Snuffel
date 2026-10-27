@@ -24,6 +24,7 @@ import { InlineText } from '../../shared/inline-text/inline-text/inline-text';
 import { pick, shuffle } from '../../shared/quiz/shuffle';
 import { Button } from '../../shared/ui/button/button';
 import { Card } from '../../shared/ui/card/card';
+import { ProgressBar } from '../../shared/ui/progress-bar/progress-bar';
 import { TedSays } from '../../shared/ui/ted-says/ted-says';
 import type { TedMood } from '../../shared/ui/ted/ted';
 import type { InteractionComponent, InteractionResult } from '../interaction';
@@ -59,6 +60,10 @@ export const EXERCISE_TEXT = {
   finishedTitle: 'Klaar!',
   finishedRetry: 'Kijk de uitwerkingen nog eens rustig na. Morgen gaat het nog beter.',
   reading: 'Zo lees ik jouw antwoord:',
+  progressName: 'Opgaven',
+  progress: (done: number, total: number) => `${done} van ${total} opgaven klaar`,
+  remaining: (count: number) =>
+    count === 1 ? 'Er komt nog 1 opgave.' : `Er komen nog ${count} opgaven.`,
 } as const;
 
 /** What Ted says: his mood and the parts of his text (lesson text with inline markup). */
@@ -94,7 +99,7 @@ let nextId = 0;
  */
 @Component({
   selector: 'snf-stepped-exercise',
-  imports: [Button, Card, Fraction, InlineText, TedSays],
+  imports: [Button, Card, Fraction, InlineText, ProgressBar, TedSays],
   templateUrl: './stepped-exercise.html',
   styleUrl: './stepped-exercise.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -141,6 +146,12 @@ export class SteppedExercise implements InteractionComponent<SteppedExerciseConf
   );
   protected readonly progress = computed(() => this.progresses()[this.index()] ?? NO_PROGRESS);
   protected readonly isLast = computed(() => this.index() + 1 >= this.total());
+  /** Exercises of this series that are done: shown in a bar, so no exercise is overlooked. */
+  protected readonly finishedCount = computed(
+    () => this.progresses().filter((progress) => isFinished(progress)).length,
+  );
+  /** Exercises after this one. */
+  protected readonly remaining = computed(() => Math.max(0, this.total() - this.index() - 1));
 
   /** The options of every choice exercise, in a new random order per series. */
   private readonly shuffled = computed(() => {

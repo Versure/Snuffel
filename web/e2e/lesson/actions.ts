@@ -99,11 +99,20 @@ export function checkbox(page: Page, itemId: string, step: PracticeStep = practi
   return section(page, step.id).getByRole('checkbox', { name: spokenText(item.text) });
 }
 
-/** The link of a step in the step navigation, with or without " (klaar)". */
-export function navLink(page: Page, number: number, label: string, done: boolean): Locator {
+/**
+ * The link of a step in the step navigation: `true` done (" (klaar)"), `'started'` begun
+ * (" (bezig)"), `false` not begun (no suffix).
+ */
+export function navLink(
+  page: Page,
+  number: number,
+  label: string,
+  done: boolean | 'started',
+): Locator {
+  const suffix = done === 'started' ? ' (bezig)' : done ? ' (klaar)' : '';
   return page
     .getByRole('navigation', { name: 'Stappen van deze les' })
-    .getByRole('link', { name: `Stap ${number}: ${label}${done ? ' (klaar)' : ''}`, exact: true });
+    .getByRole('link', { name: `Stap ${number}: ${label}${suffix}`, exact: true });
 }
 
 /**

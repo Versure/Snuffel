@@ -135,7 +135,9 @@ describe('Lesson', () => {
     expect(element.querySelector('snf-interaction')).not.toBeNull();
     expect(element.querySelector('snf-quiz')).not.toBeNull();
     expect(element.querySelector('snf-checklist')).not.toBeNull();
-    expect(textOf(element.querySelector('.finished'))).toBe(
+    // Nothing is done yet: under Ted's line the end lists every step.
+    expect(element.querySelectorAll('.finished a.open-step')).toHaveLength(4);
+    expect(textOf(element.querySelector('.finished snf-speech-bubble'))).toBe(
       'Tijd voor het echte werk aan de waterkant.',
     );
     expect(
@@ -305,6 +307,42 @@ describe('Lesson', () => {
       false,
     ]);
     expect(textOf(items[0].querySelector('.snf-visually-hidden'))).toBe('Stap 1: Uitleg (klaar)');
+    expect(items.map((item) => item.classList.contains('started'))).toEqual([
+      false,
+      false,
+      true,
+      false,
+    ]);
+    expect(textOf(items[2].querySelector('.snf-visually-hidden'))).toBe('Stap 3: Quiz (bezig)');
+    const bar = element.querySelector('.lesson-progress [role="progressbar"]');
+    expect(bar?.getAttribute('aria-label')).toBe('Voortgang in deze les');
+    expect(bar?.getAttribute('aria-valuetext')).toBe('1 van 4 stappen klaar');
+    expect(
+      [...element.querySelectorAll('.finished a.open-step')].map(
+        (link) => link.getAttribute('href')?.split('#')[1],
+      ),
+    ).toEqual(['stap-spel', 'stap-quiz', 'stap-zelf-doen']);
+  });
+
+  it('lists no open steps when every step is done', async () => {
+    loadProgress.mockResolvedValue({
+      steps: new Map<string, StepProgress>(
+        lesson.steps.map((step, index) => [step.id, { id: `p${index}`, status: 'completed' }]),
+      ),
+      checklists: new Map(),
+      attempts: [],
+      results: [],
+    });
+    const { element } = await open();
+    expect(
+      element
+        .querySelector('.lesson-progress [role="progressbar"]')
+        ?.getAttribute('aria-valuetext'),
+    ).toBe('Alle stappen klaar!');
+    expect(element.querySelector('.finished a.open-step')).toBeNull();
+    expect(textOf(element.querySelector('.finished'))).toBe(
+      'Tijd voor het echte werk aan de waterkant.',
+    );
   });
 
   it('the lesson stays readable when progress cannot be loaded', async () => {
@@ -322,6 +360,11 @@ describe('Lesson', () => {
     expect(boxes.length).toBe(4);
     expect(boxes.every((box) => box.disabled)).toBe(true);
     expect(element.querySelectorAll('snf-step-nav li.done')).toHaveLength(0);
+    // Without progress the page says nothing about open steps.
+    expect(element.querySelector('.lesson-progress')).toBeNull();
+    expect(textOf(element.querySelector('.finished'))).toBe(
+      'Tijd voor het echte werk aan de waterkant.',
+    );
   });
 
   describe('the step anchor in the url', () => {
