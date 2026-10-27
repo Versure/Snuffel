@@ -1,0 +1,252 @@
+{
+  "schemaVersion": 1,
+  "id": "hoofdletters",
+  "version": 1,
+  "title": "Hoofdletters met Shift",
+  "sticker": "Blind typen · les 10",
+  "objective": "Na deze les typ je hoofdletters met de Shift aan de andere kant. Je stelt je stoel zo in dat je voeten plat staan.",
+  "concept": "hoofdletters met de andere hand",
+  "estimatedMinutes": 10,
+  "glossary": [
+    {
+      "term": "blind typen",
+      "definition": "typen met tien vingers zonder naar het toetsenbord te kijken"
+    },
+    {
+      "term": "thuisrij",
+      "definition": "de middelste rij toetsen waar je vingers op rusten: a s d f en j k l ;"
+    },
+    {
+      "term": "aanslag",
+      "definition": "één teken typen; elke letter, elk leesteken en elke spatie is een aanslag, ook een hoofdletter met Shift"
+    }
+  ],
+  "ted": {
+    "intro": {
+      "mood": "cool",
+      "text": "Je kent alle letters. Nu de grote versie: hoofdletters. Twee handen, één team."
+    },
+    "correct": ["Strak met Shift!", "Twee handen, één team.", "Lekker!"],
+    "incorrect": ["Bijna. Shift aan de andere kant.", "Rustig aan, eerst goed."],
+    "finished": "Hoofdletters zitten erin. Je typt nu echte namen en zinnen."
+  },
+  "steps": [
+    {
+      "id": "uitleg",
+      "type": "explain",
+      "title": "Shift met de andere hand",
+      "blocks": [
+        {
+          "type": "example",
+          "text": "Je typt de naam Ted. De T typ je met je linkerwijsvinger. Die hand heeft het al druk. Daarom houdt je rechterpink de Shift ingedrukt.",
+          "sourceRefs": ["uwaterloo-touch-typing"]
+        },
+        {
+          "type": "rule",
+          "title": "Shift aan de andere kant",
+          "text": "Typt je linkerhand de letter? Dan houdt je **rechterpink** de rechter-Shift vast. Typt je rechterhand de letter? Dan houdt je **linkerpink** de linker-Shift vast.",
+          "sourceRefs": ["uwaterloo-touch-typing", "isbe-keyboard-technique"]
+        },
+        {
+          "type": "text",
+          "text": "Houd Shift vast, tik de letter, en laat dan pas los. Daarna gaan allebei je vingers terug naar de [[thuisrij]]. Caps Lock gebruik je niet voor één hoofdletter.",
+          "sourceRefs": ["isbe-keyboard-technique"]
+        },
+        {
+          "type": "text",
+          "text": "Bij deze oefening krijg je ook een doel voor je snelheid: 40 aanslagen per minuut. Een [[aanslag]] is één teken, ook een spatie of een hoofdletter. Alleen goede aanslagen tellen mee.",
+          "sourceRefs": []
+        },
+        {
+          "type": "signal-cards",
+          "cards": [
+            {
+              "icon": "check",
+              "title": "Voeten plat",
+              "text": "Je voeten staan plat op de grond. Kom je er niet bij? Zet ze op een stevig kistje of een voetsteun.",
+              "sourceRefs": ["aap-healthychildren-scherm-rug-ogen", "cesi-beeldschermwerk"]
+            },
+            {
+              "icon": "check",
+              "title": "Knieën vrij",
+              "text": "De rand van de stoel drukt niet in je knieholtes.",
+              "sourceRefs": ["cornell-ergonomie-kinderen-computer"]
+            },
+            {
+              "icon": "check",
+              "title": "Rug gesteund",
+              "text": "Je rug leunt tegen de leuning van de stoel.",
+              "sourceRefs": ["cornell-ergonomie-kinderen-computer", "eur-kans-beeldschermwerk"]
+            }
+          ]
+        },
+        {
+          "type": "ted-says",
+          "mood": "thinking",
+          "text": "Bij [[blind typen]] werken je handen samen. De ene typt, de andere helpt.",
+          "sourceRefs": []
+        }
+      ]
+    },
+    {
+      "id": "typen",
+      "type": "interaction",
+      "title": "Typ met hoofdletters",
+      "intro": "Kijk op het toetsenbord welke Shift oplicht. Het is altijd die aan de andere kant.",
+      "interaction": {
+        "id": "hoofdletters-typen",
+        "kind": "typing-drill",
+        "config": {
+          "lines": [
+            "Aa Ss Dd Ff Jj Kk Ll",
+            "Ted Ted Ted",
+            "Utrecht Gouda Breda",
+            "Den Haag en Zwolle",
+            "Ted typt met tien vingers",
+            "Ik zit recht",
+            "De Rijn en de Maas",
+            "Maandag oefen ik weer",
+            "Typ rustig en goed"
+          ],
+          "newKeys": ["shift"],
+          "goals": {
+            "accuracy": 90,
+            "keysPerMinute": 40
+          }
+        }
+      },
+      "sourceRefs": ["uwaterloo-touch-typing"]
+    },
+    {
+      "id": "quiz",
+      "type": "quiz",
+      "title": "Quiz: hoofdletters en je stoel",
+      "intro": "Drie vragen over Shift en je stoel.",
+      "questions": [
+        {
+          "id": "shift-k",
+          "prompt": "Je typt een hoofdletter K. Welke Shift gebruik je?",
+          "options": [
+            {
+              "id": "links",
+              "text": "De linker-Shift",
+              "feedback": "Klopt. De k typ je rechts, dus je linkerpink doet Shift."
+            },
+            {
+              "id": "rechts",
+              "text": "De rechter-Shift",
+              "feedback": "De k typ je met je rechterhand. Dan doet je linkerhand de Shift."
+            },
+            {
+              "id": "caps",
+              "text": "De Caps Lock",
+              "feedback": "Caps Lock zet alles in hoofdletters. Voor één letter gebruik je Shift."
+            }
+          ],
+          "correctOptionId": "links",
+          "hints": ["Welke hand typt de k?"],
+          "sourceRefs": ["uwaterloo-touch-typing"]
+        },
+        {
+          "id": "shift-vinger",
+          "prompt": "Met welke vinger houd je Shift vast?",
+          "options": [
+            {
+              "id": "pink",
+              "text": "Met een pink",
+              "feedback": "Klopt. De pink van de andere hand houdt Shift vast."
+            },
+            {
+              "id": "duim",
+              "text": "Met een duim",
+              "feedback": "Je duimen zijn voor de spatiebalk. Shift doe je met je pink."
+            },
+            {
+              "id": "wijsvinger",
+              "text": "Met een wijsvinger",
+              "feedback": "Die moet op de thuisrij blijven. Shift doe je met je pink."
+            }
+          ],
+          "correctOptionId": "pink",
+          "hints": ["Shift zit helemaal aan de buitenkant."],
+          "sourceRefs": ["isbe-keyboard-technique", "uwaterloo-touch-typing"]
+        },
+        {
+          "id": "voeten",
+          "prompt": "Je voeten komen niet bij de grond. Wat doe je?",
+          "options": [
+            {
+              "id": "kistje",
+              "text": "Zet ze op een kistje",
+              "feedback": "Klopt. Zo staan je voeten toch plat en stevig."
+            },
+            {
+              "id": "hoger",
+              "text": "Zet je stoel nog hoger",
+              "feedback": "Dan kom je nog minder bij de grond. Zet je voeten op een kistje."
+            },
+            {
+              "id": "stoelpoot",
+              "text": "Haak ze om de stoelpoot",
+              "feedback": "Dan staan ze niet plat en zit je scheef. Zet ze op een kistje."
+            }
+          ],
+          "correctOptionId": "kistje",
+          "hints": ["Je voeten willen plat staan."],
+          "sourceRefs": ["aap-healthychildren-scherm-rug-ogen", "cesi-beeldschermwerk"]
+        }
+      ]
+    },
+    {
+      "id": "zelf-oefenen",
+      "type": "practice",
+      "practiceKind": "do-it-yourself",
+      "title": "Zelf oefenen: hoofdletters",
+      "intro": "Oefen deze week nog twee keer kort, op een andere dag dan vandaag.",
+      "items": [
+        {
+          "id": "check-houding",
+          "text": "Zet je voeten plat op de grond of op een kistje.",
+          "sourceRefs": ["aap-healthychildren-scherm-rug-ogen"]
+        },
+        {
+          "id": "check-streepjes",
+          "text": "Leg je wijsvingers op de streepjes van de f en de j, zonder te kijken.",
+          "sourceRefs": ["isbe-keyboard-technique"]
+        },
+        {
+          "id": "check-vingers",
+          "text": "Typ de namen van drie vrienden, met Shift aan de andere kant.",
+          "sourceRefs": ["uwaterloo-touch-typing"]
+        },
+        {
+          "id": "check-oefening",
+          "text": "Doe de typoefening van deze les nog een keer.",
+          "sourceRefs": ["district30-keyboarding-basisschool"]
+        },
+        {
+          "id": "check-pauze",
+          "text": "Sta na het oefenen op en loop even rond.",
+          "sourceRefs": ["aap-healthychildren-scherm-rug-ogen"]
+        }
+      ],
+      "successCriterion": "Gelukt als je 'Den Haag en Zwolle' typt met de goede Shift, zonder te kijken."
+    }
+  ],
+  "furtherReading": [
+    {
+      "sourceRef": "uwaterloo-touch-typing",
+      "why": "Typcursus met per letter de goede vinger en uitleg over Shift, in het Engels."
+    }
+  ],
+  "faq": [
+    {
+      "q": "Waarom niet gewoon Caps Lock?",
+      "a": "Met Caps Lock moet je twee keer extra drukken: aan en weer uit. En vergeet je hem, dan typ je alles in hoofdletters."
+    },
+    {
+      "q": "Ik haal de 40 aanslagen nog niet. Is dat erg?",
+      "a": "Nee. Goed typen gaat voor snel typen. De snelheid komt met oefenen vanzelf."
+    }
+  ]
+}

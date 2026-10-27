@@ -1,0 +1,242 @@
+{
+  "schemaVersion": 1,
+  "id": "b-p-en-c",
+  "version": 1,
+  "title": "De b, de p en de c",
+  "sticker": "Blind typen · les 8",
+  "objective": "Na deze les typ je de b, de p en de c met de goede vinger. Je houdt je polsen recht tijdens het typen.",
+  "concept": "reiken met wijsvinger, middelvinger en pink",
+  "estimatedMinutes": 10,
+  "glossary": [
+    {
+      "term": "blind typen",
+      "definition": "typen met tien vingers zonder naar het toetsenbord te kijken"
+    },
+    {
+      "term": "thuisrij",
+      "definition": "de middelste rij toetsen waar je vingers op rusten: a s d f en j k l ;"
+    }
+  ],
+  "ted": {
+    "intro": {
+      "mood": "happy",
+      "text": "Drie nieuwe letters vandaag! En we letten op je polsen. Die verdienen ook wat aandacht."
+    },
+    "correct": ["Top!", "Strak getypt!", "Je polsen zijn blij."],
+    "incorrect": ["Bijna. Even rustig terug naar de thuisrij.", "Geen punt. Drie nieuwe is veel."],
+    "finished": "Nog een paar letters en je kent ze allemaal!"
+  },
+  "steps": [
+    {
+      "id": "uitleg",
+      "type": "explain",
+      "title": "Drie nieuwe letters en rechte polsen",
+      "blocks": [
+        {
+          "type": "example",
+          "text": "Leg je polsen eens plat op tafel en typ een woord. Je vingers moeten dan ver reiken. Je polsen knikken naar boven. Dat is zwaar voor je polsen en je onderarmen.",
+          "sourceRefs": ["cornell-ergonomie-kinderen-computer", "cesi-beeldschermwerk"]
+        },
+        {
+          "type": "rule",
+          "title": "Wie typt wat?",
+          "text": "De **b** zit schuin onder de g. Die typ je met je linkerwijsvinger. De **c** zit schuin onder de d. Die typ je met je linkermiddelvinger. De **p** zit schuin boven de puntkomma. Die typ je met je rechterpink.",
+          "sourceRefs": ["isbe-keyboard-technique", "uwaterloo-touch-typing"]
+        },
+        {
+          "type": "text",
+          "text": "Je linkerwijsvinger heeft nu zes toetsen: f, g, r, t, v en b. Ga na elke toets terug naar de f op de [[thuisrij]].",
+          "sourceRefs": ["isbe-keyboard-technique"]
+        },
+        {
+          "type": "signal-cards",
+          "cards": [
+            {
+              "icon": "check",
+              "title": "Recht",
+              "text": "Je hand en je onderarm vormen één rechte lijn.",
+              "sourceRefs": ["cornell-ergonomie-kinderen-computer", "cesi-beeldschermwerk"]
+            },
+            {
+              "icon": "check",
+              "title": "Zwevend",
+              "text": "Tijdens het typen zweven je polsen net boven het toetsenbord.",
+              "sourceRefs": ["isbe-keyboard-technique", "aap-healthychildren-scherm-rug-ogen"]
+            },
+            {
+              "icon": "cross",
+              "title": "Niet leunen",
+              "text": "Leun tijdens het typen niet op je polsen.",
+              "sourceRefs": ["aap-healthychildren-scherm-rug-ogen", "isbe-keyboard-technique"]
+            }
+          ]
+        },
+        {
+          "type": "ted-says",
+          "mood": "cool",
+          "text": "Bij [[blind typen]] doen je vingers het werk. Je polsen blijven rustig.",
+          "sourceRefs": ["isbe-keyboard-technique"]
+        }
+      ]
+    },
+    {
+      "id": "typen",
+      "type": "interaction",
+      "title": "Typ met b, p en c",
+      "intro": "Houd je polsen recht en laat ze net boven de toetsen zweven.",
+      "interaction": {
+        "id": "b-p-en-c-typen",
+        "kind": "typing-drill",
+        "config": {
+          "lines": [
+            "ff fb fb bf ;; ;p ;p p;",
+            "dd dc dc cd fbf ;p; dcd",
+            "boek pak cel bal pen",
+            "computer; pols; pink",
+            "school club camping",
+            "mijn polsen hangen los",
+            "de pink doet de p",
+            "ik oefen op de computer",
+            "beter en beter"
+          ],
+          "newKeys": ["b", "p", "c"],
+          "goals": {
+            "accuracy": 90
+          }
+        }
+      },
+      "sourceRefs": ["isbe-keyboard-technique", "uwaterloo-touch-typing"]
+    },
+    {
+      "id": "quiz",
+      "type": "quiz",
+      "title": "Quiz: b, p, c en je polsen",
+      "intro": "Drie vragen over de nieuwe letters en je polsen.",
+      "questions": [
+        {
+          "id": "vinger-p",
+          "prompt": "Met welke vinger typ je de p?",
+          "options": [
+            {
+              "id": "rechterpink",
+              "text": "Je rechterpink",
+              "feedback": "Klopt. De p zit schuin boven de puntkomma."
+            },
+            {
+              "id": "rechterring",
+              "text": "Je rechterringvinger",
+              "feedback": "Je rechterringvinger typt de o. De p zit één toets verder."
+            },
+            {
+              "id": "rechterwijsvinger",
+              "text": "Je rechterwijsvinger",
+              "feedback": "Die rust op de j, ver van de p."
+            }
+          ],
+          "correctOptionId": "rechterpink",
+          "hints": ["Welke vinger rust op de puntkomma?"],
+          "sourceRefs": ["isbe-keyboard-technique", "uwaterloo-touch-typing"]
+        },
+        {
+          "id": "vinger-c",
+          "prompt": "Met welke vinger typ je de c?",
+          "options": [
+            {
+              "id": "linkermiddelvinger",
+              "text": "Je linkermiddelvinger",
+              "feedback": "Klopt. De c zit schuin onder de d."
+            },
+            {
+              "id": "linkerwijsvinger",
+              "text": "Je linkerwijsvinger",
+              "feedback": "Die typt de v en de b. De c zit één toets verder naar links."
+            },
+            {
+              "id": "linkerringvinger",
+              "text": "Je linkerringvinger",
+              "feedback": "Die zit op de s. De c zit onder de d."
+            }
+          ],
+          "correctOptionId": "linkermiddelvinger",
+          "hints": ["Boven de c zit de d."],
+          "sourceRefs": ["isbe-keyboard-technique", "uwaterloo-touch-typing"]
+        },
+        {
+          "id": "polsen",
+          "prompt": "Hoe houd je je polsen tijdens het typen?",
+          "options": [
+            {
+              "id": "recht",
+              "text": "Recht en zwevend",
+              "feedback": "Klopt. Je hand en onderarm vormen één lijn."
+            },
+            {
+              "id": "plat",
+              "text": "Plat op de tafel",
+              "feedback": "Dan knikken je polsen omhoog. Laat ze net boven de toetsen zweven."
+            },
+            {
+              "id": "geknikt",
+              "text": "Geknikt naar boven",
+              "feedback": "Een geknikte pols is zwaar voor je arm. Houd hem recht."
+            }
+          ],
+          "correctOptionId": "recht",
+          "hints": ["Denk aan één rechte lijn."],
+          "sourceRefs": [
+            "cornell-ergonomie-kinderen-computer",
+            "isbe-keyboard-technique",
+            "aap-healthychildren-scherm-rug-ogen"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "zelf-oefenen",
+      "type": "practice",
+      "practiceKind": "do-it-yourself",
+      "title": "Zelf oefenen: b, p en c",
+      "intro": "Oefen deze week nog twee keer kort, op een andere dag dan vandaag.",
+      "items": [
+        {
+          "id": "check-houding",
+          "text": "Kijk tijdens het typen één keer naar je polsen: zijn ze recht?",
+          "sourceRefs": ["cornell-ergonomie-kinderen-computer"]
+        },
+        {
+          "id": "check-streepjes",
+          "text": "Leg je wijsvingers op de streepjes van de f en de j, zonder te kijken.",
+          "sourceRefs": ["isbe-keyboard-technique"]
+        },
+        {
+          "id": "check-vingers",
+          "text": "Typ de b, de p en de c met de goede vinger, en ga steeds terug.",
+          "sourceRefs": ["isbe-keyboard-technique"]
+        },
+        {
+          "id": "check-oefening",
+          "text": "Doe de typoefening van les 7 en van deze les nog een keer.",
+          "sourceRefs": ["district30-keyboarding-basisschool"]
+        },
+        {
+          "id": "check-pauze",
+          "text": "Sta na het oefenen op en schud je handen even los.",
+          "sourceRefs": ["aap-healthychildren-scherm-rug-ogen"]
+        }
+      ],
+      "successCriterion": "Gelukt als je 'ik oefen op de computer' typt met rechte polsen, zonder te kijken."
+    }
+  ],
+  "furtherReading": [
+    {
+      "sourceRef": "cesi-beeldschermwerk",
+      "why": "Informatiefiche in het Nederlands over toetsenbord, stoel en scherm."
+    }
+  ],
+  "faq": [
+    {
+      "q": "Mag ik een polssteun gebruiken?",
+      "a": "Je mag je polsen even laten rusten tussen het typen door. Tijdens het typen leun je er niet op."
+    }
+  ]
+}

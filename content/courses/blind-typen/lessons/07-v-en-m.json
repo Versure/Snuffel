@@ -1,0 +1,230 @@
+{
+  "schemaVersion": 1,
+  "id": "v-en-m",
+  "version": 1,
+  "title": "Naar beneden: v en m",
+  "sticker": "Blind typen · les 7",
+  "objective": "Na deze les typ je de v en de m met je wijsvingers. Je weet waarom je eerst goed typt en pas daarna snel.",
+  "concept": "wijsvingers omlaag reiken",
+  "estimatedMinutes": 10,
+  "glossary": [
+    {
+      "term": "blind typen",
+      "definition": "typen met tien vingers zonder naar het toetsenbord te kijken"
+    },
+    {
+      "term": "thuisrij",
+      "definition": "de middelste rij toetsen waar je vingers op rusten: a s d f en j k l ;"
+    },
+    {
+      "term": "nauwkeurigheid",
+      "definition": "hoeveel van je toetsen goed zijn; in de oefening staat dat als procent goed"
+    }
+  ],
+  "ted": {
+    "intro": {
+      "mood": "cool",
+      "text": "Vandaag gaan je wijsvingers naar beneden. En ik vertel je het geheim van snel typen."
+    },
+    "correct": ["Strak!", "Goed is goud.", "Lekker nauwkeurig!"],
+    "incorrect": ["Bijna. Iets rustiger, dan klopt het.", "Langzaam en goed wint het altijd."],
+    "finished": "Eerst goed, dan snel. Dat geheim weet je nu."
+  },
+  "steps": [
+    {
+      "id": "uitleg",
+      "type": "explain",
+      "title": "Omlaag, en eerst goed",
+      "blocks": [
+        {
+          "type": "example",
+          "text": "Je typt snel een bericht op de computer, maar het zit vol fouten. Nu moet je alles verbeteren. Dat kost meer tijd dan meteen rustig typen. Bij typen geldt: eerst goed, dan snel.",
+          "sourceRefs": ["isbe-keyboard-technique", "district30-touch-typing-tips"]
+        },
+        {
+          "type": "rule",
+          "title": "Wijsvingers omlaag",
+          "text": "De **v** zit schuin onder de f. Die typ je met je linkerwijsvinger. De **m** zit schuin onder de j. Die typ je met je rechterwijsvinger.",
+          "sourceRefs": ["isbe-keyboard-technique", "uwaterloo-touch-typing"]
+        },
+        {
+          "type": "text",
+          "text": "Houd je vingers licht gebogen, ook als je omlaag reikt. Beweeg alleen die ene vinger en ga meteen terug naar de [[thuisrij]].",
+          "sourceRefs": ["isbe-keyboard-technique", "uow-touch-typing"]
+        },
+        {
+          "type": "text",
+          "text": "Na elke oefening zie je je [[nauwkeurigheid]]: hoeveel procent van je toetsen goed was. Je doel is 90% goed. Haal je dat, dan wordt je snelheid vanzelf hoger.",
+          "sourceRefs": ["isbe-keyboard-technique", "district30-touch-typing-tips"]
+        },
+        {
+          "type": "tip",
+          "title": "Zo word je sneller",
+          "text": "Typ in een rustig, gelijk ritme. Liever elke toets even snel dan stukjes jagen en stoppen.",
+          "sourceRefs": ["uow-touch-typing"]
+        },
+        {
+          "type": "ted-says",
+          "mood": "thinking",
+          "text": "Bij [[blind typen]] wint de schildpad. Snel komt later.",
+          "sourceRefs": ["isbe-keyboard-technique"]
+        }
+      ]
+    },
+    {
+      "id": "typen",
+      "type": "interaction",
+      "title": "Typ met v en m",
+      "intro": "Krul je wijsvinger naar beneden en ga meteen terug naar het streepje.",
+      "interaction": {
+        "id": "v-en-m-typen",
+        "kind": "typing-drill",
+        "config": {
+          "lines": [
+            "ff fv fv vf jj jm jm mj",
+            "fvf jmj fvf jmj",
+            "vis maand vinger muis",
+            "mooi warm veel moe",
+            "vrolijk; vlam; model",
+            "mijn vingers weten het",
+            "eerst goed dan snel",
+            "ik werk met tien vingers",
+            "vandaag oefen ik weer"
+          ],
+          "newKeys": ["v", "m"],
+          "goals": {
+            "accuracy": 90
+          }
+        }
+      },
+      "sourceRefs": ["isbe-keyboard-technique", "uwaterloo-touch-typing"]
+    },
+    {
+      "id": "quiz",
+      "type": "quiz",
+      "title": "Quiz: v, m en eerst goed",
+      "intro": "Drie vragen over je wijsvingers en over snelheid.",
+      "questions": [
+        {
+          "id": "vinger-m",
+          "prompt": "Met welke vinger typ je de m?",
+          "options": [
+            {
+              "id": "rechterwijsvinger",
+              "text": "Je rechterwijsvinger",
+              "feedback": "Klopt. De m zit schuin onder de j."
+            },
+            {
+              "id": "rechtermiddelvinger",
+              "text": "Je rechtermiddelvinger",
+              "feedback": "Die typt de i en de k. De m hoort bij je wijsvinger."
+            },
+            {
+              "id": "linkerwijsvinger",
+              "text": "Je linkerwijsvinger",
+              "feedback": "Die typt de v. De m zit aan de rechterkant."
+            }
+          ],
+          "correctOptionId": "rechterwijsvinger",
+          "hints": ["Welk streepje ligt het dichtst bij de m?"],
+          "sourceRefs": ["isbe-keyboard-technique", "uwaterloo-touch-typing"]
+        },
+        {
+          "id": "vinger-v",
+          "prompt": "Waar zit de v?",
+          "options": [
+            {
+              "id": "onder-f",
+              "text": "Schuin onder de f",
+              "feedback": "Klopt. Daarom typt je linkerwijsvinger hem."
+            },
+            {
+              "id": "boven-f",
+              "text": "Schuin boven de f",
+              "feedback": "Boven de f zit de r. De v zit eronder."
+            },
+            {
+              "id": "onder-j",
+              "text": "Schuin onder de j",
+              "feedback": "Onder de j zit de m. De v zit aan de linkerkant."
+            }
+          ],
+          "correctOptionId": "onder-f",
+          "hints": ["De v typ je met je linkerhand."],
+          "sourceRefs": ["isbe-keyboard-technique"]
+        },
+        {
+          "id": "eerst-goed",
+          "prompt": "Wat oefen je eerst als je leert typen?",
+          "options": [
+            {
+              "id": "goed",
+              "text": "Eerst goed, dan snel",
+              "feedback": "Klopt. Als je goed typt, word je vanzelf sneller."
+            },
+            {
+              "id": "snel",
+              "text": "Eerst snel, dan goed",
+              "feedback": "Dan oefen je ook je fouten in. Begin met goed typen."
+            },
+            {
+              "id": "allebei",
+              "text": "Allebei tegelijk, heel snel",
+              "feedback": "Dan maak je veel fouten. Snelheid komt pas na goed typen."
+            }
+          ],
+          "correctOptionId": "goed",
+          "hints": ["Denk aan de schildpad van Ted."],
+          "sourceRefs": ["isbe-keyboard-technique", "district30-touch-typing-tips"]
+        }
+      ]
+    },
+    {
+      "id": "zelf-oefenen",
+      "type": "practice",
+      "practiceKind": "do-it-yourself",
+      "title": "Zelf oefenen: v en m",
+      "intro": "Oefen deze week nog twee keer kort, op een andere dag dan vandaag.",
+      "items": [
+        {
+          "id": "check-houding",
+          "text": "Ga rechtop zitten, met je scherm op een armlengte.",
+          "sourceRefs": ["isbe-keyboard-technique", "eur-kans-beeldschermwerk"]
+        },
+        {
+          "id": "check-streepjes",
+          "text": "Leg je wijsvingers op de streepjes van de f en de j, zonder te kijken.",
+          "sourceRefs": ["isbe-keyboard-technique"]
+        },
+        {
+          "id": "check-vingers",
+          "text": "Typ de v en de m met je wijsvingers, en ga steeds terug.",
+          "sourceRefs": ["isbe-keyboard-technique"]
+        },
+        {
+          "id": "check-oefening",
+          "text": "Doe de typoefening van deze les tot je 90% goed haalt.",
+          "sourceRefs": ["isbe-keyboard-technique"]
+        },
+        {
+          "id": "check-pauze",
+          "text": "Kijk na het typen 20 tellen naar iets ver weg.",
+          "sourceRefs": ["aap-healthychildren-scherm-rug-ogen"]
+        }
+      ],
+      "successCriterion": "Gelukt als je in de oefening 90% goed haalt, zonder naar je handen te kijken."
+    }
+  ],
+  "furtherReading": [
+    {
+      "sourceRef": "isbe-keyboard-technique",
+      "why": "Lesmateriaal voor scholen over houding, vingers, snelheid en nauwkeurigheid, in het Engels."
+    }
+  ],
+  "faq": [
+    {
+      "q": "Ik haal geen 90%. Is dat erg?",
+      "a": "Nee. De les is ook klaar als je het doel niet haalt. Doe de oefening later nog eens, rustiger."
+    }
+  ]
+}

@@ -1,0 +1,255 @@
+{
+  "schemaVersion": 1,
+  "id": "thuisrij",
+  "version": 1,
+  "title": "De thuisrij",
+  "sticker": "Blind typen · les 1",
+  "objective": "Na deze les leg je je vingers op de thuisrij zonder te kijken. Je typt korte woorden met a, s, d, f, j, k, l en de puntkomma.",
+  "concept": "de thuisrij",
+  "estimatedMinutes": 10,
+  "glossary": [
+    {
+      "term": "blind typen",
+      "definition": "typen met tien vingers zonder naar het toetsenbord te kijken"
+    },
+    {
+      "term": "thuisrij",
+      "definition": "de middelste rij toetsen waar je vingers op rusten: a s d f en j k l ;"
+    },
+    {
+      "term": "voelstreepje",
+      "definition": "een klein bultje op de f en de j, zodat je die toetsen zonder kijken vindt"
+    }
+  ],
+  "ted": {
+    "intro": {
+      "mood": "cool",
+      "text": "Yo! Ik ben Ted. Typen met twee vingers? Daar stop je vandaag mee. Tien vingers, nul keer kijken."
+    },
+    "correct": ["Strak getypt!", "Netjes, je vingers weten de weg.", "Zo gaat dat!"],
+    "incorrect": [
+      "Bijna. Rustig aan, dan gaat het vanzelf beter.",
+      "Geen punt. Voel de streepjes en probeer het nog eens."
+    ],
+    "finished": "Je vingers hebben nu een thuis. Kom snel terug om te oefenen!"
+  },
+  "steps": [
+    {
+      "id": "uitleg",
+      "type": "explain",
+      "title": "Elke vinger een vaste plek",
+      "blocks": [
+        {
+          "type": "example",
+          "text": "Je typt een werkstuk met twee vingers. Je ogen springen steeds van het scherm naar de toetsen. Elke letter moet je even zoeken. Bij [[blind typen]] hoeft dat niet. Elke vinger heeft zijn eigen toetsen. Je ogen blijven op het scherm.",
+          "sourceRefs": ["uow-touch-typing", "isbe-keyboard-technique"]
+        },
+        {
+          "type": "rule",
+          "title": "Begin op de thuisrij",
+          "text": "Je linkerhand rust op **a s d f**. Je rechterhand rust op **j k l ;**. Je duimen liggen op de spatiebalk. Dit is de [[thuisrij]]. Hier begin je, en hier komt elke vinger na een toets weer terug.",
+          "sourceRefs": ["isbe-keyboard-technique"]
+        },
+        {
+          "type": "text",
+          "text": "Hoe vind je die plek zonder te kijken? Op de f en de j zit een klein [[voelstreepje]]. Leg je wijsvingers daarop. Je andere vingers komen dan vanzelf goed te liggen.",
+          "sourceRefs": ["isbe-keyboard-technique", "uow-touch-typing"]
+        },
+        {
+          "type": "text",
+          "text": "Je pinken typen de a en de puntkomma. Je ringvingers typen de s en de l. Je middelvingers typen de d en de k. Je wijsvingers typen de f en de j. De spatie tik je met een duim.",
+          "sourceRefs": ["isbe-keyboard-technique", "uwaterloo-touch-typing"]
+        },
+        {
+          "type": "signal-cards",
+          "cards": [
+            {
+              "icon": "check",
+              "title": "Rug recht",
+              "text": "Zit rechtop, met je rug tegen de leuning.",
+              "sourceRefs": ["isbe-keyboard-technique", "eur-kans-beeldschermwerk"]
+            },
+            {
+              "icon": "check",
+              "title": "Voeten plat",
+              "text": "Zit recht voor het toetsenbord, met je voeten plat op de grond.",
+              "sourceRefs": ["isbe-keyboard-technique", "aap-healthychildren-scherm-rug-ogen"]
+            },
+            {
+              "icon": "check",
+              "title": "Losse armen",
+              "text": "Laat je schouders en armen ontspannen hangen. Je vingers zijn licht gebogen.",
+              "sourceRefs": ["isbe-keyboard-technique", "eur-kans-beeldschermwerk"]
+            }
+          ]
+        },
+        {
+          "type": "ted-says",
+          "mood": "thinking",
+          "text": "Kijk naar het scherm, niet naar je handen. Dat is lastig. Toch is dat precies de truc.",
+          "sourceRefs": ["isbe-keyboard-technique"]
+        }
+      ]
+    },
+    {
+      "id": "typen",
+      "type": "interaction",
+      "title": "Typ op de thuisrij",
+      "intro": "Leg je wijsvingers op de streepjes en typ de regels over. Typ je een fout, typ dan gewoon door.",
+      "interaction": {
+        "id": "thuisrij-typen",
+        "kind": "typing-drill",
+        "config": {
+          "lines": [
+            "asdf jkl;",
+            "fdsa ;lkj",
+            "ff jj dd kk ss ll aa ;;",
+            "fj dk sl a; fj dk sl a;",
+            "as das jas kas las",
+            "al als sla dal lak",
+            "kaal klas slak kalk",
+            "jas; dak; sla; kajak",
+            "das jas kas; las sla",
+            "lak dal; kalk klas"
+          ],
+          "newKeys": ["a", "s", "d", "f", "j", "k", "l", ";", "space"],
+          "goals": {
+            "accuracy": 90
+          }
+        }
+      },
+      "sourceRefs": ["isbe-keyboard-technique", "uwaterloo-touch-typing"]
+    },
+    {
+      "id": "quiz",
+      "type": "quiz",
+      "title": "Quiz: de thuisrij",
+      "intro": "Drie vragen. Je ziet meteen of het klopt.",
+      "questions": [
+        {
+          "id": "vinger-j",
+          "prompt": "Welke vinger rust op de j?",
+          "options": [
+            {
+              "id": "rechterwijsvinger",
+              "text": "Je rechterwijsvinger",
+              "feedback": "Klopt. Op de j zit een voelstreepje voor je rechterwijsvinger."
+            },
+            {
+              "id": "linkerwijsvinger",
+              "text": "Je linkerwijsvinger",
+              "feedback": "Je linkerwijsvinger rust op de f. De j hoort bij je rechterhand."
+            },
+            {
+              "id": "rechtermiddelvinger",
+              "text": "Je rechtermiddelvinger",
+              "feedback": "Je rechtermiddelvinger rust op de k, naast de j."
+            }
+          ],
+          "correctOptionId": "rechterwijsvinger",
+          "hints": ["Op welke twee toetsen zit een streepje?"],
+          "sourceRefs": ["isbe-keyboard-technique"]
+        },
+        {
+          "id": "voelstreepjes",
+          "prompt": "Waarom zit er een streepje op de f en de j?",
+          "options": [
+            {
+              "id": "zonder-kijken",
+              "text": "Zo vind je de thuisrij zonder kijken",
+              "feedback": "Klopt. Je wijsvingers voelen het streepje, de rest volgt vanzelf."
+            },
+            {
+              "id": "vaakst",
+              "text": "Die letters typ je het allervaakst",
+              "feedback": "Dat is niet de reden. Het streepje helpt je de thuisrij te voelen."
+            },
+            {
+              "id": "donker",
+              "text": "Zo zie je die toetsen beter in het donker",
+              "feedback": "Het streepje is om te voelen, niet om te zien. Je kijkt juist niet."
+            }
+          ],
+          "correctOptionId": "zonder-kijken",
+          "hints": ["Bij blind typen kijk je niet naar je handen."],
+          "sourceRefs": ["isbe-keyboard-technique", "uow-touch-typing"]
+        },
+        {
+          "id": "houding",
+          "prompt": "Hoe zit je goed achter het toetsenbord?",
+          "options": [
+            {
+              "id": "rechtop",
+              "text": "Rechtop, voeten plat op de grond",
+              "feedback": "Klopt. Zo heeft je rug steun en zijn je armen los."
+            },
+            {
+              "id": "onderuit",
+              "text": "Rechtop, met je benen over elkaar",
+              "feedback": "Dan staan je voeten niet plat. Zet ze allebei op de grond."
+            },
+            {
+              "id": "voorover",
+              "text": "Iets voorover, dicht bij de toetsen",
+              "feedback": "Dan buig je je rug en je nek. Zit rechtop, met je rug tegen de leuning."
+            }
+          ],
+          "correctOptionId": "rechtop",
+          "hints": ["Denk aan je rug en je voeten."],
+          "sourceRefs": ["isbe-keyboard-technique", "eur-kans-beeldschermwerk"]
+        }
+      ]
+    },
+    {
+      "id": "zelf-oefenen",
+      "type": "practice",
+      "practiceKind": "do-it-yourself",
+      "title": "Zelf oefenen: de thuisrij",
+      "intro": "Oefen deze week nog twee keer kort, op een andere dag dan vandaag.",
+      "items": [
+        {
+          "id": "check-houding",
+          "text": "Ga rechtop zitten, met je voeten plat op de grond.",
+          "sourceRefs": ["isbe-keyboard-technique"]
+        },
+        {
+          "id": "check-streepjes",
+          "text": "Zoek met je ogen dicht de streepjes op de f en de j.",
+          "sourceRefs": ["isbe-keyboard-technique", "uow-touch-typing"]
+        },
+        {
+          "id": "check-vingers",
+          "text": "Noem bij elke toets van de thuisrij hardop de vinger die hem typt.",
+          "sourceRefs": ["isbe-keyboard-technique"]
+        },
+        {
+          "id": "check-oefening",
+          "text": "Doe de typoefening van deze les nog een keer.",
+          "sourceRefs": ["district30-keyboarding-basisschool"]
+        },
+        {
+          "id": "check-pauze",
+          "text": "Kijk na het typen 20 tellen naar iets ver weg, bijvoorbeeld uit het raam.",
+          "sourceRefs": ["aap-healthychildren-scherm-rug-ogen", "cesi-beeldschermwerk"]
+        }
+      ],
+      "successCriterion": "Gelukt als je met je ogen dicht je acht vingers op de thuisrij legt."
+    }
+  ],
+  "furtherReading": [
+    {
+      "sourceRef": "uow-touch-typing",
+      "why": "Korte uitleg over blind typen en de thuisrij, in het Engels."
+    }
+  ],
+  "faq": [
+    {
+      "q": "Mijn toetsenbord heeft geen streepjes. Wat nu?",
+      "a": "Kijk dan één keer goed waar de f en de j zitten. Leg daarna je wijsvingers erop en kijk weer naar het scherm."
+    },
+    {
+      "q": "Typen met twee vingers gaat nu sneller. Waarom zou ik dit leren?",
+      "a": "Met tien vingers hoef je niet meer te zoeken. Na een tijdje oefenen typ je zo sneller, en je ogen blijven op je tekst."
+    }
+  ]
+}

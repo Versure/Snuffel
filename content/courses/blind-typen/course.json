@@ -1,0 +1,208 @@
+{
+  "schemaVersion": 1,
+  "id": "blind-typen",
+  "title": "Blind typen met tien vingers",
+  "audience": "Kinderen vanaf groep 7, beginners, op een laptop of computer met een toetsenbord",
+  "goal": "Typen met tien vingers zonder naar het toetsenbord te kijken: alle letters, hoofdletters en leestekens",
+  "successCriterion": "Een korte tekst met hoofdletters en leestekens typen zonder naar het toetsenbord te kijken, met minstens 90% goed",
+  "kind": "course",
+  "ted": {
+    "greeting": "Tien vingers, nul keer kijken. Zet je vingers klaar!"
+  },
+  "lessons": [
+    {
+      "id": "thuisrij",
+      "title": "De thuisrij",
+      "status": "published",
+      "file": "lessons/01-thuisrij.json"
+    },
+    {
+      "id": "e-en-i",
+      "title": "Omhoog naar e en i",
+      "status": "published",
+      "file": "lessons/02-e-en-i.json"
+    },
+    {
+      "id": "g-en-h",
+      "title": "Opzij naar g en h",
+      "status": "published",
+      "file": "lessons/03-g-en-h.json"
+    },
+    {
+      "id": "r-en-u",
+      "title": "Omhoog naar r en u",
+      "status": "published",
+      "file": "lessons/04-r-en-u.json"
+    },
+    {
+      "id": "t-en-n",
+      "title": "De t en de n",
+      "status": "published",
+      "file": "lessons/05-t-en-n.json"
+    },
+    {
+      "id": "o-en-w",
+      "title": "Ringvingers: o en w",
+      "status": "published",
+      "file": "lessons/06-o-en-w.json"
+    },
+    {
+      "id": "v-en-m",
+      "title": "Naar beneden: v en m",
+      "status": "published",
+      "file": "lessons/07-v-en-m.json"
+    },
+    {
+      "id": "b-p-en-c",
+      "title": "De b, de p en de c",
+      "status": "published",
+      "file": "lessons/08-b-p-en-c.json"
+    },
+    {
+      "id": "z-x-q-en-y",
+      "title": "De laatste letters",
+      "status": "published",
+      "file": "lessons/09-z-x-q-en-y.json"
+    },
+    {
+      "id": "hoofdletters",
+      "title": "Hoofdletters met Shift",
+      "status": "published",
+      "file": "lessons/10-hoofdletters.json"
+    },
+    {
+      "id": "punt-en-komma",
+      "title": "Punt en komma",
+      "status": "published",
+      "file": "lessons/11-punt-en-komma.json"
+    },
+    {
+      "id": "vraagteken-en-uitroepteken",
+      "title": "Vraagteken, uitroepteken en apostrof",
+      "status": "published",
+      "file": "lessons/12-vraagteken-en-uitroepteken.json"
+    }
+  ],
+  "sources": [
+    {
+      "id": "isbe-keyboard-technique",
+      "title": "Keyboard Technique, Speed, and Accuracy",
+      "url": "https://www.isbe.net/CTEDocuments/BMCE-620045.pdf",
+      "publisher": "Illinois State Board of Education",
+      "type": "government",
+      "reliability": "high",
+      "accessedOn": "2026-10-26",
+      "note": "Lesmateriaal voor scholen van de uitgever CAERT, op de site van de onderwijsdienst van de staat Illinois, Engelstalig: houding, thuisrij, welke vinger welke toets typt, eerst nauwkeurig."
+    },
+    {
+      "id": "uwaterloo-touch-typing",
+      "title": "Touch typing",
+      "url": "https://ece.uwaterloo.ca/~ece150/Touch_typing/",
+      "publisher": "University of Waterloo",
+      "type": "education",
+      "reliability": "high",
+      "accessedOn": "2026-10-26",
+      "note": "Typcursus van de afdeling Electrical and Computer Engineering, Engelstalig: letters per vinger, Shift met de andere hand."
+    },
+    {
+      "id": "uow-touch-typing",
+      "title": "Touch typing",
+      "url": "https://www.uow.edu.au/student/support-services/academic-skills/online-resources/technology-and-software/typing/",
+      "publisher": "University of Wollongong",
+      "type": "education",
+      "reliability": "high",
+      "accessedOn": "2026-10-26",
+      "note": "Studievaardighedenpagina van de universiteit, Engelstalig."
+    },
+    {
+      "id": "eur-kans-beeldschermwerk",
+      "title": "KANS door beeldschermwerk",
+      "url": "https://www.eur.nl/sites/corporate/files/Folder_KANS_2013_-_NL.pdf",
+      "publisher": "Erasmus Universiteit Rotterdam",
+      "type": "education",
+      "reliability": "high",
+      "accessedOn": "2026-10-26",
+      "note": "Folder van de universiteit voor medewerkers en studenten, 2013."
+    },
+    {
+      "id": "radboud-kans",
+      "title": "Klachten aan Armen, Nek of Schouders (KANS)",
+      "url": "https://www.ru.nl/medewerkers/services/klachten-aan-armen-nek-of-schouders-kans",
+      "publisher": "Radboud Universiteit",
+      "type": "education",
+      "reliability": "high",
+      "accessedOn": "2026-10-26",
+      "note": "Pagina voor medewerkers van de Radboud Universiteit."
+    },
+    {
+      "id": "aap-healthychildren-scherm-rug-ogen",
+      "title": "Avoid Eye and Back Strain from the Computer",
+      "url": "https://healthychildren.org/English/tips-tools/ask-the-pediatrician/Pages/avoid-eye-and-back-strain-from-the-computer.aspx",
+      "publisher": "American Academy of Pediatrics (healthychildren.org)",
+      "type": "association",
+      "reliability": "high",
+      "accessedOn": "2026-10-26",
+      "note": "Ouderpagina van de Amerikaanse vereniging van kinderartsen, Engelstalig."
+    },
+    {
+      "id": "cornell-ergonomie-kinderen-computer",
+      "title": "Cornell University Ergonomics Web: guidelines for children at computers",
+      "url": "https://ergo.human.cornell.edu/cuweguideline.htm",
+      "publisher": "Cornell University",
+      "type": "education",
+      "reliability": "high",
+      "accessedOn": "2026-10-26",
+      "note": "Ergonomische richtlijnen voor kinderen achter de computer, Engelstalig."
+    },
+    {
+      "id": "cesi-beeldschermwerk",
+      "title": "Beeldschermwerk (informatiefiche CEDIOB)",
+      "url": "https://www.cesi.be/content/uploads/2023/01/beeldschermwerk-49.pdf",
+      "publisher": "CESI",
+      "type": "association",
+      "reliability": "medium",
+      "accessedOn": "2026-10-26",
+      "note": "Belgische informatiefiche over beeldschermwerk, februari 2015. De fiche zegt niet wat CESI is; daarom medium."
+    },
+    {
+      "id": "district30-touch-typing-tips",
+      "title": "Touch Typing Tips",
+      "url": "https://www.district30.org/departments/technology-and-innovation/keyboarding/touch-typing-tips",
+      "publisher": "Northbrook-Glenview School District 30",
+      "type": "education",
+      "reliability": "high",
+      "accessedOn": "2026-10-26",
+      "note": "Tips voor oefenen thuis van een Amerikaans schooldistrict, Engelstalig."
+    },
+    {
+      "id": "district30-keyboarding-basisschool",
+      "title": "Keyboarding",
+      "url": "https://www.district30.org/departments/technology-and-innovation/keyboarding",
+      "publisher": "Northbrook-Glenview School District 30",
+      "type": "education",
+      "reliability": "high",
+      "accessedOn": "2026-10-26",
+      "note": "Doelen en hoe vaak je oefent, per leerjaar, van een Amerikaans schooldistrict, Engelstalig."
+    },
+    {
+      "id": "wikipedia-dead-key",
+      "title": "Dead key",
+      "url": "https://en.wikipedia.org/wiki/Dead_key",
+      "publisher": "Wikipedia",
+      "type": "encyclopedia",
+      "reliability": "medium",
+      "accessedOn": "2026-10-27",
+      "note": "Over dode toetsen en de indeling US-International, Engelstalig."
+    },
+    {
+      "id": "wikipedia-qwerty",
+      "title": "QWERTY",
+      "url": "https://en.wikipedia.org/wiki/QWERTY",
+      "publisher": "Wikipedia",
+      "type": "encyclopedia",
+      "reliability": "medium",
+      "accessedOn": "2026-10-27",
+      "note": "Over de indeling US-International: welke toetsen dode toetsen zijn en hoe Linux (X11) daarin afwijkt, Engelstalig."
+    }
+  ]
+}

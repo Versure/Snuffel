@@ -1,0 +1,251 @@
+{
+  "schemaVersion": 1,
+  "id": "r-en-u",
+  "version": 1,
+  "title": "Omhoog naar r en u",
+  "sticker": "Blind typen · les 4",
+  "objective": "Na deze les typ je de r en de u met je wijsvingers. Je zet je scherm op een goede afstand en hoogte.",
+  "concept": "wijsvingers omhoog reiken",
+  "estimatedMinutes": 10,
+  "glossary": [
+    {
+      "term": "blind typen",
+      "definition": "typen met tien vingers zonder naar het toetsenbord te kijken"
+    },
+    {
+      "term": "thuisrij",
+      "definition": "de middelste rij toetsen waar je vingers op rusten: a s d f en j k l ;"
+    },
+    {
+      "term": "voelstreepje",
+      "definition": "een klein bultje op de f en de j, zodat je die toetsen zonder kijken vindt"
+    }
+  ],
+  "ted": {
+    "intro": {
+      "mood": "happy",
+      "text": "Nu gaan je wijsvingers omhoog. En je kijkt eens kritisch naar je scherm. Staat het goed?"
+    },
+    "correct": ["Top!", "Die wijsvingers gaan hard.", "Mooi getypt!"],
+    "incorrect": ["Bijna. Even terug naar de streepjes.", "Rustig aan. Je vingers leren nog."],
+    "finished": "Weer twee letters erbij. Je woorden worden al echte woorden!"
+  },
+  "steps": [
+    {
+      "id": "uitleg",
+      "type": "explain",
+      "title": "Omhoog, en je scherm op de goede plek",
+      "blocks": [
+        {
+          "type": "example",
+          "text": "Je typt op een laptop op de bank. Je kijkt steeds naar beneden. Na een tijdje doet je nek pijn. Dat komt door hoe je scherm staat.",
+          "sourceRefs": ["aap-healthychildren-scherm-rug-ogen"]
+        },
+        {
+          "type": "rule",
+          "title": "Wijsvingers omhoog",
+          "text": "De **r** zit schuin boven de f. Die typ je met je linkerwijsvinger. De **u** zit schuin boven de j. Die typ je met je rechterwijsvinger. Daarna ga je terug naar het [[voelstreepje]].",
+          "sourceRefs": ["isbe-keyboard-technique", "uwaterloo-touch-typing"]
+        },
+        {
+          "type": "signal-cards",
+          "cards": [
+            {
+              "icon": "check",
+              "title": "Een armlengte",
+              "text": "Zet het scherm ongeveer 50 tot 70 centimeter van je ogen. Dat is ongeveer een armlengte.",
+              "sourceRefs": [
+                "eur-kans-beeldschermwerk",
+                "uow-touch-typing",
+                "aap-healthychildren-scherm-rug-ogen"
+              ]
+            },
+            {
+              "icon": "check",
+              "title": "Op ooghoogte",
+              "text": "De bovenkant van het scherm staat op of net onder je ooghoogte. Dan hoeft je nek niet te buigen.",
+              "sourceRefs": [
+                "eur-kans-beeldschermwerk",
+                "aap-healthychildren-scherm-rug-ogen",
+                "cesi-beeldschermwerk"
+              ]
+            },
+            {
+              "icon": "idea",
+              "title": "Laptop hoger",
+              "text": "Een laptop kun je op een stapel boeken zetten. Typ dan op een los toetsenbord.",
+              "sourceRefs": ["aap-healthychildren-scherm-rug-ogen", "cesi-beeldschermwerk"]
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "text": "Typ aan een tafel, niet op de bank of op bed. Zo kun je goed rechtop zitten.",
+          "sourceRefs": ["aap-healthychildren-scherm-rug-ogen"]
+        },
+        {
+          "type": "ted-says",
+          "mood": "thinking",
+          "text": "Vingers terug op de [[thuisrij]]? Scherm goed? Dan kun je los.",
+          "sourceRefs": []
+        }
+      ]
+    },
+    {
+      "id": "typen",
+      "type": "interaction",
+      "title": "Typ met r en u",
+      "intro": "Reik met je wijsvinger schuin omhoog en ga meteen terug naar het streepje.",
+      "interaction": {
+        "id": "r-en-u-typen",
+        "kind": "typing-drill",
+        "config": {
+          "lines": [
+            "ff fr fr rf jj ju ju uj",
+            "frf juj frf juj",
+            "rug uur deur duur",
+            "fris ruik ruil huis",
+            "regel; jurk; kruk",
+            "ik ruik gras",
+            "kruk; rug; huis; duur",
+            "ik lees graag",
+            "hij ruilde de kaas",
+            "suiker is lekker"
+          ],
+          "newKeys": ["r", "u"],
+          "goals": {
+            "accuracy": 90
+          }
+        }
+      },
+      "sourceRefs": ["isbe-keyboard-technique", "uwaterloo-touch-typing"]
+    },
+    {
+      "id": "quiz",
+      "type": "quiz",
+      "title": "Quiz: r, u en je scherm",
+      "intro": "Drie vragen over je wijsvingers en je scherm.",
+      "questions": [
+        {
+          "id": "vinger-r",
+          "prompt": "Met welke vinger typ je de r?",
+          "options": [
+            {
+              "id": "linkerwijsvinger",
+              "text": "Je linkerwijsvinger",
+              "feedback": "Klopt. De r zit schuin boven de f."
+            },
+            {
+              "id": "linkermiddelvinger",
+              "text": "Je linkermiddelvinger",
+              "feedback": "Die typt de e. De r zit één toets verder naar rechts."
+            },
+            {
+              "id": "rechterwijsvinger",
+              "text": "Je rechterwijsvinger",
+              "feedback": "Die typt de u. De r hoort bij je linkerhand."
+            }
+          ],
+          "correctOptionId": "linkerwijsvinger",
+          "hints": ["Boven welk streepje zit de r?"],
+          "sourceRefs": ["isbe-keyboard-technique", "uwaterloo-touch-typing"]
+        },
+        {
+          "id": "afstand",
+          "prompt": "Hoe ver staat je scherm van je ogen?",
+          "options": [
+            {
+              "id": "armlengte",
+              "text": "Ongeveer een armlengte",
+              "feedback": "Klopt. Ongeveer 50 tot 70 centimeter is goed."
+            },
+            {
+              "id": "handbreedte",
+              "text": "Ongeveer een handbreedte",
+              "feedback": "Dat is veel te dichtbij. Je ogen moeten dan hard werken."
+            },
+            {
+              "id": "maakt-niet-uit",
+              "text": "Dat maakt helemaal niet uit",
+              "feedback": "Het maakt wel uit. Zet het scherm ongeveer een armlengte weg."
+            }
+          ],
+          "correctOptionId": "armlengte",
+          "hints": ["Strek je arm eens naar het scherm."],
+          "sourceRefs": ["eur-kans-beeldschermwerk", "uow-touch-typing"]
+        },
+        {
+          "id": "hoogte",
+          "prompt": "Hoe hoog staat de bovenkant van je scherm?",
+          "options": [
+            {
+              "id": "ooghoogte",
+              "text": "Op of net onder ooghoogte",
+              "feedback": "Klopt. Dan houdt je nek zich recht."
+            },
+            {
+              "id": "tafel",
+              "text": "Plat op tafel, ver beneden",
+              "feedback": "Dan buig je je nek steeds naar beneden. Zet het scherm hoger."
+            },
+            {
+              "id": "boven",
+              "text": "Een stuk boven je hoofd",
+              "feedback": "Dan kijk je steeds omhoog. Dat is ook zwaar voor je nek."
+            }
+          ],
+          "correctOptionId": "ooghoogte",
+          "hints": ["Je nek wil het liefst recht blijven."],
+          "sourceRefs": ["eur-kans-beeldschermwerk", "aap-healthychildren-scherm-rug-ogen"]
+        }
+      ]
+    },
+    {
+      "id": "zelf-oefenen",
+      "type": "practice",
+      "practiceKind": "do-it-yourself",
+      "title": "Zelf oefenen: r en u",
+      "intro": "Oefen deze week nog twee keer kort, op een andere dag dan vandaag.",
+      "items": [
+        {
+          "id": "check-houding",
+          "text": "Zet je scherm een armlengte weg, met de bovenkant op ooghoogte.",
+          "sourceRefs": ["eur-kans-beeldschermwerk", "aap-healthychildren-scherm-rug-ogen"]
+        },
+        {
+          "id": "check-streepjes",
+          "text": "Leg je wijsvingers op de streepjes van de f en de j, zonder te kijken.",
+          "sourceRefs": ["isbe-keyboard-technique"]
+        },
+        {
+          "id": "check-vingers",
+          "text": "Typ de r en de u met je wijsvingers, en ga steeds terug.",
+          "sourceRefs": ["isbe-keyboard-technique"]
+        },
+        {
+          "id": "check-oefening",
+          "text": "Doe de typoefening van les 3 en van deze les nog een keer.",
+          "sourceRefs": ["district30-keyboarding-basisschool"]
+        },
+        {
+          "id": "check-pauze",
+          "text": "Kijk na het typen 20 tellen naar iets ver weg.",
+          "sourceRefs": ["aap-healthychildren-scherm-rug-ogen"]
+        }
+      ],
+      "successCriterion": "Gelukt als je scherm goed staat en je 'ik lees graag' typt zonder te kijken."
+    }
+  ],
+  "furtherReading": [
+    {
+      "sourceRef": "eur-kans-beeldschermwerk",
+      "why": "Folder in het Nederlands over een goede werkplek achter het scherm."
+    }
+  ],
+  "faq": [
+    {
+      "q": "Ik heb geen los toetsenbord. Wat dan?",
+      "a": "Typ dan gewoon op de laptop. Zet hem op een tafel en zit rechtop."
+    }
+  ]
+}

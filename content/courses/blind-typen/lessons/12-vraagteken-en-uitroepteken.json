@@ -1,0 +1,277 @@
+{
+  "schemaVersion": 1,
+  "id": "vraagteken-en-uitroepteken",
+  "version": 1,
+  "title": "Vraagteken, uitroepteken en apostrof",
+  "sticker": "Blind typen · les 12",
+  "objective": "Na deze les typ je een vraagteken, een uitroepteken en een apostrof. Je typt een korte tekst met hoofdletters en leestekens zonder te kijken.",
+  "concept": "vraagteken, uitroepteken en apostrof",
+  "estimatedMinutes": 10,
+  "glossary": [
+    {
+      "term": "blind typen",
+      "definition": "typen met tien vingers zonder naar het toetsenbord te kijken"
+    },
+    {
+      "term": "thuisrij",
+      "definition": "de middelste rij toetsen waar je vingers op rusten: a s d f en j k l ;"
+    },
+    {
+      "term": "dode toets",
+      "definition": "een toets waarvan het teken pas verschijnt als je nog een toets typt"
+    },
+    {
+      "term": "KANS",
+      "definition": "klachten aan armen, nek of schouders, bijvoorbeeld door lang typen zonder pauze; vroeger heette dat RSI"
+    },
+    {
+      "term": "aanslag",
+      "definition": "één teken typen; elke letter, elk leesteken en elke spatie is een aanslag, ook een hoofdletter met Shift"
+    }
+  ],
+  "ted": {
+    "intro": {
+      "mood": "cool",
+      "text": "Laatste les! Vraagteken, uitroepteken en apostrof. Daarna typ je alles blind."
+    },
+    "correct": ["Kampioen!", "Tien vingers, nul keer kijken!", "Strak!"],
+    "incorrect": ["Bijna. Shift aan de andere kant.", "Rustig aan. Je bent er bijna."],
+    "finished": "Je kunt blind typen met tien vingers! Blijf het gebruiken, dan blijft het erin."
+  },
+  "steps": [
+    {
+      "id": "uitleg",
+      "type": "explain",
+      "title": "De laatste tekens",
+      "blocks": [
+        {
+          "type": "example",
+          "text": "Je mailt een vriend vanaf de computer: Kom je ook? Leuk! Met deze les typ je zulke zinnen met tien vingers. Je hoeft niet meer te zoeken.",
+          "sourceRefs": []
+        },
+        {
+          "type": "rule",
+          "title": "Vraagteken en uitroepteken",
+          "text": "Het **vraagteken** zit op de toets rechtsonder, naast de punt. Die typ je met je rechterpink, met de linker-Shift. Het **uitroepteken** zit op de 1. Die typ je met je linkerpink, met de rechter-Shift.",
+          "sourceRefs": ["isbe-keyboard-technique", "uwaterloo-touch-typing"]
+        },
+        {
+          "type": "text",
+          "text": "De **apostrof** zit rechts naast de puntkomma. Ook die typ je met je rechterpink. Daarna gaan al je vingers terug naar de [[thuisrij]].",
+          "sourceRefs": ["uwaterloo-touch-typing", "isbe-keyboard-technique"]
+        },
+        {
+          "type": "tip",
+          "title": "Een apostrof die wacht",
+          "text": "Heeft je computer de indeling US-International? Dan is de apostrof een [[dode toets]]. Je ziet hem pas als je de volgende toets typt. Bij een s, zoals in auto's, krijg je gewoon allebei de tekens.",
+          "sourceRefs": ["wikipedia-qwerty", "wikipedia-dead-key"]
+        },
+        {
+          "type": "tip",
+          "title": "Typ je op Linux?",
+          "text": "Op Linux maakt de apostrof met meer letters een andere letter, zoals ć. Typ je op Linux met US-International? Typ dan na de apostrof eerst een spatie, ook in auto's en zo'n.",
+          "sourceRefs": ["wikipedia-qwerty", "wikipedia-dead-key"]
+        },
+        {
+          "type": "signal-cards",
+          "cards": [
+            {
+              "icon": "check",
+              "title": "Houding",
+              "text": "Rug recht, voeten plat, scherm op een armlengte.",
+              "sourceRefs": ["isbe-keyboard-technique", "eur-kans-beeldschermwerk"]
+            },
+            {
+              "icon": "check",
+              "title": "Streepjes",
+              "text": "Wijsvingers op de f en de j, zonder kijken.",
+              "sourceRefs": ["isbe-keyboard-technique"]
+            },
+            {
+              "icon": "check",
+              "title": "Pauze",
+              "text": "Kijk af en toe ver weg en sta elk uur op.",
+              "sourceRefs": ["aap-healthychildren-scherm-rug-ogen"]
+            },
+            {
+              "icon": "warning",
+              "title": "Pijn of tintelen",
+              "text": "Stop en doe iets anders. Het kan een begin zijn van klachten aan armen, nek of schouders ([[KANS]]). Vertel het een ouder als het terugkomt.",
+              "sourceRefs": ["radboud-kans", "aap-healthychildren-scherm-rug-ogen"]
+            }
+          ]
+        },
+        {
+          "type": "ted-says",
+          "mood": "happy",
+          "text": "Je kunt nu [[blind typen]]. Oefen regelmatig, dan blijft het erin.",
+          "sourceRefs": ["uow-touch-typing"]
+        }
+      ]
+    },
+    {
+      "id": "typen",
+      "type": "interaction",
+      "title": "Typ met vraagteken, uitroepteken en apostrof",
+      "intro": "Let op de Shift aan de andere kant. Het doel is 90% goed en 40 aanslagen per minuut. Een [[aanslag]] is één teken.",
+      "interaction": {
+        "id": "leestekens-typen",
+        "kind": "typing-drill",
+        "config": {
+          "lines": [
+            ";'; ;'; a1 a! ;/ ;?",
+            "Wat typ jij?",
+            "Hoera! Klaar!",
+            "Hoe gaat het?",
+            "Kijk niet naar je handen!",
+            "Is dat zo'n auto?",
+            "Twee auto's en 1 fiets.",
+            "Ted zegt: goed zo!",
+            "Ik kan blind typen!"
+          ],
+          "newKeys": ["/", "1", "'"],
+          "goals": {
+            "accuracy": 90,
+            "keysPerMinute": 40
+          }
+        }
+      },
+      "sourceRefs": ["isbe-keyboard-technique", "uwaterloo-touch-typing"]
+    },
+    {
+      "id": "quiz",
+      "type": "quiz",
+      "title": "Quiz: de laatste tekens",
+      "intro": "Drie vragen over de laatste tekens en je lijf.",
+      "questions": [
+        {
+          "id": "shift-vraagteken",
+          "prompt": "Je typt een vraagteken. Welke Shift houd je vast?",
+          "options": [
+            {
+              "id": "links",
+              "text": "De linker-Shift",
+              "feedback": "Klopt. Het vraagteken typ je rechts, dus links doet Shift."
+            },
+            {
+              "id": "rechts",
+              "text": "De rechter-Shift",
+              "feedback": "Je rechterpink typt het vraagteken al. Shift doet je andere hand."
+            },
+            {
+              "id": "geen",
+              "text": "Helemaal geen Shift",
+              "feedback": "Zonder Shift krijg je een schuine streep. Je hebt Shift nodig."
+            }
+          ],
+          "correctOptionId": "links",
+          "hints": ["Met welke hand typ je het vraagteken?"],
+          "sourceRefs": ["isbe-keyboard-technique", "uwaterloo-touch-typing"]
+        },
+        {
+          "id": "vinger-uitroepteken",
+          "prompt": "Met welke vinger typ je het uitroepteken?",
+          "options": [
+            {
+              "id": "linkerpink",
+              "text": "Je linkerpink",
+              "feedback": "Klopt. Het uitroepteken zit op de 1, boven de q."
+            },
+            {
+              "id": "rechterpink",
+              "text": "Je rechterpink",
+              "feedback": "Die typt het vraagteken. Het uitroepteken zit links."
+            },
+            {
+              "id": "linkerring",
+              "text": "Je linkerringvinger",
+              "feedback": "Je linkerringvinger typt de 2. Het uitroepteken zit op de 1."
+            }
+          ],
+          "correctOptionId": "linkerpink",
+          "hints": ["Het uitroepteken zit op de 1, helemaal links."],
+          "sourceRefs": ["isbe-keyboard-technique"]
+        },
+        {
+          "id": "gewoontes",
+          "prompt": "Welke gewoonte hoort bij goed typen?",
+          "options": [
+            {
+              "id": "rechtop-pauze",
+              "text": "Rechtop zitten en elk uur bewegen",
+              "feedback": "Klopt. Zo blijven je rug, nek en armen fit."
+            },
+            {
+              "id": "dertig-cm",
+              "text": "Je scherm op 30 centimeter afstand",
+              "feedback": "Dat is te dichtbij. Zet je scherm op ongeveer een armlengte."
+            },
+            {
+              "id": "twee-uur",
+              "text": "Alleen elke twee uur even opstaan",
+              "feedback": "Sta liever elk uur op, en kijk tussendoor af en toe ver weg."
+            }
+          ],
+          "correctOptionId": "rechtop-pauze",
+          "hints": ["Denk aan je houding en aan pauze."],
+          "sourceRefs": [
+            "isbe-keyboard-technique",
+            "aap-healthychildren-scherm-rug-ogen",
+            "eur-kans-beeldschermwerk"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "zelf-oefenen",
+      "type": "practice",
+      "practiceKind": "do-it-yourself",
+      "title": "Zelf oefenen: alles samen",
+      "intro": "Blijf oefenen, een paar keer per week kort.",
+      "items": [
+        {
+          "id": "check-houding",
+          "text": "Check voor je begint: rug recht, voeten plat, scherm op een armlengte.",
+          "sourceRefs": ["isbe-keyboard-technique", "eur-kans-beeldschermwerk"]
+        },
+        {
+          "id": "check-streepjes",
+          "text": "Leg je wijsvingers op de streepjes van de f en de j, zonder te kijken.",
+          "sourceRefs": ["isbe-keyboard-technique"]
+        },
+        {
+          "id": "check-vingers",
+          "text": "Typ een berichtje met een vraag en een uitroepteken, met tien vingers.",
+          "sourceRefs": ["isbe-keyboard-technique"]
+        },
+        {
+          "id": "check-oefening",
+          "text": "Doe deze week de typoefeningen van les 10, 11 en 12 nog een keer.",
+          "sourceRefs": ["district30-keyboarding-basisschool"]
+        },
+        {
+          "id": "check-pauze",
+          "text": "Kijk na het typen 20 tellen naar iets ver weg.",
+          "sourceRefs": ["aap-healthychildren-scherm-rug-ogen"]
+        }
+      ],
+      "successCriterion": "Gelukt als je in de oefening van deze les 90% goed haalt, zonder naar je handen te kijken."
+    }
+  ],
+  "furtherReading": [
+    {
+      "sourceRef": "wikipedia-dead-key",
+      "why": "Uitleg over dode toetsen, in het Engels."
+    },
+    {
+      "sourceRef": "isbe-keyboard-technique",
+      "why": "Lesmateriaal voor scholen met de vingers voor elke toets, in het Engels."
+    }
+  ],
+  "faq": [
+    {
+      "q": "En de cijfers?",
+      "a": "Die leer je niet in deze cursus. Elke vinger typt het cijfer boven zijn eigen letters. Zo typ je de 1 met je linkerpink."
+    }
+  ]
+}

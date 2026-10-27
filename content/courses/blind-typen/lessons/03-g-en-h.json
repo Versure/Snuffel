@@ -1,0 +1,246 @@
+{
+  "schemaVersion": 1,
+  "id": "g-en-h",
+  "version": 1,
+  "title": "Opzij naar g en h",
+  "sticker": "Blind typen · les 3",
+  "objective": "Na deze les typ je de g en de h met je wijsvingers. Je weet ook wanneer je even pauze neemt.",
+  "concept": "opzij reiken met de wijsvingers",
+  "estimatedMinutes": 10,
+  "glossary": [
+    {
+      "term": "blind typen",
+      "definition": "typen met tien vingers zonder naar het toetsenbord te kijken"
+    },
+    {
+      "term": "thuisrij",
+      "definition": "de middelste rij toetsen waar je vingers op rusten: a s d f en j k l ;"
+    },
+    {
+      "term": "voelstreepje",
+      "definition": "een klein bultje op de f en de j, zodat je die toetsen zonder kijken vindt"
+    }
+  ],
+  "ted": {
+    "intro": {
+      "mood": "cool",
+      "text": "Je wijsvingers doen het meeste werk. Vandaag krijgen ze er een toets bij. Opzij, en weer terug."
+    },
+    "correct": ["Lekker!", "Je wijsvingers zijn wakker.", "Strak getypt!"],
+    "incorrect": [
+      "Bijna. Schuif rustig opzij en weer terug.",
+      "Geen punt. Langzaam en goed is prima."
+    ],
+    "finished": "De g en de h zitten erin. Vergeet je pauze niet!"
+  },
+  "steps": [
+    {
+      "id": "uitleg",
+      "type": "explain",
+      "title": "Wijsvingers schuiven opzij",
+      "blocks": [
+        {
+          "type": "example",
+          "text": "Kijk eens naar de [[thuisrij]]. Tussen de f en de j zitten nog twee toetsen: de g en de h. Geen andere vinger kan daar makkelijk bij. Daarom doen je wijsvingers dat werk.",
+          "sourceRefs": ["isbe-keyboard-technique"]
+        },
+        {
+          "type": "rule",
+          "title": "Eén stapje naar het midden",
+          "text": "Je linkerwijsvinger schuift van de f naar de **g**. Je rechterwijsvinger schuift van de j naar de **h**. Daarna gaan ze meteen terug naar het [[voelstreepje]].",
+          "sourceRefs": ["isbe-keyboard-technique", "uwaterloo-touch-typing"]
+        },
+        {
+          "type": "text",
+          "text": "Houd je bewegingen klein: alleen je wijsvinger schuift opzij. Na de toets gaat hij meteen terug naar de f of de j.",
+          "sourceRefs": ["uow-touch-typing", "isbe-keyboard-technique"]
+        },
+        {
+          "type": "signal-cards",
+          "cards": [
+            {
+              "icon": "idea",
+              "title": "Kijk ver weg",
+              "text": "Kijk om de 20 minuten 20 tellen naar iets dat ver weg is, zoals uit het raam. Zo rusten je ogen.",
+              "sourceRefs": ["aap-healthychildren-scherm-rug-ogen", "cesi-beeldschermwerk"]
+            },
+            {
+              "icon": "idea",
+              "title": "Sta op",
+              "text": "Zit je lang achter het scherm? Sta elk uur even op, loop wat rond of rek je uit.",
+              "sourceRefs": ["aap-healthychildren-scherm-rug-ogen", "eur-kans-beeldschermwerk"]
+            },
+            {
+              "icon": "warning",
+              "title": "Te lang stilzitten",
+              "text": "Lang in dezelfde houding zitten is zwaar voor je spieren. Wissel af en toe van houding.",
+              "sourceRefs": ["eur-kans-beeldschermwerk"]
+            }
+          ]
+        },
+        {
+          "type": "ted-says",
+          "mood": "happy",
+          "text": "Pauze is geen luiheid. Het hoort bij goed typen.",
+          "sourceRefs": ["eur-kans-beeldschermwerk"]
+        }
+      ]
+    },
+    {
+      "id": "typen",
+      "type": "interaction",
+      "title": "Typ met g en h",
+      "intro": "Leg je vingers op de thuisrij. Schuif met je wijsvinger opzij en ga meteen terug.",
+      "interaction": {
+        "id": "g-en-h-typen",
+        "kind": "typing-drill",
+        "config": {
+          "lines": [
+            "ff fg fg gf jj jh jh hj",
+            "fgf jhj fgf jhj",
+            "hij heg hek gek",
+            "geld glas gas dag",
+            "heel hagel haai hal",
+            "de haas is gek",
+            "hij is de gids",
+            "ik lees elke dag",
+            "hagel; ijs; sjaal",
+            "hij lag de hele dag"
+          ],
+          "newKeys": ["g", "h"],
+          "goals": {
+            "accuracy": 90
+          }
+        }
+      },
+      "sourceRefs": ["isbe-keyboard-technique", "uwaterloo-touch-typing"]
+    },
+    {
+      "id": "quiz",
+      "type": "quiz",
+      "title": "Quiz: g, h en pauze",
+      "intro": "Drie vragen over je wijsvingers en over pauze.",
+      "questions": [
+        {
+          "id": "vinger-h",
+          "prompt": "Met welke vinger typ je de h?",
+          "options": [
+            {
+              "id": "rechterwijsvinger",
+              "text": "Je rechterwijsvinger",
+              "feedback": "Klopt. Hij schuift van de j één stapje naar links."
+            },
+            {
+              "id": "linkerwijsvinger",
+              "text": "Je linkerwijsvinger",
+              "feedback": "Die typt de g. De h hoort bij je rechterhand."
+            },
+            {
+              "id": "rechtermiddelvinger",
+              "text": "Je rechtermiddelvinger",
+              "feedback": "Die typt de i en de k. De h ligt naast de j."
+            }
+          ],
+          "correctOptionId": "rechterwijsvinger",
+          "hints": ["De h ligt direct naast de j."],
+          "sourceRefs": ["isbe-keyboard-technique", "uwaterloo-touch-typing"]
+        },
+        {
+          "id": "vinger-g",
+          "prompt": "Je typt een g. Waar gaat je vinger daarna heen?",
+          "options": [
+            {
+              "id": "naar-f",
+              "text": "Terug naar de f",
+              "feedback": "Klopt. Daar zit het streepje van je linkerwijsvinger."
+            },
+            {
+              "id": "naar-h",
+              "text": "Door naar de h",
+              "feedback": "De h typ je met je andere hand. Je linkerwijsvinger gaat terug naar de f."
+            },
+            {
+              "id": "blijft-g",
+              "text": "Hij blijft op de g",
+              "feedback": "Dan raak je de weg kwijt. Ga na elke toets terug."
+            }
+          ],
+          "correctOptionId": "naar-f",
+          "hints": ["Waar rust je linkerwijsvinger?"],
+          "sourceRefs": ["isbe-keyboard-technique"]
+        },
+        {
+          "id": "pauze",
+          "prompt": "Je zit al 20 minuten achter het scherm. Wat helpt je ogen?",
+          "options": [
+            {
+              "id": "ver-weg",
+              "text": "20 tellen ver weg kijken",
+              "feedback": "Klopt. Zo krijgen je ogen even rust van het scherm."
+            },
+            {
+              "id": "dichterbij",
+              "text": "Dichter bij het scherm gaan",
+              "feedback": "Dan moeten je ogen nog harder werken."
+            },
+            {
+              "id": "telefoon",
+              "text": "Even naar je telefoon kijken",
+              "feedback": "Dan kijken je ogen weer dichtbij. Kijk liever naar iets dat ver weg is."
+            }
+          ],
+          "correctOptionId": "ver-weg",
+          "hints": ["Denk aan de kaartjes over pauze."],
+          "sourceRefs": ["aap-healthychildren-scherm-rug-ogen"]
+        }
+      ]
+    },
+    {
+      "id": "zelf-oefenen",
+      "type": "practice",
+      "practiceKind": "do-it-yourself",
+      "title": "Zelf oefenen: g en h",
+      "intro": "Oefen deze week nog twee keer kort, op een andere dag dan vandaag.",
+      "items": [
+        {
+          "id": "check-houding",
+          "text": "Ga rechtop zitten, met je voeten plat op de grond.",
+          "sourceRefs": ["isbe-keyboard-technique"]
+        },
+        {
+          "id": "check-streepjes",
+          "text": "Leg je wijsvingers op de streepjes van de f en de j, zonder te kijken.",
+          "sourceRefs": ["isbe-keyboard-technique"]
+        },
+        {
+          "id": "check-vingers",
+          "text": "Typ de g en de h met je wijsvingers, en ga steeds terug.",
+          "sourceRefs": ["isbe-keyboard-technique"]
+        },
+        {
+          "id": "check-oefening",
+          "text": "Doe de typoefening van les 2 en van deze les nog een keer.",
+          "sourceRefs": ["district30-keyboarding-basisschool"]
+        },
+        {
+          "id": "check-pauze",
+          "text": "Sta na het oefenen op en rek je even uit.",
+          "sourceRefs": ["aap-healthychildren-scherm-rug-ogen"]
+        }
+      ],
+      "successCriterion": "Gelukt als je 'hij lag de hele dag' typt zonder naar je handen te kijken."
+    }
+  ],
+  "furtherReading": [
+    {
+      "sourceRef": "aap-healthychildren-scherm-rug-ogen",
+      "why": "Kinderartsen over ogen, rug en pauzes achter het scherm, in het Engels."
+    }
+  ],
+  "faq": [
+    {
+      "q": "Hoe weet ik dat er 20 minuten voorbij zijn?",
+      "a": "Zet een wekker of timer. Na een paar keer voel je het vaak zelf."
+    }
+  ]
+}

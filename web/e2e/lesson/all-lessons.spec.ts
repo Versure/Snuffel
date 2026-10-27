@@ -73,6 +73,8 @@ test.describe('all published lessons', () => {
 
   test('every published lesson has no axe violations', async ({ page, request }) => {
     const lessons = await publishedLessons(request);
+    // An axe run takes a few seconds per lesson, so the time grows with the content.
+    test.setTimeout(30_000 + lessons.length * 5_000);
     let first = true;
     for (const published of lessons) {
       if (first) {

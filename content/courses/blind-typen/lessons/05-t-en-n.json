@@ -1,0 +1,248 @@
+{
+  "schemaVersion": 1,
+  "id": "t-en-n",
+  "version": 1,
+  "title": "De t en de n",
+  "sticker": "Blind typen · les 5",
+  "objective": "Na deze les typ je de t en de n met je wijsvingers. Je herkent de eerste tekenen van KANS.",
+  "concept": "wijsvingers schuin omhoog en omlaag",
+  "estimatedMinutes": 10,
+  "glossary": [
+    {
+      "term": "blind typen",
+      "definition": "typen met tien vingers zonder naar het toetsenbord te kijken"
+    },
+    {
+      "term": "thuisrij",
+      "definition": "de middelste rij toetsen waar je vingers op rusten: a s d f en j k l ;"
+    },
+    {
+      "term": "KANS",
+      "definition": "klachten aan armen, nek of schouders, bijvoorbeeld door lang typen zonder pauze; vroeger heette dat RSI"
+    }
+  ],
+  "ted": {
+    "intro": {
+      "mood": "cool",
+      "text": "Met de t en de n kun je al heel veel woorden typen. En je leert luisteren naar je lijf."
+    },
+    "correct": ["Lekker!", "Strak, die t en n.", "Zo!"],
+    "incorrect": ["Bijna. Typ rustig door.", "Geen punt. Je wijsvingers leren nog."],
+    "finished": "Je kunt nu al echte zinnetjes typen. En je weet wanneer je moet stoppen."
+  },
+  "steps": [
+    {
+      "id": "uitleg",
+      "type": "explain",
+      "title": "Wijsvingers schuin, en luisteren naar je lijf",
+      "blocks": [
+        {
+          "type": "example",
+          "text": "Je typt een uur achter elkaar aan een werkstuk. Daarna tintelt je pols een beetje. Dat is een seintje van je lichaam. Het is tijd voor rust.",
+          "sourceRefs": ["radboud-kans"]
+        },
+        {
+          "type": "rule",
+          "title": "Schuin omhoog en omlaag",
+          "text": "De **t** zit schuin boven de g. Die typ je met je linkerwijsvinger. De **n** zit schuin onder de h. Die typ je met je rechterwijsvinger. Daarna ga je terug naar de [[thuisrij]].",
+          "sourceRefs": ["isbe-keyboard-technique", "uwaterloo-touch-typing"]
+        },
+        {
+          "type": "text",
+          "text": "Je wijsvingers typen de meeste letters. Ze reiken omhoog, omlaag en opzij. Ga daarom extra goed terug naar de f en de j.",
+          "sourceRefs": ["isbe-keyboard-technique"]
+        },
+        {
+          "type": "text",
+          "text": "[[KANS]] betekent: klachten aan armen, nek of schouders. Vroeger heette dat RSI. Het kan komen door lang in dezelfde houding te zitten en steeds dezelfde bewegingen te maken.",
+          "sourceRefs": ["radboud-kans", "eur-kans-beeldschermwerk"]
+        },
+        {
+          "type": "signal-cards",
+          "cards": [
+            {
+              "icon": "warning",
+              "title": "Pijn",
+              "text": "Pijn in je nek, schouder, arm, pols of hand.",
+              "sourceRefs": ["radboud-kans"]
+            },
+            {
+              "icon": "warning",
+              "title": "Tintelen",
+              "text": "Een prikkend of tintelend gevoel in je hand of vingers.",
+              "sourceRefs": ["radboud-kans"]
+            },
+            {
+              "icon": "warning",
+              "title": "Stijf of slap",
+              "text": "Een stijf gevoel, of minder kracht in je hand.",
+              "sourceRefs": ["radboud-kans"]
+            }
+          ]
+        },
+        {
+          "type": "rule",
+          "title": "Voel je zoiets? Stop.",
+          "text": "Stop met typen en doe iets anders. Ga niet door, want dan wordt het vaak erger. Vertel het een ouder als het terugkomt.",
+          "sourceRefs": ["radboud-kans", "aap-healthychildren-scherm-rug-ogen"]
+        }
+      ]
+    },
+    {
+      "id": "typen",
+      "type": "interaction",
+      "title": "Typ met t en n",
+      "intro": "Reik met je wijsvinger schuin weg en ga meteen terug naar het streepje.",
+      "interaction": {
+        "id": "t-en-n-typen",
+        "kind": "typing-drill",
+        "config": {
+          "lines": [
+            "ff ft ft tf jj jn jn nj",
+            "ftf jnj ftf jnj",
+            "tent niet tien net",
+            "tante; trein; tuin",
+            "start de taak",
+            "de trein is laat",
+            "tien tanden",
+            "ik tik de tekst",
+            "hij leest een krant",
+            "niet te snel"
+          ],
+          "newKeys": ["t", "n"],
+          "goals": {
+            "accuracy": 90
+          }
+        }
+      },
+      "sourceRefs": ["isbe-keyboard-technique", "uwaterloo-touch-typing"]
+    },
+    {
+      "id": "quiz",
+      "type": "quiz",
+      "title": "Quiz: t, n en KANS",
+      "intro": "Drie vragen over je wijsvingers en je lijf.",
+      "questions": [
+        {
+          "id": "vinger-n",
+          "prompt": "Met welke vinger typ je de n?",
+          "options": [
+            {
+              "id": "rechterwijsvinger",
+              "text": "Je rechterwijsvinger",
+              "feedback": "Klopt. De n zit schuin onder de h."
+            },
+            {
+              "id": "linkerwijsvinger",
+              "text": "Je linkerwijsvinger",
+              "feedback": "Die typt de t. De n hoort bij je rechterhand."
+            },
+            {
+              "id": "rechterduim",
+              "text": "Je rechterduim",
+              "feedback": "Je duimen typen alleen de spatie. De n doet je wijsvinger."
+            }
+          ],
+          "correctOptionId": "rechterwijsvinger",
+          "hints": ["De n zit vlak onder de h en de j."],
+          "sourceRefs": ["isbe-keyboard-technique", "uwaterloo-touch-typing"]
+        },
+        {
+          "id": "kans-betekenis",
+          "prompt": "Waar staat KANS voor?",
+          "options": [
+            {
+              "id": "klachten",
+              "text": "Klachten aan armen, nek of schouders",
+              "feedback": "Klopt. Vroeger heette dat RSI."
+            },
+            {
+              "id": "kramp",
+              "text": "Kramp na een avond hard sporten",
+              "feedback": "Dat is iets anders. KANS gaat over armen, nek en schouders."
+            },
+            {
+              "id": "kracht",
+              "text": "Kracht in armen, nek en schouders",
+              "feedback": "Het gaat juist om klachten: pijn, tintelen of stijfheid."
+            }
+          ],
+          "correctOptionId": "klachten",
+          "hints": ["Het zijn de eerste letters van vier woorden."],
+          "sourceRefs": ["radboud-kans"]
+        },
+        {
+          "id": "tintelen",
+          "prompt": "Tijdens het typen tintelt je hand. Wat doe je?",
+          "options": [
+            {
+              "id": "stoppen",
+              "text": "Stoppen en iets anders doen",
+              "feedback": "Klopt. Een seintje van je lijf neem je serieus."
+            },
+            {
+              "id": "doorgaan",
+              "text": "Gewoon doortypen tot het klaar is",
+              "feedback": "Dan wordt het vaak erger. Stop en doe iets anders."
+            },
+            {
+              "id": "harder",
+              "text": "Harder op de toetsen drukken",
+              "feedback": "Dat maakt het niet beter. Stop even met typen."
+            }
+          ],
+          "correctOptionId": "stoppen",
+          "hints": ["Tintelen is een seintje van je lichaam."],
+          "sourceRefs": ["radboud-kans"]
+        }
+      ]
+    },
+    {
+      "id": "zelf-oefenen",
+      "type": "practice",
+      "practiceKind": "do-it-yourself",
+      "title": "Zelf oefenen: t en n",
+      "intro": "Oefen deze week nog twee keer kort, op een andere dag dan vandaag.",
+      "items": [
+        {
+          "id": "check-houding",
+          "text": "Ga rechtop zitten, met je scherm op een armlengte.",
+          "sourceRefs": ["isbe-keyboard-technique", "eur-kans-beeldschermwerk"]
+        },
+        {
+          "id": "check-streepjes",
+          "text": "Voel na elke regel even naar de streepjes van de f en de j.",
+          "sourceRefs": ["uow-touch-typing"]
+        },
+        {
+          "id": "check-vingers",
+          "text": "Typ de t en de n met je wijsvingers, en ga steeds terug.",
+          "sourceRefs": ["isbe-keyboard-technique"]
+        },
+        {
+          "id": "check-oefening",
+          "text": "Doe de typoefening van les 4 en van deze les nog een keer.",
+          "sourceRefs": ["district30-keyboarding-basisschool"]
+        },
+        {
+          "id": "check-pauze",
+          "text": "Let op pijn of tintelen. Voel je iets, stop dan meteen.",
+          "sourceRefs": ["radboud-kans"]
+        }
+      ],
+      "successCriterion": "Gelukt als je drie tekenen van KANS kunt noemen en 'niet te snel' typt zonder te kijken."
+    }
+  ],
+  "furtherReading": [
+    {
+      "sourceRef": "radboud-kans",
+      "why": "Uitleg in het Nederlands over KANS en hoe je het voorkomt."
+    }
+  ],
+  "faq": [
+    {
+      "q": "Krijgen kinderen ook KANS?",
+      "a": "Klachten van lang achter een scherm zitten komen ook bij kinderen voor. Ze gaan meestal over als je er op tijd iets aan doet. Blijft het terugkomen, ga dan met een ouder naar de dokter."
+    }
+  ]
+}
