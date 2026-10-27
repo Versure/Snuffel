@@ -442,9 +442,9 @@ test.describe('the stepped exercise', () => {
     await expect(section(page, exerciseStep.id).getByRole('alert')).toHaveText(
       'Je score is niet bewaard.',
     );
-    // The score stays on the page and the step is not done.
+    // The score stays on the page and the step is begun, not done.
     expect(await exerciseTedText(page)).toContain('4 van 4 zelf goed.');
-    await expect(oefenenLink(page, false)).toBeVisible();
+    await expect(oefenenLink(page, 'started')).toBeVisible();
     await page.unroute(resultsPattern);
     expect((await storedRecords(page)).interaction_results).toEqual([]);
   });

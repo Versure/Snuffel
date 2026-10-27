@@ -35,10 +35,10 @@ test.describe('how far a child is in a lesson', () => {
     await openExerciseLesson(page);
     await expect(lessonBar(page)).toHaveAttribute('aria-valuetext', '0 van 4 stappen klaar');
     await expect(openSteps(page)).toHaveText([
-      /Stap 1: Uitleg: Stukjes pizza bij elkaar\s*,\s*nog niet begonnen/,
-      /Stap 2: Oefenen: Oefenen\s*,\s*nog niet begonnen/,
-      /Stap 3: Quiz: Quiz\s*,\s*nog niet begonnen/,
-      /Stap 4: Zelf doen: Zelf doen\s*,\s*nog niet begonnen/,
+      /Naar stap 1, Uitleg: Stukjes pizza bij elkaar\s*,\s*nog niet begonnen/,
+      /Naar stap 2, Oefenen: Oefenen\s*,\s*nog niet begonnen/,
+      /Naar stap 3, Quiz: Quiz\s*,\s*nog niet begonnen/,
+      /Naar stap 4, Zelf doen: Zelf doen\s*,\s*nog niet begonnen/,
     ]);
   });
 
@@ -60,7 +60,7 @@ test.describe('how far a child is in a lesson', () => {
     // The step is begun, not done: the navigation and the end of the lesson both say so.
     await expect(navLink(page, 2, 'Oefenen', 'started')).toBeVisible();
     await expect(lessonBar(page)).toHaveAttribute('aria-valuetext', '0 van 4 stappen klaar');
-    const oefenen = openSteps(page).filter({ hasText: 'Stap 2: Oefenen' });
+    const oefenen = openSteps(page).filter({ hasText: 'Naar stap 2, Oefenen' });
     await expect(oefenen).toContainText('bezig');
     await expect(oefenen).toHaveClass(/started/);
 
@@ -80,7 +80,7 @@ test.describe('how far a child is in a lesson', () => {
     }
     await expect(navLink(page, 2, 'Oefenen', true)).toBeVisible();
     await expect(lessonBar(page)).toHaveAttribute('aria-valuetext', '1 van 4 stappen klaar');
-    await expect(openSteps(page).filter({ hasText: 'Stap 2: Oefenen' })).toHaveCount(0);
+    await expect(openSteps(page).filter({ hasText: 'Naar stap 2, Oefenen' })).toHaveCount(0);
     await expect(openSteps(page)).toHaveCount(3);
   });
 });

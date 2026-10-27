@@ -41,8 +41,8 @@ describe('LessonFinish', () => {
       '/#stap-quiz',
     ]);
     expect(links.map(textOf)).toEqual([
-      '2Stap 2: Oefenen: Breuken oefenen, bezig',
-      '3Stap 3: Quiz: Quiz, nog niet begonnen',
+      '2Naar stap 2, Oefenen: Breuken oefenen, bezig',
+      '3Naar stap 3, Quiz: Quiz, nog niet begonnen',
     ]);
     expect(links.map((link) => link.classList.contains('started'))).toEqual([true, false]);
     expect(links[0].querySelector('.number')?.getAttribute('aria-hidden')).toBe('true');
