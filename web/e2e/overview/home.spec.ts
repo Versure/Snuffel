@@ -44,19 +44,22 @@ test.describe('the start page', () => {
     ]);
     const courses = page.getByRole('region', { name: 'Leertrajecten' });
     const practice = page.getByRole('region', { name: 'Huiswerk oefenen' });
-    await expect(courses.locator('snf-course-card')).toHaveCount(3);
+    await expect(courses.locator('snf-course-card')).toHaveCount(4);
     await expect(practice.locator('snf-course-card')).toHaveCount(1);
     await expect(courses.getByRole('heading', { level: 3 })).toHaveText([
+      'Blind typen met tien vingers',
       'Proefcursus',
       'Proefcursus: typen',
       'Roofvissen met kunstaas',
     ]);
     await expect(practice.getByRole('heading', { level: 3 })).toHaveText(['Proefhuiswerk']);
+    await expectCard(page, 'Blind typen met tien vingers', '0 van 12 lessen klaar', 0);
     await expectCard(page, 'Proefcursus', '0 van 2 lessen klaar', 0);
     await expectCard(page, 'Proefcursus: typen', '0 van 1 lessen klaar', 0);
     await expectCard(page, 'Roofvissen met kunstaas', '0 van 1 lessen klaar', 0);
     await expectCard(page, 'Proefhuiswerk', '0 van 1 lessen klaar', 0);
     const titles = [
+      'Blind typen met tien vingers',
       'Proefcursus',
       'Proefcursus: typen',
       'Roofvissen met kunstaas',
@@ -67,7 +70,7 @@ test.describe('the start page', () => {
       await expect(bar).toHaveAttribute('aria-valuemin', '0');
     }
     // A short name per course; the text is the value, so it is read once.
-    await expect(page.getByRole('progressbar')).toHaveCount(4);
+    await expect(page.getByRole('progressbar')).toHaveCount(5);
   });
 
   test('each of two children sees only its own progress on the start page', async ({ page }) => {
@@ -82,6 +85,7 @@ test.describe('the start page', () => {
     await logout(page);
     await openAs(page, childB.username, '/');
     // B sees its own progress, and none of A's. A started lesson is not a completed one.
+    await expectCard(page, 'Blind typen met tien vingers', '0 van 12 lessen klaar', 0);
     await expectCard(page, 'Proefcursus', '0 van 2 lessen klaar', 0);
     await expectCard(page, 'Proefhuiswerk', 'Alle lessen klaar!', 1);
   });
@@ -102,6 +106,7 @@ test.describe('the start page', () => {
     await page.getByRole('button', { name: 'Inloggen' }).click();
     await expect(page.locator('.greeting')).toHaveText('Hoi, Testkind!');
     await expect(page.locator('main')).not.toHaveAttribute('aria-busy', 'true');
+    await expectCard(page, 'Blind typen met tien vingers', '0 van 12 lessen klaar', 0);
     await expectCard(page, 'Proefcursus', '0 van 2 lessen klaar', 0);
 
     // And back: child A still has its own.
@@ -119,6 +124,7 @@ test.describe('the start page', () => {
     await childWithProgress([...startedBreuken]);
     await openAs(page, 'ouder', '/');
     await expect(page.locator('.greeting')).toHaveText('Hoi, Ouder!');
+    await expectCard(page, 'Blind typen met tien vingers', '0 van 12 lessen klaar', 0);
     await expectCard(page, 'Proefcursus', '0 van 2 lessen klaar', 0);
     await expectCard(page, 'Proefhuiswerk', '0 van 1 lessen klaar', 0);
   });
@@ -140,13 +146,14 @@ test.describe('the start page', () => {
     const error = page.locator('.progress-error');
     await expect(error).toContainText('Je voortgang kan ik nu niet ophalen.');
     // The cards are there, without a bar and without "van … lessen klaar".
-    await expect(page.locator('snf-course-card')).toHaveCount(4);
+    await expect(page.locator('snf-course-card')).toHaveCount(5);
     await expect(page.getByRole('progressbar')).toHaveCount(0);
     await expect(page.getByText(/lessen klaar/)).toHaveCount(0);
 
     await page.unroute(pattern);
     await error.getByRole('button', { name: 'Opnieuw' }).click();
     await expect(error).toHaveCount(0);
+    await expectCard(page, 'Blind typen met tien vingers', '0 van 12 lessen klaar', 0);
     await expectCard(page, 'Proefcursus', '0 van 2 lessen klaar', 0);
   });
 
@@ -158,7 +165,7 @@ test.describe('the start page', () => {
     await expect(page.locator('snf-course-card')).toHaveCount(0);
     await page.unroute(pattern);
     await page.getByRole('button', { name: 'Opnieuw' }).click();
-    await expect(page.locator('snf-course-card')).toHaveCount(4);
+    await expect(page.locator('snf-course-card')).toHaveCount(5);
     await expect(page.getByText('Snuffel kan de leertrajecten nu niet laden.')).toHaveCount(0);
   });
 

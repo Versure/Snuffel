@@ -136,6 +136,7 @@ test.describe('the page of a child (/ouder/<id>)', () => {
     await expect(sections.nth(0).getByRole('heading', { level: 2 })).toHaveText('Leertrajecten');
     await expect(sections.nth(1).getByRole('heading', { level: 2 })).toHaveText('Huiswerk oefenen');
     await expect(sections.nth(0).getByRole('heading', { level: 3 })).toHaveText([
+      'Blind typen met tien vingers',
       'Proefcursus',
       'Proefcursus: typen',
       'Roofvissen met kunstaas',
