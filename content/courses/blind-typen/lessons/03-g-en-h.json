@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "g-en-h",
-  "version": 1,
+  "version": 2,
   "title": "Opzij naar g en h",
   "sticker": "Blind typen · les 3",
   "objective": "Na deze les typ je de g en de h met je wijsvingers. Je weet ook wanneer je even pauze neemt.",
@@ -48,6 +48,12 @@
           "type": "rule",
           "title": "Eén stapje naar het midden",
           "text": "Je linkerwijsvinger schuift van de f naar de **g**. Je rechterwijsvinger schuift van de j naar de **h**. Daarna gaan ze meteen terug naar het [[voelstreepje]].",
+          "sourceRefs": ["isbe-keyboard-technique", "uwaterloo-touch-typing"]
+        },
+        {
+          "type": "figure",
+          "src": "assets/toetsen-g-en-h.svg",
+          "alt": "Toetsenbord met de toetsen die je al kent in de kleur van hun vinger; de toetsen die je nog niet kent zijn wit. Nieuw, met een paarse rand: de G naast de F en de H naast de J, allebei geel voor je wijsvingers. Onder het toetsenbord staat welke kleur bij welke vinger hoort.",
           "sourceRefs": ["isbe-keyboard-technique", "uwaterloo-touch-typing"]
         },
         {

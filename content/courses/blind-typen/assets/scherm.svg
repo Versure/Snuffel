@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 292">
+  <line x1="8" y1="282" x2="392" y2="282" stroke="#141414" stroke-width="3" stroke-linecap="round"/>
+  <g stroke="#141414" stroke-width="3" stroke-linejoin="round">
+    <rect x="356" y="166" width="12" height="116" fill="#ffffff"/>
+    <rect x="212" y="160" width="180" height="12" rx="3" fill="#ffffff"/>
+    <rect x="228" y="152" width="52" height="8" rx="2" fill="#ffffff"/>
+    <rect x="322" y="148" width="40" height="12" rx="2" fill="#ffffff"/>
+    <rect x="336" y="120" width="10" height="30" fill="#ffffff"/>
+    <rect x="330" y="62" width="14" height="66" rx="3" fill="#141414"/>
+    <rect x="88" y="96" width="14" height="110" rx="4" fill="#7cc1d8"/>
+    <rect x="88" y="198" width="92" height="14" rx="4" fill="#7cc1d8"/>
+    <rect x="96" y="212" width="10" height="70" fill="#7cc1d8"/>
+    <rect x="162" y="212" width="10" height="70" fill="#7cc1d8"/>
+  </g>
+  <g stroke-linecap="round">
+    <line x1="122" y1="186" x2="212" y2="186" stroke="#141414" stroke-width="30"/>
+    <line x1="122" y1="186" x2="212" y2="186" stroke="#5b2bb5" stroke-width="24"/>
+    <line x1="212" y1="186" x2="214" y2="266" stroke="#141414" stroke-width="30"/>
+    <line x1="212" y1="186" x2="214" y2="266" stroke="#5b2bb5" stroke-width="24"/>
+  </g>
+  <rect x="200" y="264" width="48" height="16" rx="6" fill="#ffffff" stroke="#141414" stroke-width="3"/>
+  <rect x="104" y="96" width="38" height="96" rx="16" fill="#ff2e7a" stroke="#141414" stroke-width="3"/>
+  <circle cx="126" cy="66" r="24" fill="#ffffff" stroke="#141414" stroke-width="3"/>
+  <circle cx="138" cy="62" r="3" fill="#141414"/>
+  <g stroke-linecap="round">
+    <line x1="124" y1="110" x2="128" y2="154" stroke="#141414" stroke-width="20"/>
+    <line x1="124" y1="110" x2="128" y2="154" stroke="#ffffff" stroke-width="14"/>
+    <line x1="128" y1="154" x2="222" y2="152" stroke="#141414" stroke-width="20"/>
+    <line x1="128" y1="154" x2="222" y2="152" stroke="#ffffff" stroke-width="14"/>
+  </g>
+  <circle cx="232" cy="151" r="9" fill="#ffffff" stroke="#141414" stroke-width="3"/>
+  <line x1="144" y1="62" x2="326" y2="62" stroke="#141414" stroke-width="2" stroke-dasharray="6 6"/>
+  <text x="236" y="52" text-anchor="middle" font-family="Atkinson Hyperlegible, Verdana, sans-serif" font-size="15" font-weight="700" fill="#141414">ooghoogte</text>
+  <g stroke="#141414" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+    <line x1="156" y1="100" x2="318" y2="100"/>
+    <polygon points="158,92 146,100 158,108" fill="#141414"/>
+    <polygon points="316,92 328,100 316,108" fill="#141414"/>
+  </g>
+  <text x="236" y="90" text-anchor="middle" font-family="Atkinson Hyperlegible, Verdana, sans-serif" font-size="15" font-weight="700" fill="#141414">50 tot 70 cm</text>
+  <text x="236" y="122" text-anchor="middle" font-family="Atkinson Hyperlegible, Verdana, sans-serif" font-size="15" font-weight="400" fill="#141414">een armlengte</text>
+</svg>

@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "o-en-w",
-  "version": 1,
+  "version": 2,
   "title": "Ringvingers: o en w",
   "sticker": "Blind typen · les 6",
   "objective": "Na deze les typ je de o en de w met je ringvingers. Je weet waarom je die vingers extra rustig gebruikt.",
@@ -47,6 +47,12 @@
           "sourceRefs": ["isbe-keyboard-technique", "uwaterloo-touch-typing"]
         },
         {
+          "type": "figure",
+          "src": "assets/toetsen-o-en-w.svg",
+          "alt": "Toetsenbord met de toetsen die je al kent in de kleur van hun vinger; de toetsen die je nog niet kent zijn wit. Nieuw, met een paarse rand: de W schuin boven de S en de O schuin boven de L, allebei oranje voor je ringvingers. Onder het toetsenbord staat welke kleur bij welke vinger hoort.",
+          "sourceRefs": ["isbe-keyboard-technique", "uwaterloo-touch-typing"]
+        },
+        {
           "type": "text",
           "text": "Typ in een rustig ritme en beweeg je handen zo weinig mogelijk. Ga na elke toets terug naar de [[thuisrij]].",
           "sourceRefs": ["uow-touch-typing", "isbe-keyboard-technique"]
@@ -72,6 +78,16 @@
               "text": "Trek je schouders niet op. Dan worden je nek en schouders moe.",
               "sourceRefs": ["eur-kans-beeldschermwerk"]
             }
+          ]
+        },
+        {
+          "type": "figure",
+          "src": "assets/armen.svg",
+          "alt": "Een kind zit van opzij gezien aan een bureau. De bovenarm hangt langs het lichaam en de onderarm gaat naar het toetsenbord. Twee labels met een vinkje: bovenarm langs je lijf, en hoek 90° of meer, met een groen boogje bij de elleboog tussen bovenarm en onderarm.",
+          "sourceRefs": [
+            "cornell-ergonomie-kinderen-computer",
+            "isbe-keyboard-technique",
+            "cesi-beeldschermwerk"
           ]
         },
         {

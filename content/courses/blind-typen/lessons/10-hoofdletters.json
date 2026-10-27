@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "hoofdletters",
-  "version": 1,
+  "version": 2,
   "title": "Hoofdletters met Shift",
   "sticker": "Blind typen · les 10",
   "objective": "Na deze les typ je hoofdletters met de Shift aan de andere kant. Je stelt je stoel zo in dat je voeten plat staan.",
@@ -48,6 +48,12 @@
           "sourceRefs": ["uwaterloo-touch-typing", "isbe-keyboard-technique"]
         },
         {
+          "type": "figure",
+          "src": "assets/toetsen-shift.svg",
+          "alt": "Toetsenbord met alle letters in de kleur van hun vinger. Nieuw, met een paarse rand: de linker-Shift en de rechter-Shift, allebei roze voor je pinken. Onder het toetsenbord staat welke kleur bij welke vinger hoort.",
+          "sourceRefs": ["uwaterloo-touch-typing", "isbe-keyboard-technique"]
+        },
+        {
           "type": "text",
           "text": "Houd Shift vast, tik de letter, en laat dan pas los. Daarna gaan allebei je vingers terug naar de [[thuisrij]]. Caps Lock gebruik je niet voor één hoofdletter.",
           "sourceRefs": ["isbe-keyboard-technique"]
@@ -78,6 +84,17 @@
               "text": "Je rug leunt tegen de leuning van de stoel.",
               "sourceRefs": ["cornell-ergonomie-kinderen-computer", "eur-kans-beeldschermwerk"]
             }
+          ]
+        },
+        {
+          "type": "figure",
+          "src": "assets/houding-stoel.svg",
+          "alt": "Een kind zit van opzij gezien op een stoel aan een bureau. Drie labels met een vinkje: rug tegen leuning, bij de rug; knieën vrij, bij de ruimte tussen de rand van de stoel en de knie; voeten plat, bij de voet op de grond.",
+          "sourceRefs": [
+            "cornell-ergonomie-kinderen-computer",
+            "eur-kans-beeldschermwerk",
+            "aap-healthychildren-scherm-rug-ogen",
+            "cesi-beeldschermwerk"
           ]
         },
         {

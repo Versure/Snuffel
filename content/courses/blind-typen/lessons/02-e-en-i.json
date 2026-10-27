@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "e-en-i",
-  "version": 1,
+  "version": 2,
   "title": "Omhoog naar e en i",
   "sticker": "Blind typen · les 2",
   "objective": "Na deze les typ je de e en de i met je middelvingers. Na elke toets gaat je vinger terug naar de thuisrij.",
@@ -48,6 +48,12 @@
           "type": "rule",
           "title": "Middelvingers omhoog",
           "text": "De **e** zit recht boven de d. Die typ je met je linkermiddelvinger. De **i** zit recht boven de k. Die typ je met je rechtermiddelvinger.",
+          "sourceRefs": ["isbe-keyboard-technique", "uwaterloo-touch-typing"]
+        },
+        {
+          "type": "figure",
+          "src": "assets/toetsen-e-en-i.svg",
+          "alt": "Toetsenbord met de toetsen die je al kent in de kleur van hun vinger; de toetsen die je nog niet kent zijn wit. Nieuw, met een paarse rand: de E recht boven de D en de I recht boven de K, allebei groen voor je middelvingers. Onder het toetsenbord staat welke kleur bij welke vinger hoort.",
           "sourceRefs": ["isbe-keyboard-technique", "uwaterloo-touch-typing"]
         },
         {

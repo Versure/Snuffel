@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "vraagteken-en-uitroepteken",
-  "version": 1,
+  "version": 2,
   "title": "Vraagteken, uitroepteken en apostrof",
   "sticker": "Blind typen · les 12",
   "objective": "Na deze les typ je een vraagteken, een uitroepteken en een apostrof. Je typt een korte tekst met hoofdletters en leestekens zonder te kijken.",
@@ -59,6 +59,12 @@
           "type": "text",
           "text": "De **apostrof** zit rechts naast de puntkomma. Ook die typ je met je rechterpink. Daarna gaan al je vingers terug naar de [[thuisrij]].",
           "sourceRefs": ["uwaterloo-touch-typing", "isbe-keyboard-technique"]
+        },
+        {
+          "type": "figure",
+          "src": "assets/toetsen-leestekens.svg",
+          "alt": "Toetsenbord met alle letters, Shift en de leestekens die je al kent in de kleur van hun vinger. Nieuw, met een paarse rand en allebei roze voor je pinken: linksboven de toets met 1 en het uitroepteken, rechtsonder naast de punt de toets met de schuine streep en het vraagteken, en rechts naast de puntkomma de apostrof. Onder het toetsenbord staat welke kleur bij welke vinger hoort.",
+          "sourceRefs": ["isbe-keyboard-technique", "uwaterloo-touch-typing"]
         },
         {
           "type": "tip",
