@@ -69,7 +69,7 @@
         {
           "type": "tip",
           "title": "Typ je op Linux?",
-          "text": "Op Linux maakt de apostrof met meer letters een andere letter, zoals ć. Typ je op Linux? Typ dan na de apostrof eerst een spatie, ook in auto's en zo'n.",
+          "text": "Op Linux maakt de apostrof met meer letters een andere letter, zoals ć. Typ je op Linux met US-International? Typ dan na de apostrof eerst een spatie, ook in auto's en zo'n.",
           "sourceRefs": ["wikipedia-qwerty", "wikipedia-dead-key"]
         },
         {
