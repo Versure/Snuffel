@@ -3,10 +3,11 @@ import { mkdirSync, readFileSync, renameSync, symlinkSync, writeFileSync } from 
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { describe, test } from 'node:test';
-import { externalReferences, isValidAssetPath } from './rules/assets.mjs';
+import { courseSvgs, externalReferences, isValidAssetPath } from './rules/assets.mjs';
 import { courseTexts } from './rules/links.mjs';
 import { trackerReason } from './trackers.mjs';
 import { assertClean, assertIssue, codes, fixtureRoot } from './test-helpers.mjs';
+import { repoRoot } from './check.mjs';
 
 // In the fixture, steps[0].blocks[4] is a text block and steps[0].blocks[6] the figure.
 const textPath = 'steps[0].blocks[4].text';
@@ -350,5 +351,297 @@ describe('figures', () => {
     }
     assert.deepEqual(externalReferences('<svg xmlns="http://www.w3.org/2000/svg"/>'), []);
     assert.deepEqual(externalReferences('<use href="//cdn.example.org/a.svg#x"/>'), ['//…']);
+  });
+});
+
+// Fixture svgs with one kind of mistake each (content/fixtures/svg), and one that is fine.
+const svgFixture = (name) =>
+  readFileSync(join(repoRoot, 'content', 'fixtures', 'svg', name), 'utf8');
+
+describe('svg style and safety', () => {
+  /** The fixture course with `svg` as the figure of the lesson. */
+  const withFigure = (t, svg) => {
+    const fixture = fixtureRoot(t);
+    fixture.writeFile('assets/hengeltop.svg', svg);
+    return fixture;
+  };
+
+  test('a svg that follows the style guide is fine', (t) => {
+    const fixture = withFigure(t, svgFixture('good.svg'));
+    const result = fixture.check({ stability: false });
+    assertClean(result);
+    assert.deepEqual(result.warnings, []);
+  });
+
+  test('colours outside the palette, a gradient and transparency give asset-color-off-palette', (t) => {
+    const fixture = withFigure(t, svgFixture('color-off-palette.svg'));
+    const result = fixture.check();
+    const error = assertIssue(result, 'asset-color-off-palette', `${figurePath}.src`);
+    for (const finding of ['fill="#ff0000"', 'stroke="black"', 'stroke="rgb(20, 20, 20)"']) {
+      assert.ok(error.message.includes(finding), `${finding} missing in: ${error.message}`);
+    }
+    assert.match(error.message, /linearGradient/);
+    assert.match(error.message, /palette\.json/);
+    assert.equal(result.errors.length, 1, codes(result).join('\n'));
+  });
+
+  test('opacity 0.5 is refused, 0, 1 and 100% are fine; short hex and currentColor are fine', (t) => {
+    const svg = (extra) =>
+      `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 100"><rect width="10" height="10" ${extra}/></svg>\n`;
+    const fixture = withFigure(
+      t,
+      svg('opacity="0" fill-opacity="1" stroke-opacity="100%" fill="#FFF" stroke="currentColor"'),
+    );
+    assertClean(fixture.check());
+    fixture.writeFile('assets/hengeltop.svg', svg('fill-opacity="0.5"'));
+    const error = assertIssue(fixture.check(), 'asset-color-off-palette', `${figurePath}.src`);
+    assert.match(error.message, /fill-opacity="0\.5"/);
+  });
+
+  test('a colour in a <style> element gives asset-color-off-palette', (t) => {
+    const fixture = withFigure(
+      t,
+      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 100"><style>.a { fill: hotpink }</style><rect class="a" width="10" height="10"/></svg>\n',
+    );
+    const error = assertIssue(fixture.check(), 'asset-color-off-palette', `${figurePath}.src`);
+    assert.match(error.message, /hotpink/);
+  });
+
+  test('script, an embedded image, html, event handlers and javascript give asset-unsafe-content', (t) => {
+    const fixture = withFigure(t, svgFixture('unsafe-content.svg'));
+    const result = fixture.check();
+    const error = assertIssue(result, 'asset-unsafe-content', `${figurePath}.src`);
+    for (const finding of [
+      '<script>',
+      '<image>',
+      '<foreignObject>',
+      'onload=',
+      'javascript:',
+      'data:',
+    ]) {
+      assert.ok(error.message.includes(finding), `${finding} missing in: ${error.message}`);
+    }
+    assert.equal(
+      result.errors.filter((issue) => issue.code !== 'asset-unsafe-content').length,
+      0,
+      codes(result).join('\n'),
+    );
+  });
+
+  test('a DOCTYPE with entities and a link to another file give asset-unsafe-content', (t) => {
+    const fixture = withFigure(
+      t,
+      '<?xml version="1.0"?>\n<!DOCTYPE svg [<!ENTITY a "aaaa">]>\n<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 100"><use href="andere.svg#vis"/><use href="#eigen"/></svg>\n',
+    );
+    const error = assertIssue(fixture.check(), 'asset-unsafe-content', `${figurePath}.src`);
+    assert.match(error.message, /<!DOCTYPE>/);
+    assert.match(error.message, /andere\.svg#vis/);
+    assert.doesNotMatch(error.message, /"#eigen"/);
+  });
+
+  test('style sheets, url() to other files and animation give asset-unsafe-content', (t) => {
+    const head = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 100">';
+    const cases = {
+      'xml-stylesheet': [
+        `<?xml-stylesheet type="text/css" href="vis.css"?>\n${head}</svg>\n`,
+        '<?xml-stylesheet?>',
+      ],
+      '@import': [`${head}<style>@import "vis.css";</style></svg>\n`, '@import'],
+      '@font-face': [
+        `${head}<style>@font-face{font-family:x;src:url(f.woff)}</style></svg>\n`,
+        '@font-face',
+      ],
+      'url() to another file': [
+        `${head}<rect mask="url(andere.svg#m)" fill="#ffd83d"/></svg>\n`,
+        'url(andere.svg#m)',
+      ],
+      'url() in style': [
+        `${head}<rect style="cursor:url(c.png),auto" fill="#ffd83d"/></svg>\n`,
+        'url(c.png)',
+      ],
+      '<set>': [
+        `${head}<use href="#a"><set attributeName="href" to="andere.svg#x"/></use></svg>\n`,
+        '<set>',
+      ],
+      '<animate>': [
+        `${head}<rect fill="#ffd83d"><animate attributeName="fill" to="#ff0000" dur="1s"/></rect></svg>\n`,
+        '<animate>',
+      ],
+      'escape in style': [`${head}<style>rect{f\\69ll:#ff0000}</style></svg>\n`, '\\ in <style>'],
+    };
+    for (const [name, [svg, finding]] of Object.entries(cases)) {
+      const fixture = withFigure(t, svg);
+      const error = assertIssue(fixture.check(), 'asset-unsafe-content', `${figurePath}.src`);
+      assert.ok(
+        error.message.includes(finding),
+        `${name}: ${finding} missing in: ${error.message}`,
+      );
+    }
+  });
+
+  test('escapes in style, XHTML, other namespaces, src, xml:base and image-set() are refused', (t) => {
+    const head = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 100">';
+    const h = 'xmlns:h="http://www.w3.org/1999/xhtml"';
+    const cases = {
+      'escaped url() in style': [
+        `${head}<rect style="cursor:u\\72l(h\\74tps://example.org/c.png),auto" fill="#ffd83d"/></svg>\n`,
+        '\\ in style=""',
+      ],
+      'escaped fill in style': [
+        `${head}<rect style="f\\69ll:#ff0000" fill="#ffd83d"/></svg>\n`,
+        '\\ in style=""',
+      ],
+      'escaped opacity in style': [
+        `${head}<rect style="op\\61city:.3" fill="#ffd83d"/></svg>\n`,
+        '\\ in style=""',
+      ],
+      'XHTML img with an entity in src': [
+        `${head}<h:img ${h} src="h&#x74;tps://example.org/x.png"/></svg>\n`,
+        '<h:img> (namespace)',
+      ],
+      'XHTML img with //host': [
+        `${head}<h:img ${h} src="&#x2f;/example.org/x.png"/></svg>\n`,
+        'src="//example.org/x.png"',
+      ],
+      'img in the XHTML default namespace': [
+        `${head}<img xmlns="http://www.w3.org/1999/xhtml" src="x.png"/></svg>\n`,
+        '<img>',
+      ],
+      'xml:base': [
+        `${head}<g xml:base="vissen/"><use href="#a"/></g></svg>\n`,
+        'xml:base="vissen/"',
+      ],
+      'image-set()': [
+        `${head}<style>rect{background-image:image-set("x.png" 1x)}</style></svg>\n`,
+        'image-set()',
+      ],
+    };
+    for (const [name, [svg, finding]] of Object.entries(cases)) {
+      const fixture = withFigure(t, svg);
+      const error = assertIssue(fixture.check(), 'asset-unsafe-content', `${figurePath}.src`);
+      assert.ok(
+        error.message.includes(finding),
+        `${name}: ${finding} missing in: ${error.message}`,
+      );
+    }
+    // The decoded entity is also a link to another site.
+    assert.deepEqual(externalReferences(`<h:img ${h} src="h&#x74;tps://example.org/x.png"/>`), [
+      'https://example.org/x.png',
+    ]);
+    assert.deepEqual(externalReferences('<h:img src="&#x2f;/example.org/x.png"/>'), ['//…']);
+  });
+
+  test('an uppercase HTTPS:// and url(//host) give asset-external-ref', (t) => {
+    const head = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 100">';
+    const fixture = withFigure(
+      t,
+      `${head}<style>@import url(HTTPS://example.org/x.css);</style></svg>\n`,
+    );
+    const error = assertIssue(fixture.check(), 'asset-external-ref', `${figurePath}.src`);
+    assert.match(error.message, /HTTPS:\/\/example\.org\/x\.css/);
+    assert.deepEqual(externalReferences('<rect style="fill:url(//cdn.example.org/p.svg#x)"/>'), [
+      '//…',
+    ]);
+  });
+
+  test('filters and mix-blend-mode give asset-color-off-palette; url(#id) is fine', (t) => {
+    const head = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 100">';
+    const fixture = withFigure(
+      t,
+      `${head}<filter id="f"><feColorMatrix values="0 0 0 0 1"/></filter><rect style="mix-blend-mode:multiply" fill="#ffd83d"/></svg>\n`,
+    );
+    const error = assertIssue(fixture.check(), 'asset-color-off-palette', `${figurePath}.src`);
+    assert.match(error.message, /<filter>/);
+    assert.match(error.message, /mix-blend-mode/);
+    fixture.writeFile(
+      'assets/hengeltop.svg',
+      `${head}<defs><clipPath id="c"><rect width="9" height="9"/></clipPath></defs><rect clip-path="url(#c)" fill="#ffd83d"/></svg>\n`,
+    );
+    assertClean(fixture.check());
+  });
+
+  test('a fixed size without viewBox gives asset-viewbox-missing', (t) => {
+    const fixture = withFigure(t, svgFixture('viewbox-missing.svg'));
+    const result = fixture.check();
+    const error = assertIssue(result, 'asset-viewbox-missing', `${figurePath}.src`);
+    assert.match(error.message, /geen viewBox/);
+    assert.equal(result.errors.length, 1, codes(result).join('\n'));
+  });
+
+  test('a broken viewBox or no svg element gives asset-viewbox-missing', (t) => {
+    const fixture = withFigure(t, '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400"/>\n');
+    assertIssue(fixture.check(), 'asset-viewbox-missing', `${figurePath}.src`);
+    fixture.writeFile(
+      'assets/hengeltop.svg',
+      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 0 100"/>\n',
+    );
+    assertIssue(fixture.check(), 'asset-viewbox-missing', `${figurePath}.src`);
+    fixture.writeFile('assets/hengeltop.svg', 'geen tekening\n');
+    const error = assertIssue(fixture.check(), 'asset-viewbox-missing', `${figurePath}.src`);
+    assert.match(error.message, /geen <svg>/);
+  });
+
+  test('long text, another font and text without a font give asset-text-invalid', (t) => {
+    const fixture = withFigure(t, svgFixture('text-invalid.svg'));
+    const result = fixture.check();
+    const error = assertIssue(result, 'asset-text-invalid', `${figurePath}.src`);
+    assert.match(error.message, /is 34 tekens \(hoogstens 24\)/);
+    assert.match(error.message, /Comic Sans MS/);
+    assert.match(error.message, /"j" zonder font-family/);
+    assert.equal(result.errors.length, 1, codes(result).join('\n'));
+  });
+
+  test('a font on a group, quoted, and 24 characters in tspans are fine; bold 900 is not', (t) => {
+    const label = 'abcdefghij klmnopqrstuvw'; // 24 characters
+    const fixture = withFigure(
+      t,
+      `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 100"><g font-family="'Atkinson Hyperlegible', Verdana, sans-serif" font-weight="bold"><text><tspan>${label.slice(0, 10)}</tspan><tspan>${label.slice(10)}</tspan></text></g></svg>\n`,
+    );
+    assertClean(fixture.check());
+    fixture.writeFile(
+      'assets/hengeltop.svg',
+      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 100"><text font-family="Atkinson Hyperlegible, Verdana, sans-serif" style="font-weight: 900">f</text></svg>\n',
+    );
+    const error = assertIssue(fixture.check(), 'asset-text-invalid', `${figurePath}.src`);
+    assert.match(error.message, /font-weight="900"/);
+  });
+
+  test('a svg over 40 kB gives asset-too-large', (t) => {
+    const good = svgFixture('good.svg');
+    const padding = `<!-- ${'x'.repeat(41 * 1024)} -->`;
+    const fixture = withFigure(t, good.replace('</svg>', `${padding}\n</svg>`));
+    const result = fixture.check();
+    const error = assertIssue(result, 'asset-too-large', `${figurePath}.src`);
+    assert.match(error.message, /hoogstens 40 kB/);
+    assert.equal(result.errors.length, 1, codes(result).join('\n'));
+  });
+
+  test('a svg of exactly 40 kB is fine', (t) => {
+    const good = svgFixture('good.svg');
+    const filler = 40 * 1024 - Buffer.byteLength(good) - '<!--  -->\n'.length;
+    const fixture = withFigure(t, `${good}<!-- ${'x'.repeat(filler)} -->\n`);
+    assert.equal(Buffer.byteLength(readFileSync(fixture.path('assets/hengeltop.svg'))), 40 * 1024);
+    assertClean(fixture.check());
+  });
+
+  test('a svg in assets/ that no lesson uses gives the warning asset-unused, not an error', (t) => {
+    const fixture = fixtureRoot(t);
+    fixture.writeFile('assets/vissen/snoek.svg', svgFixture('good.svg'));
+    fixture.writeFile('assets/notities.txt', 'geen svg\n');
+    const result = fixture.check({ stability: false });
+    assertClean(result);
+    assert.deepEqual(result.warnings, [
+      `${fixture.relCourseDir}/assets/vissen/snoek.svg: geen les gebruikt deze afbeelding; zet hem in een figure of haal hem weg [asset-unused]`,
+    ]);
+  });
+
+  test('courseSvgs lists the svgs below assets/', (t) => {
+    const fixture = fixtureRoot(t);
+    fixture.writeFile('assets/vissen/snoek.svg', '<svg/>');
+    assert.deepEqual(courseSvgs(fixture.courseDir), [
+      'assets/hengeltop.svg',
+      'assets/vissen/snoek.svg',
+    ]);
+    assert.deepEqual(courseSvgs(join(fixture.root, 'bestaat-niet')), []);
   });
 });

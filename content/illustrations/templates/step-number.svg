@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 150">
+  <!--
+    Template: numbered steps in a row, with an arrow between them. Each step is a purple dot with
+    a white number and a short label below it. Remove a step, or copy one 130 to the right.
+  -->
+  <g stroke="#141414" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+    <line x1="104" y1="56" x2="160" y2="56"/>
+    <polygon points="156,48 168,56 156,64" fill="#141414"/>
+    <line x1="234" y1="56" x2="290" y2="56"/>
+    <polygon points="286,48 298,56 286,64" fill="#141414"/>
+  </g>
+  <g stroke="#141414" stroke-width="3">
+    <circle cx="73" cy="59" r="26" fill="#141414"/>
+    <circle cx="70" cy="56" r="26" fill="#5b2bb5"/>
+    <circle cx="203" cy="59" r="26" fill="#141414"/>
+    <circle cx="200" cy="56" r="26" fill="#5b2bb5"/>
+    <circle cx="333" cy="59" r="26" fill="#141414"/>
+    <circle cx="330" cy="56" r="26" fill="#5b2bb5"/>
+  </g>
+  <g font-family="Atkinson Hyperlegible, Verdana, sans-serif" font-weight="700" text-anchor="middle">
+    <text x="70" y="64" font-size="24" fill="#ffffff">1</text>
+    <text x="200" y="64" font-size="24" fill="#ffffff">2</text>
+    <text x="330" y="64" font-size="24" fill="#ffffff">3</text>
+    <text x="70" y="122" font-size="18" fill="#141414">zitten</text>
+    <text x="200" y="122" font-size="18" fill="#141414">vingers</text>
+    <text x="330" y="122" font-size="18" fill="#141414">typen</text>
+  </g>
+</svg>

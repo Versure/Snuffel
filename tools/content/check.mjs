@@ -42,6 +42,11 @@ export function localToday(now = new Date()) {
   return `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
 }
 
+/** A warning from a rule as one line: `file: message [code]`. */
+export function formatWarning({ file, path, message, code }) {
+  return `${file}${path ? ` ${path}` : ''}: ${message} [${code}]`;
+}
+
 function withFile(file, issues) {
   return issues.map((issue) => ({ ...issue, file }));
 }
@@ -107,7 +112,13 @@ export function checkContent({
   }
 
   const context = { root, courses, terms, today };
-  for (const rule of rules) errors.push(...rule(context));
+  for (const rule of rules) {
+    for (const issue of rule(context)) {
+      // A rule marks a finding that should not block (asset-unused) as a warning.
+      if (issue.severity === 'warning') warnings.push(formatWarning(issue));
+      else errors.push(issue);
+    }
+  }
 
   if (stability) {
     const { ref, explicit } = resolveBase(root, base);

@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "v-en-m",
-  "version": 1,
+  "version": 2,
   "title": "Naar beneden: v en m",
   "sticker": "Blind typen · les 7",
   "objective": "Na deze les typ je de v en de m met je wijsvingers. Je weet waarom je eerst goed typt en pas daarna snel.",
@@ -45,6 +45,12 @@
           "type": "rule",
           "title": "Wijsvingers omlaag",
           "text": "De **v** zit schuin onder de f. Die typ je met je linkerwijsvinger. De **m** zit schuin onder de j. Die typ je met je rechterwijsvinger.",
+          "sourceRefs": ["isbe-keyboard-technique", "uwaterloo-touch-typing"]
+        },
+        {
+          "type": "figure",
+          "src": "assets/toetsen-v-en-m.svg",
+          "alt": "Toetsenbord met de toetsen die je al kent in de kleur van hun vinger; de toetsen die je nog niet kent zijn wit. Nieuw, met een paarse rand: de V schuin onder de F en de M schuin onder de J, allebei geel voor je wijsvingers. Onder het toetsenbord staat welke kleur bij welke vinger hoort.",
           "sourceRefs": ["isbe-keyboard-technique", "uwaterloo-touch-typing"]
         },
         {

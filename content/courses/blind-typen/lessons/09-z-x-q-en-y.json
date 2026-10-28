@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "z-x-q-en-y",
-  "version": 1,
+  "version": 2,
   "title": "De laatste letters",
   "sticker": "Blind typen · les 9",
   "objective": "Na deze les typ je de z, de x, de q en de y. Je kent nu alle letters, en je weet hoe je ze bijhoudt.",
@@ -41,6 +41,12 @@
           "type": "rule",
           "title": "Vier laatste letters",
           "text": "De **q** zit boven de a en de **z** onder de a. Die typ je allebei met je linkerpink. De **x** zit onder de s, voor je linkerringvinger. De **y** zit naast de u, voor je rechterwijsvinger.",
+          "sourceRefs": ["isbe-keyboard-technique", "uwaterloo-touch-typing"]
+        },
+        {
+          "type": "figure",
+          "src": "assets/toetsen-z-x-q-en-y.svg",
+          "alt": "Toetsenbord met de toetsen die je al kent in de kleur van hun vinger; de toetsen die je nog niet kent zijn wit. Nieuw, met een paarse rand: de Q boven de A en de Z onder de A, allebei roze voor je linkerpink; de X onder de S, oranje voor je linkerringvinger; de Y naast de U, geel voor je rechterwijsvinger. Onder het toetsenbord staat welke kleur bij welke vinger hoort.",
           "sourceRefs": ["isbe-keyboard-technique", "uwaterloo-touch-typing"]
         },
         {

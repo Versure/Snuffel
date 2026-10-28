@@ -24,8 +24,9 @@ const extensions = [
 const ignoredDirs = ['web/public/content'];
 const ignoredDirPrefixes = ['web/public/.content-'];
 // XML namespaces are identifiers, not network requests.
-const allowed = [/^http:\/\/www\.w3\.org\//];
-const urlPattern = /https?:\/\/[^\s'"`)<>]+/g;
+const allowed = [/^http:\/\/www\.w3\.org\//i];
+// Case-insensitive: HTTPS://host loads just as well.
+const urlPattern = /https?:\/\/[^\s'"`)<>]+/gi;
 
 /** Path relative to the scanned base, always with forward slashes. */
 function posixRelative(baseDir, path) {

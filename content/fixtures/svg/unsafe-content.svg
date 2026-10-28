@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 160" onload="alert(1)">
+  <!-- Wrong: code, an embedded picture and html are not a drawing. -->
+  <script>alert(1)</script>
+  <image href="data:image/png;base64,iVBORw0KGgo=" width="10" height="10"/>
+  <foreignObject width="100" height="50"><p>Hallo</p></foreignObject>
+  <a href="javascript:alert(1)"><rect x="20" y="20" width="100" height="100" fill="#ffd83d"/></a>
+</svg>

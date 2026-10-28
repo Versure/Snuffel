@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "b-p-en-c",
-  "version": 1,
+  "version": 2,
   "title": "De b, de p en de c",
   "sticker": "Blind typen · les 8",
   "objective": "Na deze les typ je de b, de p en de c met de goede vinger. Je houdt je polsen recht tijdens het typen.",
@@ -44,6 +44,12 @@
           "sourceRefs": ["isbe-keyboard-technique", "uwaterloo-touch-typing"]
         },
         {
+          "type": "figure",
+          "src": "assets/toetsen-b-p-en-c.svg",
+          "alt": "Toetsenbord met de toetsen die je al kent in de kleur van hun vinger; de toetsen die je nog niet kent zijn wit. Nieuw, met een paarse rand: de B schuin onder de G, geel voor je linkerwijsvinger; de C schuin onder de D, groen voor je linkermiddelvinger; de P schuin boven de puntkomma, roze voor je rechterpink. Onder het toetsenbord staat welke kleur bij welke vinger hoort.",
+          "sourceRefs": ["isbe-keyboard-technique", "uwaterloo-touch-typing"]
+        },
+        {
           "type": "text",
           "text": "Je linkerwijsvinger heeft nu zes toetsen: f, g, r, t, v en b. Ga na elke toets terug naar de f op de [[thuisrij]].",
           "sourceRefs": ["isbe-keyboard-technique"]
@@ -69,6 +75,17 @@
               "text": "Leun tijdens het typen niet op je polsen.",
               "sourceRefs": ["aap-healthychildren-scherm-rug-ogen", "isbe-keyboard-technique"]
             }
+          ]
+        },
+        {
+          "type": "figure",
+          "src": "assets/polsen.svg",
+          "alt": "Twee tekeningen van opzij van een onderarm en hand boven een toetsenbord. Links, met een vinkje en het label recht en zwevend: onderarm en hand vormen één rechte lijn en zweven boven het toetsenbord; een zwarte stippellijn loopt over onderarm en hand. Rechts, met een kruisje en het label leunen en knikken: de onderarm ligt op tafel en de pols knikt omhoog, met een rode cirkel om de pols.",
+          "sourceRefs": [
+            "cornell-ergonomie-kinderen-computer",
+            "cesi-beeldschermwerk",
+            "isbe-keyboard-technique",
+            "aap-healthychildren-scherm-rug-ogen"
           ]
         },
         {

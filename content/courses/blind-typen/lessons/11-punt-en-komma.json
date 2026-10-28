@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "punt-en-komma",
-  "version": 1,
+  "version": 2,
   "title": "Punt en komma",
   "sticker": "Blind typen · les 11",
   "objective": "Na deze les typ je de punt en de komma met de goede vinger. Je wisselt tijdens lang typen af en toe van houding.",
@@ -45,6 +45,12 @@
           "type": "rule",
           "title": "Komma en punt",
           "text": "De **komma** zit schuin onder de k. Die typ je met je rechtermiddelvinger. De **punt** zit schuin onder de l. Die typ je met je rechterringvinger.",
+          "sourceRefs": ["isbe-keyboard-technique"]
+        },
+        {
+          "type": "figure",
+          "src": "assets/toetsen-punt-en-komma.svg",
+          "alt": "Toetsenbord met de toetsen die je al kent in de kleur van hun vinger; de toetsen die je nog niet kent zijn wit. Nieuw, met een paarse rand: de komma schuin onder de K, groen voor je rechtermiddelvinger, en de punt schuin onder de L, oranje voor je rechterringvinger. Onder het toetsenbord staat welke kleur bij welke vinger hoort.",
           "sourceRefs": ["isbe-keyboard-technique"]
         },
         {

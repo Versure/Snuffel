@@ -1,6 +1,6 @@
 ---
 name: snuffel-leren
-description: Maakt van een korte wens van Jop een Snuffel-les (leertraject of huiswerk-oefenles) als alleen inhoud in content/ - intake, echte bronnen via source-researcher, leerpad, les schrijven volgens de catalogus, content:check, review door content-reviewer, eigen branch en pull request. Gebruik bij "/snuffel-leren <wens>", "nieuwe les", "maak een les over …", "leertraject", of "huiswerkhulp voor …". Bij huiswerk kan Jop foto's van werkboekpagina's geven (in huiswerk-fotos/, buiten git). Met --voorbeeld een voorbeeldles als fixture, zonder commit of PR.
+description: Maakt van een korte wens van Jop een Snuffel-les (leertraject of huiswerk-oefenles) als alleen inhoud in content/ - intake, echte bronnen via source-researcher, leerpad met beeldlijst, les schrijven volgens de catalogus met tekeningen volgens de stijlgids, content:check, content:figures, review door content-reviewer, eigen branch en pull request. Gebruik bij "/snuffel-leren <wens>", "nieuwe les", "maak een les over …", "leertraject", of "huiswerkhulp voor …". Bij huiswerk kan Jop foto's van werkboekpagina's geven (in huiswerk-fotos/, buiten git). Met --voorbeeld een voorbeeldles als fixture, zonder commit of PR.
 argument-hint: '<korte wens> [--voorbeeld]'
 ---
 
@@ -71,9 +71,11 @@ Te weinig betrouwbare bronnen: **stop** en zeg Jop wat er ontbreekt. Verzin nooi
 
 Maak een leerpad: lessen met elk **één nieuw begrip**, in volgorde van voorkennis, met per les het leerdoel ("Na deze les …").
 
+Maak per les ook een **beeldlijst**: loop de uitlegstappen langs en stel bij elke stap de vraag "laat ik hier een plek, vorm, volgorde, vergelijking of beweging zien?" (waar zit iets, hoe ziet het eruit, wat komt eerst, wat is het verschil, hoe beweegt het). Zo ja, dan komt er een tekening (`figure`); schrijf in één regel wat hij laat zien. Zo nee, schrijf in één zin waarom niet (bijv. "alleen een afspraak, niets om te zien"). Een les zonder tekening mag, maar alleen met die zin per uitlegstap. Een tekening om de tekening helpt niet.
+
 Maak eerst de branch vanaf `main`: `git switch -c content/<cursus-id>-<les-id>` (de eerste les die je gaat maken). Schrijf daarna pas `course.json` (zie de catalogus) met alle lessen als `planned` en de bronnen van `source-researcher` onder `sources`, zodat er nooit een bestand op `main` ontstaat.
 
-**Stop: Jop keurt het leerpad goed.** Laat het leerpad zien (lessen, begrip, leerdoel) met de bronnen in een tabel. Ga pas verder na zijn akkoord; past hij iets aan, verwerk het eerst.
+**Stop: Jop keurt het leerpad goed.** Laat het leerpad zien (lessen, begrip, leerdoel, beeldlijst) met de bronnen in een tabel. Ga pas verder na zijn akkoord; past hij iets aan, verwerk het eerst.
 
 ## 4. Les maken
 
@@ -89,7 +91,13 @@ Bestand `content/courses/<cursus-id>/lessons/NN-<les-id>.json` (`NN` is het volg
 - **Bronnen:** `sourceRefs` bij elke bewering (blok, kaart, quizvraag, checklist-item, interactiestap). Een lege lijst alleen bij tekst zonder feitelijke bewering.
 - **Ted:** `ted.intro` (met `mood`), `ted.correct`, `ted.incorrect`, `ted.finished`; kort, in Teds toon (stoer, vrolijk, nooit betuttelend).
 - **Interacties alleen uit de catalogus** (`trace-game`, `stepped-exercise`, `typing-drill`, of wat daar later bij komt).
-- **Afbeeldingen:** alleen als een afbeelding iets uitlegt wat tekst niet goed kan. Maak dan zelf een eenvoudige svg in `assets/` van de cursus: alleen `currentColor`, niets van buiten, een `alt` die beschrijft wat je ziet. Geen foto's, geen afbeeldingen van internet.
+- **Afbeeldingen:** elke tekening uit de beeldlijst komt als blok `figure` bij de uitleg die hij laat zien. Volg de stijlgids `content/illustrations/README.md`:
+  - kopieer een sjabloon uit `content/illustrations/templates/` (kaart, pijl, label, genummerde stap, QWERTY-toetsenbord, hand, zittend kind) naar `content/courses/<cursus-id>/assets/<naam>.svg` en pas het aan; begin niet elke keer opnieuw;
+  - alleen de kleuren uit `content/illustrations/palette.json`, zwarte lijnen van 3, harde schaduw, `viewBox` van 400 breed, in de rijke stripstijl: echte vormen (handen met nagels en knokkels, toetsen met diepte), schaduw in twee tinten zonder verloop, één huidskleur per tekening en wisselend over de cursus, nooit paarse kleren;
+  - alleen korte labels (hoogstens 24 tekens, met het font uit de stijlgids); uitleg hoort in de les of de `caption`;
+  - een `alt` die zegt wat je ziet en waarom het er staat, met alles wat in de tekening ertoe doet (labels, kleuren en hun betekenis);
+  - `sourceRefs` bij de tekening: de bronnen van wat hij laat zien, net als bij tekst;
+  - geen foto's, geen afbeeldingen van internet, niets van buiten.
 - **Parafraseren, nooit kopiëren** uit een bron.
 - **Nieuwe vaktermen** (met hun `forms`) voeg je toe aan `content/terms.json`, in dezelfde PR als de les, zodat de check ze daarna in elke les afdwingt.
 - **Id's van een gepubliceerde les nooit wijzigen** (zie "Nooit wijzigen" in de catalogus). Een les aanpassen die al op `main` staat: `version` één omhoog.
@@ -117,11 +125,13 @@ Bestand `content/courses/<cursus-id>/lessons/NN-<les-id>.json` (`NN` is het volg
 
 ## 6. Valideren
 
-`npm run content:check`. Los elke fout op; de codes en wat ze betekenen staan in de catalogus onder "Checks". Herhaal tot hij groen is. Versoepel nooit een check; past een les echt niet binnen een regel, zeg het Jop.
+`npm run content:check`. Los elke fout op; de codes en wat ze betekenen staan in de catalogus onder "Checks" (ook `asset-color-off-palette`, `asset-text-invalid` en de andere checks op tekeningen). Herhaal tot hij groen is. Versoepel nooit een check; past een les echt niet binnen een regel, zeg het Jop.
+
+**Kijk naar elke tekening.** Draai `npm run content:figures -- <cursus-id>`: dat maakt van elke svg van de cursus png's in `tmp/figures/<cursus-id>/` (licht en donker, telefoon en laptop), met de `alt` eronder. Open **elke** png met `Read` en controleer: overlapt er niets, is elk label leesbaar op de telefoon, klopt de tekening met de tekst, de bronnen en de `alt`, en past hij bij de stijlgids? Verbeter de svg en draai het opnieuw tot alles klopt. Een tekening die je niet bekeken hebt, gaat niet naar de review.
 
 ## 7. Review
 
-Zet de agent `content-reviewer` in met het pad van `course.json` en van de les; bij huiswerk ook vak, niveau, methode en hoofdstuk, de paden van de foto's als die er zijn (hij controleert dan dat de les de stof en notatie van het boek volgt, dat niets (bijna) letterlijk van de foto's komt en dat er geen persoonsgegevens van de foto's in staan), en **de notatie die je gekozen hebt**: per soort wat je schrijft en waarom (van de foto's, of zonder foto's: wat Jop in de intake zei). Hij controleert elke breuk, elk getal en elke bewerking daartegen. Blokkerende punten: oplossen, opnieuw `npm run content:check`, opnieuw `content-reviewer`. **Maximaal twee rondes.** Bewaar elk rapport voor de PR.
+Zet de agent `content-reviewer` in met het pad van `course.json` en van de les, de beeldlijst van de les en de paden van de png's in `tmp/figures/<cursus-id>/` (van `content:figures`); bij huiswerk ook vak, niveau, methode en hoofdstuk, de paden van de foto's als die er zijn (hij controleert dan dat de les de stof en notatie van het boek volgt, dat niets (bijna) letterlijk van de foto's komt en dat er geen persoonsgegevens van de foto's in staan), en **de notatie die je gekozen hebt**: per soort wat je schrijft en waarom (van de foto's, of zonder foto's: wat Jop in de intake zei). Hij controleert elke breuk, elk getal en elke bewerking daartegen. Blokkerende punten: oplossen, opnieuw `npm run content:check`, opnieuw `content-reviewer`. **Maximaal twee rondes.** Bewaar elk rapport voor de PR.
 
 ## 8. Toevoegen
 
@@ -151,6 +161,10 @@ Zet de agent `content-reviewer` in met het pad van `course.json` en van de les; 
 ## Ontbrekende notatie
 
 <alleen als het voorkomt: welke notatie de app nog niet kan tonen, bij welk soort opgave, wat er daarom niet in de les staat, en een voorstel voor een kleine mijlpaal via `schema-wijzigen`>
+
+## Afbeeldingen
+
+<de beeldlijst per les: welke tekening bij welke uitlegstap, of waarom er geen tekening is>
 
 ## Review door content-reviewer
 

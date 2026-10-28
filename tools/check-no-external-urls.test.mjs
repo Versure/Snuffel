@@ -41,6 +41,13 @@ describe('findExternalUrls', () => {
     assert.equal(findExternalUrls(dir, lenient).length, 1);
   });
 
+  test('reports an uppercase HTTPS:// url', () => {
+    const dir = project({ 'web/src/styles.css': '@import url(HTTPS://example.org/x.css);\n' });
+    assert.deepEqual(findExternalUrls(dir, lenient), [
+      'web/src/styles.css:1  HTTPS://example.org/x.css',
+    ]);
+  });
+
   test('ignores web/public/content', () => {
     const dir = project({
       'web/public/content/proefcursus/lessons/proefles.abc.json': `{"url":"${url}"}`,

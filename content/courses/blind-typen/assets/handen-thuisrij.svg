@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 306">
+  <text x="200" y="20" text-anchor="middle" font-family="Atkinson Hyperlegible, Verdana, sans-serif" font-size="16" font-weight="700" fill="#141414">voelstreepjes op F en J</text>
+  <g transform="translate(0 28) scale(0.9)">
+  <rect x="14" y="16" width="428" height="166" rx="14" fill="#141414"/>
+  <rect x="8" y="10" width="428" height="166" rx="14" fill="#3d2d66" stroke="#141414" stroke-width="3"/>
+  <g stroke="#141414" stroke-width="2">
+    <g fill="#cfc3e8">
+      <rect x="23.5" y="26" width="34" height="30" rx="6"/><rect x="61.5" y="26" width="34" height="30" rx="6"/><rect x="99.5" y="26" width="34" height="30" rx="6"/><rect x="137.5" y="26" width="34" height="30" rx="6"/><rect x="175.5" y="26" width="34" height="30" rx="6"/>
+      <rect x="213.5" y="26" width="34" height="30" rx="6"/><rect x="251.5" y="26" width="34" height="30" rx="6"/><rect x="289.5" y="26" width="34" height="30" rx="6"/><rect x="327.5" y="26" width="34" height="30" rx="6"/><rect x="365.5" y="26" width="34" height="30" rx="6"/>
+      <rect x="33" y="64" width="34" height="30" rx="6"/><rect x="71" y="64" width="34" height="30" rx="6"/><rect x="109" y="64" width="34" height="30" rx="6"/><rect x="147" y="64" width="34" height="30" rx="6"/><rect x="185" y="64" width="34" height="30" rx="6"/>
+      <rect x="223" y="64" width="34" height="30" rx="6"/><rect x="261" y="64" width="34" height="30" rx="6"/><rect x="299" y="64" width="34" height="30" rx="6"/><rect x="337" y="64" width="34" height="30" rx="6"/><rect x="375" y="64" width="34" height="30" rx="6"/>
+      <rect x="52" y="102" width="34" height="30" rx="6"/><rect x="90" y="102" width="34" height="30" rx="6"/><rect x="128" y="102" width="34" height="30" rx="6"/><rect x="166" y="102" width="34" height="30" rx="6"/><rect x="204" y="102" width="34" height="30" rx="6"/>
+      <rect x="242" y="102" width="34" height="30" rx="6"/><rect x="280" y="102" width="34" height="30" rx="6"/><rect x="318" y="102" width="34" height="30" rx="6"/><rect x="356" y="102" width="34" height="30" rx="6"/><rect x="394" y="102" width="34" height="30" rx="6"/>
+      <rect x="140" y="140" width="162" height="28" rx="6"/>
+    </g>
+    <g fill="#ffffff">
+      <rect x="23.5" y="22" width="34" height="30" rx="6"/><rect x="61.5" y="22" width="34" height="30" rx="6"/><rect x="99.5" y="22" width="34" height="30" rx="6"/><rect x="137.5" y="22" width="34" height="30" rx="6"/><rect x="175.5" y="22" width="34" height="30" rx="6"/>
+      <rect x="213.5" y="22" width="34" height="30" rx="6"/><rect x="251.5" y="22" width="34" height="30" rx="6"/><rect x="289.5" y="22" width="34" height="30" rx="6"/><rect x="327.5" y="22" width="34" height="30" rx="6"/><rect x="365.5" y="22" width="34" height="30" rx="6"/>
+      <rect x="185" y="60" width="34" height="30" rx="6"/><rect x="223" y="60" width="34" height="30" rx="6"/>
+      <rect x="52" y="98" width="34" height="30" rx="6"/><rect x="90" y="98" width="34" height="30" rx="6"/><rect x="128" y="98" width="34" height="30" rx="6"/><rect x="166" y="98" width="34" height="30" rx="6"/><rect x="204" y="98" width="34" height="30" rx="6"/>
+      <rect x="242" y="98" width="34" height="30" rx="6"/><rect x="280" y="98" width="34" height="30" rx="6"/><rect x="318" y="98" width="34" height="30" rx="6"/><rect x="356" y="98" width="34" height="30" rx="6"/><rect x="394" y="98" width="34" height="30" rx="6"/>
+      <rect x="140" y="136" width="162" height="28" rx="6"/>
+    </g>
+    <rect x="33" y="60" width="34" height="30" rx="6" fill="#ffb3cd"/>
+    <rect x="71" y="60" width="34" height="30" rx="6" fill="#ffc078"/>
+    <rect x="109" y="60" width="34" height="30" rx="6" fill="#8fe3a8"/>
+    <rect x="147" y="60" width="34" height="30" rx="6" fill="#ffd83d"/>
+    <rect x="261" y="60" width="34" height="30" rx="6" fill="#ffd83d"/>
+    <rect x="299" y="60" width="34" height="30" rx="6" fill="#8fe3a8"/>
+    <rect x="337" y="60" width="34" height="30" rx="6" fill="#ffc078"/>
+    <rect x="375" y="60" width="34" height="30" rx="6" fill="#ffb3cd"/>
+  </g>
+  <g font-family="Atkinson Hyperlegible, Verdana, sans-serif" font-size="12" font-weight="700" text-anchor="middle" fill="#141414">
+    <text x="40.5" y="35">Q</text><text x="78.5" y="35">W</text><text x="116.5" y="35">E</text><text x="154.5" y="35">R</text><text x="192.5" y="35">T</text>
+    <text x="230.5" y="35">Y</text><text x="268.5" y="35">U</text><text x="306.5" y="35">I</text><text x="344.5" y="35">O</text><text x="382.5" y="35">P</text>
+    <text x="50" y="73">A</text><text x="88" y="73">S</text><text x="126" y="73">D</text><text x="164" y="73">F</text><text x="202" y="73">G</text>
+    <text x="240" y="73">H</text><text x="278" y="73">J</text><text x="316" y="73">K</text><text x="354" y="73">L</text><text x="392" y="73">;</text>
+    <text x="69" y="111">Z</text><text x="107" y="111">X</text><text x="145" y="111">C</text><text x="183" y="111">V</text><text x="221" y="111">B</text>
+    <text x="259" y="111">N</text><text x="297" y="111">M</text><text x="335" y="111">,</text><text x="373" y="111">.</text><text x="411" y="111">/</text>
+  </g>
+  <g stroke="#141414" stroke-width="2.5" stroke-linecap="round">
+    <line x1="158" y1="77" x2="170" y2="77"/>
+    <line x1="272" y1="77" x2="284" y2="77"/>
+  </g>
+    <g transform="translate(0 2)">
+    <g id="hand-left">
+      <g transform="rotate(-7 50 88)">
+        <rect x="38" y="76" width="24" height="112" rx="12" fill="#e5ad88" stroke="#141414" stroke-width="2.5"/>
+        <rect x="40.5" y="78.5" width="15" height="107" rx="7.5" fill="#f6d2b5"/>
+        <rect x="43" y="79" width="14" height="13" rx="5" fill="#fbe8da" stroke="#a86a4a" stroke-width="1"/>
+        <path d="M43 116 q7 4 14 0 M43 146 q7 4 14 0" fill="none" stroke="#a86a4a" stroke-width="1.5" stroke-linecap="round"/>
+      </g>
+      <g transform="rotate(-3 88 86)">
+        <rect x="74.5" y="72.5" width="27" height="118" rx="13.5" fill="#e5ad88" stroke="#141414" stroke-width="2.5"/>
+        <rect x="77" y="75" width="18" height="113" rx="9" fill="#f6d2b5"/>
+        <rect x="79.5" y="75.5" width="17" height="13" rx="5" fill="#fbe8da" stroke="#a86a4a" stroke-width="1"/>
+        <path d="M79.5 114 q8.5 4 17 0 M79.5 144 q8.5 4 17 0" fill="none" stroke="#a86a4a" stroke-width="1.5" stroke-linecap="round"/>
+      </g>
+      <g>
+        <rect x="112" y="71" width="28" height="122" rx="14" fill="#e5ad88" stroke="#141414" stroke-width="2.5"/>
+        <rect x="114.5" y="73.5" width="19" height="117" rx="9.5" fill="#f6d2b5"/>
+        <rect x="117" y="74" width="18" height="13" rx="5" fill="#fbe8da" stroke="#a86a4a" stroke-width="1"/>
+        <path d="M117 113 q9 4 18 0 M117 143 q9 4 18 0" fill="none" stroke="#a86a4a" stroke-width="1.5" stroke-linecap="round"/>
+      </g>
+      <g transform="rotate(4 164 92)">
+        <rect x="150" y="78" width="28" height="112" rx="14" fill="#e5ad88" stroke="#141414" stroke-width="2.5"/>
+        <rect x="152.5" y="80.5" width="19" height="107" rx="9.5" fill="#f6d2b5"/>
+        <rect x="155" y="81" width="18" height="13" rx="5" fill="#fbe8da" stroke="#a86a4a" stroke-width="1"/>
+        <path d="M155 120 q9 4 18 0 M155 150 q9 4 18 0" fill="none" stroke="#a86a4a" stroke-width="1.5" stroke-linecap="round"/>
+      </g>
+      <path d="M30 200 C30 180 46 174 62 174 L170 174 C188 174 196 186 194 204 L190 300 L38 300 Z" fill="#e5ad88" stroke="#141414" stroke-width="2.5"/>
+      <path d="M36 202 C36 186 50 180 64 180 L166 180 C180 180 186 190 184 204 L180 300 L44 300 Z" fill="#f6d2b5"/>
+      <path d="M54 188 q10 -5 20 0 M92 186 q10 -5 20 0 M130 186 q10 -5 20 0 M154 188 q10 -5 20 0" fill="none" stroke="#a86a4a" stroke-width="1.5" stroke-linecap="round"/>
+      <g transform="rotate(28 198 150)">
+        <rect x="185" y="137" width="26" height="80" rx="13" fill="#e5ad88" stroke="#141414" stroke-width="2.5"/>
+        <rect x="187.5" y="139.5" width="17" height="75" rx="8.5" fill="#f6d2b5"/>
+        <rect x="190" y="140" width="16" height="12" rx="5" fill="#fbe8da" stroke="#a86a4a" stroke-width="1"/>
+      </g>
+      <rect x="34" y="266" width="162" height="40" rx="6" fill="#7cc1d8" stroke="#141414" stroke-width="2.5"/>
+  </g>
+    <use href="#hand-left" transform="translate(442 0) scale(-1 1)"/>
+    </g>
+  </g>
+  <g font-family="Atkinson Hyperlegible, Verdana, sans-serif" font-size="15" font-weight="700" text-anchor="middle" fill="#141414">
+    <text x="101" y="299">linkerhand</text>
+    <text x="297" y="299">rechterhand</text>
+  </g>
+</svg>

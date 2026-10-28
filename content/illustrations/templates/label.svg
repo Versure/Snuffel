@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 140">
+  <!--
+    Template: a label that points at a spot. The dot marks the spot, the line leads to the label.
+    Keep the text short (24 characters); move the dot and the end of the line together.
+  -->
+  <line x1="80" y1="96" x2="168" y2="62" stroke="#141414" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="80" cy="96" r="9" fill="#ff2e7a" stroke="#141414" stroke-width="3"/>
+  <rect x="168" y="38" width="200" height="48" rx="24" fill="#ffffff" stroke="#141414" stroke-width="3"/>
+  <text x="268" y="68" text-anchor="middle" font-family="Atkinson Hyperlegible, Verdana, sans-serif" font-size="18" font-weight="700" fill="#141414">voelstreepje</text>
+</svg>

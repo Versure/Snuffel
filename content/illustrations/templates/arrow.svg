@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 140">
+  <!--
+    Template: an arrow with a label. The shaft is a line, the head a triangle; move both together.
+    For a curved arrow, replace the line with a path (e.g. d="M40 110 Q200 20 340 90").
+  -->
+  <line x1="40" y1="90" x2="336" y2="90" stroke="#141414" stroke-width="6" stroke-linecap="round"/>
+  <polygon points="332,68 372,90 332,112" fill="#141414" stroke="#141414" stroke-width="3" stroke-linejoin="round"/>
+  <text x="200" y="66" text-anchor="middle" font-family="Atkinson Hyperlegible, Verdana, sans-serif" font-size="18" font-weight="700" fill="#141414">verder</text>
+</svg>

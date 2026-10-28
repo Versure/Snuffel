@@ -47,6 +47,24 @@
   --snf-color-game-water: #2b5c8a;
   --snf-color-game-wave: #7cc1d8;
   --snf-color-game-label: #cfc3e8;
+  /*
+   * Skin tones of the figure svgs in lessons (decision M16, question 6; listed in
+   * content/illustrations/palette.json), not for components. Tone 1 is light, 2 medium, 3 dark
+   * skin (not the theme); per tone the skin, a darker shade, the line of creases and the nail.
+   * Fixed in both themes, like the figure card.
+   */
+  --snf-color-skin-tone-1: #f6d2b5;
+  --snf-color-skin-tone-1-shade: #e5ad88;
+  --snf-color-skin-tone-1-line: #a86a4a;
+  --snf-color-skin-tone-1-nail: #fbe8da;
+  --snf-color-skin-tone-2: #d9a06f;
+  --snf-color-skin-tone-2-shade: #b97b4c;
+  --snf-color-skin-tone-2-line: #7a4a2a;
+  --snf-color-skin-tone-2-nail: #f0cfb2;
+  --snf-color-skin-tone-3: #8d5a3b;
+  --snf-color-skin-tone-3-shade: #6b4129;
+  --snf-color-skin-tone-3-line: #3e2416;
+  --snf-color-skin-tone-3-nail: #c99a7e;
 
   --snf-font-display: 'Bangers', 'Impact', 'Arial Narrow', sans-serif;
   --snf-font-body: 'Atkinson Hyperlegible', -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;

@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "t-en-n",
-  "version": 1,
+  "version": 2,
   "title": "De t en de n",
   "sticker": "Blind typen · les 5",
   "objective": "Na deze les typ je de t en de n met je wijsvingers. Je herkent de eerste tekenen van KANS.",
@@ -45,6 +45,12 @@
           "type": "rule",
           "title": "Schuin omhoog en omlaag",
           "text": "De **t** zit schuin boven de g. Die typ je met je linkerwijsvinger. De **n** zit schuin onder de h. Die typ je met je rechterwijsvinger. Daarna ga je terug naar de [[thuisrij]].",
+          "sourceRefs": ["isbe-keyboard-technique", "uwaterloo-touch-typing"]
+        },
+        {
+          "type": "figure",
+          "src": "assets/toetsen-t-en-n.svg",
+          "alt": "Toetsenbord met de toetsen die je al kent in de kleur van hun vinger; de toetsen die je nog niet kent zijn wit. Nieuw, met een paarse rand: de T schuin boven de G en de N schuin onder de H, allebei geel voor je wijsvingers. Onder het toetsenbord staat welke kleur bij welke vinger hoort.",
           "sourceRefs": ["isbe-keyboard-technique", "uwaterloo-touch-typing"]
         },
         {

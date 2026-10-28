@@ -1,0 +1,195 @@
+{
+  "description": "The fixed Snuffel palette for svg figures in lessons (M16, question 1). content:check (tools/content/rules/assets.mjs) refuses any other colour; tools/content/illustrations.test.mjs checks that every colour is the value of its token in web/src/styles/tokens.css. A figure is always shown on the fixed cream card, also in dark mode, so these are the light-theme values. skinTones are the three skin tones (tone-1 light, tone-2 medium, tone-3 dark skin) (decision M16, question 6): one tone per figure, alternating across the people drawings of a course.",
+  "colors": [
+    {
+      "value": "#141414",
+      "name": "zwart",
+      "use": "lijnen, tekst, schaduw",
+      "token": "--snf-color-black"
+    },
+    {
+      "value": "#ffd83d",
+      "name": "geel",
+      "use": "vlak",
+      "token": "--snf-color-yellow"
+    },
+    {
+      "value": "#5b2bb5",
+      "name": "paars",
+      "use": "vlak, accent",
+      "token": "--snf-color-purple"
+    },
+    {
+      "value": "#ff2e7a",
+      "name": "roze",
+      "use": "vlak, accent",
+      "token": "--snf-color-pink"
+    },
+    {
+      "value": "#fff6dc",
+      "name": "crème",
+      "use": "vlak (achtergrond van de kaart)",
+      "token": "--snf-color-cream"
+    },
+    {
+      "value": "#ffffff",
+      "name": "wit",
+      "use": "vlak",
+      "token": "--snf-color-white"
+    },
+    {
+      "value": "#cfc3e8",
+      "name": "lila",
+      "use": "vlak; duim",
+      "token": "--snf-color-lilac"
+    },
+    {
+      "value": "#8fe3a8",
+      "name": "groen",
+      "use": "vlak; middelvinger",
+      "token": "--snf-color-choice-green"
+    },
+    {
+      "value": "#ffb3cd",
+      "name": "zacht roze",
+      "use": "vlak; pink",
+      "token": "--snf-color-choice-pink"
+    },
+    {
+      "value": "#7cc1d8",
+      "name": "blauw",
+      "use": "vlak",
+      "token": "--snf-color-choice-blue"
+    },
+    {
+      "value": "#ffc078",
+      "name": "oranje",
+      "use": "vlak; ringvinger",
+      "token": "--snf-color-choice-orange"
+    },
+    {
+      "value": "#12804a",
+      "name": "goed",
+      "use": "alleen samen met ✓",
+      "token": "--snf-color-success"
+    },
+    {
+      "value": "#c2183f",
+      "name": "fout",
+      "use": "alleen samen met ✗",
+      "token": "--snf-color-error"
+    },
+    {
+      "value": "#3d2d66",
+      "name": "donkerpaars",
+      "use": "body van een toetsenbord",
+      "token": "--snf-color-game-screen-border"
+    },
+    {
+      "value": "#f6d2b5",
+      "name": "huid licht",
+      "use": "huid",
+      "token": "--snf-color-skin-tone-1"
+    },
+    {
+      "value": "#e5ad88",
+      "name": "huid licht schaduw",
+      "use": "huid, schaduwkant (met zwarte rand)",
+      "token": "--snf-color-skin-tone-1-shade"
+    },
+    {
+      "value": "#a86a4a",
+      "name": "huid licht lijn",
+      "use": "plooien en nagelrand",
+      "token": "--snf-color-skin-tone-1-line"
+    },
+    {
+      "value": "#fbe8da",
+      "name": "huid licht nagel",
+      "use": "nagel",
+      "token": "--snf-color-skin-tone-1-nail"
+    },
+    {
+      "value": "#d9a06f",
+      "name": "huid midden",
+      "use": "huid",
+      "token": "--snf-color-skin-tone-2"
+    },
+    {
+      "value": "#b97b4c",
+      "name": "huid midden schaduw",
+      "use": "huid, schaduwkant (met zwarte rand)",
+      "token": "--snf-color-skin-tone-2-shade"
+    },
+    {
+      "value": "#7a4a2a",
+      "name": "huid midden lijn",
+      "use": "plooien en nagelrand",
+      "token": "--snf-color-skin-tone-2-line"
+    },
+    {
+      "value": "#f0cfb2",
+      "name": "huid midden nagel",
+      "use": "nagel",
+      "token": "--snf-color-skin-tone-2-nail"
+    },
+    {
+      "value": "#8d5a3b",
+      "name": "huid donker",
+      "use": "huid",
+      "token": "--snf-color-skin-tone-3"
+    },
+    {
+      "value": "#6b4129",
+      "name": "huid donker schaduw",
+      "use": "huid, schaduwkant (met zwarte rand)",
+      "token": "--snf-color-skin-tone-3-shade"
+    },
+    {
+      "value": "#3e2416",
+      "name": "huid donker lijn",
+      "use": "plooien en nagelrand",
+      "token": "--snf-color-skin-tone-3-line"
+    },
+    {
+      "value": "#c99a7e",
+      "name": "huid donker nagel",
+      "use": "nagel",
+      "token": "--snf-color-skin-tone-3-nail"
+    }
+  ],
+  "keywords": ["none", "currentColor", "transparent"],
+  "fingers": {
+    "pinky": "#ffb3cd",
+    "ring": "#ffc078",
+    "middle": "#8fe3a8",
+    "index": "#ffd83d",
+    "thumb": "#cfc3e8"
+  },
+  "font": {
+    "family": "Atkinson Hyperlegible, Verdana, sans-serif",
+    "weights": ["400", "700"],
+    "maxTextLength": 24
+  },
+  "maxBytes": 40960,
+  "skinTones": {
+    "tone-1": {
+      "skin": "#f6d2b5",
+      "shade": "#e5ad88",
+      "line": "#a86a4a",
+      "nail": "#fbe8da"
+    },
+    "tone-2": {
+      "skin": "#d9a06f",
+      "shade": "#b97b4c",
+      "line": "#7a4a2a",
+      "nail": "#f0cfb2"
+    },
+    "tone-3": {
+      "skin": "#8d5a3b",
+      "shade": "#6b4129",
+      "line": "#3e2416",
+      "nail": "#c99a7e"
+    }
+  }
+}

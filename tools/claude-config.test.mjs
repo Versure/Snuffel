@@ -240,4 +240,35 @@ describe('content agents', () => {
       assert.ok(text.includes(needle), `snuffel-leren does not mention ${needle}`);
     }
   });
+
+  test('snuffel-leren plans, draws and looks at figures in every lesson', () => {
+    const text = readFileSync(skillFile('snuffel-leren'), 'utf8');
+    for (const needle of [
+      'content/illustrations/README.md',
+      'content/illustrations/templates/',
+      'beeldlijst',
+      'npm run content:figures',
+      'tmp/figures/',
+    ]) {
+      assert.ok(text.includes(needle), `snuffel-leren does not mention ${needle}`);
+    }
+    assert.ok(
+      !text.includes('alleen als een afbeelding iets uitlegt'),
+      'snuffel-leren still limits figures to "alleen als"',
+    );
+  });
+
+  test('content-reviewer reviews figures and blocks spatial explanations in text only', () => {
+    const text = readFileSync(join(agentsDir, 'content-reviewer.md'), 'utf8');
+    for (const needle of [
+      'content/illustrations/README.md',
+      'beeldlijst',
+      'content:figures',
+      'tmp/figures/',
+      '**Visueel**',
+      'plek, vorm, volgorde, vergelijking of beweging',
+    ]) {
+      assert.ok(text.includes(needle), `content-reviewer does not mention ${needle}`);
+    }
+  });
 });
