@@ -25,7 +25,7 @@ De app draait dan op http://localhost:4200. `npm install` zet ook de git-hooks a
 | `kind-b`       | Kind B | kind (`child`)   | `snuffel-test` |
 | `ouder`        | Ouder  | ouder (`parent`) | `snuffel-test` |
 
-Het beheerscherm van deze lokale PocketBase staat op http://localhost:8092/_/ (inloggen met `dev@snuffel.test` / `snuffel-dev-admin`). De gegevens blijven tussen twee keer `npm start` bewaard in `pocketbase/pb_data/dev`; gooi die map weg om opnieuw te beginnen. Deze accounts en wachtwoorden staan in `pocketbase/seed/dev-accounts.json` en zijn alleen voor lokaal testen: ze komen niet in de image en nooit op de NAS. Ctrl+C stopt PocketBase en de dev-server samen.
+Het beheerscherm van deze lokale PocketBase staat op http://localhost:8092/\_/ (inloggen met `dev@snuffel.test` / `snuffel-dev-admin`). De gegevens blijven tussen twee keer `npm start` bewaard in `pocketbase/pb_data/dev`; gooi die map weg om opnieuw te beginnen. Deze accounts en wachtwoorden staan in `pocketbase/seed/dev-accounts.json` en zijn alleen voor lokaal testen: ze komen niet in de image en nooit op de NAS. Ctrl+C stopt PocketBase en de dev-server samen.
 
 | Commando                   | Wat                                                                                                                               |
 | -------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
@@ -52,7 +52,7 @@ Voor `npm run e2e` eenmalig `npx playwright install chromium` in `web/`. De eers
 3. **Les 1 van Roofvissen met kunstaas** ("Aanbeet of vastzitten?"), de eerste echte les: http://localhost:4200/leren/roofvissen/aanbeet-of-vastzitten, of via de kaart "Roofvissen met kunstaas" op de startpagina. Lokaal staat hij naast de proefcursus en het proefhuiswerk; op de NAS staat alleen de echte les.
 4. Op je telefoon: stop `npm start` en start `npm run start:lan`. Zoek het IP-adres van je laptop (Windows: `ipconfig`) en open op je telefoon, op dezelfde wifi, `http://<ip-van-je-laptop>:4200/leren/proefcursus/proefles`. Lukt dat niet (bijvoorbeeld door de firewall van Windows), gebruik dan de telefoonweergave in Chrome (F12).
 
-Wat je in een les doet, wordt bewaard in PocketBase, per account: welke stappen klaar zijn (het gevulde rondje bovenaan), elk antwoord in de quiz (met het aantal hints) en de vinkjes van de praktijkopdracht. Na herladen, uitloggen en weer inloggen of op een ander apparaat staat het er nog; een ander kind ziet het niet. Opnieuw beginnen kan op twee manieren: stop `npm start` en gooi de map `pocketbase/pb_data/dev` weg (dan zijn ook de testaccounts weg; `npm start` maakt ze opnieuw), of open http://localhost:8092/_/ (dev-superuser `dev@snuffel.test`, wachtwoord `snuffel-dev-admin`) en wis de records in `lesson_progress`, `quiz_attempts`, `checklist_states` en `interaction_results`. Eén les van één kind opnieuw beginnen kan ook in de app: log in als `ouder` en gebruik "Voortgang wissen" in het ouderoverzicht (zie hieronder).
+Wat je in een les doet, wordt bewaard in PocketBase, per account: welke stappen klaar zijn (het gevulde rondje bovenaan), elk antwoord in de quiz (met het aantal hints) en de vinkjes van de praktijkopdracht. Na herladen, uitloggen en weer inloggen of op een ander apparaat staat het er nog; een ander kind ziet het niet. Opnieuw beginnen kan op twee manieren: stop `npm start` en gooi de map `pocketbase/pb_data/dev` weg (dan zijn ook de testaccounts weg; `npm start` maakt ze opnieuw), of open http://localhost:8092/\_/ (dev-superuser `dev@snuffel.test`, wachtwoord `snuffel-dev-admin`) en wis de records in `lesson_progress`, `quiz_attempts`, `checklist_states` en `interaction_results`. Eén les van één kind opnieuw beginnen kan ook in de app: log in als `ouder` en gebruik "Voortgang wissen" in het ouderoverzicht (zie hieronder).
 
 Let op: `start:lan` zet de dev-server met de testaccounts open voor iedereen op je thuisnetwerk zolang hij draait. Gebruik hem alleen thuis en stop hem (Ctrl+C) als je klaar bent. De proefles staat alleen lokaal klaar; in de image voor de NAS zit hij nooit.
 
@@ -157,6 +157,8 @@ Elke pagina krijgt een Content-Security-Policy (`pocketbase/pb_hooks/security.pb
 `npm run e2e:container` bouwt en start de image op dezelfde manier en test hem (gezond, niet als root, `linux/amd64`, juiste PocketBase-versie, CSP, inloggen). Het maakt daarvoor in het lokale Docker-volume de dev-beheerder en de testaccounts aan; de image zelf bevat ze niet. Moet de build extra instellingen hebben, bijvoorbeeld een proxy, zet dan in `SNUFFEL_COMPOSE_OVERRIDE` het pad naar een extra compose-bestand; dat wordt met `-f` meegegeven.
 
 ## Uitrollen op de NAS
+
+De eerste installatie stap voor stap, met de leesbare url `http://snuffel.internal` in je thuisnetwerk: [docs/nas-installatie.md](docs/nas-installatie.md). Hieronder de korte versie.
 
 Na elke merge naar `main` bouwt GitHub Actions de image en zet hem op `ghcr.io/versure/snuffel` met de tags `latest` en `sha-<kort>` (de eerste 7 tekens van de commit). Onder Actions → release kun je hem ook met de hand starten.
 
