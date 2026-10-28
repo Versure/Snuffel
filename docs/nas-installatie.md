@@ -43,21 +43,86 @@ Alle gegevens van Snuffel (accounts, voortgang, back-ups van PocketBase) staan i
 1. Open **File Station**.
 2. Ga naar de gedeelde map `docker` (bestaat die niet, dan maakte Container Manager hem bij de installatie; anders: **Configuratiescherm → Gedeelde map → Maken**, naam `docker`, op `Volume 1`).
 3. Maak in `docker` een map `snuffel` en daarin een map `pb_data`. Het volledige pad is nu `/volume1/docker/snuffel/pb_data`.
-4. De container draait om veiligheidsredenen niet als beheerder maar als gebruiker nummer `1000`. Die moet in `pb_data` kunnen schrijven. Dat regel je één keer zo:
-   1. **Configuratiescherm → Taakplanner → Maken → Geplande taak → Door gebruiker gedefinieerd script**.
-   2. Tabblad **Algemeen**: taaknaam `snuffel-rechten`, gebruiker `root`, vinkje **Ingeschakeld** uit.
-   3. Tabblad **Taakinstellingen**, bij **Door gebruiker gedefinieerd script**, plak precies deze regel:
+4. Ga verder met stap 3a hieronder: de container moet in deze map mogen schrijven.
 
-      ```sh
-      chown -R 1000:1000 /volume1/docker/snuffel/pb_data
-      ```
+**Controle:** in File Station staat `/volume1/docker/snuffel/pb_data`.
 
-   4. **OK**, bevestig met je wachtwoord.
-   5. Selecteer de taak in de lijst, klik op **Uitvoeren** en daarna op **Verwijderen**.
+### Stap 3a. Geef de container schrijfrechten op `pb_data`
 
-   (Werk je liever met SSH: `sudo chown -R 1000:1000 /volume1/docker/snuffel/pb_data` doet hetzelfde.)
+**Waarom.** Elk programma op de NAS draait als een "gebruiker" met een nummer (uid). Om veiligheidsredenen draait Snuffel niet als beheerder (`root`), maar als gebruiker nummer **`1000`** in groep nummer **`1000`**. De map `pb_data` die je net maakte, is van jouw DSM-gebruiker. Gebruiker `1000` mag er dus nog niet in schrijven, en dan stopt Snuffel bij het starten met de fout `permission denied`.
 
-**Controle:** in File Station staat `/volume1/docker/snuffel/pb_data`. Of de rechten goed zijn, zie je in stap 6.
+**Wat je gaat doen.** Je maakt gebruiker `1000` eigenaar van de map `pb_data`, met dit commando:
+
+```sh
+chown -R 1000:1000 /volume1/docker/snuffel/pb_data
+```
+
+- `chown` betekent "change owner": verander de eigenaar.
+- `-R` betekent: ook van alles wat erin staat.
+- `1000:1000` is de nieuwe eigenaar: gebruiker `1000` en groep `1000`.
+- `/volume1/docker/snuffel/pb_data` is de map uit stap 3.
+
+Via **File Station → Eigenschappen → Machtiging** gaat dit niet: daar kun je alleen DSM-gebruikers kiezen, en gebruiker `1000` is geen DSM-gebruiker. Daarom laat je de Taakplanner van DSM het commando één keer als beheerder uitvoeren. Dat gaat zo:
+
+**3a-1. De taak maken**
+
+1. Open **Configuratiescherm** (hoofdmenu, linksboven in DSM).
+2. Klik in de linkerkolom op **Taakplanner** (onder **Services**). Zie je hem niet, klik dan rechtsboven op **Geavanceerde modus**.
+3. Klik op **Maken → Geplande taak → Door gebruiker gedefinieerd script**. Er opent een venster met drie tabbladen.
+
+**3a-2. Tabblad Algemeen**
+
+| Veld             | Wat je invult                                                                     |
+| ---------------- | --------------------------------------------------------------------------------- |
+| **Taak**         | `snuffel-rechten`                                                                 |
+| **Gebruiker**    | kies `root` in de lijst (bovenaan). Alleen `root` mag eigenaren veranderen.       |
+| **Ingeschakeld** | vinkje **uit**. De taak hoeft nooit vanzelf te draaien; je start hem met de hand. |
+
+**3a-3. Tabblad Planning**
+
+Laat alles staan zoals het is. Omdat de taak niet is ingeschakeld, draait hij nooit vanzelf.
+
+**3a-4. Tabblad Taakinstellingen**
+
+1. Laat **Meldingsinstellingen** leeg.
+2. Wis het tekstvak onder **Door gebruiker gedefinieerd script** en plak precies deze twee regels:
+
+   ```sh
+   chown -R 1000:1000 /volume1/docker/snuffel/pb_data
+   ls -ln /volume1/docker/snuffel > /volume1/docker/snuffel/controle-rechten.txt
+   ```
+
+   De eerste regel verandert de eigenaar. De tweede schrijft de nieuwe eigenaar op in een tekstbestand, zodat je kunt controleren dat het gelukt is.
+
+3. Klik op **OK**. DSM waarschuwt dat de taak als `root` draait: klik op **OK** en vul als daarom gevraagd wordt je DSM-wachtwoord in.
+
+**3a-5. De taak één keer uitvoeren**
+
+1. De taak `snuffel-rechten` staat nu in de lijst van de Taakplanner. Klik er één keer op, zodat de regel blauw is.
+2. Klik bovenaan op **Uitvoeren** en bevestig met **OK**. Het commando duurt minder dan een seconde.
+
+**3a-6. Controleren**
+
+1. Open **File Station** en ga naar `docker` → `snuffel`. Daar staat nu het bestand `controle-rechten.txt`. (Zie je het niet, klik dan op het pijltje voor vernieuwen.)
+2. Rechtsklik op het bestand → **Downloaden**, en open het op je laptop met Kladblok of Teksteditor, of open het met **Text Editor** op de NAS als je dat pakket hebt.
+3. Je ziet een regel die eindigt op `pb_data`, ongeveer zo:
+
+   ```
+   drwxrwxrwx+ 1 1000 1000 0 Oct 28 10:12 pb_data
+   ```
+
+   De twee getallen vóór de grootte moeten **`1000 1000`** zijn. Dan is het gelukt. De letters aan het begin en de datum mogen anders zijn.
+
+4. Staat er iets anders dan `1000 1000` (bijvoorbeeld `1026 100`), of is het bestand er niet: controleer in 3a-2 of de gebruiker `root` is en in 3a-4 of het pad precies `/volume1/docker/snuffel/pb_data` is (kleine letters, geen spaties). Pas de taak aan (**Bewerken**) en voer hem opnieuw uit.
+
+**3a-7. Opruimen**
+
+1. Verwijder in File Station het bestand `controle-rechten.txt` (rechtsklik → **Verwijderen**).
+2. Klik in de Taakplanner op de taak `snuffel-rechten` en daarna op **Verwijderen**. De taak is niet meer nodig: de eigenaar blijft `1000`, ook na een herstart van de NAS of een update van Snuffel.
+
+**Werk je liever met SSH?** Zet SSH aan (**Configuratiescherm → Terminal en SNMP → SSH-service inschakelen**), log in met `ssh <jouw-dsm-gebruiker>@192.168.1.20` en typ `sudo chown -R 1000:1000 /volume1/docker/snuffel/pb_data` (je DSM-wachtwoord als daarom gevraagd wordt). Controleer met `ls -ln /volume1/docker/snuffel`. Zet SSH daarna weer uit.
+
+**Controle:** `controle-rechten.txt` liet `1000 1000` zien bij `pb_data`. In stap 6 zie je het ook: de container komt dan op **Gezond**.
 
 ### Stap 4. Geef de NAS toegang tot de Snuffel-image
 
@@ -316,7 +381,7 @@ Nieuwe migraties worden bij de start automatisch toegepast. Terug naar een eerde
 
 | Wat je ziet                                                             | Wat je doet                                                                                                                                                                                                                                                                                      |
 | ----------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Container staat op **Ongezond** of stopt meteen                         | **Container → `snuffel` → Log**. Staat er `permission denied` bij `pb_data`: doe stap 3, punt 4 opnieuw.                                                                                                                                                                                         |
+| Container staat op **Ongezond** of stopt meteen                         | **Container → `snuffel` → Log**. Staat er `permission denied` bij `pb_data`: doe stap 3a opnieuw en controleer met `controle-rechten.txt` (3a-6).                                                                                                                                                |
 | Image ophalen mislukt (`denied`, `unauthorized`)                        | Token verlopen of zonder `read:packages`: maak een nieuw token (stap 4) en pas het register aan.                                                                                                                                                                                                 |
 | Image ophalen mislukt met `no matching manifest` of `exec format error` | De NAS heeft een ARM-processor (stap 1). Deze image werkt daar niet.                                                                                                                                                                                                                             |
 | `http://192.168.1.20:8090` werkt, `http://snuffel.internal` niet        | Typ `nslookup snuffel.internal`. Geen `192.168.1.20`: DNS klopt niet (stap 10; wifi opnieuw verbinden). Wel het juiste adres: controleer de reverse proxy (stap 9, vooral hostnaam en poort `80` → `127.0.0.1:8090`).                                                                            |
