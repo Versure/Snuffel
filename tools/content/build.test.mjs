@@ -105,6 +105,18 @@ describe('content:build', () => {
     assert.equal(built.id, 'aanbeet-of-vastzitten');
   });
 
+  test('without --fixtures roofvissen is for selected children and blind-typen for all', (t) => {
+    // The real repository: the access of the courses in the image.
+    const out = mkdtempSync(join(tmpdir(), 'snuffel-build-'));
+    t.after(() => rmSync(out, { recursive: true, force: true }));
+    const result = buildContent({ root: repoRoot, out: join(out, 'content') });
+    assert.equal(result.ok, true);
+    const manifest = JSON.parse(readFileSync(join(out, 'content', 'manifest.json'), 'utf8'));
+    const accessOf = (id) => manifest.courses.find((course) => course.id === id)?.access;
+    assert.equal(accessOf('roofvissen'), 'selected-children');
+    assert.equal(accessOf('blind-typen'), 'all-children');
+  });
+
   test('with --fixtures the lesson and asset are written', (t) => {
     const fixture = fixtureRoot(t);
     const { out, result } = build(fixture, { fixtures: true });

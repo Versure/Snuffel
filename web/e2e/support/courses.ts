@@ -15,7 +15,13 @@ export interface ServedCourse {
   readonly title: string;
   /** Every lesson of the course, planned ones included: the N of "0 van N lessen klaar". */
   readonly lessonCount: number;
+  /** Who sees the course; all-children when course.json has no access (as content:build). */
+  readonly access: CourseAccessValue;
 }
+
+type CourseAccessValue = NonNullable<Course['access']>;
+
+const accessOf = (course: Course): CourseAccessValue => course.access ?? 'all-children';
 
 function readCourses(dir: string): Course[] {
   return readdirSync(dir, { withFileTypes: true })
@@ -39,15 +45,28 @@ function ofKind(kind: Course['kind']): readonly ServedCourse[] {
       id: course.id,
       title: plainText(course.title),
       lessonCount: course.lessons.length,
+      access: accessOf(course),
     }));
 }
+
+const forEveryChild = (course: ServedCourse) => course.access === 'all-children';
 
 /** The courses under "Leertrajecten", in the order the app shows them. */
 export const learningCourses = ofKind('course');
 /** The courses under "Huiswerk oefenen", in the order the app shows them. */
 export const practiceCourses = ofKind('practice');
-/** Every served course, "Leertrajecten" first, as the start page lists them. */
+/** Every served course, "Leertrajecten" first, as the start page lists them (for the parent). */
 export const servedCourses: readonly ServedCourse[] = [...learningCourses, ...practiceCourses];
+
+/** The "Leertrajecten" a new child without assignments sees, in the order the app shows them. */
+export const childLearningCourses = learningCourses.filter(forEveryChild);
+/** The "Huiswerk oefenen" a new child without assignments sees. */
+export const childPracticeCourses = practiceCourses.filter(forEveryChild);
+/** Every course a new child without assignments sees, as its start page lists them. */
+export const childCourses: readonly ServedCourse[] = [
+  ...childLearningCourses,
+  ...childPracticeCourses,
+];
 
 /** What the card of a course without progress says. */
 export function noProgressText(course: ServedCourse): string {
@@ -57,11 +76,18 @@ export function noProgressText(course: ServedCourse): string {
 export interface PublishedLessonId {
   readonly courseId: string;
   readonly lessonId: string;
+  /** Who sees the course of the lesson. */
+  readonly courseAccess: CourseAccessValue;
 }
 
 /** Every published lesson of every served course: courses by title, lessons in course order. */
 export const publishedLessonIds: readonly PublishedLessonId[] = courses.flatMap((course) =>
   course.lessons
     .filter((entry) => entry.status === 'published')
-    .map((entry) => ({ courseId: course.id, lessonId: entry.id })),
+    .map((entry) => ({ courseId: course.id, lessonId: entry.id, courseAccess: accessOf(course) })),
 );
+
+/** The courses a test child needs assigned to open a lesson of `id`'s course. */
+export function coursesToAssign(id: PublishedLessonId): readonly string[] {
+  return id.courseAccess === 'all-children' ? [] : [id.courseId];
+}

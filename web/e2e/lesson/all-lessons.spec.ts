@@ -4,7 +4,7 @@ import type { ContentManifest, Lesson } from '../../src/app/core/content/content
 import { plainText } from '../../src/app/shared/inline-text/inline-markup';
 import { expect, test } from '../fixtures';
 import { loginAsNewChild } from '../support/accounts';
-import { publishedLessonIds, type PublishedLessonId } from '../support/courses';
+import { coursesToAssign, publishedLessonIds, type PublishedLessonId } from '../support/courses';
 
 // Every published lesson in content/ (the e2e build has the fixtures, so this covers the proefles
 // and every lesson that snuffel-leren makes, also the sample lesson), one test per lesson.
@@ -65,7 +65,8 @@ test.describe('all published lessons', () => {
       request,
     }) => {
       const lesson = await servedLesson(request, id);
-      await loginAsNewChild(page, path);
+      // A course for selected children only opens for a child it is assigned to.
+      await loginAsNewChild(page, path, { courses: coursesToAssign(id) });
       await expectLessonShown(page, path, lesson);
       const headings = page.locator('snf-lesson-step h2');
       await expect(headings, path).toHaveCount(lesson.steps.length);

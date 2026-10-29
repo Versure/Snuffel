@@ -28,6 +28,7 @@ import { normalize } from './fixture';
 import {
   les1,
   les1Course,
+  les1Courses,
   les1Explain,
   les1GameStep,
   les1Path,
@@ -70,7 +71,7 @@ async function doWholeLes1(page: Page): Promise<void> {
 }
 
 async function openLes1(page: Page) {
-  const account = await loginAsNewChild(page, les1Path);
+  const account = await loginAsNewChild(page, les1Path, { courses: les1Courses });
   await expect(page.getByRole('heading', { level: 1 })).toHaveText(lessonTitle);
   return account;
 }
@@ -91,7 +92,7 @@ test.describe('les 1', () => {
   });
 
   test('a child goes through the whole of les 1', async ({ page }) => {
-    await loginAsNewChild(page, '/');
+    await loginAsNewChild(page, '/', { courses: les1Courses });
     const start = card(page, courseTitle);
     await expect(start).toContainText('0 van 1 lessen klaar');
     await start.click();
@@ -216,7 +217,7 @@ test.describe('les 1', () => {
   });
 
   test('the parent sees les 1 of the child', async ({ page }) => {
-    const account = await createChild(currentBaseURL());
+    const account = await createChild(currentBaseURL(), { courses: les1Courses });
     await loginAs(page, account.username, les1Path);
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(lessonTitle);
     await doWholeLes1(page);

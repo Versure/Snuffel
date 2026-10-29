@@ -21,6 +21,10 @@ test.describe('content in the image', () => {
     const course = manifest.courses.find((candidate) => candidate.id === 'roofvissen');
     expect(course, 'course roofvissen in the manifest').toBeDefined();
     expect(course!.kind).toBe('course');
+    // Roofvissen is for selected children only; blind-typen is for every child.
+    expect(course!.access).toBe('selected-children');
+    const blindTypen = manifest.courses.find((candidate) => candidate.id === 'blind-typen');
+    expect(blindTypen?.access).toBe('all-children');
     expect(course!.file).toBe('roofvissen/course.json');
     const entry = course!.lessons.find((candidate) => candidate.id === 'aanbeet-of-vastzitten');
     expect(entry, 'lesson aanbeet-of-vastzitten').toBeDefined();
