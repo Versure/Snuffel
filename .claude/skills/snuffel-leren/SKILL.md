@@ -22,6 +22,7 @@ Je maakt **alleen inhoud**: bestanden onder `content/`. Geen app-code, geen sche
 Stel alleen de vragen die de wens nog niet beantwoordt, **in één bericht, maximaal zes**:
 
 - wie leert: kind, ouder of samen; leeftijd (alleen voor niveau en toon);
+- **"Voor wie is deze cursus: alle kinderen of bepaalde kinderen?"** (alleen bij een nieuwe cursus; een les in een bestaande cursus volgt die cursus);
 - waarom: waar komt de wens vandaan;
 - wat kan diegene al: stel een paar korte controlevragen;
 - wat is "gelukt": iets concreets en zichtbaars;
@@ -29,6 +30,13 @@ Stel alleen de vragen die de wens nog niet beantwoordt, **in één bericht, maxi
 - context: de vijver; bij huiswerk vak, niveau, methode en hoofdstuk, of liever foto's van de pagina's (zie hieronder). Gaat het huiswerk over getallen of rekenen en zijn er **geen foto's**, vraag dan in dezelfde vraag naar de notatie: "Hoe schrijft de school breuken: boven elkaar of met een schuine streep? Komma of punt bij kommagetallen? Delen met : of ÷, keer met × of ·?" Kies de notatie nooit zelf; komen de foto's alsnog, dan gelden de foto's.
 
 Kies daarna `kind`: `course` (leertraject) of `practice` (huiswerk-oefenles; dan zijn `subject`, `schoolLevel`, `method` en `chapter` verplicht).
+
+Zet ook `access` in `course.json` (zie de catalogus):
+
+- `"access": "all-children"`: elk kind ziet de cursus (ook de standaard als het veld ontbreekt; zet het toch expliciet);
+- `"access": "selected-children"`: alleen de kinderen die Jop na de merge en de uitrol op `/ouder` aanvinkt bij "Wie ziet welke cursus?".
+
+Welke kinderen het zijn, staat **nooit** in de inhoud: geen namen, gebruikersnamen of andere gegevens van een kind in `course.json`, de les, commits of de PR (zie "Privacy van de kinderen"). Zegt Jop "alleen voor mijn zoon", dan schrijf je `selected-children` en verder niets. Bij twijfel: `selected-children` (liever te weinig tonen dan te veel). Een bestaande cursus houdt zijn `access`; die wijzig je alleen als Jop erom vraagt.
 
 ### Huiswerk met foto's van het werkboek
 
@@ -145,6 +153,10 @@ Zet de agent `content-reviewer` in met het pad van `course.json` en van de les, 
 
 <cursus en les in 1–3 zinnen>
 
+## Voor wie
+
+<`all-children`: "Voor alle kinderen." of `selected-children`: "Voor bepaalde kinderen. Na de merge en de uitrol op `/ouder` de kinderen aanvinken bij 'Wie ziet welke cursus?'; tot dan ziet geen kind deze cursus.">
+
 ## Leerdoel
 
 <objective en concept>
@@ -177,7 +189,7 @@ Zet de agent `content-reviewer` in met het pad van `course.json` en van de les, 
 ## Lokaal lezen
 
 1. `git switch content/<cursus-id>-<les-id>`, `npm start` (een draaiende dev-server eerst stoppen).
-2. Log in op http://localhost:4200 als `kind-a` (wachtwoord `snuffel-test`).
+2. Log in op http://localhost:4200 als `kind-a` (wachtwoord `snuffel-test`). Is de cursus `selected-children`, vink dan eerst als `ouder` op http://localhost:4200/ouder `Kind A` aan bij de cursus (of log in als `ouder`, die ziet alles).
 3. Open http://localhost:4200/leren/<cursus-id>/<les-id>.
 
 ## Nog niet te zien

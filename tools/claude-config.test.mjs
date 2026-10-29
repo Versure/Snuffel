@@ -241,6 +241,20 @@ describe('content agents', () => {
     }
   });
 
+  test('snuffel-leren asks who a course is for and sets access', () => {
+    const text = readFileSync(skillFile('snuffel-leren'), 'utf8');
+    for (const needle of [
+      'Voor wie is deze cursus: alle kinderen of bepaalde kinderen?',
+      '`access`',
+      'all-children',
+      'selected-children',
+      '/ouder',
+      'na de merge en de uitrol op `/ouder`',
+    ]) {
+      assert.ok(text.includes(needle), `snuffel-leren does not mention ${needle}`);
+    }
+  });
+
   test('snuffel-leren plans, draws and looks at figures in every lesson', () => {
     const text = readFileSync(skillFile('snuffel-leren'), 'utf8');
     for (const needle of [
