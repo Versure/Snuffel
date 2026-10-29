@@ -198,6 +198,34 @@ test.describe('who sees a course', () => {
     await expect(checkboxOf(page, a)).not.toBeChecked();
   });
 
+  test('when the assignments do not load a child gets only the courses for everyone', async ({
+    page,
+  }) => {
+    // Even a child that is chosen gets nothing extra: better too little than too much.
+    const { a } = await twoChildren('a');
+    await page.route('**/api/collections/course_assignments/records**', (route) =>
+      route.request().method() === 'GET'
+        ? route.fulfill({ status: 503, contentType: 'application/json', body: '{}' })
+        : route.continue(),
+    );
+    const requests = chosenContentRequests(page);
+    await openAs(page, a.username, '/');
+    await expect(card(page, 'Proefcursus')).toBeVisible();
+    await expect(card(page, chosenTitle)).toHaveCount(0);
+    await expect(page.getByText('Niet alle leertrajecten kan ik nu laten zien.')).toBeVisible();
+
+    await page.goto(chosenPath);
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Leertraject laden lukt niet');
+    await page.goto(chosenLessonPath);
+    await expect(page.locator('main')).not.toHaveAttribute('aria-busy', 'true');
+    await expect(page.getByText(chosenLessonTitle)).toHaveCount(0);
+    expect(requests, `requests to /content/${chosenId}/`).toEqual([]);
+
+    // A course for every child still opens.
+    await page.goto('/leren/proefcursus');
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Proefcursus');
+  });
+
   for (const scheme of ['light', 'dark'] as const) {
     test(`/ouder with the section has no axe violations (${scheme})`, async ({ page }) => {
       await page.emulateMedia({ colorScheme: scheme });
