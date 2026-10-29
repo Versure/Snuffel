@@ -60,3 +60,15 @@ export interface InteractionResultRecord extends ProgressRecordBase {
   detail: unknown;
   content_version: number;
 }
+
+/**
+ * A `course_assignments` record: this child sees this course with `access: selected-children`.
+ * Only the parent creates or deletes one; nobody changes one.
+ */
+export interface CourseAssignmentRecord {
+  id: string;
+  user: string;
+  course_id: string;
+  created: string;
+  updated: string;
+}
