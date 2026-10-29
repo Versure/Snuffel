@@ -33,8 +33,8 @@ function lessonsCompleted(manifest: ContentManifest, statuses: StepStatuses): nu
 
 /**
  * The parent overview (`/ouder`): every child as a card with its last activity and completed
- * lessons, and below the cards who sees which course. The children and the content load apart from the activity, so a failing activity
- * still shows the children (without numbers).
+ * lessons, and below the cards who sees which course. The children and the content load apart
+ * from the activity, so a failing activity still shows the children (without numbers).
  */
 @Component({
   selector: 'snf-parent',

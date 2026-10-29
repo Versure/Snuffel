@@ -173,6 +173,49 @@ describe('CourseAccess', () => {
     expect(status()).toBe('Opslaan lukt niet. Probeer het nog eens.');
   });
 
+  it('after a failed save the assignments load again and the boxes follow the server', async () => {
+    // Another tab already assigned Kind B and removed Kind A: the server says 400 and 404.
+    assign.mockImplementation(async () => {
+      assignments = [record('y1', 'b1', 'roofvissen')];
+      throw new ProgressError('unavailable', 'test');
+    });
+    unassign.mockRejectedValue(new ProgressError('unavailable', 'test'));
+    const { fixture, element, checkbox, status } = await render();
+    expect(loadAssignments).toHaveBeenCalledTimes(1);
+
+    checkbox('Roofvissen', 'Kind B')?.click();
+    // While the assignments load again the boxes stay (no loading text in between).
+    fixture.detectChanges();
+    expect(element.querySelector('.loading')).toBeNull();
+    await fixture.whenStable();
+    expect(loadAssignments).toHaveBeenCalledTimes(2);
+    expect(checkbox('Roofvissen', 'Kind B')?.checked).toBe(true);
+    expect(checkbox('Roofvissen', 'Kind A')?.checked).toBe(false);
+    expect(status()).toBe('Opslaan lukt niet. Probeer het nog eens.');
+
+    // Unticking Kind B now uses the id from the server.
+    assignments = [];
+    checkbox('Roofvissen', 'Kind B')?.click();
+    await fixture.whenStable();
+    expect(unassign).toHaveBeenCalledWith('y1');
+    expect(loadAssignments).toHaveBeenCalledTimes(3);
+    expect(checkbox('Roofvissen', 'Kind B')?.checked).toBe(false);
+    expect(status()).toBe('Opslaan lukt niet. Probeer het nog eens.');
+  });
+
+  it('when the reload after a failed save fails too there are no checkboxes but a retry', async () => {
+    assign.mockImplementation(async () => {
+      loadFails = true;
+      throw new ProgressError('unavailable', 'test');
+    });
+    const { fixture, element, checkbox, status } = await render();
+    checkbox('Roofvissen', 'Kind B')?.click();
+    await fixture.whenStable();
+    expect(element.querySelector('input')).toBeNull();
+    expect(element.querySelector('.unavailable')).not.toBeNull();
+    expect(status()).toBe('Opslaan lukt niet. Probeer het nog eens.');
+  });
+
   it('all-children courses are one line without checkboxes', async () => {
     const { element } = await render();
     expect(textOf(element.querySelector('.all-children'))).toBe(

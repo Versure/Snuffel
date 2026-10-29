@@ -64,8 +64,9 @@ export class CourseAccess {
   protected readonly message = signal('');
 
   protected readonly state = computed((): CourseAccessState => {
-    if (this.assignments.isLoading()) return { kind: 'loading' };
-    return this.assignments.hasValue() ? { kind: 'ready' } : { kind: 'unavailable' };
+    // A reload after a failed save keeps the checkboxes (the old value) until the server answers.
+    if (this.assignments.hasValue()) return { kind: 'ready' };
+    return this.assignments.isLoading() ? { kind: 'loading' } : { kind: 'unavailable' };
   });
 
   protected readonly selectedCourses = computed(() =>
@@ -131,8 +132,10 @@ export class CourseAccess {
         this.message.set(ACCESS_TEXT.unassigned(child.name, course.title));
       }
     } catch {
-      // The checkbox jumps back: it shows the server again.
+      // The server may differ from what this page knows (another tab: the assignment already
+      // exists or is already gone), so load the assignments again and let the boxes follow it.
       this.message.set(ACCESS_TEXT.saveFailed);
+      this.assignments.reload();
     } finally {
       this.pending.update((current) => {
         const next = new Map(current);
@@ -140,7 +143,7 @@ export class CourseAccess {
         return next;
       });
       // The binding may not have seen the click (no render while saving), so set the box to
-      // what the server has now: after a failure it jumps back.
+      // what this page knows now: after a failure it jumps back until the reload answers.
       input.checked = this.assigned().has(key);
     }
   }
