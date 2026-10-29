@@ -17,6 +17,7 @@ const manifest: ContentManifest = {
       id: 'proefcursus',
       title: 'Proefcursus',
       kind: 'course',
+      access: 'all-children',
       file: 'proefcursus/course.json',
       hash: '0123456789abcdef',
       lessons: [
@@ -41,6 +42,7 @@ const manifest: ContentManifest = {
       id: 'tweede',
       title: 'Tweede',
       kind: 'course',
+      access: 'all-children',
       file: 'tweede/course.json',
       hash: '1111111111111111',
       lessons: [

@@ -41,6 +41,11 @@
       "type": "string",
       "enum": ["course", "practice"]
     },
+    "access": {
+      "description": "Who sees the course: all-children (default when missing) or selected-children (the parent picks the children on /ouder).",
+      "type": "string",
+      "enum": ["all-children", "selected-children"]
+    },
     "subject": {
       "$ref": "#/$defs/text"
     },

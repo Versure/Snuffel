@@ -36,6 +36,7 @@ const course: ManifestCourse = {
   id: 'proefcursus',
   title: 'Proefcursus',
   kind: 'course',
+  access: 'all-children',
   file: 'proefcursus/course.json',
   hash: '1111111111111111',
   lessons: [proefles, tweede, later],

@@ -19,6 +19,10 @@ export interface Course {
    * course: learning path; practice: homework practice for a school subject.
    */
   kind: 'course' | 'practice';
+  /**
+   * Who sees the course: all-children (default when missing) or selected-children (the parent picks the children on /ouder).
+   */
+  access?: 'all-children' | 'selected-children';
   subject?: ContentText;
   schoolLevel?: ContentText;
   method?: ContentText;
@@ -603,6 +607,10 @@ export interface ManifestCourse {
   id: ContentId;
   title: string;
   kind: 'course' | 'practice';
+  /**
+   * Who sees the course: all-children or selected-children. The build fills in all-children when course.json has no access.
+   */
+  access: 'all-children' | 'selected-children';
   file: string;
   hash: ContentHash;
   lessons: ManifestLesson[];

@@ -35,6 +35,7 @@ const course = (
   id,
   title,
   kind,
+  access: 'all-children',
   file: `${id}/course.json`,
   hash: '0123456789abcdef',
   lessons,

@@ -167,6 +167,43 @@ describe('content:build', () => {
     assert.deepEqual(validate('manifest', manifest), []);
   });
 
+  test('a course without access gets all-children in the manifest', (t) => {
+    const fixture = fixtureRoot(t);
+    assert.equal('access' in fixture.readCourse(), false);
+    const { out } = build(fixture, { fixtures: true });
+    const manifest = JSON.parse(readFileSync(join(out, 'manifest.json'), 'utf8'));
+    assert.equal(manifest.courses[0].access, 'all-children');
+    assert.deepEqual(validate('manifest', manifest), []);
+  });
+
+  test('a course with access selected-children keeps it in the manifest', (t) => {
+    const fixture = fixtureRoot(t);
+    fixture.mutateCourse((course) => {
+      course.access = 'selected-children';
+    });
+    const { out, result } = build(fixture, { fixtures: true });
+    assert.equal(result.ok, true);
+    const manifest = JSON.parse(readFileSync(join(out, 'manifest.json'), 'utf8'));
+    assert.equal(manifest.courses[0].access, 'selected-children');
+    assert.deepEqual(validate('manifest', manifest), []);
+  });
+
+  test('with --fixtures every course of the repository has access in the manifest', (t) => {
+    const out = mkdtempSync(join(tmpdir(), 'snuffel-build-'));
+    t.after(() => rmSync(out, { recursive: true, force: true }));
+    const result = buildContent({ root: repoRoot, out: join(out, 'content'), fixtures: true });
+    assert.equal(result.ok, true);
+    const manifest = JSON.parse(readFileSync(join(out, 'content', 'manifest.json'), 'utf8'));
+    assert.ok(manifest.courses.length > 0);
+    for (const course of manifest.courses) {
+      assert.ok(
+        ['all-children', 'selected-children'].includes(course.access),
+        `${course.id} has access ${course.access}`,
+      );
+    }
+    assert.deepEqual(validate('manifest', manifest), []);
+  });
+
   test('hashes match the bytes', (t) => {
     const fixture = fixtureRoot(t);
     const { out } = build(fixture, { fixtures: true });

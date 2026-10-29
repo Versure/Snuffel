@@ -21,6 +21,7 @@ const proefcursus: ManifestCourse = {
   id: 'proefcursus',
   title: 'Proefcursus',
   kind: 'course',
+  access: 'all-children',
   file: 'proefcursus/course.json',
   hash: '0123456789abcdef',
   lessons: [
@@ -42,6 +43,7 @@ const proefhuiswerk: ManifestCourse = {
   id: 'proefhuiswerk',
   title: 'Proefhuiswerk',
   kind: 'practice',
+  access: 'all-children',
   file: 'proefhuiswerk/course.json',
   hash: '0123456789abcdef',
   lessons: [

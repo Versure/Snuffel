@@ -35,7 +35,7 @@
       "title": "ManifestCourse",
       "type": "object",
       "additionalProperties": false,
-      "required": ["id", "title", "kind", "file", "hash", "lessons", "assets"],
+      "required": ["id", "title", "kind", "access", "file", "hash", "lessons", "assets"],
       "properties": {
         "id": {
           "$ref": "#/$defs/id"
@@ -47,6 +47,11 @@
         "kind": {
           "type": "string",
           "enum": ["course", "practice"]
+        },
+        "access": {
+          "description": "Who sees the course: all-children or selected-children. The build fills in all-children when course.json has no access.",
+          "type": "string",
+          "enum": ["all-children", "selected-children"]
         },
         "file": {
           "type": "string",
