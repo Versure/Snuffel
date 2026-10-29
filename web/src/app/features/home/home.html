@@ -9,6 +9,15 @@
     <a snf-button class="parent-link" routerLink="/ouder">{{ text.parentOverview }}</a>
   }
 
+  @if (
+    accessState().kind === 'unavailable' && (content.kind === 'ready' || content.kind === 'empty')
+  ) {
+    <div class="access-error">
+      <snf-ted-says mood="oops" size="small">{{ text.accessUnavailable }}</snf-ted-says>
+      <button snf-button type="button" (click)="retryAccess()">{{ text.retry }}</button>
+    </div>
+  }
+
   @switch (content.kind) {
     @case ('loading') {
       <snf-ted-says class="state-ted" mood="thinking" size="small">{{ text.loading }}</snf-ted-says>

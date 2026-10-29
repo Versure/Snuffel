@@ -1,6 +1,7 @@
 import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
+import { CourseAccessService } from '../../core/access/course-access.service';
 import { AuthService } from '../../core/auth/auth.service';
 import { ContentError, type ContentErrorReason } from '../../core/content/content-error';
 import { ContentService } from '../../core/content/content.service';
@@ -53,6 +54,11 @@ const proefhuiswerk = course('proefhuiswerk', 'Proefhuiswerk', 'practice', [
   lesson('proefles-breuken', ['oefenen']),
 ]);
 
+const roofvissen: ManifestCourse = {
+  ...course('roofvissen', 'Roofvissen', 'course', [lesson('aanbeet', ['uitleg'])]),
+  access: 'selected-children',
+};
+
 const fullManifest: ContentManifest = {
   schemaVersion: 1,
   courses: [proefcursus, proefhuiswerk, aardrijkskunde],
@@ -87,8 +93,17 @@ describe('Home', () => {
   let contentFailure: ContentErrorReason | null;
   let progressFails: boolean;
   let statuses: StepStatuses;
+  let assigned: string[];
+  let accessFails: boolean;
+  let loadAssignedCourseIds: ReturnType<typeof vi.fn<CourseAccessService['loadAssignedCourseIds']>>;
 
   beforeEach(() => {
+    assigned = [];
+    accessFails = false;
+    loadAssignedCourseIds = vi.fn<CourseAccessService['loadAssignedCourseIds']>(async () => {
+      if (accessFails) throw new ProgressError('unavailable', 'test');
+      return new Set(assigned);
+    });
     manifest = fullManifest;
     contentFailure = null;
     progressFails = false;
@@ -113,6 +128,7 @@ describe('Home', () => {
         { provide: AuthService, useValue: { user } },
         { provide: ContentService, useValue: { loadManifest } },
         { provide: ProgressService, useValue: { loadStepStatuses } },
+        { provide: CourseAccessService, useValue: { loadAssignedCourseIds } },
       ],
     });
   });
@@ -314,5 +330,91 @@ describe('Home', () => {
     const { element } = await render();
     expect(textOf(element)).not.toContain('Naar het ouderoverzicht');
     expect(element.querySelector('a[href="/ouder"]')).toBeNull();
+  });
+  describe('courses for selected children', () => {
+    const cardTitles = (element: HTMLElement) =>
+      Array.from(element.querySelectorAll('snf-course-card h3')).map(textOf);
+
+    beforeEach(() => {
+      manifest = { schemaVersion: 1, courses: [roofvissen, proefcursus, proefhuiswerk] };
+    });
+
+    it('a child without an assignment does not see a selected-children course', async () => {
+      const { element } = await render();
+      expect(loadAssignedCourseIds).toHaveBeenCalledWith('a1');
+      expect(cardTitles(element)).toEqual(['Proefcursus', 'Proefhuiswerk']);
+      expect(textOf(element)).not.toContain('Roofvissen');
+    });
+
+    it('a child with an assignment sees the course', async () => {
+      assigned = ['roofvissen'];
+      const { element } = await render();
+      expect(cardTitles(element)).toEqual(['Proefcursus', 'Roofvissen', 'Proefhuiswerk']);
+      expect(element.querySelector('.access-error')).toBeNull();
+    });
+
+    it('a child with only a hidden course sees the empty state', async () => {
+      manifest = { schemaVersion: 1, courses: [roofvissen] };
+      const { element } = await render();
+      expect(textOf(element.querySelector('.state-ted'))).toBe(
+        'Er staan nog geen leertrajecten klaar. Ted is nog aan het snuffelen.',
+      );
+      expect(element.querySelector('snf-course-card')).toBeNull();
+    });
+
+    it('the parent sees every course without loading assignments', async () => {
+      user.set({ id: 'p1', username: 'ouder', name: 'Ouder', role: 'parent' });
+      const { element } = await render();
+      expect(loadAssignedCourseIds).not.toHaveBeenCalled();
+      expect(cardTitles(element)).toEqual(['Proefcursus', 'Roofvissen', 'Proefhuiswerk']);
+    });
+
+    it('shows nothing of the courses while the assignments load', async () => {
+      loadAssignedCourseIds.mockImplementation(() => new Promise(() => undefined));
+      const fixture = TestBed.createComponent(Home);
+      await settle(fixture);
+      const element = fixture.nativeElement as HTMLElement;
+      expect(element.querySelector('snf-course-card')).toBeNull();
+      expect(textOf(element.querySelector('.state-ted'))).toBe('Even snuffelen…');
+    });
+
+    it('a load failure shows only the all-children courses with a message and a retry', async () => {
+      accessFails = true;
+      assigned = ['roofvissen'];
+      const { fixture, element, button } = await render();
+      expect(cardTitles(element)).toEqual(['Proefcursus', 'Proefhuiswerk']);
+      const ted = element.querySelector('.access-error snf-ted-says');
+      expect(textOf(ted)).toBe('Niet alle leertrajecten kan ik nu laten zien.');
+      expect(moodOf(ted)).toBe('oops');
+
+      accessFails = false;
+      button('Opnieuw')?.click();
+      await fixture.whenStable();
+      expect(loadAssignedCourseIds).toHaveBeenCalledTimes(2);
+      expect(element.querySelector('.access-error')).toBeNull();
+      expect(cardTitles(element)).toEqual(['Proefcursus', 'Roofvissen', 'Proefhuiswerk']);
+    });
+
+    it('never shows the courses of the child before while another child loads', async () => {
+      assigned = ['roofvissen'];
+      const { fixture, element } = await render();
+      expect(cardTitles(element)).toContain('Roofvissen');
+      loadAssignedCourseIds.mockImplementation(() => new Promise(() => undefined));
+      user.set({ id: 'b1', username: 'kind-b', name: 'Kind B', role: 'child' });
+      await settle(fixture);
+      expect(loadAssignedCourseIds).toHaveBeenLastCalledWith('b1');
+      expect(cardTitles(element)).toEqual(['Proefcursus', 'Proefhuiswerk']);
+    });
+
+    it('another child loads its own assignments', async () => {
+      assigned = ['roofvissen'];
+      const { fixture, element } = await render();
+      expect(cardTitles(element)).toContain('Roofvissen');
+      assigned = [];
+      user.set({ id: 'b1', username: 'kind-b', name: 'Kind B', role: 'child' });
+      await fixture.whenStable();
+      expect(loadAssignedCourseIds).toHaveBeenLastCalledWith('b1');
+      expect(cardTitles(element)).toEqual(['Proefcursus', 'Proefhuiswerk']);
+    });
   });
 });

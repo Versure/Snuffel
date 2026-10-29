@@ -5,6 +5,8 @@ import { provideRouter } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
 import courseJson from '../../../../../content/fixtures/courses/proefcursus/course.json';
 import practiceJson from '../../../../../content/fixtures/courses/proefhuiswerk/course.json';
+import { CourseAccessService } from '../../core/access/course-access.service';
+import { canSee } from '../../core/access/visible-courses';
 import { AuthService } from '../../core/auth/auth.service';
 import { ContentError, type ContentErrorReason } from '../../core/content/content-error';
 import { ContentService } from '../../core/content/content.service';
@@ -72,9 +74,18 @@ const proefhuiswerkEntry: ManifestCourse = {
   assets: [],
 };
 
+/** A course for selected children only, with the same shape as the proefcursus. */
+const geheimEntry: ManifestCourse = {
+  ...proefcursusEntry,
+  id: 'geheim',
+  title: 'Geheim',
+  access: 'selected-children',
+  file: 'geheim/course.json',
+};
+
 const manifest: ContentManifest = {
   schemaVersion: 1,
-  courses: [proefcursusEntry, proefhuiswerkEntry],
+  courses: [proefcursusEntry, proefhuiswerkEntry, geheimEntry],
 };
 
 const textOf = (element: Element | null | undefined) =>
@@ -99,8 +110,22 @@ describe('Course', () => {
   let loadCourse: ReturnType<typeof vi.fn<(courseId: string) => Promise<CourseData>>>;
   let loadStepStatuses: ReturnType<typeof vi.fn<ProgressService['loadStepStatuses']>>;
   let user: ReturnType<typeof signal<UserRecord | null>>;
+  let assigned: string[];
+  let accessFails: boolean;
+  let canOpen: ReturnType<typeof vi.fn<CourseAccessService['canOpen']>>;
 
   beforeEach(() => {
+    assigned = [];
+    accessFails = false;
+    canOpen = vi.fn<CourseAccessService['canOpen']>(async (entry, viewer) => {
+      if (accessFails) throw new ProgressError('unavailable', 'test');
+      return canSee(
+        entry,
+        viewer.role === 'parent'
+          ? { role: 'parent' }
+          : { role: 'child', assigned: new Set(assigned) },
+      );
+    });
     failure = null;
     progressFails = false;
     statuses = groupStepStatuses([]);
@@ -108,6 +133,7 @@ describe('Course', () => {
       if (failure) throw new ContentError(failure, 'test');
       if (courseId === 'proefcursus') return proefcursus;
       if (courseId === 'proefhuiswerk') return proefhuiswerk;
+      if (courseId === 'geheim') return { ...proefcursus, id: 'geheim', title: 'Geheim' };
       throw new ContentError('not-found', 'test');
     });
     loadStepStatuses = vi.fn<ProgressService['loadStepStatuses']>(async () => {
@@ -126,6 +152,7 @@ describe('Course', () => {
         { provide: ContentService, useValue: { loadCourse, loadManifest: async () => manifest } },
         { provide: ProgressService, useValue: { loadStepStatuses } },
         { provide: AuthService, useValue: { user } },
+        { provide: CourseAccessService, useValue: { canOpen } },
       ],
     });
   });
@@ -312,5 +339,56 @@ describe('Course', () => {
     await harness.navigateByUrl('/leren/bestaat-niet');
     await harness.fixture.whenStable();
     expect(title.getTitle()).toBe('Leertraject niet gevonden · Snuffel');
+  });
+  describe('a course for selected children', () => {
+    it('looks like an unknown course to a child without an assignment', async () => {
+      const title = TestBed.inject(Title);
+      const { harness } = await open('/leren/bestaat-niet');
+      const element = () => harness.routeNativeElement as HTMLElement;
+      const unknown = {
+        heading: textOf(element().querySelector('h1')),
+        ted: textOf(element().querySelector('.state-ted')),
+        title: title.getTitle(),
+      };
+      loadCourse.mockClear();
+
+      await harness.navigateByUrl('/leren/geheim');
+      await harness.fixture.whenStable();
+      expect(canOpen).toHaveBeenCalledWith(geheimEntry, expect.objectContaining({ id: 'a1' }));
+      expect({
+        heading: textOf(element().querySelector('h1')),
+        ted: textOf(element().querySelector('.state-ted')),
+        title: title.getTitle(),
+      }).toEqual(unknown);
+      expect(unknown.title).toBe('Leertraject niet gevonden · Snuffel');
+      expect(loadCourse).not.toHaveBeenCalled();
+      expect(loadStepStatuses).not.toHaveBeenCalled();
+    });
+
+    it('opens for a child with an assignment', async () => {
+      assigned = ['geheim'];
+      const { element } = await open('/leren/geheim');
+      expect(textOf(element.querySelector('h1'))).toBe('Geheim');
+    });
+
+    it('opens for the parent without an assignment', async () => {
+      user.set({ id: 'p1', username: 'ouder', name: 'Ouder', role: 'parent' });
+      const { element } = await open('/leren/geheim');
+      expect(textOf(element.querySelector('h1'))).toBe('Geheim');
+    });
+
+    it('shows a retry when the assignments cannot be loaded', async () => {
+      accessFails = true;
+      const { harness, element, button } = await open('/leren/geheim');
+      expect(textOf(element.querySelector('.state-ted'))).toBe(
+        'Snuffel kan dit leertraject nu niet laden.',
+      );
+      expect(loadCourse).not.toHaveBeenCalled();
+      accessFails = false;
+      assigned = ['geheim'];
+      button('Opnieuw')?.click();
+      await harness.fixture.whenStable();
+      expect(textOf(harness.routeNativeElement?.querySelector('h1'))).toBe('Geheim');
+    });
   });
 });
