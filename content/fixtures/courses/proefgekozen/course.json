@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "id": "proefgekozen",
+  "title": "Proefcursus: gekozen kinderen",
+  "audience": "Testdata voor de app en de e2e-tests, geen echte cursus",
+  "goal": "Een cursus laten zien die alleen gekozen kinderen zien",
+  "successCriterion": "Alleen een kind dat de ouder aanvinkt, ziet de cursus en opent de les",
+  "kind": "course",
+  "access": "selected-children",
+  "ted": {
+    "greeting": "Dit is een proefcursus voor gekozen kinderen. Hier test ik wie wat ziet!"
+  },
+  "lessons": [
+    {
+      "id": "proefles-gekozen",
+      "title": "Proefles: alleen voor gekozen kinderen",
+      "status": "published",
+      "file": "lessons/01-proefles-gekozen.json"
+    }
+  ],
+  "sources": [
+    {
+      "id": "wikipedia-touch-typing",
+      "title": "Touch typing",
+      "url": "https://en.wikipedia.org/wiki/Touch_typing",
+      "publisher": "Wikipedia",
+      "type": "encyclopedia",
+      "reliability": "medium",
+      "accessedOn": "2026-10-26",
+      "note": "Testdata: over de thuisrij (asdf en jkl;) en de voelstreepjes op f en j."
+    }
+  ]
+}

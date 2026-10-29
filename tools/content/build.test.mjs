@@ -55,7 +55,7 @@ describe('content:build', () => {
 
   test('without --fixtures the manifest has no fixture course at all', (t) => {
     // The real repository: every course under content/fixtures/courses (the proefcursus, the
-    // proefhuiswerk, the proeftypen, and the sample course made with snuffel-leren --voorbeeld) stays out of the
+    // proefhuiswerk, the proeftypen, the proefgekozen, and the sample course made with snuffel-leren --voorbeeld) stays out of the
     // image build.
     const fixtureCourses = readdirSync(join(repoRoot, 'content', 'fixtures', 'courses'), {
       withFileTypes: true,
@@ -65,6 +65,7 @@ describe('content:build', () => {
     assert.ok(fixtureCourses.includes('proefcursus'));
     assert.ok(fixtureCourses.includes('proefhuiswerk'));
     assert.ok(fixtureCourses.includes('proeftypen'));
+    assert.ok(fixtureCourses.includes('proefgekozen'));
     const out = mkdtempSync(join(tmpdir(), 'snuffel-build-'));
     t.after(() => rmSync(out, { recursive: true, force: true }));
     const result = buildContent({ root: repoRoot, out: join(out, 'content') });
