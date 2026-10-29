@@ -38,6 +38,8 @@ export const CHILD_TEXT = {
   retry: PARENT_TEXT.retry,
   courses: 'Leertrajecten',
   practice: 'Huiswerk oefenen',
+  hiddenFor: (name: string) => `Niet zichtbaar voor ${name}`,
+  accessUnavailable: 'Voor wie de cursussen openstaan, kan ik nu niet ophalen.',
   lastActivity: PARENT_TEXT.lastActivity,
   notActive: PARENT_TEXT.notActive,
   pageTitle: (name: string) => `${name} · Ouderoverzicht · Snuffel`,

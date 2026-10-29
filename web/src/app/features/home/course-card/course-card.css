@@ -26,6 +26,14 @@
   color: var(--snf-color-heading);
 }
 
+.shown-to {
+  margin: 0 0 0.6rem;
+}
+
+.shown-to:last-child {
+  margin-bottom: 0;
+}
+
 .title:only-child {
   margin-bottom: 0;
 }

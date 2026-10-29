@@ -4,15 +4,17 @@ import type { ManifestCourse } from '../../../core/content/content.types';
 import type { CourseProgressSummary } from '../../../core/progress/course-progress';
 import { plainText } from '../../../shared/inline-text/inline-markup';
 import { ProgressBar } from '../../../shared/ui/progress-bar/progress-bar';
+import { Sticker } from '../../../shared/ui/sticker/sticker';
 import { HOME_TEXT } from '../home-text';
 
 /**
  * A course on the start page: one link to the course overview with the title, and the progress
- * bar when the progress is known (`null`: no bar, an empty bar would lie).
+ * bar when the progress is known (`null`: no bar, an empty bar would lie). For the parent a
+ * sticker can say for whom the course is (`shownTo`).
  */
 @Component({
   selector: 'snf-course-card',
-  imports: [ProgressBar, RouterLink],
+  imports: [ProgressBar, RouterLink, Sticker],
   templateUrl: './course-card.html',
   styleUrl: './course-card.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -20,6 +22,8 @@ import { HOME_TEXT } from '../home-text';
 export class CourseCard {
   readonly course = input.required<ManifestCourse>();
   readonly progress = input.required<CourseProgressSummary | null>();
+  /** For whom a `selected-children` course is ("Voor: Kind A"); null shows no sticker. */
+  readonly shownTo = input<string | null>(null);
 
   protected readonly title = computed(() => plainText(this.course().title));
   // Each bar on the start page gets its course in its name, so a list of elements tells them apart.

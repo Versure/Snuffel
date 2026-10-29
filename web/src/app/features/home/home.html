@@ -34,7 +34,13 @@
           <h2 [id]="'section-' + section.id">{{ section.heading }}</h2>
           <ul class="cards">
             @for (course of section.courses; track course.id) {
-              <li><snf-course-card [course]="course" [progress]="progressOf(course)" /></li>
+              <li>
+                <snf-course-card
+                  [course]="course"
+                  [progress]="progressOf(course)"
+                  [shownTo]="shownToOf(course)"
+                />
+              </li>
             }
           </ul>
         </section>

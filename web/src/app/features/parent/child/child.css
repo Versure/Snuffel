@@ -44,6 +44,17 @@
   color: var(--snf-color-heading);
 }
 
+.hidden-for {
+  margin: 0 0 0.6rem;
+  font-weight: 700;
+  color: var(--snf-color-text-muted);
+}
+
+.access-error {
+  margin: 0 0 1rem;
+  font-weight: 700;
+}
+
 .bar {
   margin: 0 0 1rem;
 }

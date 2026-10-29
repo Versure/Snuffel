@@ -1,6 +1,7 @@
 import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
+import { AccountsService } from '../../core/accounts/accounts.service';
 import { CourseAccessService } from '../../core/access/course-access.service';
 import { AuthService } from '../../core/auth/auth.service';
 import { ContentError, type ContentErrorReason } from '../../core/content/content-error';
@@ -10,7 +11,7 @@ import type {
   ManifestCourse,
   ManifestLesson,
 } from '../../core/content/content.types';
-import type { UserRecord } from '../../core/pocketbase/types';
+import type { CourseAssignmentRecord, UserRecord } from '../../core/pocketbase/types';
 import { groupStepStatuses, type StepStatuses } from '../../core/progress/course-progress';
 import { ProgressError } from '../../core/progress/progress-error';
 import { ProgressService } from '../../core/progress/progress.service';
@@ -97,7 +98,23 @@ describe('Home', () => {
   let accessFails: boolean;
   let loadAssignedCourseIds: ReturnType<typeof vi.fn<CourseAccessService['loadAssignedCourseIds']>>;
 
+  let assignments: CourseAssignmentRecord[];
+  let shownToFails: boolean;
+  let loadAssignments: ReturnType<typeof vi.fn<CourseAccessService['loadAssignments']>>;
+  let loadChildren: ReturnType<typeof vi.fn<AccountsService['loadChildren']>>;
+
   beforeEach(() => {
+    assignments = [];
+    shownToFails = false;
+    loadAssignments = vi.fn<CourseAccessService['loadAssignments']>(async () => {
+      if (shownToFails) throw new ProgressError('unavailable', 'test');
+      return assignments;
+    });
+    loadChildren = vi.fn<AccountsService['loadChildren']>(async () => [
+      { id: 'a1', username: 'kind-a', name: 'Kind A', role: 'child' },
+      { id: 'b1', username: 'kind-b', name: 'Kind B', role: 'child' },
+      { id: 'c1', username: 'kind-c', name: 'Kind C', role: 'child' },
+    ]);
     assigned = [];
     accessFails = false;
     loadAssignedCourseIds = vi.fn<CourseAccessService['loadAssignedCourseIds']>(async () => {
@@ -128,7 +145,11 @@ describe('Home', () => {
         { provide: AuthService, useValue: { user } },
         { provide: ContentService, useValue: { loadManifest } },
         { provide: ProgressService, useValue: { loadStepStatuses } },
-        { provide: CourseAccessService, useValue: { loadAssignedCourseIds } },
+        {
+          provide: CourseAccessService,
+          useValue: { loadAssignedCourseIds, loadAssignments },
+        },
+        { provide: AccountsService, useValue: { loadChildren } },
       ],
     });
   });
@@ -415,6 +436,76 @@ describe('Home', () => {
       await fixture.whenStable();
       expect(loadAssignedCourseIds).toHaveBeenLastCalledWith('b1');
       expect(cardTitles(element)).toEqual(['Proefcursus', 'Proefhuiswerk']);
+    });
+  });
+  describe('stickers for the parent', () => {
+    const assignment = (user: string, courseId: string): CourseAssignmentRecord => ({
+      id: `${user}-${courseId}`,
+      user,
+      course_id: courseId,
+      created: '2026-10-29 08:00:00.000Z',
+      updated: '2026-10-29 08:00:00.000Z',
+    });
+    const stickers = (element: HTMLElement) =>
+      Object.fromEntries(
+        Array.from(element.querySelectorAll('snf-course-card')).map((card) => [
+          textOf(card.querySelector('h3')),
+          card.querySelector('snf-sticker') ? textOf(card.querySelector('snf-sticker')) : null,
+        ]),
+      );
+    const otherSelected: ManifestCourse = {
+      ...course('geheim', 'Geheim', 'course', [lesson('geheim-les', ['uitleg'])]),
+      access: 'selected-children',
+    };
+
+    beforeEach(() => {
+      manifest = { schemaVersion: 1, courses: [roofvissen, otherSelected, proefcursus] };
+      user.set({ id: 'p1', username: 'ouder', name: 'Ouder', role: 'parent' });
+    });
+
+    it('the parent sees for whom a selected-children course is', async () => {
+      assignments = [
+        assignment('b1', 'roofvissen'),
+        assignment('a1', 'roofvissen'),
+        assignment('a1', 'verdwenen'),
+      ];
+      const { element } = await render();
+      expect(stickers(element)).toEqual({
+        Geheim: 'Voor: nog niemand',
+        Proefcursus: null,
+        Roofvissen: 'Voor: Kind A en Kind B',
+      });
+    });
+
+    it('names one child or three children', async () => {
+      assignments = [
+        assignment('a1', 'geheim'),
+        assignment('a1', 'roofvissen'),
+        assignment('b1', 'roofvissen'),
+        assignment('c1', 'roofvissen'),
+      ];
+      const { element } = await render();
+      expect(stickers(element)['Geheim']).toBe('Voor: Kind A');
+      expect(stickers(element)['Roofvissen']).toBe('Voor: Kind A, Kind B en Kind C');
+    });
+
+    it('shows no sticker and no message when it cannot be loaded', async () => {
+      shownToFails = true;
+      const { element } = await render();
+      expect(element.querySelector('snf-sticker')).toBeNull();
+      expect(element.querySelector('.access-error')).toBeNull();
+      expect(element.querySelectorAll('snf-course-card')).toHaveLength(3);
+    });
+
+    it('a child never sees a sticker and loads no children or assignments', async () => {
+      user.set({ id: 'a1', username: 'kind-a', name: 'Kind A', role: 'child' });
+      assigned = ['roofvissen', 'geheim'];
+      assignments = [assignment('a1', 'roofvissen')];
+      const { element } = await render();
+      expect(element.querySelectorAll('snf-course-card')).toHaveLength(3);
+      expect(element.querySelector('snf-sticker')).toBeNull();
+      expect(loadChildren).not.toHaveBeenCalled();
+      expect(loadAssignments).not.toHaveBeenCalled();
     });
   });
 });

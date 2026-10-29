@@ -11,6 +11,10 @@ export const HOME_TEXT = {
   unsupportedVersion:
     'Deze inhoud is gemaakt voor een nieuwere versie van Snuffel. Ververs de pagina.',
   progressUnavailable: 'Je voortgang kan ik nu niet ophalen.',
+  shownTo: (names: readonly string[]) =>
+    names.length === 0
+      ? 'Voor: nog niemand'
+      : `Voor: ${names.length > 1 ? `${names.slice(0, -1).join(', ')} en ${names[names.length - 1]}` : names[0]}`,
   accessUnavailable: 'Niet alle leertrajecten kan ik nu laten zien.',
   retry: 'Opnieuw',
   parentOverview: 'Naar het ouderoverzicht',

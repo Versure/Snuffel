@@ -7,8 +7,13 @@ import {
   resource,
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { AccountsService } from '../../core/accounts/accounts.service';
 import { CourseAccessService } from '../../core/access/course-access.service';
-import { visibleCourses, type CourseViewer } from '../../core/access/visible-courses';
+import {
+  isForAllChildren,
+  visibleCourses,
+  type CourseViewer,
+} from '../../core/access/visible-courses';
 import { AuthService } from '../../core/auth/auth.service';
 import { isContentError } from '../../core/content/content-error';
 import { ContentService } from '../../core/content/content.service';
@@ -72,6 +77,7 @@ export class Home {
   private readonly content = inject(ContentService);
   private readonly progress = inject(ProgressService);
   private readonly access = inject(CourseAccessService);
+  private readonly accounts = inject(AccountsService);
   protected readonly user = inject(AuthService).user;
   protected readonly text = HOME_TEXT;
   /** Only for convenience in the UI; /ouder has its own guard and PocketBase its rules. */
@@ -113,6 +119,25 @@ export class Home {
     if (this.assigned.isLoading()) return { kind: 'loading' };
     if (this.assigned.hasValue()) return { kind: 'ready', assigned: this.assigned.value() };
     return this.assigned.status() === 'error' ? { kind: 'unavailable' } : { kind: 'loading' };
+  });
+
+  /** For the parent only: the children and every assignment, for the stickers "Voor: …". */
+  private readonly parentId = computed(() => {
+    const user = this.user();
+    return user?.role === 'parent' ? user.id : undefined;
+  });
+  private readonly shownTo = resource({
+    params: () => {
+      const userId = this.parentId();
+      return userId ? { userId } : undefined;
+    },
+    loader: async () => {
+      const [children, assignments] = await Promise.all([
+        this.accounts.loadChildren(),
+        this.access.loadAssignments(),
+      ]);
+      return { children, assignments };
+    },
   });
 
   /**
@@ -174,6 +199,25 @@ export class Home {
   protected progressOf(course: ManifestCourse): CourseProgressSummary | null {
     const state = this.progressState();
     return state.kind === 'ready' ? courseProgress(course, state.statuses) : null;
+  }
+
+  /**
+   * The sticker on a `selected-children` course for the parent: the names of the children who
+   * see it. Null for a child, for an `all-children` course and when it cannot be loaded (the
+   * parent sees it on /ouder).
+   */
+  protected shownToOf(course: ManifestCourse): string | null {
+    if (!this.parentId() || isForAllChildren(course) || !this.shownTo.hasValue()) return null;
+    const { children, assignments } = this.shownTo.value();
+    const assigned = new Set(
+      assignments
+        .filter((assignment) => assignment.course_id === course.id)
+        .map((assignment) => assignment.user),
+    );
+    const names = children
+      .filter((child) => assigned.has(child.id))
+      .map((child) => child.name || child.username);
+    return HOME_TEXT.shownTo(names);
   }
 
   protected retryContent(): void {
