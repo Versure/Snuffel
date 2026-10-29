@@ -10,6 +10,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { map } from 'rxjs';
+import { CourseAccessService } from '../../core/access/course-access.service';
 import { AuthService } from '../../core/auth/auth.service';
 import { isContentError } from '../../core/content/content-error';
 import { ContentService } from '../../core/content/content.service';
@@ -62,6 +63,7 @@ export class Course {
   private readonly progress = inject(ProgressService);
   private readonly title = inject(Title);
   private readonly auth = inject(AuthService);
+  private readonly access = inject(CourseAccessService);
   protected readonly text = COURSE_TEXT;
 
   private readonly courseId = toSignal(
@@ -163,14 +165,20 @@ export class Course {
     this.statuses.reload();
   }
 
+  /**
+   * First the manifest and whether the logged-in user may see the course; only then the course
+   * itself. A course that is not for this child looks exactly like an unknown course, and its
+   * course.json is never fetched.
+   */
   private async load(courseId: string): Promise<LoadResult> {
     try {
-      const [course, manifest] = await Promise.all([
-        this.content.loadCourse(courseId),
-        this.content.loadManifest(),
-      ]);
+      const manifest = await this.content.loadManifest();
       const entry = manifest.courses.find((candidate) => candidate.id === courseId);
       if (!entry) return { kind: 'not-found' };
+      const user = this.auth.user();
+      if (!user) return { kind: 'not-found' };
+      if (!(await this.access.canOpen(entry, user))) return { kind: 'not-found' };
+      const course = await this.content.loadCourse(courseId);
       return { kind: 'loaded', course, entry };
     } catch (error) {
       if (!isContentError(error)) return { kind: 'unavailable' };

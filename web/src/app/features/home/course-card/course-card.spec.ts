@@ -9,6 +9,7 @@ const proefcursus: ManifestCourse = {
   id: 'proefcursus',
   title: 'Proefcursus',
   kind: 'course',
+  access: 'all-children',
   file: 'proefcursus/course.json',
   hash: '0123456789abcdef',
   lessons: [{ id: 'proefles-later', title: 'Later', status: 'planned' }],
@@ -17,12 +18,13 @@ const proefcursus: ManifestCourse = {
 
 @Component({
   imports: [CourseCard],
-  template: `<snf-course-card [course]="course" [progress]="progress()" />`,
+  template: `<snf-course-card [course]="course" [progress]="progress()" [shownTo]="shownTo()" />`,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 class Host {
   readonly course = proefcursus;
   readonly progress = signal<CourseProgressSummary | null>({ completed: 1, total: 2 });
+  readonly shownTo = signal<string | null>(null);
 }
 
 const textOf = (element: Element | null | undefined) =>
@@ -79,5 +81,20 @@ describe('CourseCard', () => {
     const { element } = await render(null);
     expect(element.querySelector('[role="progressbar"]')).toBeNull();
     expect(textOf(element)).toBe('Proefcursus');
+  });
+  it('shows no sticker without shownTo', async () => {
+    const { element } = await render();
+    expect(element.querySelector('snf-sticker')).toBeNull();
+  });
+
+  it('shows shownTo as a sticker in the link', async () => {
+    const { fixture, element } = await render();
+    fixture.componentInstance.shownTo.set('Voor: Kind A en Kind B');
+    await fixture.whenStable();
+    const sticker = element.querySelector('a snf-sticker');
+    expect(textOf(sticker)).toBe('Voor: Kind A en Kind B');
+    fixture.componentInstance.shownTo.set(null);
+    await fixture.whenStable();
+    expect(element.querySelector('snf-sticker')).toBeNull();
   });
 });

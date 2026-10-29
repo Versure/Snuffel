@@ -5,6 +5,8 @@ import { provideRouter } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
 import courseJson from '../../../../../content/fixtures/courses/proefcursus/course.json';
 import lessonJson from '../../../../../content/fixtures/courses/proefcursus/lessons/01-proefles.json';
+import { CourseAccessService } from '../../core/access/course-access.service';
+import { canSee } from '../../core/access/visible-courses';
 import { AuthService } from '../../core/auth/auth.service';
 import { ContentError, type ContentErrorReason } from '../../core/content/content-error';
 import { ContentService } from '../../core/content/content.service';
@@ -35,11 +37,25 @@ const manifest: ContentManifest = {
       id: 'proefcursus',
       title: 'Proefcursus',
       kind: 'course',
+      access: 'all-children',
       file: 'proefcursus/course.json',
       hash: '0123456789abcdef',
       lessons: [
         { id: 'proefles', title: lesson.title, status: 'published' },
         { id: 'proefles-later', title: 'Proefles: een les die nog komt', status: 'planned' },
+      ],
+      assets: [],
+    },
+    {
+      id: 'geheim',
+      title: 'Geheim',
+      kind: 'course',
+      access: 'selected-children',
+      file: 'geheim/course.json',
+      hash: '0123456789abcdef',
+      lessons: [
+        { id: 'proefles', title: lesson.title, status: 'published' },
+        { id: 'geheim-later', title: 'Geheime les die nog komt', status: 'planned' },
       ],
       assets: [],
     },
@@ -61,24 +77,46 @@ describe('Lesson', () => {
   >;
   let loadProgress: ReturnType<typeof vi.fn<ProgressService['loadLesson']>>;
   let user: ReturnType<typeof signal<UserRecord | null>>;
+  let loadCourse: ReturnType<typeof vi.fn<(courseId: string) => Promise<Course>>>;
+  let assetUrls: ReturnType<typeof vi.fn<ContentService['assetUrls']>>;
+  let assigned: string[];
+  let accessFails: boolean;
+  let canOpen: ReturnType<typeof vi.fn<CourseAccessService['canOpen']>>;
 
   beforeEach(() => {
+    assigned = [];
+    accessFails = false;
+    canOpen = vi.fn<CourseAccessService['canOpen']>(async (entry, viewer) => {
+      if (accessFails) throw new ProgressError('unavailable', 'test');
+      return canSee(
+        entry,
+        viewer.role === 'parent'
+          ? { role: 'parent' }
+          : { role: 'child', assigned: new Set(assigned) },
+      );
+    });
     failure = null;
     loadLesson = vi.fn(async (courseId: string, lessonId: string) => {
       if (failure) throw new ContentError(failure, 'test');
+      if (courseId === 'geheim' && lessonId === 'proefles') return lesson;
       if (courseId !== 'proefcursus' || lessonId !== 'proefles') {
         throw new ContentError('not-found', 'test');
       }
       return lesson;
     });
+    loadCourse = vi.fn(async (courseId: string) => {
+      if (courseId === 'geheim') return { ...course, id: 'geheim', title: 'Geheim' };
+      if (courseId !== 'proefcursus') throw new ContentError('not-found', 'test');
+      return course;
+    });
+    assetUrls = vi.fn<ContentService['assetUrls']>(
+      async () => new Map([['assets/hengeltop.svg', assetUrl]]),
+    );
     const fake: Partial<ContentService> = {
       loadManifest: async () => manifest,
-      loadCourse: async (courseId: string) => {
-        if (courseId !== 'proefcursus') throw new ContentError('not-found', 'test');
-        return course;
-      },
+      loadCourse,
       loadLesson,
-      assetUrls: async () => new Map([['assets/hengeltop.svg', assetUrl]]),
+      assetUrls,
     };
     loadProgress = vi.fn<ProgressService['loadLesson']>(
       async (): Promise<LessonProgressSnapshot> => ({
@@ -100,6 +138,7 @@ describe('Lesson', () => {
         { provide: ContentService, useValue: fake },
         { provide: ProgressService, useValue: { loadLesson: loadProgress } },
         { provide: AuthService, useValue: { user } },
+        { provide: CourseAccessService, useValue: { canOpen } },
       ],
     });
   });
@@ -484,6 +523,106 @@ describe('Lesson', () => {
       harness.fixture.destroy();
       await vi.advanceTimersByTimeAsync(STEP_SCROLL_MAX_WAIT_MS * 2);
       expect(scrolled).not.toHaveBeenCalled();
+    });
+  });
+  describe('a course for selected children', () => {
+    /** Opens `first`, then navigates to every next url with the same harness. */
+    async function visit(...urls: string[]) {
+      const { harness } = await open(urls[0]);
+      const seen = [];
+      for (const [index, url] of urls.entries()) {
+        if (index > 0) {
+          await harness.navigateByUrl(url);
+          await harness.fixture.whenStable();
+        }
+        const element = harness.routeNativeElement as HTMLElement;
+        seen.push({
+          ted: textOf(element.querySelector('snf-ted-says')),
+          heading: textOf(element.querySelector('h1')),
+          title: TestBed.inject(Title).getTitle(),
+        });
+      }
+      return { harness, seen };
+    }
+
+    it('a lesson looks like an unknown lesson to a child without an assignment', async () => {
+      const { harness } = await open('/leren/bestaat-niet/proefles');
+      const element = () => harness.routeNativeElement as HTMLElement;
+      const unknown = {
+        ted: textOf(element().querySelector('snf-ted-says')),
+        heading: textOf(element().querySelector('h1')),
+        title: TestBed.inject(Title).getTitle(),
+      };
+      loadCourse.mockClear();
+      loadLesson.mockClear();
+      assetUrls.mockClear();
+      await harness.navigateByUrl('/leren/geheim/proefles');
+      await harness.fixture.whenStable();
+      const hidden = {
+        ted: textOf(element().querySelector('snf-ted-says')),
+        heading: textOf(element().querySelector('h1')),
+        title: TestBed.inject(Title).getTitle(),
+      };
+      expect(hidden).toEqual(unknown);
+      expect(hidden.ted).toBe('Deze les kan ik niet vinden.');
+      expect(hidden.title).toBe('Les niet gevonden · Snuffel');
+      expect(canOpen).toHaveBeenLastCalledWith(
+        manifest.courses[1],
+        expect.objectContaining({ id: 'a1' }),
+      );
+      expect(loadCourse).not.toHaveBeenCalled();
+      expect(loadLesson).not.toHaveBeenCalled();
+      expect(assetUrls).not.toHaveBeenCalled();
+      expect(loadProgress).not.toHaveBeenCalled();
+    });
+
+    it('a planned lesson in a hidden course is not found either', async () => {
+      const {
+        seen: [unknown, hidden],
+      } = await visit('/leren/bestaat-niet/geheim-later', '/leren/geheim/geheim-later');
+      expect(hidden).toEqual(unknown);
+      expect(hidden.ted).toBe('Deze les kan ik niet vinden.');
+      expect(loadLesson).not.toHaveBeenCalledWith('geheim', 'geheim-later');
+    });
+
+    it('a planned lesson shows as planned once the course is assigned', async () => {
+      assigned = ['geheim'];
+      const {
+        seen: [planned],
+      } = await visit('/leren/geheim/geheim-later');
+      expect(planned.ted).toBe('Aan deze les wordt nog gewerkt. Hij komt eraan!');
+    });
+
+    it('opens for a child with an assignment', async () => {
+      assigned = ['geheim'];
+      const {
+        seen: [child],
+      } = await visit('/leren/geheim/proefles');
+      expect(child.heading).toBe('Proefles: aanbeet of vastzitten?');
+    });
+
+    it('opens for the parent without an assignment', async () => {
+      user.set({ id: 'p1', username: 'ouder', name: 'Ouder', role: 'parent' });
+      const {
+        seen: [parent],
+      } = await visit('/leren/geheim/proefles');
+      expect(parent.heading).toBe('Proefles: aanbeet of vastzitten?');
+    });
+
+    it('shows a retry when the assignments cannot be loaded', async () => {
+      accessFails = true;
+      const { harness, element } = await open('/leren/geheim/proefles');
+      expect(textOf(element.querySelector('snf-ted-says'))).toBe(
+        'Snuffel kan de les nu niet laden.',
+      );
+      expect(loadLesson).not.toHaveBeenCalled();
+      accessFails = false;
+      assigned = ['geheim'];
+      [...element.querySelectorAll('button')]
+        .find((button) => textOf(button) === 'Opnieuw')
+        ?.click();
+      await harness.fixture.whenStable();
+      expect(textOf(element.querySelector('h1'))).toBe('Proefles: aanbeet of vastzitten?');
     });
   });
 });

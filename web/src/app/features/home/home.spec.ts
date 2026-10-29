@@ -1,6 +1,8 @@
 import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
+import { AccountsService } from '../../core/accounts/accounts.service';
+import { CourseAccessService } from '../../core/access/course-access.service';
 import { AuthService } from '../../core/auth/auth.service';
 import { ContentError, type ContentErrorReason } from '../../core/content/content-error';
 import { ContentService } from '../../core/content/content.service';
@@ -9,7 +11,7 @@ import type {
   ManifestCourse,
   ManifestLesson,
 } from '../../core/content/content.types';
-import type { UserRecord } from '../../core/pocketbase/types';
+import type { CourseAssignmentRecord, UserRecord } from '../../core/pocketbase/types';
 import { groupStepStatuses, type StepStatuses } from '../../core/progress/course-progress';
 import { ProgressError } from '../../core/progress/progress-error';
 import { ProgressService } from '../../core/progress/progress.service';
@@ -35,6 +37,7 @@ const course = (
   id,
   title,
   kind,
+  access: 'all-children',
   file: `${id}/course.json`,
   hash: '0123456789abcdef',
   lessons,
@@ -51,6 +54,11 @@ const aardrijkskunde = course('aardrijkskunde', 'Aardrijkskunde', 'course', [
 const proefhuiswerk = course('proefhuiswerk', 'Proefhuiswerk', 'practice', [
   lesson('proefles-breuken', ['oefenen']),
 ]);
+
+const roofvissen: ManifestCourse = {
+  ...course('roofvissen', 'Roofvissen', 'course', [lesson('aanbeet', ['uitleg'])]),
+  access: 'selected-children',
+};
 
 const fullManifest: ContentManifest = {
   schemaVersion: 1,
@@ -86,8 +94,33 @@ describe('Home', () => {
   let contentFailure: ContentErrorReason | null;
   let progressFails: boolean;
   let statuses: StepStatuses;
+  let assigned: string[];
+  let accessFails: boolean;
+  let loadAssignedCourseIds: ReturnType<typeof vi.fn<CourseAccessService['loadAssignedCourseIds']>>;
+
+  let assignments: CourseAssignmentRecord[];
+  let shownToFails: boolean;
+  let loadAssignments: ReturnType<typeof vi.fn<CourseAccessService['loadAssignments']>>;
+  let loadChildren: ReturnType<typeof vi.fn<AccountsService['loadChildren']>>;
 
   beforeEach(() => {
+    assignments = [];
+    shownToFails = false;
+    loadAssignments = vi.fn<CourseAccessService['loadAssignments']>(async () => {
+      if (shownToFails) throw new ProgressError('unavailable', 'test');
+      return assignments;
+    });
+    loadChildren = vi.fn<AccountsService['loadChildren']>(async () => [
+      { id: 'a1', username: 'kind-a', name: 'Kind A', role: 'child' },
+      { id: 'b1', username: 'kind-b', name: 'Kind B', role: 'child' },
+      { id: 'c1', username: 'kind-c', name: 'Kind C', role: 'child' },
+    ]);
+    assigned = [];
+    accessFails = false;
+    loadAssignedCourseIds = vi.fn<CourseAccessService['loadAssignedCourseIds']>(async () => {
+      if (accessFails) throw new ProgressError('unavailable', 'test');
+      return new Set(assigned);
+    });
     manifest = fullManifest;
     contentFailure = null;
     progressFails = false;
@@ -112,6 +145,11 @@ describe('Home', () => {
         { provide: AuthService, useValue: { user } },
         { provide: ContentService, useValue: { loadManifest } },
         { provide: ProgressService, useValue: { loadStepStatuses } },
+        {
+          provide: CourseAccessService,
+          useValue: { loadAssignedCourseIds, loadAssignments },
+        },
+        { provide: AccountsService, useValue: { loadChildren } },
       ],
     });
   });
@@ -313,5 +351,161 @@ describe('Home', () => {
     const { element } = await render();
     expect(textOf(element)).not.toContain('Naar het ouderoverzicht');
     expect(element.querySelector('a[href="/ouder"]')).toBeNull();
+  });
+  describe('courses for selected children', () => {
+    const cardTitles = (element: HTMLElement) =>
+      Array.from(element.querySelectorAll('snf-course-card h3')).map(textOf);
+
+    beforeEach(() => {
+      manifest = { schemaVersion: 1, courses: [roofvissen, proefcursus, proefhuiswerk] };
+    });
+
+    it('a child without an assignment does not see a selected-children course', async () => {
+      const { element } = await render();
+      expect(loadAssignedCourseIds).toHaveBeenCalledWith('a1');
+      expect(cardTitles(element)).toEqual(['Proefcursus', 'Proefhuiswerk']);
+      expect(textOf(element)).not.toContain('Roofvissen');
+    });
+
+    it('a child with an assignment sees the course', async () => {
+      assigned = ['roofvissen'];
+      const { element } = await render();
+      expect(cardTitles(element)).toEqual(['Proefcursus', 'Roofvissen', 'Proefhuiswerk']);
+      expect(element.querySelector('.access-error')).toBeNull();
+    });
+
+    it('a child with only a hidden course sees the empty state', async () => {
+      manifest = { schemaVersion: 1, courses: [roofvissen] };
+      const { element } = await render();
+      expect(textOf(element.querySelector('.state-ted'))).toBe(
+        'Er staan nog geen leertrajecten klaar. Ted is nog aan het snuffelen.',
+      );
+      expect(element.querySelector('snf-course-card')).toBeNull();
+    });
+
+    it('the parent sees every course without loading assignments', async () => {
+      user.set({ id: 'p1', username: 'ouder', name: 'Ouder', role: 'parent' });
+      const { element } = await render();
+      expect(loadAssignedCourseIds).not.toHaveBeenCalled();
+      expect(cardTitles(element)).toEqual(['Proefcursus', 'Roofvissen', 'Proefhuiswerk']);
+    });
+
+    it('shows nothing of the courses while the assignments load', async () => {
+      loadAssignedCourseIds.mockImplementation(() => new Promise(() => undefined));
+      const fixture = TestBed.createComponent(Home);
+      await settle(fixture);
+      const element = fixture.nativeElement as HTMLElement;
+      expect(element.querySelector('snf-course-card')).toBeNull();
+      expect(textOf(element.querySelector('.state-ted'))).toBe('Even snuffelen…');
+    });
+
+    it('a load failure shows only the all-children courses with a message and a retry', async () => {
+      accessFails = true;
+      assigned = ['roofvissen'];
+      const { fixture, element, button } = await render();
+      expect(cardTitles(element)).toEqual(['Proefcursus', 'Proefhuiswerk']);
+      const ted = element.querySelector('.access-error snf-ted-says');
+      expect(textOf(ted)).toBe('Niet alle leertrajecten kan ik nu laten zien.');
+      expect(moodOf(ted)).toBe('oops');
+
+      accessFails = false;
+      button('Opnieuw')?.click();
+      await fixture.whenStable();
+      expect(loadAssignedCourseIds).toHaveBeenCalledTimes(2);
+      expect(element.querySelector('.access-error')).toBeNull();
+      expect(cardTitles(element)).toEqual(['Proefcursus', 'Roofvissen', 'Proefhuiswerk']);
+    });
+
+    it('never shows the courses of the child before while another child loads', async () => {
+      assigned = ['roofvissen'];
+      const { fixture, element } = await render();
+      expect(cardTitles(element)).toContain('Roofvissen');
+      loadAssignedCourseIds.mockImplementation(() => new Promise(() => undefined));
+      user.set({ id: 'b1', username: 'kind-b', name: 'Kind B', role: 'child' });
+      await settle(fixture);
+      expect(loadAssignedCourseIds).toHaveBeenLastCalledWith('b1');
+      expect(cardTitles(element)).toEqual(['Proefcursus', 'Proefhuiswerk']);
+    });
+
+    it('another child loads its own assignments', async () => {
+      assigned = ['roofvissen'];
+      const { fixture, element } = await render();
+      expect(cardTitles(element)).toContain('Roofvissen');
+      assigned = [];
+      user.set({ id: 'b1', username: 'kind-b', name: 'Kind B', role: 'child' });
+      await fixture.whenStable();
+      expect(loadAssignedCourseIds).toHaveBeenLastCalledWith('b1');
+      expect(cardTitles(element)).toEqual(['Proefcursus', 'Proefhuiswerk']);
+    });
+  });
+  describe('stickers for the parent', () => {
+    const assignment = (user: string, courseId: string): CourseAssignmentRecord => ({
+      id: `${user}-${courseId}`,
+      user,
+      course_id: courseId,
+      created: '2026-10-29 08:00:00.000Z',
+      updated: '2026-10-29 08:00:00.000Z',
+    });
+    const stickers = (element: HTMLElement) =>
+      Object.fromEntries(
+        Array.from(element.querySelectorAll('snf-course-card')).map((card) => [
+          textOf(card.querySelector('h3')),
+          card.querySelector('snf-sticker') ? textOf(card.querySelector('snf-sticker')) : null,
+        ]),
+      );
+    const otherSelected: ManifestCourse = {
+      ...course('geheim', 'Geheim', 'course', [lesson('geheim-les', ['uitleg'])]),
+      access: 'selected-children',
+    };
+
+    beforeEach(() => {
+      manifest = { schemaVersion: 1, courses: [roofvissen, otherSelected, proefcursus] };
+      user.set({ id: 'p1', username: 'ouder', name: 'Ouder', role: 'parent' });
+    });
+
+    it('the parent sees for whom a selected-children course is', async () => {
+      assignments = [
+        assignment('b1', 'roofvissen'),
+        assignment('a1', 'roofvissen'),
+        assignment('a1', 'verdwenen'),
+      ];
+      const { element } = await render();
+      expect(stickers(element)).toEqual({
+        Geheim: 'Voor: nog niemand',
+        Proefcursus: null,
+        Roofvissen: 'Voor: Kind A en Kind B',
+      });
+    });
+
+    it('names one child or three children', async () => {
+      assignments = [
+        assignment('a1', 'geheim'),
+        assignment('a1', 'roofvissen'),
+        assignment('b1', 'roofvissen'),
+        assignment('c1', 'roofvissen'),
+      ];
+      const { element } = await render();
+      expect(stickers(element)['Geheim']).toBe('Voor: Kind A');
+      expect(stickers(element)['Roofvissen']).toBe('Voor: Kind A, Kind B en Kind C');
+    });
+
+    it('shows no sticker and no message when it cannot be loaded', async () => {
+      shownToFails = true;
+      const { element } = await render();
+      expect(element.querySelector('snf-sticker')).toBeNull();
+      expect(element.querySelector('.access-error')).toBeNull();
+      expect(element.querySelectorAll('snf-course-card')).toHaveLength(3);
+    });
+
+    it('a child never sees a sticker and loads no children or assignments', async () => {
+      user.set({ id: 'a1', username: 'kind-a', name: 'Kind A', role: 'child' });
+      assigned = ['roofvissen', 'geheim'];
+      assignments = [assignment('a1', 'roofvissen')];
+      const { element } = await render();
+      expect(element.querySelectorAll('snf-course-card')).toHaveLength(3);
+      expect(element.querySelector('snf-sticker')).toBeNull();
+      expect(loadChildren).not.toHaveBeenCalled();
+      expect(loadAssignments).not.toHaveBeenCalled();
+    });
   });
 });

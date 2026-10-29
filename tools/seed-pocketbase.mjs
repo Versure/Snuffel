@@ -1,10 +1,12 @@
-// Fills a local PocketBase with the dev/test accounts from pocketbase/seed/dev-accounts.json.
+// Fills a local PocketBase with the dev/test accounts from pocketbase/seed/dev-accounts.json,
+// and the course assignments in it (which child sees which `selected-children` course).
 // Only for local development and the e2e tests: the seed never goes into the image
 // (see tools/image-contents.test.mjs) and never runs on the NAS.
 //
 // Usage: node tools/seed-pocketbase.mjs --url http://127.0.0.1:8092 [--file pocketbase/seed/dev-accounts.json]
 // The superuser from the file must exist already (serve-pocketbase.mjs --dev-superuser makes it).
-// Running it again changes nothing: accounts are matched on `username` and updated.
+// Running it again changes nothing: accounts are matched on `username` and updated; an
+// assignment that is there already stays.
 import { readFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -17,6 +19,9 @@ export { upsertSuperuser };
 export const defaultSeedFile = join(rootDir, 'pocketbase', 'seed', 'dev-accounts.json');
 
 const roles = ['child', 'parent'];
+
+/** The pattern of a content id (a course id), as in the content schema and the migration. */
+const contentIdPattern = /^[a-z0-9]+(-[a-z0-9]+)*$/;
 
 const localHosts = ['127.0.0.1', 'localhost', '[::1]'];
 
@@ -43,8 +48,9 @@ function nonEmptyString(value) {
 }
 
 /**
- * Reads and checks a seed file: `{ superuser: { email, password }, accounts: [{ username, name, role, password }] }`.
- * Throws an error that names the file and the broken part.
+ * Reads and checks a seed file: `{ superuser: { email, password }, accounts: [{ username, name,
+ * role, password }], assignments?: [{ username, course_id }] }`. An assignment names a child from
+ * `accounts` and a valid course id. Throws an error that names the file and the broken part.
  */
 export function loadSeed(file = defaultSeedFile) {
   let text;
@@ -79,11 +85,50 @@ export function loadSeed(file = defaultSeedFile) {
         }
       });
     }
+    if (seed.assignments !== undefined) {
+      if (!Array.isArray(seed.assignments)) {
+        problems.push('"assignments" must be a list');
+      } else {
+        const accounts = Array.isArray(seed.accounts) ? seed.accounts : [];
+        seed.assignments.forEach((assignment, index) => {
+          const account = accounts.find(
+            (candidate) => candidate?.username === assignment?.username,
+          );
+          if (!account) {
+            problems.push(
+              `assignments[${index}].username "${assignment?.username}" is not in "accounts"`,
+            );
+          } else if (account.role !== 'child') {
+            problems.push(
+              `assignments[${index}].username "${assignment.username}" is not a child (only a child gets a course assigned)`,
+            );
+          }
+          const courseId = assignment?.course_id;
+          if (
+            typeof courseId !== 'string' ||
+            courseId.length > 60 ||
+            !contentIdPattern.test(courseId)
+          ) {
+            problems.push(
+              `assignments[${index}].course_id "${courseId}" is not a valid course id (kebab-case, at most 60 characters)`,
+            );
+          }
+        });
+      }
+    }
   }
   if (problems.length > 0) {
     throw new Error(`seed: ${file} is invalid: ${problems.join('; ')}`);
   }
   return seed;
+}
+
+async function superuserToken(url, superuser) {
+  const { token } = await request(url, '/api/collections/_superusers/auth-with-password', {
+    method: 'POST',
+    body: { identity: superuser.email, password: superuser.password },
+  });
+  return token;
 }
 
 async function request(url, path, { method = 'GET', token, body } = {}) {
@@ -109,10 +154,7 @@ async function request(url, path, { method = 'GET', token, body } = {}) {
  */
 export async function seedAccounts(url, superuser, accounts) {
   assertLocalUrl(url);
-  const { token } = await request(url, '/api/collections/_superusers/auth-with-password', {
-    method: 'POST',
-    body: { identity: superuser.email, password: superuser.password },
-  });
+  const token = await superuserToken(url, superuser);
   const created = [];
   const updated = [];
   for (const { username, name, role, password } of accounts) {
@@ -138,6 +180,49 @@ export async function seedAccounts(url, superuser, accounts) {
   return { created, updated };
 }
 
+/**
+ * Makes every assignment (`{ username, course_id }`) that is not there yet; one that is there
+ * stays as it is. Run after seedAccounts (the accounts must exist). Returns `{ created, existing }`
+ * as `username/course_id`.
+ */
+export async function seedAssignments(url, superuser, assignments = []) {
+  assertLocalUrl(url);
+  if (assignments.length === 0) return { created: [], existing: [] };
+  const token = await superuserToken(url, superuser);
+  const created = [];
+  const existing = [];
+  for (const { username, course_id: courseId } of assignments) {
+    const userFilter = encodeURIComponent(`username="${username}"`);
+    const users = await request(
+      url,
+      `/api/collections/users/records?perPage=1&skipTotal=1&filter=${userFilter}`,
+      { token },
+    );
+    const user = users.items[0];
+    if (!user) throw new Error(`seed: assignment for "${username}": no such account`);
+    if (user.role !== 'child') {
+      throw new Error(`seed: assignment for "${username}": not a child`);
+    }
+    const filter = encodeURIComponent(`user="${user.id}" && course_id="${courseId}"`);
+    const found = await request(
+      url,
+      `/api/collections/course_assignments/records?perPage=1&skipTotal=1&filter=${filter}`,
+      { token },
+    );
+    if (found.items.length > 0) {
+      existing.push(`${username}/${courseId}`);
+      continue;
+    }
+    await request(url, '/api/collections/course_assignments/records', {
+      method: 'POST',
+      token,
+      body: { user: user.id, course_id: courseId },
+    });
+    created.push(`${username}/${courseId}`);
+  }
+  return { created, existing };
+}
+
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const { values } = parseArgs({
     options: {
@@ -155,6 +240,10 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
     const { created, updated } = await seedAccounts(values.url, seed.superuser, seed.accounts);
     console.log(
       `seed: test accounts ready on ${values.url} (created: ${created.join(', ') || '-'}; updated: ${updated.join(', ') || '-'})`,
+    );
+    const assignments = await seedAssignments(values.url, seed.superuser, seed.assignments);
+    console.log(
+      `seed: course assignments ready (created: ${assignments.created.join(', ') || '-'}; already there: ${assignments.existing.join(', ') || '-'})`,
     );
   } catch (error) {
     console.error(error.message);

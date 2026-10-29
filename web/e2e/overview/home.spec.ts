@@ -1,10 +1,12 @@
 import { expect, test } from '../fixtures';
 import { loginAsNewChild } from '../support/accounts';
 import {
-  learningCourses,
+  childCourses,
+  childLearningCourses,
+  childPracticeCourses,
   noProgressText,
-  practiceCourses,
   servedCourses,
+  type ServedCourse,
 } from '../support/courses';
 import {
   card,
@@ -33,15 +35,18 @@ async function expectCard(
 
 /**
  * Every card on the start page: the courses in `progress` (by title) with their text and bar,
- * every other course without progress.
+ * every other course without progress. `courses` are the courses on the page: what a new child
+ * without assignments sees (`childCourses`), or every course for the parent (`servedCourses`).
  */
 async function expectCards(
   page: Parameters<typeof card>[0],
   progress: Readonly<Record<string, readonly [text: string, now: number]>> = {},
+  courses: readonly ServedCourse[] = childCourses,
 ): Promise<void> {
-  const titles = servedCourses.map((course) => course.title);
+  const titles = courses.map((course) => course.title);
   for (const title of Object.keys(progress)) expect(titles, title).toContain(title);
-  for (const course of servedCourses) {
+  await expect(page.locator('snf-course-card')).toHaveCount(courses.length);
+  for (const course of courses) {
     const [text, now] = progress[course.title] ?? [noProgressText(course), 0];
     await expectCard(page, course.title, text, now);
   }
@@ -66,26 +71,27 @@ test.describe('the start page', () => {
     ]);
     const courses = page.getByRole('region', { name: 'Leertrajecten' });
     const practice = page.getByRole('region', { name: 'Huiswerk oefenen' });
-    // The courses on disk, sorted by title within each section (support/courses.ts).
-    await expect(courses.locator('snf-course-card')).toHaveCount(learningCourses.length);
-    await expect(practice.locator('snf-course-card')).toHaveCount(practiceCourses.length);
+    // The courses on disk that a new child sees (every course for all children), sorted by
+    // title within each section (support/courses.ts).
+    await expect(courses.locator('snf-course-card')).toHaveCount(childLearningCourses.length);
+    await expect(practice.locator('snf-course-card')).toHaveCount(childPracticeCourses.length);
     await expect(courses.getByRole('heading', { level: 3 })).toHaveText(
-      learningCourses.map((course) => course.title),
+      childLearningCourses.map((course) => course.title),
     );
     await expect(practice.getByRole('heading', { level: 3 })).toHaveText(
-      practiceCourses.map((course) => course.title),
+      childPracticeCourses.map((course) => course.title),
     );
     // The fixtures are served too; their lesson counts are known.
     await expectCard(page, 'Proefcursus', '0 van 2 lessen klaar', 0);
     await expectCard(page, 'Proefcursus: typen', '0 van 1 lessen klaar', 0);
     await expectCard(page, 'Proefhuiswerk', '0 van 1 lessen klaar', 0);
     await expectCards(page);
-    for (const { title } of servedCourses) {
+    for (const { title } of childCourses) {
       const bar = page.getByRole('progressbar', { name: `Voortgang ${title}`, exact: true });
       await expect(bar).toHaveAttribute('aria-valuemin', '0');
     }
     // A short name per course; the text is the value, so it is read once.
-    await expect(page.getByRole('progressbar')).toHaveCount(servedCourses.length);
+    await expect(page.getByRole('progressbar')).toHaveCount(childCourses.length);
   });
 
   test('each of two children sees only its own progress on the start page', async ({ page }) => {
@@ -135,7 +141,8 @@ test.describe('the start page', () => {
     await childWithProgress([...startedBreuken]);
     await openAs(page, 'ouder', '/');
     await expect(page.locator('.greeting')).toHaveText('Hoi, Ouder!');
-    await expectCards(page);
+    // The parent sees every course, also those for selected children only.
+    await expectCards(page, {}, servedCourses);
   });
 
   test('a card opens the course overview', async ({ page }) => {
@@ -155,7 +162,7 @@ test.describe('the start page', () => {
     const error = page.locator('.progress-error');
     await expect(error).toContainText('Je voortgang kan ik nu niet ophalen.');
     // The cards are there, without a bar and without "van … lessen klaar".
-    await expect(page.locator('snf-course-card')).toHaveCount(servedCourses.length);
+    await expect(page.locator('snf-course-card')).toHaveCount(childCourses.length);
     await expect(page.getByRole('progressbar')).toHaveCount(0);
     await expect(page.getByText(/lessen klaar/)).toHaveCount(0);
 
@@ -173,7 +180,7 @@ test.describe('the start page', () => {
     await expect(page.locator('snf-course-card')).toHaveCount(0);
     await page.unroute(pattern);
     await page.getByRole('button', { name: 'Opnieuw' }).click();
-    await expect(page.locator('snf-course-card')).toHaveCount(servedCourses.length);
+    await expect(page.locator('snf-course-card')).toHaveCount(childCourses.length);
     await expect(page.getByText('Snuffel kan de leertrajecten nu niet laden.')).toHaveCount(0);
   });
 

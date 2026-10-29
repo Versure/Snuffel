@@ -3,6 +3,7 @@ import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, convertToParamMap, provideRouter } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
 import { AccountsService } from '../../../core/accounts/accounts.service';
+import { CourseAccessService } from '../../../core/access/course-access.service';
 import { ContentError } from '../../../core/content/content-error';
 import { ContentService } from '../../../core/content/content.service';
 import type { ContentManifest, ManifestCourse } from '../../../core/content/content.types';
@@ -21,6 +22,7 @@ const proefcursus: ManifestCourse = {
   id: 'proefcursus',
   title: 'Proefcursus',
   kind: 'course',
+  access: 'all-children',
   file: 'proefcursus/course.json',
   hash: '0123456789abcdef',
   lessons: [
@@ -42,6 +44,7 @@ const proefhuiswerk: ManifestCourse = {
   id: 'proefhuiswerk',
   title: 'Proefhuiswerk',
   kind: 'practice',
+  access: 'all-children',
   file: 'proefhuiswerk/course.json',
   hash: '0123456789abcdef',
   lessons: [
@@ -57,7 +60,18 @@ const proefhuiswerk: ManifestCourse = {
   ],
   assets: [],
 };
-const manifest: ContentManifest = { schemaVersion: 1, courses: [proefhuiswerk, proefcursus] };
+const fullManifest: ContentManifest = {
+  schemaVersion: 1,
+  courses: [proefhuiswerk, proefcursus],
+};
+/** A course for selected children only, with the lessons of the proefcursus. */
+const geheim: ManifestCourse = {
+  ...proefcursus,
+  id: 'geheim',
+  title: 'Geheim',
+  access: 'selected-children',
+  file: 'geheim/course.json',
+};
 
 const lastYear = new Date().getFullYear() - 1;
 
@@ -82,8 +96,19 @@ describe('ChildOverview', () => {
   let snapshot: UserProgressSnapshot;
   let progressFails: boolean;
   let setTitle: ReturnType<typeof vi.fn>;
+  let manifest: ContentManifest;
+  let assigned: string[];
+  let accessFails: boolean;
+  let loadAssignedCourseIds: ReturnType<typeof vi.fn<CourseAccessService['loadAssignedCourseIds']>>;
 
   beforeEach(() => {
+    manifest = fullManifest;
+    assigned = [];
+    accessFails = false;
+    loadAssignedCourseIds = vi.fn<CourseAccessService['loadAssignedCourseIds']>(async () => {
+      if (accessFails) throw new ProgressError('unavailable', 'test');
+      return new Set(assigned);
+    });
     params = new BehaviorSubject(convertToParamMap({ childId: 'a1' }));
     progressFails = false;
     snapshot = snapshotOf({
@@ -118,6 +143,7 @@ describe('ChildOverview', () => {
         },
         { provide: ProgressService, useValue: { loadUserProgress, clearLesson } },
         { provide: Title, useValue: { setTitle } },
+        { provide: CourseAccessService, useValue: { loadAssignedCourseIds } },
       ],
     });
   });
@@ -470,5 +496,79 @@ describe('ChildOverview', () => {
     finish(snapshotOf({}));
     await fixture.whenStable();
     expect(textOf(lesson('Proefles')?.querySelector('snf-lesson-status'))).toBe('Nieuw');
+  });
+
+  describe('courses for selected children', () => {
+    const courseSection = (element: HTMLElement, title: string) =>
+      Array.from(element.querySelectorAll('section.course')).find(
+        (section) => textOf(section.querySelector('h3')) === title,
+      );
+
+    beforeEach(() => {
+      manifest = { schemaVersion: 1, courses: [proefhuiswerk, proefcursus, geheim] };
+    });
+
+    it('says Niet zichtbaar under a selected-children course that is not assigned', async () => {
+      const { element } = await render();
+      expect(loadAssignedCourseIds).toHaveBeenCalledWith('a1');
+      expect(textOf(courseSection(element, 'Geheim')?.querySelector('.hidden-for'))).toBe(
+        'Niet zichtbaar voor Kind A',
+      );
+      expect(courseSection(element, 'Proefcursus')?.querySelector('.hidden-for')).toBeNull();
+      expect(courseSection(element, 'Proefhuiswerk')?.querySelector('.hidden-for')).toBeNull();
+      expect(element.querySelector('.access-error')).toBeNull();
+    });
+
+    it('says nothing under an assigned course', async () => {
+      assigned = ['geheim'];
+      const { element } = await render();
+      expect(element.querySelector('.hidden-for')).toBeNull();
+    });
+
+    it('keeps the course and its progress when it is not visible', async () => {
+      snapshot = snapshotOf({
+        proefles: records({
+          steps: [stepRecord('uitleg', 'completed', '2024-05-01 10:00:00.000Z')],
+        }),
+      });
+      const { element } = await render();
+      const section = courseSection(element, 'Geheim');
+      const bar = section?.querySelector('[role="progressbar"]');
+      expect(bar?.getAttribute('aria-valuemax')).toBe('3');
+      expect(section?.querySelectorAll('snf-child-lesson')).toHaveLength(3);
+      expect(textOf(section?.querySelector('snf-lesson-status'))).toBe(
+        'Bezig: 1 van 6 stappen klaar',
+      );
+    });
+
+    it('a load failure shows no lines and a message', async () => {
+      accessFails = true;
+      const { element } = await render();
+      expect(element.querySelector('.hidden-for')).toBeNull();
+      expect(textOf(element.querySelector('.access-error'))).toBe(
+        'Voor wie de cursussen openstaan, kan ik nu niet ophalen.',
+      );
+      expect(courseSection(element, 'Geheim')).toBeDefined();
+    });
+
+    it('shows no line of the previous child on the page of another child', async () => {
+      const { fixture, element } = await render();
+      expect(element.querySelector('.hidden-for')).not.toBeNull();
+      loadChild.mockImplementation(async (id) =>
+        id === 'b1' ? { id: 'b1', name: 'Kind B', username: 'kind-b', role: 'child' } : null,
+      );
+      let finish: (value: ReadonlySet<string>) => void = () => undefined;
+      loadAssignedCourseIds.mockImplementationOnce(
+        () => new Promise<ReadonlySet<string>>((resolve) => (finish = resolve)),
+      );
+      params.next(convertToParamMap({ childId: 'b1' }));
+      await settle();
+      expect(textOf(element.querySelector('h1'))).toBe('Kind B');
+      expect(loadAssignedCourseIds).toHaveBeenLastCalledWith('b1');
+      expect(element.querySelector('.hidden-for')).toBeNull();
+      finish(new Set());
+      await fixture.whenStable();
+      expect(textOf(element.querySelector('.hidden-for'))).toBe('Niet zichtbaar voor Kind B');
+    });
   });
 });

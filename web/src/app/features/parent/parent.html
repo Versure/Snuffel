@@ -21,6 +21,11 @@
           <li><snf-child-card [child]="child" [activity]="activityOf(child)" [now]="now" /></li>
         }
       </ul>
+      <snf-course-access
+        class="course-access"
+        [courses]="courses()"
+        [children]="current.children"
+      />
     }
     @case ('empty') {
       <snf-ted-says class="state-ted" mood="thinking" size="small">{{

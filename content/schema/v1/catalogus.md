@@ -102,6 +102,11 @@ Een les die nog niet af is, staat op een `content/<cursus-id>-<les-id>`-branch, 
 
 - `kind`: `course` (leertraject) of `practice` (huiswerk-oefenles). Bij `practice` zijn ook `subject`, `schoolLevel`, `method` en `chapter` verplicht.
 - De volgorde van `lessons` is de volgorde in de app.
+- `access` (optioneel): voor wie de cursus is.
+  - `all-children` (standaard als het veld ontbreekt): elk kind ziet de cursus.
+  - `selected-children`: alleen de kinderen die de ouder op `/ouder` aanvinkt bij "Wie ziet welke cursus?". Welke kinderen dat zijn, staat in de app (PocketBase), nooit in de inhoud: zet geen namen of accounts van kinderen in `course.json`.
+  - Een kind dat een cursus niet mag zien, krijgt hem niet op de startpagina en via een directe link de pagina "niet gevonden". De ouder ziet altijd alle cursussen.
+  - `audience` gaat over niveau en toon ("Ouder en kind, beginners") en zegt niets over wie de cursus ziet.
 
 ## Bronnen en betrouwbaarheid
 

@@ -14,6 +14,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { map } from 'rxjs';
+import { CourseAccessService } from '../../core/access/course-access.service';
 import { AuthService } from '../../core/auth/auth.service';
 import { isContentError } from '../../core/content/content-error';
 import { ContentService } from '../../core/content/content.service';
@@ -79,6 +80,7 @@ export class Lesson {
   private readonly injector = inject(Injector);
   private readonly appRef = inject(ApplicationRef);
   private readonly auth = inject(AuthService);
+  private readonly access = inject(CourseAccessService);
   protected readonly progress = inject(LessonProgress);
 
   private readonly params = toSignal(
@@ -235,7 +237,9 @@ export class Lesson {
   /**
    * Loads a lesson and fills the lesson context. `abortSignal` is aborted when the params change
    * (or on reload) before this load is done; such a stale load leaves the context alone, so it
-   * never overwrites the context of the lesson that is shown.
+   * never overwrites the context of the lesson that is shown. First the manifest and whether the
+   * logged-in user may see the course: a lesson in a course that is not for this child (also a
+   * planned one) looks exactly like an unknown lesson, and no course or lesson file is fetched.
    */
   private async load(
     courseId: string,
@@ -243,6 +247,12 @@ export class Lesson {
     abortSignal: AbortSignal,
   ): Promise<LoadResult> {
     try {
+      const manifest = await this.content.loadManifest();
+      const entry = manifest.courses.find((candidate) => candidate.id === courseId);
+      if (!entry) return { kind: 'not-found' };
+      const user = this.auth.user();
+      if (!user) return { kind: 'not-found' };
+      if (!(await this.access.canOpen(entry, user))) return { kind: 'not-found' };
       const [course, lesson, assetUrls] = await Promise.all([
         this.content.loadCourse(courseId),
         this.content.loadLesson(courseId, lessonId),
@@ -261,7 +271,7 @@ export class Lesson {
     }
   }
 
-  /** A lesson that is only planned is in the manifest without a file. */
+  /** A lesson that is only planned is in the manifest without a file (in a visible course). */
   private async notFound(courseId: string, lessonId: string): Promise<LoadResult> {
     try {
       const manifest = await this.content.loadManifest();

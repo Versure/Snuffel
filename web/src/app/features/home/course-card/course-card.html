@@ -1,5 +1,8 @@
 <a class="card" [routerLink]="link()">
   <h3 class="title">{{ title() }}</h3>
+  @if (shownTo(); as shown) {
+    <snf-sticker class="shown-to">{{ shown }}</snf-sticker>
+  }
   @if (progress(); as current) {
     <snf-progress-bar
       [value]="current.completed"

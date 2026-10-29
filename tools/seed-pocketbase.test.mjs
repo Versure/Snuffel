@@ -6,7 +6,13 @@ import { join } from 'node:path';
 import { after, before, describe, test } from 'node:test';
 import { promisify } from 'node:util';
 import { startPocketBase } from './pocketbase-harness.mjs';
-import { assertLocalUrl, defaultSeedFile, loadSeed, seedAccounts } from './seed-pocketbase.mjs';
+import {
+  assertLocalUrl,
+  defaultSeedFile,
+  loadSeed,
+  seedAccounts,
+  seedAssignments,
+} from './seed-pocketbase.mjs';
 
 const execFileAsync = promisify(execFile);
 const seedTool = join(import.meta.dirname, 'seed-pocketbase.mjs');
@@ -18,6 +24,25 @@ async function login(url, identity, password, collection = 'users') {
     body: JSON.stringify({ identity, password }),
   });
   return { status: response.status, body: await response.json() };
+}
+
+async function superuserGet(url, superuser, path) {
+  const { body } = await login(url, superuser.email, superuser.password, '_superusers');
+  const response = await fetch(`${url}${path}`, { headers: { Authorization: body.token } });
+  return response.json();
+}
+
+/** Every course assignment as `username/course_id`, sorted. */
+async function allAssignments(url, superuser) {
+  const users = await allUsers(url, superuser);
+  const { items } = await superuserGet(
+    url,
+    superuser,
+    '/api/collections/course_assignments/records?perPage=200',
+  );
+  return items
+    .map((item) => `${users.find((user) => user.id === item.user)?.username}/${item.course_id}`)
+    .sort();
 }
 
 async function allUsers(url, superuser) {
@@ -79,10 +104,40 @@ describe('dev seed against PocketBase', () => {
     assert.equal(kindA.role, 'child');
   });
 
+  test('the dev seed assigns roofvissen to kind-a and not to kind-b', async () => {
+    assert.deepEqual(seed.assignments, [{ username: 'kind-a', course_id: 'roofvissen' }]);
+    await seedAccounts(pb.url, seed.superuser, seed.accounts);
+    const result = await seedAssignments(pb.url, seed.superuser, seed.assignments);
+    assert.deepEqual(result, { created: ['kind-a/roofvissen'], existing: [] });
+    assert.deepEqual(await allAssignments(pb.url, seed.superuser), ['kind-a/roofvissen']);
+  });
+
+  test('seeding the assignments twice gives no duplicate', async () => {
+    await seedAccounts(pb.url, seed.superuser, seed.accounts);
+    await seedAssignments(pb.url, seed.superuser, seed.assignments);
+    const again = await seedAssignments(pb.url, seed.superuser, seed.assignments);
+    assert.deepEqual(again, { created: [], existing: ['kind-a/roofvissen'] });
+    assert.deepEqual(await allAssignments(pb.url, seed.superuser), ['kind-a/roofvissen']);
+  });
+
+  test('an assignment to an unknown account or to the parent gives a clear error', async () => {
+    await seedAccounts(pb.url, seed.superuser, seed.accounts);
+    await assert.rejects(
+      seedAssignments(pb.url, seed.superuser, [{ username: 'niemand', course_id: 'roofvissen' }]),
+      /seed: assignment for "niemand": no such account/,
+    );
+    await assert.rejects(
+      seedAssignments(pb.url, seed.superuser, [{ username: 'ouder', course_id: 'roofvissen' }]),
+      /seed: assignment for "ouder": not a child/,
+    );
+  });
+
   test('the CLI seeds the default file and reports what it did', async () => {
     const { stdout } = await execFileAsync(process.execPath, [seedTool, '--url', pb.url]);
     assert.match(stdout, /test accounts ready/);
     assert.match(stdout, /updated: kind-a, kind-b, ouder/);
+    assert.match(stdout, /course assignments ready/);
+    assert.deepEqual(await allAssignments(pb.url, seed.superuser), ['kind-a/roofvissen']);
   });
 
   test('a wrong superuser password gives a clear error', async () => {
@@ -141,6 +196,44 @@ describe('loadSeed', () => {
         return true;
       },
     );
+  });
+
+  test('an assignment to an unknown account, to the parent or with an invalid course id is refused', () => {
+    const base = loadSeed(defaultSeedFile);
+    const path = file(
+      'assignments.json',
+      JSON.stringify({
+        ...base,
+        assignments: [
+          { username: 'niemand', course_id: 'roofvissen' },
+          { username: 'ouder', course_id: 'roofvissen' },
+          { username: 'kind-a', course_id: 'Roof_vissen' },
+          { username: 'kind-b', course_id: 'a'.repeat(61) },
+        ],
+      }),
+    );
+    assert.throws(
+      () => loadSeed(path),
+      (error) => {
+        assert.match(error.message, /assignments\.json is invalid/);
+        assert.match(error.message, /assignments\[0\]\.username "niemand" is not in "accounts"/);
+        assert.match(error.message, /assignments\[1\]\.username "ouder" is not a child/);
+        assert.match(
+          error.message,
+          /assignments\[2\]\.course_id "Roof_vissen" is not a valid course id/,
+        );
+        assert.match(error.message, /assignments\[3\]\.course_id "a{61}" is not a valid course id/);
+        return true;
+      },
+    );
+  });
+
+  test('assignments that are not a list are refused', () => {
+    const path = file(
+      'assignments-object.json',
+      JSON.stringify({ ...loadSeed(defaultSeedFile), assignments: { 'kind-a': 'roofvissen' } }),
+    );
+    assert.throws(() => loadSeed(path), /"assignments" must be a list/);
   });
 
   test('the CLI exits with the error for a broken file', async () => {

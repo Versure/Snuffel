@@ -6,6 +6,7 @@
   "goal": "Zelfstandig met kunstaas op snoek en baars vissen in de vijver",
   "successCriterion": "Een roofvis zelf vangen, onthaken en terugzetten",
   "kind": "course",
+  "access": "selected-children",
   "ted": {
     "greeting": "Klaar om te snuffelen?"
   },

@@ -12,6 +12,7 @@ test.describe('content in the image', () => {
     expect(manifest.courses.map((course) => course.id)).not.toContain('proefcursus');
     expect(manifest.courses.map((course) => course.id)).not.toContain('proefhuiswerk');
     expect(manifest.courses.map((course) => course.id)).not.toContain('proeftypen');
+    expect(manifest.courses.map((course) => course.id)).not.toContain('proefgekozen');
   });
 
   test('the image has les 1 of roofvissen', async ({ request }) => {
@@ -21,6 +22,10 @@ test.describe('content in the image', () => {
     const course = manifest.courses.find((candidate) => candidate.id === 'roofvissen');
     expect(course, 'course roofvissen in the manifest').toBeDefined();
     expect(course!.kind).toBe('course');
+    // Roofvissen is for selected children only; blind-typen is for every child.
+    expect(course!.access).toBe('selected-children');
+    const blindTypen = manifest.courses.find((candidate) => candidate.id === 'blind-typen');
+    expect(blindTypen?.access).toBe('all-children');
     expect(course!.file).toBe('roofvissen/course.json');
     const entry = course!.lessons.find((candidate) => candidate.id === 'aanbeet-of-vastzitten');
     expect(entry, 'lesson aanbeet-of-vastzitten').toBeDefined();
@@ -38,7 +43,7 @@ test.describe('content in the image', () => {
     expect(((await courseFile.json()) as { id: string }).id).toBe('roofvissen');
   });
 
-  for (const id of ['proefcursus', 'proefhuiswerk', 'proeftypen']) {
+  for (const id of ['proefcursus', 'proefhuiswerk', 'proeftypen', 'proefgekozen']) {
     test(`the fixture course file ${id} is not in the image`, async ({ request }) => {
       await expectNoCourseFile(request, id);
     });

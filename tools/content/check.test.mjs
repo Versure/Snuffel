@@ -36,7 +36,12 @@ describe('content:check on the repository', () => {
     assertClean(result);
     const expected = courseIdsOnDisk({ fixtures: true });
     // The real courses first, then the fixtures.
-    assert.deepEqual(expected.slice(-3), ['proefcursus', 'proefhuiswerk', 'proeftypen']);
+    assert.deepEqual(expected.slice(-4), [
+      'proefcursus',
+      'proefgekozen',
+      'proefhuiswerk',
+      'proeftypen',
+    ]);
     assert.deepEqual(
       result.courses.map((course) => course.data.id),
       expected,

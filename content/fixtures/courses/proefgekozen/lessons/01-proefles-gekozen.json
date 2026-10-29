@@ -1,0 +1,208 @@
+{
+  "schemaVersion": 1,
+  "id": "proefles-gekozen",
+  "version": 1,
+  "title": "Proefles: alleen voor gekozen kinderen",
+  "sticker": "Proefcursus gekozen kinderen · thuisrij",
+  "objective": "Na deze les weet je waar je vingers op het toetsenbord rusten. Je typt korte woordjes op de thuisrij zonder te kijken.",
+  "concept": "de thuisrij",
+  "estimatedMinutes": 9,
+  "glossary": [
+    {
+      "term": "blind typen",
+      "definition": "typen met tien vingers zonder naar je handen te kijken"
+    },
+    {
+      "term": "thuisrij",
+      "definition": "de middelste rij letters, waar je vingers altijd op terugkomen: a s d f en j k l ;"
+    }
+  ],
+  "ted": {
+    "intro": {
+      "mood": "cool",
+      "text": "Hoi! Ik ben Ted. Vandaag leer je typen zonder te kijken. Je begint op de thuisrij."
+    },
+    "correct": ["Strak getypt!", "Netjes!", "Goed zo, je vingers weten de weg!"],
+    "incorrect": ["Bijna. Rustig aan, dan gaat het vanzelf beter.", "Oefen nog eens, langzaam."],
+    "finished": "Je vingers kennen nu hun plekje. Morgen weer even oefenen!"
+  },
+  "steps": [
+    {
+      "id": "uitleg",
+      "type": "explain",
+      "title": "Elke vinger een eigen plek",
+      "blocks": [
+        {
+          "type": "example",
+          "text": "Je wilt een berichtje aan opa typen. Je zoekt elke letter met één vinger. Je ogen springen steeds van het scherm naar de toetsen. Zo ben je snel moe, en je ziet je typfouten pas later. Met [[blind typen]] heeft elke vinger zijn eigen toetsen. Je kijkt alleen naar het scherm. Dat voelt eerst langzaam. Na een paar weken oefenen gaat het veel sneller dan zoeken.",
+          "sourceRefs": ["wikipedia-touch-typing"]
+        },
+        {
+          "type": "rule",
+          "title": "Begin altijd op de thuisrij",
+          "text": "Je linkerhand rust op **a s d f**. Je rechterhand rust op **j k l ;**. Je duimen liggen op de spatiebalk. Na elke toets gaat je vinger terug naar zijn plek op de [[thuisrij]].",
+          "sourceRefs": ["wikipedia-touch-typing"]
+        },
+        {
+          "type": "text",
+          "text": "Hoe vind je de thuisrij zonder te kijken? Voel eens aan de f en de j. Daar zit een klein streepje op. Daar horen je wijsvingers. Leg ze op die streepjes. De andere vingers komen vanzelf naast ze te liggen.",
+          "sourceRefs": ["wikipedia-touch-typing"]
+        },
+        {
+          "type": "text",
+          "text": "Je pink typt de a en de puntkomma. Je ringvinger typt de s en de l. Je middelvinger typt de d en de k. Je wijsvinger typt de f en de j. Het toetsenbord in de oefening laat met kleuren zien welke vinger je gebruikt.",
+          "sourceRefs": ["wikipedia-touch-typing"]
+        },
+        {
+          "type": "tip",
+          "title": "Tip",
+          "text": "Typ rustig en goed. Snelheid komt vanzelf als je vingers de weg kennen. Een fout is niet erg: typ gewoon door.",
+          "sourceRefs": []
+        },
+        {
+          "type": "ted-says",
+          "mood": "thinking",
+          "text": "Kijk naar het scherm, niet naar je handen. Dat is lastig, maar het is de hele truc.",
+          "sourceRefs": []
+        }
+      ]
+    },
+    {
+      "id": "typen",
+      "type": "interaction",
+      "title": "Typ op de thuisrij",
+      "intro": "Leg je vingers op de thuisrij en typ de regels over. De gekleurde toets laat zien welke vinger aan de beurt is.",
+      "interaction": {
+        "id": "thuisrij",
+        "kind": "typing-drill",
+        "config": {
+          "lines": [
+            "asdf jkl;",
+            "fdsa ;lkj",
+            "ff jj dd kk",
+            "als las kas",
+            "jas dak sla",
+            "alfa kaal"
+          ],
+          "newKeys": ["a", "s", "d", "f", "j", "k", "l", ";", "space"],
+          "goals": {
+            "accuracy": 90
+          }
+        }
+      },
+      "sourceRefs": ["wikipedia-touch-typing"]
+    },
+    {
+      "id": "quiz",
+      "type": "quiz",
+      "title": "Quiz",
+      "intro": "Drie vragen over je vingers. Je ziet meteen of het klopt.",
+      "questions": [
+        {
+          "id": "vinger-j",
+          "prompt": "Welke vinger typt de j?",
+          "options": [
+            {
+              "id": "rechterwijsvinger",
+              "text": "Je rechterwijsvinger",
+              "feedback": "Klopt. Op de j zit een streepje, en daar rust je rechterwijsvinger."
+            },
+            {
+              "id": "linkerwijsvinger",
+              "text": "Je linkerwijsvinger",
+              "feedback": "Je linkerwijsvinger rust op de f. De j hoort bij je rechterhand."
+            },
+            {
+              "id": "rechterpink",
+              "text": "Je rechterpink",
+              "feedback": "Je rechterpink rust op de puntkomma, helemaal rechts op de thuisrij."
+            }
+          ],
+          "correctOptionId": "rechterwijsvinger",
+          "hints": ["Op welke toetsen zitten de voelstreepjes?"],
+          "sourceRefs": ["wikipedia-touch-typing"]
+        },
+        {
+          "id": "streepjes",
+          "prompt": "Waarom zit er een streepje op de f en de j?",
+          "options": [
+            {
+              "id": "voelen",
+              "text": "Zo vind je de thuisrij zonder kijken",
+              "feedback": "Klopt. Je wijsvingers voelen het streepje en de rest volgt."
+            },
+            {
+              "id": "versiering",
+              "text": "Het is alleen versiering op de toets",
+              "feedback": "Het streepje heeft een taak: je voelt ermee waar je bent."
+            },
+            {
+              "id": "vaakst",
+              "text": "Die letters gebruik je het vaakst",
+              "feedback": "Dat is niet de reden. Het streepje helpt je de thuisrij te vinden."
+            }
+          ],
+          "correctOptionId": "voelen",
+          "hints": ["Denk aan typen zonder te kijken."],
+          "sourceRefs": ["wikipedia-touch-typing"]
+        },
+        {
+          "id": "duimen",
+          "prompt": "Waar liggen je duimen tijdens het typen?",
+          "options": [
+            {
+              "id": "spatiebalk",
+              "text": "Op de spatiebalk",
+              "feedback": "Klopt. Met je duim tik je een spatie."
+            },
+            {
+              "id": "tafel",
+              "text": "Naast het toetsenbord",
+              "feedback": "Dan moet je je hand bewegen voor elke spatie."
+            },
+            {
+              "id": "thuisrij",
+              "text": "Op de thuisrij",
+              "feedback": "Daar liggen je andere acht vingers. Je duimen liggen lager."
+            }
+          ],
+          "correctOptionId": "spatiebalk",
+          "hints": ["Welke grote toets gebruik je tussen twee woorden?"],
+          "sourceRefs": ["wikipedia-touch-typing"]
+        }
+      ]
+    },
+    {
+      "id": "zelf-doen",
+      "type": "practice",
+      "practiceKind": "do-it-yourself",
+      "title": "Zelf doen",
+      "intro": "Oefen ook buiten Snuffel, op een echt toetsenbord.",
+      "items": [
+        {
+          "id": "vingers-klaar",
+          "text": "Leg je vingers op de thuisrij zonder te kijken. Voel de streepjes op de f en de j.",
+          "sourceRefs": ["wikipedia-touch-typing"]
+        },
+        {
+          "id": "woordjes",
+          "text": "Typ vijf keer het woord 'jas' en vijf keer 'als', zonder naar je handen te kijken.",
+          "sourceRefs": []
+        }
+      ],
+      "successCriterion": "Gelukt als je de thuisrij vindt met je ogen dicht."
+    }
+  ],
+  "furtherReading": [
+    {
+      "sourceRef": "wikipedia-touch-typing",
+      "why": "Over blind typen en de thuisrij, in het Engels."
+    }
+  ],
+  "faq": [
+    {
+      "q": "Waarom heet dit een proefles?",
+      "a": "Deze les test alleen of een cursus voor gekozen kinderen goed werkt. Hij is een kopie van de proefles over de thuisrij."
+    }
+  ]
+}

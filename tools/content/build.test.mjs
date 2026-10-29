@@ -55,7 +55,7 @@ describe('content:build', () => {
 
   test('without --fixtures the manifest has no fixture course at all', (t) => {
     // The real repository: every course under content/fixtures/courses (the proefcursus, the
-    // proefhuiswerk, the proeftypen, and the sample course made with snuffel-leren --voorbeeld) stays out of the
+    // proefhuiswerk, the proeftypen, the proefgekozen, and the sample course made with snuffel-leren --voorbeeld) stays out of the
     // image build.
     const fixtureCourses = readdirSync(join(repoRoot, 'content', 'fixtures', 'courses'), {
       withFileTypes: true,
@@ -65,6 +65,7 @@ describe('content:build', () => {
     assert.ok(fixtureCourses.includes('proefcursus'));
     assert.ok(fixtureCourses.includes('proefhuiswerk'));
     assert.ok(fixtureCourses.includes('proeftypen'));
+    assert.ok(fixtureCourses.includes('proefgekozen'));
     const out = mkdtempSync(join(tmpdir(), 'snuffel-build-'));
     t.after(() => rmSync(out, { recursive: true, force: true }));
     const result = buildContent({ root: repoRoot, out: join(out, 'content') });
@@ -103,6 +104,18 @@ describe('content:build', () => {
       ),
     );
     assert.equal(built.id, 'aanbeet-of-vastzitten');
+  });
+
+  test('without --fixtures roofvissen is for selected children and blind-typen for all', (t) => {
+    // The real repository: the access of the courses in the image.
+    const out = mkdtempSync(join(tmpdir(), 'snuffel-build-'));
+    t.after(() => rmSync(out, { recursive: true, force: true }));
+    const result = buildContent({ root: repoRoot, out: join(out, 'content') });
+    assert.equal(result.ok, true);
+    const manifest = JSON.parse(readFileSync(join(out, 'content', 'manifest.json'), 'utf8'));
+    const accessOf = (id) => manifest.courses.find((course) => course.id === id)?.access;
+    assert.equal(accessOf('roofvissen'), 'selected-children');
+    assert.equal(accessOf('blind-typen'), 'all-children');
   });
 
   test('with --fixtures the lesson and asset are written', (t) => {
@@ -164,6 +177,43 @@ describe('content:build', () => {
     const fixture = fixtureRoot(t);
     const { out } = build(fixture, { fixtures: true });
     const manifest = JSON.parse(readFileSync(join(out, 'manifest.json'), 'utf8'));
+    assert.deepEqual(validate('manifest', manifest), []);
+  });
+
+  test('a course without access gets all-children in the manifest', (t) => {
+    const fixture = fixtureRoot(t);
+    assert.equal('access' in fixture.readCourse(), false);
+    const { out } = build(fixture, { fixtures: true });
+    const manifest = JSON.parse(readFileSync(join(out, 'manifest.json'), 'utf8'));
+    assert.equal(manifest.courses[0].access, 'all-children');
+    assert.deepEqual(validate('manifest', manifest), []);
+  });
+
+  test('a course with access selected-children keeps it in the manifest', (t) => {
+    const fixture = fixtureRoot(t);
+    fixture.mutateCourse((course) => {
+      course.access = 'selected-children';
+    });
+    const { out, result } = build(fixture, { fixtures: true });
+    assert.equal(result.ok, true);
+    const manifest = JSON.parse(readFileSync(join(out, 'manifest.json'), 'utf8'));
+    assert.equal(manifest.courses[0].access, 'selected-children');
+    assert.deepEqual(validate('manifest', manifest), []);
+  });
+
+  test('with --fixtures every course of the repository has access in the manifest', (t) => {
+    const out = mkdtempSync(join(tmpdir(), 'snuffel-build-'));
+    t.after(() => rmSync(out, { recursive: true, force: true }));
+    const result = buildContent({ root: repoRoot, out: join(out, 'content'), fixtures: true });
+    assert.equal(result.ok, true);
+    const manifest = JSON.parse(readFileSync(join(out, 'content', 'manifest.json'), 'utf8'));
+    assert.ok(manifest.courses.length > 0);
+    for (const course of manifest.courses) {
+      assert.ok(
+        ['all-children', 'selected-children'].includes(course.access),
+        `${course.id} has access ${course.access}`,
+      );
+    }
     assert.deepEqual(validate('manifest', manifest), []);
   });
 

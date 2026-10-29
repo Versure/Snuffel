@@ -34,16 +34,26 @@ async function call<T>(url: string, init: RequestInit): Promise<T> {
   return JSON.parse(text) as T;
 }
 
+export interface ChildOptions {
+  /** The display name; "Testkind" by default. */
+  readonly name?: string;
+  /**
+   * The ids of the `selected-children` courses the child sees (a `course_assignments` record
+   * each, as the parent makes on /ouder). Courses for every child need none.
+   */
+  readonly courses?: readonly string[];
+}
+
 /**
  * Creates a new child account (`e2e-<8 characters>`, password `snuffel-test`) as the dev
  * superuser from pocketbase/seed/dev-accounts.json, through the REST API. Every test that writes
  * progress gets its own child, so tests running at the same time never see each other's ticks.
  * The parent sees every test child, so a test that looks one up on /ouder passes a unique `name`
- * (see `uniqueName`); the default is "Testkind".
+ * (see `uniqueName`); the default is "Testkind". `courses` are assigned to the new child.
  */
 export async function createChild(
   baseURL: string,
-  { name = 'Testkind' }: { name?: string } = {},
+  { name = 'Testkind', courses = [] }: ChildOptions = {},
 ): Promise<TestAccount> {
   assertLocal(baseURL);
   const { superuser } = JSON.parse(readFileSync(seedFile, 'utf8')) as Seed;
@@ -71,6 +81,16 @@ export async function createChild(
       }),
     },
   );
+  for (const courseId of courses) {
+    await call<{ id: string }>(
+      new URL('/api/collections/course_assignments/records', baseURL).href,
+      {
+        method: 'POST',
+        headers: { ...json, Authorization: token },
+        body: JSON.stringify({ user: record.id, course_id: courseId }),
+      },
+    );
+  }
   return { id: record.id, username, name };
 }
 
@@ -86,9 +106,16 @@ export function currentBaseURL(): string {
   return baseURL;
 }
 
-/** Creates a new child, opens `path` and logs in as that child. */
-export async function loginAsNewChild(page: Page, path: string): Promise<TestAccount> {
-  const account = await createChild(currentBaseURL());
+/**
+ * Creates a new child (with the `selected-children` courses in `courses` assigned), opens `path`
+ * and logs in as that child.
+ */
+export async function loginAsNewChild(
+  page: Page,
+  path: string,
+  { courses = [] }: { courses?: readonly string[] } = {},
+): Promise<TestAccount> {
+  const account = await createChild(currentBaseURL(), { courses });
   await loginAs(page, account.username, path);
   return account;
 }

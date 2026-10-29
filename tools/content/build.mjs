@@ -92,6 +92,7 @@ export function buildFiles(courses) {
       id,
       title: course.data.title,
       kind: course.data.kind,
+      access: course.data.access ?? 'all-children',
       file: courseFile,
       hash: courseHash,
       lessons,

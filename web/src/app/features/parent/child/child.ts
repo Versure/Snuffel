@@ -16,6 +16,8 @@ import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { map } from 'rxjs';
 import { AccountsService } from '../../../core/accounts/accounts.service';
+import { CourseAccessService } from '../../../core/access/course-access.service';
+import { isForAllChildren } from '../../../core/access/visible-courses';
 import { ContentService } from '../../../core/content/content.service';
 import type {
   ContentManifest,
@@ -53,6 +55,12 @@ export type ChildProgressState =
   | { readonly kind: 'ready'; readonly snapshot: UserProgressSnapshot }
   | { readonly kind: 'unavailable' };
 
+/** Which `selected-children` courses are open for this child. */
+export type ChildAccessState =
+  | { readonly kind: 'loading' }
+  | { readonly kind: 'ready'; readonly assigned: ReadonlySet<string> }
+  | { readonly kind: 'unavailable' };
+
 export interface ChildSection {
   readonly id: 'courses' | 'practice';
   readonly heading: string;
@@ -74,7 +82,8 @@ const byTitle = (a: ManifestCourse, b: ManifestCourse) => a.title.localeCompare(
  * per course, the progress bar and every lesson with what the child did. The id from the URL
  * only goes to PocketBase as a parameter. The progress loads apart from the child and the
  * content, and the lesson files (quiz questions, checklist items, step titles) only for the
- * lessons with records, each on its own.
+ * lessons with records, each on its own. Every course stays on the page; a `selected-children`
+ * course that is not open for the child says so under its title.
  */
 @Component({
   selector: 'snf-child-overview',
@@ -88,6 +97,7 @@ export class ChildOverview {
   private readonly accounts = inject(AccountsService);
   private readonly content = inject(ContentService);
   private readonly progress = inject(ProgressService);
+  private readonly access = inject(CourseAccessService);
   private readonly title = inject(Title);
   private readonly injector = inject(Injector);
   protected readonly text = CHILD_TEXT;
@@ -120,6 +130,22 @@ export class ChildOverview {
       return userId ? { userId } : undefined;
     },
     loader: ({ params }) => this.progress.loadUserProgress(params.userId),
+  });
+
+  /** The courses assigned to this child (the parent may read them). */
+  private readonly assigned = resource({
+    params: () => {
+      const userId = this.progressTarget();
+      return userId ? { userId } : undefined;
+    },
+    loader: ({ params }) => this.access.loadAssignedCourseIds(params.userId),
+  });
+
+  protected readonly accessState = computed((): ChildAccessState => {
+    // Never the assignments of another child: a new child starts without a value.
+    if (this.assigned.hasValue()) return { kind: 'ready', assigned: this.assigned.value() };
+    if (this.assigned.isLoading()) return { kind: 'loading' };
+    return this.assigned.status() === 'error' ? { kind: 'unavailable' } : { kind: 'loading' };
   });
 
   /**
@@ -250,6 +276,15 @@ export class ChildOverview {
 
   protected courseTitle(course: ManifestCourse): string {
     return plainText(course.title);
+  }
+
+  /** "Niet zichtbaar voor <naam>" under a selected-children course that is not open for the child. */
+  protected hiddenFor(course: ManifestCourse): string {
+    const access = this.accessState();
+    if (access.kind !== 'ready' || isForAllChildren(course) || access.assigned.has(course.id)) {
+      return '';
+    }
+    return CHILD_TEXT.hiddenFor(this.name());
   }
 
   protected barName(course: ManifestCourse): string {

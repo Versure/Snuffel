@@ -26,7 +26,7 @@ import {
 } from '../support/reference-report';
 import { answer, checkbox, gameBlock, optionButton, settle, wrongOption } from './actions';
 import { normalize } from './fixture';
-import { les1, les1GameStep, les1Quiz, les1Water, les1Path } from './les-1';
+import { les1, les1Courses, les1GameStep, les1Path, les1Quiz, les1Water } from './les-1';
 
 // Les 1 next to the reference lesson (docs/start/reference/les-01-roofvissen.html). Lesson 1
 // deliberately differs from the reference (plan M13, open question 10 and deviation 9): the
@@ -43,7 +43,7 @@ test.beforeEach(async ({ page }) => {
 
 /** Logs in as a new child and fixes `Math.random` for every load after this. */
 async function start(page: Page): Promise<void> {
-  await loginAsNewChild(page, les1Path);
+  await loginAsNewChild(page, les1Path, { courses: les1Courses });
   await seedRandom(page);
 }
 

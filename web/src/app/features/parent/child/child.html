@@ -18,6 +18,10 @@
         </div>
       }
 
+      @if (accessState().kind === 'unavailable') {
+        <p class="access-error">{{ text.accessUnavailable }}</p>
+      }
+
       <!-- Always there, so the message after clearing is announced. -->
       <p #clearedMessage class="cleared" aria-live="polite" tabindex="-1">{{ cleared() }}</p>
 
@@ -27,6 +31,9 @@
           @for (course of section.courses; track course.id) {
             <section class="course" [attr.aria-labelledby]="'course-' + course.id">
               <h3 class="course-title" [id]="'course-' + course.id">{{ courseTitle(course) }}</h3>
+              @if (hiddenFor(course); as hidden) {
+                <p class="hidden-for">{{ hidden }}</p>
+              }
               @if (progressOf(course); as summary) {
                 <snf-progress-bar
                   class="bar"

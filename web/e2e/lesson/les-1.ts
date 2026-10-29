@@ -24,6 +24,12 @@ export const les1 = JSON.parse(
 
 export const les1Path = '/leren/roofvissen/aanbeet-of-vastzitten';
 
+/**
+ * Roofvissen is for selected children only: a test child that opens les 1 gets the course
+ * assigned (as the parent does on /ouder).
+ */
+export const les1Courses: readonly string[] = ['roofvissen'];
+
 export const les1Sources = new Map(les1Course.sources.map((source) => [source.id, source]));
 
 export const les1Explain = les1.steps.find((step): step is ExplainStep => step.type === 'explain')!;

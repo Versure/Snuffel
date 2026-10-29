@@ -378,6 +378,7 @@ describe('schemas', () => {
           id: 'roofvissen',
           title: 'Roofvissen',
           kind: 'course',
+          access: 'all-children',
           file: 'roofvissen/course.json',
           hash: '0123456789abcdef',
           lessons: [
@@ -417,6 +418,52 @@ describe('schemas', () => {
     );
   });
 
+  test('a course accepts access all-children, selected-children or no access', () => {
+    for (const access of ['all-children', 'selected-children']) {
+      assert.deepEqual(validate('course', { ...clone(minimalCourse), access }), []);
+    }
+    const without = clone(minimalCourse);
+    delete without.access;
+    assert.deepEqual(validate('course', without), []);
+  });
+
+  test('a course with access "everyone" is one schema error with a Dutch message', () => {
+    const error = assertError(
+      validate('course', { ...clone(minimalCourse), access: 'everyone' }),
+      'access',
+    );
+    assert.match(
+      error.message,
+      /"everyone" is niet toegestaan; kies uit: all-children, selected-children/,
+    );
+  });
+
+  test('a manifest course without access is a schema error', () => {
+    const manifest = {
+      schemaVersion: 1,
+      courses: [
+        {
+          id: 'roofvissen',
+          title: 'Roofvissen',
+          kind: 'course',
+          access: 'selected-children',
+          file: 'roofvissen/course.json',
+          hash: '0123456789abcdef',
+          lessons: [{ id: 'later', title: 'Later', status: 'planned' }],
+          assets: [],
+        },
+      ],
+    };
+    assert.deepEqual(validate('manifest', manifest), []);
+    const without = clone(manifest);
+    delete without.courses[0].access;
+    const error = assertError(validate('manifest', without), 'courses[0].access');
+    assert.match(error.message, /verplicht veld "access" ontbreekt/);
+    const unknown = clone(manifest);
+    unknown.courses[0].access = 'everyone';
+    assertError(validate('manifest', unknown), 'courses[0].access');
+  });
+
   test('a published manifest lesson without stepIds is a schema error', () => {
     const manifest = {
       schemaVersion: 1,
@@ -425,6 +472,7 @@ describe('schemas', () => {
           id: 'roofvissen',
           title: 'Roofvissen',
           kind: 'course',
+          access: 'all-children',
           file: 'roofvissen/course.json',
           hash: '0123456789abcdef',
           lessons: [

@@ -6,6 +6,7 @@
   "goal": "Typen met tien vingers zonder naar het toetsenbord te kijken: alle letters, hoofdletters en leestekens",
   "successCriterion": "Een korte tekst met hoofdletters en leestekens typen zonder naar het toetsenbord te kijken, met minstens 90% goed",
   "kind": "course",
+  "access": "all-children",
   "ted": {
     "greeting": "Tien vingers, nul keer kijken. Zet je vingers klaar!"
   },
