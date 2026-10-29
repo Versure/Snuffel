@@ -218,6 +218,8 @@ test.describe('who sees a course', () => {
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Leertraject laden lukt niet');
     await page.goto(chosenLessonPath);
     await expect(page.locator('main')).not.toHaveAttribute('aria-busy', 'true');
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Les laden lukt niet');
+    await expect(page.getByRole('button', { name: 'Opnieuw' })).toBeVisible();
     await expect(page.getByText(chosenLessonTitle)).toHaveCount(0);
     expect(requests, `requests to /content/${chosenId}/`).toEqual([]);
 
