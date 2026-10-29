@@ -53,7 +53,10 @@ legend {
   cursor: pointer;
 }
 
-/* The checkbox of the reference: a square with an ink border, pink with a ✓ when ticked. */
+/*
+ * The checkbox of the reference: a square with a border, pink with a ✓ when ticked. The border
+ * uses the text colour, not ink: on the dark surface ink has too little contrast (WCAG 1.4.11).
+ */
 input {
   appearance: none;
   display: grid;
@@ -63,7 +66,7 @@ input {
   height: 1.6rem;
   margin: 0;
   background: var(--snf-color-surface);
-  border: var(--snf-border-width) solid var(--snf-color-ink);
+  border: var(--snf-border-width) solid var(--snf-color-text);
   border-radius: 6px;
   cursor: pointer;
 }
