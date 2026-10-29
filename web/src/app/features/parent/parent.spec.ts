@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { AccountsService } from '../../core/accounts/accounts.service';
+import { CourseAccessService } from '../../core/access/course-access.service';
 import { ContentService } from '../../core/content/content.service';
 import type { ContentManifest, ManifestLesson } from '../../core/content/content.types';
 import type { UserRecord } from '../../core/pocketbase/types';
@@ -96,6 +97,10 @@ describe('Parent', () => {
         },
         { provide: ContentService, useValue: { loadManifest: async () => manifest } },
         { provide: ProgressService, useValue: { loadActivity } },
+        {
+          provide: CourseAccessService,
+          useValue: { loadAssignments: async () => [], assign: vi.fn(), unassign: vi.fn() },
+        },
       ],
     });
   });
@@ -185,5 +190,34 @@ describe('Parent', () => {
     expect(loadActivity).toHaveBeenCalledTimes(2);
     expect(element.querySelector('.activity-error')).toBeNull();
     expect(textOf(element.querySelector('snf-child-card .lessons-completed'))).toBe('1 les klaar');
+  });
+  describe('who sees which course', () => {
+    it('is below the cards when the children are there', async () => {
+      const { element } = await render();
+      const section = element.querySelector('snf-course-access');
+      expect(section).not.toBeNull();
+      expect(textOf(section?.querySelector('h2'))).toBe('Wie ziet welke cursus?');
+      expect(textOf(section?.querySelector('.all-children'))).toBe(
+        'Voor alle kinderen: Proefcursus',
+      );
+      const cards = element.querySelector('.cards');
+      expect(
+        cards &&
+          section &&
+          cards.compareDocumentPosition(section) & Node.DOCUMENT_POSITION_FOLLOWING,
+      ).toBeTruthy();
+    });
+
+    it('is not there without children', async () => {
+      children = [];
+      const { element } = await render();
+      expect(element.querySelector('snf-course-access')).toBeNull();
+    });
+
+    it('is not there when the overview cannot be loaded', async () => {
+      childrenFail = true;
+      const { element } = await render();
+      expect(element.querySelector('snf-course-access')).toBeNull();
+    });
   });
 });

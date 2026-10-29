@@ -8,6 +8,7 @@ import { ProgressService, type ChildActivity } from '../../core/progress/progres
 import { Button } from '../../shared/ui/button/button';
 import { TedSays } from '../../shared/ui/ted-says/ted-says';
 import { ChildCard, type ChildCardActivity } from './child-card/child-card';
+import { CourseAccess } from './course-access/course-access';
 import { PARENT_TEXT } from './parent-text';
 
 export type ParentState =
@@ -32,12 +33,12 @@ function lessonsCompleted(manifest: ContentManifest, statuses: StepStatuses): nu
 
 /**
  * The parent overview (`/ouder`): every child as a card with its last activity and completed
- * lessons. The children and the content load apart from the activity, so a failing activity
+ * lessons, and below the cards who sees which course. The children and the content load apart from the activity, so a failing activity
  * still shows the children (without numbers).
  */
 @Component({
   selector: 'snf-parent',
-  imports: [Button, ChildCard, TedSays],
+  imports: [Button, ChildCard, CourseAccess, TedSays],
   templateUrl: './parent.html',
   styleUrl: './parent.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -61,6 +62,11 @@ export class Parent {
     const children = this.children.value().filter((child) => child.role === 'child');
     return children.length === 0 ? { kind: 'empty' } : { kind: 'ready', children };
   });
+
+  /** Every course of the manifest (for the section on who sees which course). */
+  protected readonly courses = computed(() =>
+    this.manifest.hasValue() ? this.manifest.value().courses : [],
+  );
 
   protected readonly activityState = computed((): ParentActivityState => {
     if (this.activity.isLoading()) return { kind: 'loading' };

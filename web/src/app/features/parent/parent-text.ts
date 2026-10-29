@@ -12,6 +12,19 @@ export const PARENT_TEXT = {
   lessonsCompleted: (count: number) => (count === 1 ? '1 les klaar' : `${count} lessen klaar`),
 } as const;
 
+/** Every text of the section on /ouder where the parent chooses who sees a course. */
+export const ACCESS_TEXT = {
+  heading: 'Wie ziet welke cursus?',
+  loading: 'Even snuffelen…',
+  unavailable: 'Wie welke cursus ziet, kan ik nu niet ophalen.',
+  retry: PARENT_TEXT.retry,
+  allChildren: (titles: readonly string[]) => `Voor alle kinderen: ${titles.join(', ')}`,
+  saveFailed: 'Opslaan lukt niet. Probeer het nog eens.',
+  assigned: (name: string, course: string) => `${name} ziet nu ${course}.`,
+  unassigned: (name: string, course: string) =>
+    `${name} ziet ${course} niet meer. De voortgang blijft bewaard.`,
+} as const;
+
 /** Every text of the page of one child and its lessons. */
 export const CHILD_TEXT = {
   back: 'Naar het ouderoverzicht',

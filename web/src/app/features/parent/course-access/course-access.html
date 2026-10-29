@@ -1,0 +1,44 @@
+@let current = state();
+<section class="access" aria-labelledby="course-access-heading">
+  <h2 id="course-access-heading">{{ text.heading }}</h2>
+  @if (selectedCourses().length > 0) {
+    @switch (current.kind) {
+      @case ('loading') {
+        <p class="loading">{{ text.loading }}</p>
+      }
+      @case ('unavailable') {
+        <div class="unavailable">
+          <snf-ted-says mood="oops" size="small">{{ text.unavailable }}</snf-ted-says>
+          <button snf-button type="button" (click)="retry()">{{ text.retry }}</button>
+        </div>
+      }
+      @case ('ready') {
+        @for (course of selectedCourses(); track course.id) {
+          <fieldset class="course">
+            <legend>{{ course.title }}</legend>
+            <ul class="choices">
+              @for (child of children(); track child.id) {
+                <li>
+                  <label class="choice" [for]="checkboxId(course, child)">
+                    <input
+                      type="checkbox"
+                      [id]="checkboxId(course, child)"
+                      [checked]="isChecked(course, child)"
+                      [disabled]="isSaving(course, child)"
+                      (change)="toggle(course, child, $event)"
+                    />
+                    <span class="name">{{ child.name }}</span>
+                  </label>
+                </li>
+              }
+            </ul>
+          </fieldset>
+        }
+      }
+    }
+  }
+  @if (allChildrenLine(); as line) {
+    <p class="all-children">{{ line }}</p>
+  }
+  <p class="status" aria-live="polite">{{ message() }}</p>
+</section>
