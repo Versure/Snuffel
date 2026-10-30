@@ -2,7 +2,7 @@ import { randomBytes } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import type { Page } from '@playwright/test';
-import { test } from '../fixtures';
+import { afterThisTest, test } from '../fixtures';
 import { loginAs, testPassword } from './login';
 
 /** A child account made for one test. */
@@ -50,6 +50,8 @@ export interface ChildOptions {
  * progress gets its own child, so tests running at the same time never see each other's ticks.
  * The parent sees every test child, so a test that looks one up on /ouder passes a unique `name`
  * (see `uniqueName`); the default is "Testkind". `courses` are assigned to the new child.
+ * The account (with its progress and assignments) is deleted when the test ends, so /ouder only
+ * shows the seeded children and those of the tests that are running, not every child of the run.
  */
 export async function createChild(
   baseURL: string,
@@ -81,6 +83,7 @@ export async function createChild(
       }),
     },
   );
+  afterThisTest(() => deleteChild(baseURL, token, record.id));
   for (const courseId of courses) {
     await call<{ id: string }>(
       new URL('/api/collections/course_assignments/records', baseURL).href,
@@ -92,6 +95,15 @@ export async function createChild(
     );
   }
   return { id: record.id, username, name };
+}
+
+/** Deletes a test child; its records go with it (every relation to users cascades). */
+async function deleteChild(baseURL: string, token: string, id: string): Promise<void> {
+  const url = new URL(`/api/collections/users/records/${id}`, baseURL).href;
+  const response = await fetch(url, { method: 'DELETE', headers: { Authorization: token } });
+  if (!response.ok) {
+    throw new Error(`accounts: DELETE ${url}: ${response.status} ${await response.text()}`);
+  }
 }
 
 /** A name no other test child has, for tests that find their child on /ouder. */

@@ -44,9 +44,10 @@ async function smallTargets(page: Page) {
 }
 
 /**
- * Gives a child card the focus the way a keyboard user gets it. The e2e database holds hundreds
- * of test children, so Tab-ing there from the top would take hundreds of presses: focus the card,
- * then move away and back with Tab and Shift+Tab, which makes the focus ring show.
+ * Gives a child card the focus the way a keyboard user gets it. The children of the tests running
+ * at the same time come before it, so Tab-ing there from the top takes an unknown number of
+ * presses: focus the card, then move away and back with Tab and Shift+Tab, which makes the focus
+ * ring show.
  */
 async function focusByKeyboard(target: Locator): Promise<void> {
   const page = target.page();
